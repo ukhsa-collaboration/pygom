@@ -1,6 +1,6 @@
-================================
-pygom - Python Generic Ode Model
-================================
+===============================
+pygom - ODE modelling in Python
+===============================
 
 Development of a generic framework for ode models, more specifically, 
 aiming to solve compartmental type problems.  
