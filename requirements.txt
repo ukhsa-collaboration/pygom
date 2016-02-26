@@ -5,3 +5,4 @@ numpy>=1.6.0
 scipy>=0.10.0
 sympy>=0.7.0
 numpydoc>=0.6.0
+ipython>=4.1.0
