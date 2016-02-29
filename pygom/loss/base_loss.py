@@ -750,7 +750,8 @@ class BaseLoss(object):
 #         print diffLoss
         gradIV = self._sensToGradIVWithoutIndex(sens, diffLoss)
         # join the two
-        grad = numpy.append(grad, gradIV, axis=1)
+        # grad = numpy.append(grad, gradIV, axis=1)
+        grad = numpy.append(grad, gradIV)
 
         if full_output:
             return grad, outputIV
