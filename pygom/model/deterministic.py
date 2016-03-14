@@ -209,12 +209,19 @@ class OperateOdeModel(BaseOdeModel):
             super(OperateOdeModel, self)._computeOdeVector()
         else:
             super(OperateOdeModel, self)._computeTransitionMatrix()
-
+            A = self._transitionMatrix - self._transitionMatrix.transpose()
+            # for i in range(0, self._numState):
+            #     self._ode[i] = sum(A[:,i])
             # convert the transition matrix into the set of ode
             self._ode = zeros(self._numState, 1)
-            A = self._transitionMatrix - self._transitionMatrix.transpose()
-            for i in range(0, self._numState):
-                self._ode[i] = sum(A[:,i])
+            
+            for transObj in self._transitionList: #j in range(self._numT):
+                # transObj = self._transitionList[j]               
+                fromIndex, toIndex, eqn = self._unrollTransition(transObj)
+                for k in fromIndex:
+                    self._ode[k] -= eqn
+                for k in toIndex:
+                    self._ode[k] += eqn
 
         # now we just need to add in the birth death processes
         super(OperateOdeModel, self)._computeBirthDeathVector()
@@ -2097,6 +2104,9 @@ class OperateOdeModel(BaseOdeModel):
         return evalParam
     
     def _getEvalParam(self, state, time, parameters):
+        if state is None or time is None:
+            raise InputError("Have to input both state and time")
+        
         if parameters is not None:
             self.setParameters(parameters)
         elif self._parameters is None:

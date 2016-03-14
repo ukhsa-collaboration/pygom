@@ -9,6 +9,7 @@
 __all__ = ['SimulateOdeModel']
 
 from .deterministic import OperateOdeModel
+from .stochastic_simulation import newJumpTimes, firstReaction, tauLeap
 from .transition import TransitionType, Transition
 from _modelErrors import InputError, SimulationError
 from pygom.utilR.distn import rexp, runif, rpois, ppois
@@ -64,7 +65,7 @@ class SimulateOdeModel(OperateOdeModel):
                                                odeList)
 
         # just to confirm, we DO NEED the transition matrix here
-        self._transitionMatrix = None
+        # self._transitionMatrix = None
         self._transitionMatrixCompile = None
 
         self._birthDeathRate = None
@@ -72,7 +73,7 @@ class SimulateOdeModel(OperateOdeModel):
 
         # information required for the tau leap
         self._transitionJacobian = None
-        self._totalTransition = None
+        # self._totalTransition = None
 
         self._transitionMean = None
         self._transitionMeanCompile = None
@@ -80,12 +81,9 @@ class SimulateOdeModel(OperateOdeModel):
         self._transitionVar = None
         self._transitionVarCompile = None
 
+        self._transitionVectorCompile = None
         self._totalTransitionCompile = None
 
-        # information for the next reaction method
-        self._lambdaMat = None
-        self._vMat = None
-        self._GMat = None
         # micro times for jumps
         self._tau = None
         self._tauDict = None
@@ -93,8 +91,8 @@ class SimulateOdeModel(OperateOdeModel):
         self._EPSILON = 0.01
         self._tauScale = 0.1
 
-        self._numT = len(self._transitionList)
-        self._numBD = len(self._birthDeathList)
+        # self._numT = len(self._transitionList)
+        # self._numBD = len(self._birthDeathList)
 
     def simulateParam(self, t, iteration, full_output=False):
         '''
@@ -191,7 +189,7 @@ class SimulateOdeModel(OperateOdeModel):
         '''
 
         assert len(self._odeList) == 0, "Currently only able to simulate when only transitions are present"
-        assert not numpy.all(self._x0<=1.0), "Can only simulate a jump process with non-normalized populations"
+        assert numpy.all(numpy.mod(self._x0, 1) == 0), "Can only simulate a jump process with integer initial values"
 #         if len(self._odeList) != 0:
 #             raise InputError("Currently only able to simulate when only transitions are present")
         #if len(self._birthDeathList)!=0:
@@ -215,8 +213,8 @@ class SimulateOdeModel(OperateOdeModel):
         else:
             raise InputError("Unknown data type for time")
 
-        if self._transitionMatrix is None:
-            self._computeTransitionMatrix()
+        if self._transitionVectorCompile is None:
+            self._compileTransitionVector()
 
         # we are going to try the parallel option
         try:
@@ -286,11 +284,11 @@ class SimulateOdeModel(OperateOdeModel):
         for i in targetTime:
             # we do not go and find the new time because
             # the simulation has reached saturation
-            if i > maxTime:
-                y.append(X[index,:])
-            else:
-                index = numpy.searchsorted(t, i)
-                y.append(X[index,:])
+#             if i > maxTime:
+#                 y.append(X[index,:])
+#             else:
+            index = numpy.searchsorted(t, i) - 1
+            y.append(X[index])
 
         return numpy.array(y)
 
@@ -301,10 +299,7 @@ class SimulateOdeModel(OperateOdeModel):
         # initial time
         assert self._t0 is not None, "No initial time"
         assert self._x0 is not None, "No initial state"
-#         if self._t0 is None:
-#             raise InitializeException("No initial time")
-#         if self._x0 is None:
-#             raise InitializeException("No initial state")
+
         t = self._t0.tolist()
         x = copy.deepcopy(self._x0)
 
@@ -317,40 +312,60 @@ class SimulateOdeModel(OperateOdeModel):
         tList.append(t)
 
         # we want to construct some jump times
-        A = self.transitionMatrix(self._x0, self._t0)
-        BD = self.birthDeathRate(x, t)
+        if self._GMat is None:
+            self._computeDependencyMatrix()
 
-        self._newJumpTimes(A, BD)
-
-        if sum(self._tauDict.values()) == 0:
-            raise SimulationError("Initial Conditions does not produce any jumps")
+#         A = self.transitionMatrix(x, t)
+#         BD = self.birthDeathRate(x, t)
+# 
+#         ABC = self.transitionVector(x, t)
+#         self._newJumpTimes(A, BD)
+# 
+#         if sum(self._tauDict.values()) == 0:
+#             raise SimulationError("Initial Conditions does not produce any jumps")
 
         # keep jumping, Whoop Whoop (put your hands up!).
         while t < finalT:
             # print x
             # obtain our transition matrix
-            A = self.transitionMatrix(x, t)
-            BD = self.birthDeathRate(x, t)
+#             A = self.transitionMatrix(x, t)
+#             BD = self.birthDeathRate(x, t)
+            
             try:
                 if numpy.min(x) > 10:
-                    # print "\nLeap"
-                    # print "state" +str(x)
-                    # first we will try the \tau-leap.  If it fails, for whatever
-                    # reason, then we will move on the the first reaction method.
-                    x, t, success = self._tauLeap(x, t, A, BD)
-                    # x, t, success = self._firstReaction(x, t, A, BD)
-                    # print x
-                    # print success
+                    x, t, success = tauLeap(x, t,
+                                            self._vMat, self._lambdaMat,
+                                            self.transitionVector,
+                                            self.transitionMean,
+                                            self.transitionVar)
                     if success is False:
-                        x, t, success = self._firstReaction(x, t, A, BD)
+                        x, t, success = firstReaction(x, t, self._vMat,
+                                                  self.transitionVector)
                 else:
-                    # print "\nFirst"
-                    # print "state" +str(x)
-                    x, t, success = self._firstReaction(x, t, A, BD)
-                # x,t,success = self._directReaction(x, t, A, numTransition)
+                    x, t, success = firstReaction(x, t, self._vMat,
+                                                  self.transitionVector)
+#                 if numpy.min(x) > 10:
+#                     # print "\nLeap"
+#                     # print "state" +str(x)
+#                     # first we will try the \tau-leap.  If it fails, for whatever
+#                     # reason, then we will move on the the first reaction method.
+#                     x, t, success = self._tauLeap(x, t, A, BD)
+#                     # x, t, success = self._firstReaction(x, t, A, BD)
+#                     # print x
+#                     # print success
+#                     if success is False:
+#                         x, t, success = self._firstReaction(x, t, A, BD)
+#                 else:
+#                     # print "\nFirst"
+#                     # print "state" +str(x)
+#                     x, t, success = self._firstReaction(x, t, A, BD)
+#                 # x,t,success = self._directReaction(x, t, A, numTransition)
                 if success:
                     xList.append(x.copy())
                     tList.append(t)
+                else:
+                    print "huh" + str(t)
+                    raise Exception('WTF')
                 # else:
                 #     pass # break
             except SimulationError:
@@ -476,6 +491,7 @@ class SimulateOdeModel(OperateOdeModel):
         else:
             # we can't jump
             raise SimulationError("Cannot perform any more reactions")
+
     # @deprecated
     def _nextReaction(self, x, t, oldA, numTransition):
         '''
@@ -538,9 +554,9 @@ class SimulateOdeModel(OperateOdeModel):
         Generate a new set of jump times for all the transitions
         '''
         # redefine
-        self._tau = numpy.ones(self._numT+self._numBD) * numpy.Inf
+        self._tau = numpy.ones(self._numTransition) * numpy.Inf
         self._tauDict = dict()
-        for i in range(0, self._numT):
+        for i in range(self._numT):
             rate = self._getRateWithIndex(A, i)
             # note that \lambda = 1/rate for the exponential
             # we want to ensure that the rate is feasible
@@ -553,7 +569,7 @@ class SimulateOdeModel(OperateOdeModel):
             # there.
             self._tauDict[i] = self._tau[i]
 
-        for i in range(0, self._numBD):
+        for i in range(self._numBD):
             j = i + self._numT
             rate = BD[i]
             # check the validity of the rate
@@ -628,8 +644,23 @@ class SimulateOdeModel(OperateOdeModel):
         if self._transitionMatrixCompile is not None:
             return self._transitionMatrix
         else:
-            self._computeTransitionMatrix()
-            return self._transitionMatrix
+            return self._computeTransitionMatrix()
+    
+    def getTransitionVector(self):
+        '''
+        Returns the set of transitions in a single vector, transitions
+        between state to state first then the birth and death process
+
+        Returns
+        -------
+        :class:`sympy.matrices.matrices`
+            A matrix of dimension [total number of transitions x 1]
+
+        '''
+        if self._transitionVectorCompile is not None:
+            return self._transitionVector
+        else:
+            return super(SimulateOdeModel, self)._computeTransitionVector()
 
     def transitionMatrix(self, state, t):
         '''
@@ -678,76 +709,100 @@ class SimulateOdeModel(OperateOdeModel):
             raise InputError("Have to input both state and time")
 
         if self._transitionMatrixCompile is None:
-            self._computeTransitionMatrix()
+            self._compileTransitionMatrix()
 
-        # we should usually only want the time and state
-        # and the parameters will be fixed
-        if parameters is not None:
-            self.setParameters(parameters)
-        elif self._parameters is None:
-            if len(self._paramList) != 0:
-                raise InputError("Have not set the parameters yet")
-
-        # output, substitute in the numerics if they are available
-        if type(state) is list:
-            evalParam = state + [time]
-        else:
-            evalParam = list(state) + [time]
-
-        evalParam += self._paramValue
+        evalParam = self._getEvalParam(state, time, parameters)
         return self._transitionMatrixCompile(evalParam)
 
-    def _computeTransitionMatrix(self):
+    def _compileTransitionMatrix(self):
         '''
         We would also need to compile the function so that
         it can be evaluated faster.
-        This is an override - Majority of the code here is
-        identical to the one originally in BaseOdeModel.
-        Difference being we have to take into account the
-        total transition which also includes the birth
-        death vector.  We also compile the code here.
-
         '''
-
-        # holders
-        self._transitionMatrix = sympy.zeros(self._numState, self._numState)
-        self._totalTransition = sympy.zeros(1, 1)
-
-        A = self._transitionMatrix
-        # going through the list of transition
-        for i in range(0, len(self._transitionList)):
-            # extract the object
-            # could have equally done this via the line
-            # for transition in self._transitionList:
-            # but I prefer to loop using range. Bite me.
-            transition = self._transitionList[i]
-            # then find out the indices of the states
-            fromIndex = self._extractStateIndex(transition.getOrigState())
-            toIndex = self._extractStateIndex(transition.getDestState())
-
-            # put the getEquation in the correct element
-            tempTransition = eval(self._checkEquation(transition.getEquation()))
-            A[fromIndex,toIndex] += tempTransition
-            # simplify if possible
-            A[fromIndex,toIndex] = super(SimulateOdeModel,
-                                         self)._simplifyEquation(A[fromIndex,toIndex])
-            # we also want the total
-            self._totalTransition[0,0] += tempTransition
-        # assign back
-        self._transitionMatrix = A
+        if self._transitionMatrix is None:
+            self._computeTransitionMatrix()
 
         if self._isDifficult:
             self._transitionMatrixCompile = self._SC.compileExprAndFormat(self._sp,
                                                                           self._transitionMatrix,
                                                                           modules=modulesH)
-            self._totalTransitionCompile = self._SC.compileExprAndFormat(self._sp,
-                                                                         self._totalTransition,
-                                                                         modules=modulesH)
         else:
             self._transitionMatrixCompile = self._SC.compileExprAndFormat(self._sp,
                                                                           self._transitionMatrix)
-            self._totalTransitionCompile = self._SC.compileExprAndFormat(self._sp,
-                                                                         self._totalTransition)
+
+        return None
+    
+    def transitionVector(self, state, t):
+        '''
+        Evaluate the transition vector given state and time
+
+        Parameters
+        ----------
+        state: array like
+            The current numerical value for the states which can be
+            :class:`numpy.ndarray` or :class:`list`
+        t: double
+            The current time
+
+        Returns
+        -------
+        :class:`numpy.ndarray`
+            a 1d array of size K where K is the number of between
+            states transitions and the number of birth death
+            processes
+        '''
+        return self.evalTransitionVector(time=t, state=state)
+
+    def evalTransitionVector(self, parameters=None, time=None, state=None):
+        '''
+        Evaluate the transition vector given parameters, state and time. Note
+        that the output is not in sparse format
+
+        Parameters
+        ----------
+        parameters: list
+            see :meth:`.setParameters`
+        time: double
+            The current time
+        state: array list
+            The current numerical value for the states which can
+            :class:`numpy.ndarray` or :class:`list`
+
+        Returns
+        -------
+        :class:`numpy.matrix` or :class:`mpmath.matrix`
+            vector of dimension [total number of transitions]
+
+        '''
+#         if state is None or time is None:
+#             raise InputError("Have to input both state and time")
+
+        if self._transitionVectorCompile is None:
+            self._compileTransitionVector()
+
+        evalParam = self._getEvalParam(state, time, parameters)
+        return self._transitionVectorCompile(evalParam)
+    
+    def _compileTransitionVector(self):
+        '''
+        We would also need to compile the function so that
+        it can be evaluated faster.
+        '''
+        if self._transitionVector is None:
+            self._computeTransitionVector()
+
+        if self._isDifficult:
+            self._transitionVectorCompile = self._SC.compileExprAndFormat(self._sp,
+                                                                          self._transitionVector,
+                                                                          modules=modulesH)
+#             self._totalTransitionCompile = self._SC.compileExprAndFormat(self._sp,
+#                                                                          self._totalTransition,
+#                                                                          modules=modulesH)
+        else:
+            self._transitionVectorCompile = self._SC.compileExprAndFormat(self._sp,
+                                                                          self._transitionVector)
+#             self._totalTransitionCompile = self._SC.compileExprAndFormat(self._sp,
+#                                                                          self._totalTransition)
 
         return None
 
@@ -762,8 +817,6 @@ class SimulateOdeModel(OperateOdeModel):
         '''
         if self._birthDeathRate is None:
             self._computeBirthDeathRate()
-        else:
-            pass
 
         return self._birthDeathRate
 
@@ -809,27 +862,13 @@ class SimulateOdeModel(OperateOdeModel):
 
         '''
 
-        if state is None or time is None:
-            raise InputError("Have to input both state and time")
+#         if state is None or time is None:
+#             raise InputError("Have to input both state and time")
 
         if self._birthDeathRateCompile is None:
             self._computeBirthDeathRate()
 
-        # we should usually only want the time and state
-        # and the parameters will be fixed
-        if parameters is not None:
-            self.setParameters(parameters)
-        elif self._parameters is None:
-            if len(self._paramList) != 0:
-                raise InputError("Have not set the parameters yet")
-
-        # output, substitute in the numerics if they are available
-        if type(state) is list:
-            evalParam = state + [time]
-        else:
-            evalParam = list(state) + [time]
-
-        evalParam += self._paramValue
+        evalParam = self._getEvalParam(state, time, parameters)
         return self._birthDeathRateCompile(evalParam)
 
     def _computeBirthDeathRate(self):
@@ -854,9 +893,8 @@ class SimulateOdeModel(OperateOdeModel):
                 # everything is of a positive sign because they
                 # are rates
                 A[i] += eval(self._checkEquation(bd.getEquation()))
-
                 # everything is part of total transition!
-                self._totalTransition += A[i]
+                self._totalTransition[0,0] += A[i]
 
         # assign back
         self._birthDeathRate = A
@@ -917,27 +955,14 @@ class SimulateOdeModel(OperateOdeModel):
             Matrix of dimension [number of state x number of state]
 
         '''
-
-        if state is None or time is None:
-            raise InputError("Have to input both state and time")
+# 
+#         if state is None or time is None:
+#             raise InputError("Have to input both state and time")
 
         if self._totalTransitionCompile is None or self._totalTransition is None:
             self._computeTransitionMatrix()
 
-        # we should usually only want the time and state
-        # and the parameters will be fixed
-        if parameters is not None:
-            self.setParameters(parameters)
-        elif self._parameters is None:
-            raise InputError("Have not set the parameters yet")
-
-        # output, substitute in the numerics if they are available
-        if isinstance(state, list):
-            evalParam = state + [time]
-        else:
-            evalParam = list(state) + [time]
-
-        evalParam += self._paramValue
+        evalParam = self._getEvalParam(state, time, parameters)
         return self._totalTransitionCompile(evalParam)
 
     def transitionMean(self, state, t):
@@ -989,26 +1014,13 @@ class SimulateOdeModel(OperateOdeModel):
 
         '''
 
-        if state is None or time is None:
-            raise InputError("Have to input both state and time")
+#         if state is None or time is None:
+#             raise InputError("Have to input both state and time")
 
         if self._transitionMeanCompile is None:
             self._computeTransitionMeanVar()
 
-        # we should usually only want the time and state
-        # and the parameters will be fixed
-        if parameters is not None:
-            self.setParameters(parameters)
-        elif self._parameters is None:
-            raise InputError("Have not set the parameters yet")
-
-        # output, substitute in the numerics if they are available
-        if isinstance(state, list):
-            evalParam = state + [time]
-        else:
-            evalParam = list(state) + [time]
-
-        evalParam += self._paramValue
+        evalParam = self._getEvalParam(state, time, parameters)
         return self._transitionMeanCompile(evalParam)
 
     def transitionVar(self, state, t):
@@ -1052,84 +1064,49 @@ class SimulateOdeModel(OperateOdeModel):
 
         '''
 
-        if state is None or time is None:
-            raise InputError("Have to input both state and time")
+#         if state is None or time is None:
+#             raise InputError("Have to input both state and time")
 
         if self._transitionVarCompile is None:
             self._computeTransitionMeanVar()
 
-        # we should usually only want the time and state
-        # and the parameters will be fixed
-        if parameters is not None:
-            self.setParameters(parameters)
-        elif self._parameters is None:
-            raise InputError("Have not set the parameters yet")
-
-        # output, substitute in the numerics if they are available
-        if type(state) is list:
-            evalParam = state + [time]
-        else:
-            evalParam = list(state) + [time]
-
-        evalParam += self._paramValue
+        evalParam = self._getEvalParam(state, time, parameters)
         return self._transitionVarCompile(evalParam)
 
     def _computeTransitionJacobian(self):
-        numTransitions = self._numT + self._numBD
         if self._GMat is None:
-            self._getDependencyMatrix()
+            self._computeDependencyMatrix()
 
-        # holders
-        A = self.getTransitionMatrix()
-        BD = self.getBirthDeathRate()
-
-        F = sympy.zeros(numTransitions, numTransitions)
-        # going through the list of transition
-        for k in range(0, numTransitions):
-            for j in range(0, numTransitions):
-                # although the method before is called getRateWithIndex,
-                # it in fact only extract the element without regard to
-                # the type of matrix it is
-                if j < self._numT:
-                    eqn = self._getRateWithIndex(A, j)
-                else:
-                    eqn = BD[j-self._numT]
-                # assign
-                for i in range(0, self._numState):
-                    diffEqn = super(SimulateOdeModel, self)._simplifyEquation(sympy.diff(eqn, self._stateList[i], 1) ) * self._vMat[i,k]
-                    F[k,j] += diffEqn
-
-        # now we assign... no idea why this should b e done separately
+        F = sympy.zeros(self._numTransition, self._numTransition)
+        for i in range(self._numTransition):
+            for j, eqn in enumerate(self._transitionVector):
+                for k, state in enumerate(self._stateList):
+                    diffEqn = sympy.diff(eqn, state, 1) 
+                    F[i,j] += super(SimulateOdeModel, self)._simplifyEquation(diffEqn) * self._vMat[k,i]
+        
         self._transitionJacobian = F
-
-        return None
+        return F
 
     def _computeTransitionMeanVar(self):
         '''
         This is the mean and variance information that we need
         for the :math:`\tau`-Leap
         '''
-        numTransitions = self._numT + self._numBD
+        # numTransitions = self._numT + self._numBD
+        # self._numTransition
 
         if self._transitionJacobian is None:
             self._computeTransitionJacobian()
 
         F = self._transitionJacobian
-
         # holders
-        mu = sympy.zeros(numTransitions, 1)
-        sigma2 = sympy.zeros(numTransitions, 1)
+        mu = sympy.zeros(self._numTransition, 1)
+        sigma2 = sympy.zeros(self._numTransition, 1)
         A = self._transitionMatrix
         BD = self._birthDeathRate
         # we calculate the mean and variance
-        for i in range(0, numTransitions):
-            for j in range(0, numTransitions):
-                # find the correct position
-                if j < self._numT:
-                    eqn = self._getRateWithIndex(A,j)
-                else:
-                    eqn = BD[j-self._numT]
-                # now the mean and variance
+        for i in range(self._numTransition):
+            for j, eqn in enumerate(self._transitionVector):
                 mu[i] += F[i,j] * eqn
                 sigma2[i] += F[i,j] * F[i,j] * eqn
 
@@ -1144,7 +1121,6 @@ class SimulateOdeModel(OperateOdeModel):
             self._transitionVarCompile = self._SC.compileExprAndFormat(self._sp,
                                                                        self._transitionVar,
                                                                        modules=modulesH)
-
         else:
             self._transitionMeanCompile = self._SC.compileExprAndFormat(self._sp, self._transitionMean)
             self._transitionVarCompile = self._SC.compileExprAndFormat(self._sp, self._transitionVar)
@@ -1165,7 +1141,8 @@ class SimulateOdeModel(OperateOdeModel):
         '''
         transitionList = self.getTransitionsFromOde()
         bdList = self.getBDFromOde()
-        return SimulateOdeModel([str(s) for s in self._stateList],
+        return SimulateOdeModel(
+                                [str(s) for s in self._stateList],
                                 [str(p) for p in self._paramList],
                                 transitionList=transitionList,
                                 birthDeathList=bdList
@@ -1180,7 +1157,7 @@ class SimulateOdeModel(OperateOdeModel):
         transitionList = list()
         for i, s1 in enumerate(self._stateList):
             for j, s2 in enumerate(self._stateList):
-                if M[i,j]!=0:
+                if M[i,j] != 0:
                     t = Transition(origState=str(s1),
                                    destState=str(s2),
                                    equation=str(M[i,j]),
@@ -1262,99 +1239,6 @@ class SimulateOdeModel(OperateOdeModel):
             M[i,k] += transitionList[j][0]
 
         return M
-
-    ########################################################################
-    #
-    # Other matrix related to stochastic simulation
-    #
-    ########################################################################
-
-    def _getReactantMatrix(self):
-        '''
-        The reactant matrix, where
-
-        .. math::
-            \lambda_{i,j} = \left\{ 1, &if state i is involved in transition j, \\
-                                    0, &otherwise \right.
-        '''
-        numTransition = self._numT + self._numBD
-
-        # declare holder
-        self._lambdaMat = numpy.zeros((self._numState, numTransition))
-
-        for j in range(0, numTransition):
-            if j < self._numT:
-                transObj = self._transitionList[j]
-                # then find out the indices of the states
-                fromIndex = self._extractStateIndex(transObj.getOrigState())
-                toIndex = self._extractStateIndex(transObj.getDestState())
-                # get the actual getEquation out
-                eqn = self._transitionMatrix[fromIndex, toIndex]
-            else:
-                bdObj = self._birthDeathList[j-self._numT]
-                fromIndex = self._extractStateIndex(bdObj.getOrigState())
-                eqn = self._birthDeathRate[fromIndex]
-
-            # now go through all the states
-            for i in range(0, self._numState):
-                if self._stateList[i] in eqn.atoms():
-                    self._lambdaMat[i,j] = True
-
-        return None
-
-    def _getStateChangeMatrix(self):
-        '''
-        The state change matrix, where
-        .. math::
-            v_{i,j} = \left\{ 1, &if transition j cause state i to lose a particle, \\
-                             -1, &if transition j cause state i to gain a particle, \\
-                              0, &otherwise \right.
-        '''
-        numTransition = self._numT + self._numBD
-
-        # declare holder
-        self._vMat = numpy.zeros((self._numState, numTransition))
-
-        for j in range(0, numTransition):
-            if j < self._numT:
-                transObj = self._transitionList[j]
-                # then find out the indices of the states
-                fromIndex = self._extractStateIndex(transObj.getOrigState())
-                toIndex = self._extractStateIndex(transObj.getDestState())
-                self._vMat[fromIndex,j] = -1
-                self._vMat[toIndex,j] = 1
-            else:
-                bdObj = self._birthDeathList[j - self._numT]
-                # then find out the indices of the states
-                fromIndex = self._extractStateIndex(bdObj.getOrigState())
-                if bdObj.getTransitionType() is TransitionType.B:
-                    self._vMat[fromIndex,j] = 1
-                elif bdObj.getTransitionType() is TransitionType.D:
-                    self._vMat[fromIndex,j] = -1
-
-        return None
-
-    def _getDependencyMatrix(self):
-        '''
-        Obtain the dependency matrix/graph
-        '''
-        if self._lambdaMat is None:
-            self._getReactantMatrix()
-        if self._vMat is None:
-            self._getStateChangeMatrix()
-
-        numTransition = self._numT + self._numBD
-        self._GMat = numpy.zeros((numTransition, numTransition))
-
-        for i in range(0, numTransition):
-            for j in range(0, numTransition):
-                d = 0
-                for k in range(0,self._numState):
-                    d = d or (self._lambdaMat[k,i] and self._vMat[k,i])
-                self._GMat[i,j] = d
-
-        return None
-
 
     ########################################################################
     #

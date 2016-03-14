@@ -13,7 +13,7 @@ class TestSIRStochasticModel(TestCase):
         '''
         t0 = 0
         # the initial state, normalized to zero one
-        x0 = [1,1.27e-6,0]
+        x0 = [1, 1.27e-6, 0]
         # set the time sequence that we would like to observe
         t = numpy.linspace(0, 150, 100)
         # Standard.  Find the solution.
@@ -98,7 +98,7 @@ class TestSIRStochasticModel(TestCase):
         time Markov chain as the underlying process 
         '''
         #x0 = [1,1.27e-6,0] # original
-        x0 = [2362206.0,3.0,0.0]
+        x0 = [2362206.0, 3.0, 0.0]
         t = numpy.linspace(0, 250, 50)
         stateList = ['S','I','R']
         paramList = ['beta','gamma','N']
@@ -111,15 +111,13 @@ class TestSIRStochasticModel(TestCase):
                                 paramList,
                                 transitionList=transitionList)
 
-        odeS.setParameters([0.5,1.0/3.0,x0[0]]).setInitialValue(x0,t[0])
+        odeS.setParameters([0.5, 1.0/3.0, x0[0]]).setInitialValue(x0, t[0])
         solution = odeS.integrate(t[1::])
-            #odeS.plot()
         odeS.transitionMean(x0,t[0])
         odeS.transitionVar(x0,t[0])
-        odeS.totalTransition(x0,t[0])
 
         odeS.transitionMean(solution[10,:],t[10])
         odeS.transitionVar(solution[10,:],t[10])
 
-        simX,simT = odeS.simulateJump(250,3,full_output=True)
+        simX,simT = odeS.simulateJump(250, 3, full_output=True)
         

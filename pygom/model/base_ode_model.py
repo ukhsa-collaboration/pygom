@@ -113,8 +113,15 @@ class BaseOdeModel(object):
         #  holders for the actual equations
         self._transitionList = list()
         self._transitionMatrix = None
+        self._totalTransition = None
         self._birthDeathList = list()
         self._birthDeathVector = list()
+        
+        # information about the ode in general
+        # reactant, state change and the dependency graph matrix
+        self._lambdaMat = None
+        self._vMat = None
+        self._GMat = None
 
         if stateList is not None:
             self.setStateList(stateList)
@@ -151,6 +158,12 @@ class BaseOdeModel(object):
                 self.setOdeEquationList(odeList)
             else:
                 pass
+            
+        self._numT = len(self._transitionList)
+        self._numBD = len(self._birthDeathList)
+        self._numTransition = self._numT + self._numBD
+        
+        self._transitionVector = self._computeTransitionVector()
 
     ########################################################################
     #
@@ -605,12 +618,15 @@ class BaseOdeModel(object):
             the index of the desired state
 
         '''
-        if isinstance(inputStr, str):
-            return self._extractStateIndex(inputStr)
-        elif isinstance(inputStr, sympy.Symbol):
+        if isinstance(inputStr, sympy.Symbol):
             return self._extractStateIndex(str(inputStr))
-        elif isinstance(inputStr, (list, tuple)):
-            outStr = [self._extractStateIndex(stateName) for stateName in inputStr]
+        else:
+            return self._extractStateIndex(inputStr)
+#             return self._extractStateIndex(inputStr)
+#         elif 
+#             
+#         else isinstance(inputStr, (list, tuple)):
+#             outStr = [self._extractStateIndex(stateName) for stateName in inputStr]
 #             outStr = list()
 #             for stateName in inputStr:
 #                 outStr.append(self._extractStateIndex(stateName))
@@ -776,20 +792,20 @@ class BaseOdeModel(object):
         '''
         # holders
         self._transitionMatrix = sympy.zeros(self._numState, self._numState)
-
-        A = self._transitionMatrix
+        self._totalTransition = sympy.zeros(1, 1)
         # going through the list of transition
-        for transition in self._transitionList:
+        # for transition in self._transitionList:
+        for transObj in self._transitionList:
             # then find out the indices of the states
-            fromIndex = self._extractStateIndex(transition.getOrigState())
-            toIndex = self._extractStateIndex(transition.getDestState())
+            fromIndex, toIndex, eqn = self._unrollTransition(transObj)
 
             # put the getEquation in the correct element
-            A[fromIndex,toIndex] += eval(self._checkEquation(transition.getEquation()))
-        # assign back
-        self._transitionMatrix = A
+            for i in fromIndex:
+                for j in toIndex:
+                    self._transitionMatrix[i,j] += eqn
 
-        return None
+        self._totalTransition[0,0] = sum(self._transitionMatrix)
+        return self._transitionMatrix
     
     def addBirthDeath(self, birthDeath):
         '''
@@ -818,23 +834,18 @@ class BaseOdeModel(object):
     def _computeBirthDeathVector(self):
         # holder
         self._birthDeathVector = zeros(self._numState, 1)
-        A = self._birthDeathVector
+        # A = self._birthDeathVector
         # go through all the transition objects
-        for i in range(0, len(self._birthDeathList)):
-            # extract object
-            birthDeath = self._birthDeathList[i]
-            # find the (index) state it is related to
-            fromIndex = self._extractStateIndex(birthDeath.getOrigState())
-            if birthDeath.getTransitionType() is TransitionType.B:
-                # birth type, positive sign
-                A[fromIndex] += eval(self._checkEquation(birthDeath.getEquation()))
-            elif birthDeath.getTransitionType() is TransitionType.D:
-                # a death type, negative sign
-                A[fromIndex] -= eval(self._checkEquation(birthDeath.getEquation()))
+        
+        for bdObj in self._birthDeathList:
+            fromIndex, toIndex, eqn = self._unrollTransition(bdObj)
+            for i in fromIndex:
+                if bdObj.getTransitionType() is TransitionType.B:
+                    self._birthDeathVector[i] += eqn                
+                elif bdObj.getTransitionType() is TransitionType.D:
+                    self._birthDeathVector[i] -= eqn
 
-        self._birthDeathVector = A
-
-        return None
+        return self._birthDeathVector
 
     def addOdeEquation(self, eqn):
         '''
@@ -867,18 +878,129 @@ class BaseOdeModel(object):
         # allow the end user to input more state than initially desired
         if len(self._odeList) <= self._numState:
             self._ode = zeros(self._numState, 1)
-            A = self._ode
-            for i in range(0, len(self._odeList)):
-                Transition = self._odeList[i]
-                fromIndex = self._extractStateIndex(Transition.getOrigState())
-                A[fromIndex] = eval(self._checkEquation(Transition.getEquation()))
-
-            self._ode = A
+            for transObj in self._odeList:
+                fromIndex, toIndex, eqn = self._unrollTransition(transObj)
+                if len(fromIndex) > 1:
+                    raise InputError("An explicit ode cannot describe more than a single state")
+                else:
+                    self._ode[fromIndex[0]] = eqn
         else:
             raise InputError("The total number of ode is "+str(len(self._odeList))+
                             " where the number of state is "+str(self._numState))
 
         return None
+    
+    def _computeTransitionVector(self):
+        '''
+        Get all the transitions into a vector, arranged by state to state transition
+        then the birth death processes
+        '''
+        self._transitionVector = sympy.zeros(self._numTransition, 1)
+        
+        for j in range(self._numTransition):
+            if j < self._numT:
+                transitionObj = self._transitionList[j]
+            else:
+                transitionObj = self._birthDeathList[j-self._numT]
+                
+            fromIndex, toIndex, eqn = self._unrollTransition(transitionObj)
+            self._transitionVector[j] = eqn
+
+        return self._transitionVector
+    
+    ########################################################################
+    #
+    # Other type of matrices
+    #
+    ########################################################################
+
+    def _computeReactantMatrix(self):
+        '''
+        The reactant matrix, where
+
+        .. math::
+            \lambda_{i,j} = \left\{ 1, &if state i is involved in transition j, \\
+                                    0, &otherwise \right.
+        '''
+        # numTransition = self._numT + self._numBD
+
+        # declare holder
+        self._lambdaMat = numpy.zeros((self._numState, self._numTransition),int)
+
+        for j in range(self._numTransition):
+            if j < self._numT:
+                transObj = self._transitionList[j]               
+                # then find out the indices of the states
+                fromIndex, toIndex, eqn = self._unrollTransition(transObj)
+            else:
+                bdObj = self._birthDeathList[j-self._numT]
+                fromIndex, toIndex, eqn = self._unrollTransition(bdObj)
+
+            # now go through all the states
+            for i in range(self._numState):
+                if self._stateList[i] in eqn.atoms():
+                    self._lambdaMat[i,j] = 1
+
+        return self._lambdaMat
+
+    def _computeStateChangeMatrix(self):
+        '''
+        The state change matrix, where
+        .. math::
+            v_{i,j} = \left\{ 1, &if transition j cause state i to lose a particle, \\
+                             -1, &if transition j cause state i to gain a particle, \\
+                              0, &otherwise \right.
+        '''
+        # numTransition = self._numT + self._numBD
+
+        # declare holder
+        self._vMat = numpy.zeros((self._numState, self._numTransition), int)
+
+        for j in range(self._numTransition):
+            if j < self._numT:
+                transObj = self._transitionList[j]
+                # then find out the indices of the states
+                fromIndex, toIndex, eqn = self._unrollTransition(transObj)
+                # fromIndex = self._extractStateIndex(transObj.getOrigState())
+                # toIndex = self._extractStateIndex(transObj.getDestState())
+                for k1 in fromIndex:
+                    self._vMat[k1,j] += -1
+                for k2 in toIndex:
+                    self._vMat[k2,j] += 1
+            else:
+                bdObj = self._birthDeathList[j - self._numT]
+                fromIndex, toIndex, eqn = self._unrollTransition(bdObj)
+                # then find out the indices of the states
+                # fromIndex = self._extractStateIndex(bdObj.getOrigState())
+                if bdObj.getTransitionType() is TransitionType.B:
+                    self._vMat[fromIndex,j] += 1
+                elif bdObj.getTransitionType() is TransitionType.D:
+                    self._vMat[fromIndex,j] += -1
+
+        return self._vMat
+
+    def _computeDependencyMatrix(self):
+        '''
+        Obtain the dependency matrix/graph. G_{i,j} indicate whether invoking
+        the transition j will cause the rate to change for transition j
+        '''
+        if self._lambdaMat is None:
+            self._computeReactantMatrix()
+        if self._vMat is None:
+            self._computeStateChangeMatrix()
+
+        # numTransition = self._numT + self._numBD
+        self._GMat = numpy.zeros((self._numTransition, self._numTransition), int)
+
+        for i in range(self._numTransition):
+            for j in range(self._numTransition):
+                d = 0
+                for k in range(self._numState):
+                    d = d or (self._lambdaMat[k,i] and self._vMat[k,j])
+                self._GMat[i,j] = d
+
+        return self._GMat
+
 
     ########################################################################
     # Unrolling of the information
@@ -903,6 +1025,21 @@ class BaseOdeModel(object):
                 raise InputError("Number of input state not as expected")
 
         return stateOut
+    
+    def _unrollTransition(self, transitionObj):
+        '''
+        Given a transition object, get the information from it in a usable
+        format i.e. indexing within this class
+        '''
+        origState = transitionObj.getOrigState()
+        fromIndex = self._extractStateIndex(origState)
+       
+        destState = transitionObj.getDestState()
+        toIndex = self._extractStateIndex(destState)
+
+        eqn = eval(self._checkEquation(transitionObj.getEquation()))
+        return fromIndex, toIndex, eqn
+    
 
     ########################################################################
     #
@@ -982,6 +1119,18 @@ class BaseOdeModel(object):
             raise InputError("Input parameter: "+inputStr+ " does not exist")
 
     def _extractStateIndex(self, inputStr):
+        if inputStr is None:
+            return list()
+        else:
+            if isinstance(inputStr, str):
+                inputStr = [inputStr] # make this an iterable
+        
+            if hasattr(inputStr, '__iter__'):
+                return [self._extractStateIndexSingle(input) for input in inputStr]
+            else:
+                raise Exception("Input must be a string or an iterable object of string")
+            
+    def _extractStateIndexSingle(self, inputStr):
         if self._stateExist(inputStr):
             return self._stateList.index(self._stateDict[inputStr])
         elif self._stateExist(str(eval(self._assignToSelf(inputStr)))):
