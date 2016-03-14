@@ -246,24 +246,7 @@ class BaseLoss(object):
             self._setParam(theta)
 
         self._ode.setParameters(self._theta)
-
         intName = self._ode._intName
-
-#         # we want to construct an array with more observations
-#         if self._interpolateTime is None:
-#             # we have to do something about it
-#             self._interpolateTime = numpy.copy(self._t)
-#             for i in range(0, self._numTime-1):
-#                 targetIndex = numpy.where(self._interpolateTime == self._t[i])[0][0]
-#                 tTemp = numpy.linspace(self._t[i], self._t[i+1], 20)[1:-1]
-#                 self._interpolateTime = numpy.insert(self._interpolateTime,
-#                                                      targetIndex+1,
-#                                                      tTemp)
-# 
-#             self._interpolateTimeIndex = list()
-#             for i in range(1, self._numTime):
-#                 index = numpy.where(self._interpolateTime == self._t[i])[0][0]
-#                 self._interpolateTimeIndex.append(index)
 
         if self._interpolateTime is None:
             self._setupInterpolationTime()
@@ -1095,18 +1078,10 @@ class BaseLoss(object):
                             
         numOut = p/numS # number of out parameters
 
-        # print sens.shape
-        # print diffLoss.shape
-        # print self._lossObj._w.shape
-
         sens = numpy.reshape(sens, (n, numS, numOut), 'F')
         for j in range(numOut):
             sens[:,:,j] *= self._stateWeight
 
-        # print diffLoss.shape
-        # print sens.shape
-        # print self._y.shape
-        # print self._stateWeight.shape
         grad = reduce(numpy.add,map(numpy.dot, diffLoss, sens)).ravel()
 
         return grad

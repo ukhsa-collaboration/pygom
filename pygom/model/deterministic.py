@@ -330,13 +330,7 @@ class OperateOdeModel(BaseOdeModel):
         :meth:`.ode`
 
         """
-        if state is None or time is None:
-            raise Exception("Have to input both state and time")
-
-        if self._ode is None:
-            self.getOde()
-
-        if self._hasNewTransition:
+        if self._ode is None or self._hasNewTransition:
             self.getOde()
 
         evalParam = self._getEvalParam(state, time, parameters)
@@ -491,14 +485,8 @@ class OperateOdeModel(BaseOdeModel):
         :meth:`.Jacobian`
 
         '''
-
-        if state is None or time is None:
-            raise InputError("Have to input both state and time")
-
-        if self._hasNewTransition:
+        if self._Jacobian is None or self._hasNewTransition:
             self.getOde()
-            
-        if self._Jacobian is None:
             self.getJacobian()
 
         evalParam = self._getEvalParam(state, time, parameters)
@@ -688,11 +676,8 @@ class OperateOdeModel(BaseOdeModel):
         :meth:`.Jacobian`
 
         '''
-
-        if self._hasNewTransition:
+        if self._diffJacobian is None or self._hasNewTransition:
             self.getOde()
-
-        if self._diffJacobian is None:
             self.getDiffJacobian()
 
         evalParam = self._getEvalParam(state, time, parameters)
@@ -793,11 +778,9 @@ class OperateOdeModel(BaseOdeModel):
         :meth:`.Grad`
 
         '''
-        if self._Grad is None:
-            self.getGrad()
-
-        if self._hasNewTransition:
+        if self._Grad is None or self._hasNewTransition:
             self.getOde()
+            self.getGrad()
 
         evalParam = self._getEvalParam(state, time, parameters)
         return self._GradCompile(evalParam)
@@ -903,11 +886,9 @@ class OperateOdeModel(BaseOdeModel):
         :meth:`.GradJacobian`, :meth:`.getGradJacobian`
 
         '''
-        if self._GradJacobian is None:
-            self.getGradJacobian()
-
-        if self._hasNewTransition:
+        if self._GradJacobian is None or self._hasNewTransition:
             self.getOde()
+            self.getGradJacobian()           
 
         evalParam = self._getEvalParam(state, time, parameters)
         return self._GradJacobianCompile(evalParam)

@@ -113,7 +113,6 @@ class BaseOdeModel(object):
         #  holders for the actual equations
         self._transitionList = list()
         self._transitionMatrix = None
-        self._totalTransition = None
         self._birthDeathList = list()
         self._birthDeathVector = list()
         
@@ -622,16 +621,6 @@ class BaseOdeModel(object):
             return self._extractStateIndex(str(inputStr))
         else:
             return self._extractStateIndex(inputStr)
-#             return self._extractStateIndex(inputStr)
-#         elif 
-#             
-#         else isinstance(inputStr, (list, tuple)):
-#             outStr = [self._extractStateIndex(stateName) for stateName in inputStr]
-#             outStr = list()
-#             for stateName in inputStr:
-#                 outStr.append(self._extractStateIndex(stateName))
-
-            return outStr
 
     def getParamIndex(self, inputStr):
         '''
@@ -648,10 +637,6 @@ class BaseOdeModel(object):
             return self._extractParamIndex(str(inputStr))
         elif isinstance(inputStr, (list, tuple)):
             outStr = [self._extractParamIndex(paramName) for paramName in inputStr]
-#             outStr = list()
-#             for stateName in inputStr:
-#                 outStr.append(self._extractParamIndex(stateName))
-
             return outStr
 
     ########################################################################
@@ -674,7 +659,7 @@ class BaseOdeModel(object):
         # now the real code
         if isinstance(inputStr, (list, tuple)):
             if len(inputStr) == 2:
-                if str(inputStr[1]).lower() in ("real","complex","true","false"):
+                if str(inputStr[1]).lower() in ("real", "complex", "true", "false"):
                     isReal = 'False'
                 elif str(inputStr[1]).lower() in ("real","true"):
                     isReal = 'True'
@@ -744,13 +729,13 @@ class BaseOdeModel(object):
         else:
             self._paramList += symbolName
             for s in symbolName:
-                if s not in self._paramList:
-                    self._paramDict[str(s)] = s
-                    # we are hacking it here.  Basically, we have unrolled the series of
-                    # numbered symbol and we wish to also make that available when
-                    # defining the equations
-                    symbolName = self._addSymbol(str(s))
-                    self._numParam += 1
+                # if s not in self._paramList:
+                self._paramDict[str(s)] = s
+                # we are hacking it here.  Basically, we have unrolled the series of
+                # numbered symbol and we wish to also make that available when
+                # defining the equations
+                symbolName = self._addSymbol(str(s))
+                self._numParam += 1
 
         return None
 
@@ -792,7 +777,6 @@ class BaseOdeModel(object):
         '''
         # holders
         self._transitionMatrix = sympy.zeros(self._numState, self._numState)
-        self._totalTransition = sympy.zeros(1, 1)
         # going through the list of transition
         # for transition in self._transitionList:
         for transObj in self._transitionList:
@@ -804,7 +788,6 @@ class BaseOdeModel(object):
                 for j in toIndex:
                     self._transitionMatrix[i,j] += eqn
 
-        self._totalTransition[0,0] = sum(self._transitionMatrix)
         return self._transitionMatrix
     
     def addBirthDeath(self, birthDeath):
@@ -895,6 +878,7 @@ class BaseOdeModel(object):
         Get all the transitions into a vector, arranged by state to state transition
         then the birth death processes
         '''
+        self._numTransition = len(self._transitionList)
         self._transitionVector = sympy.zeros(self._numTransition, 1)
         
         for j in range(self._numTransition):
@@ -922,8 +906,6 @@ class BaseOdeModel(object):
             \lambda_{i,j} = \left\{ 1, &if state i is involved in transition j, \\
                                     0, &otherwise \right.
         '''
-        # numTransition = self._numT + self._numBD
-
         # declare holder
         self._lambdaMat = numpy.zeros((self._numState, self._numTransition),int)
 
@@ -951,8 +933,6 @@ class BaseOdeModel(object):
                              -1, &if transition j cause state i to gain a particle, \\
                               0, &otherwise \right.
         '''
-        # numTransition = self._numT + self._numBD
-
         # declare holder
         self._vMat = numpy.zeros((self._numState, self._numTransition), int)
 

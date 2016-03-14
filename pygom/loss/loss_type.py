@@ -43,53 +43,13 @@ class Square(object):
             self._w = numpy.ones(self._y.shape)
         else:
             self._w = checkArrayType(weights)              
-            
-#             if len(self._w.shape) > 1:
-#                 if 1 in self._w.shape:
-#                     self._w = self._w.flatten()
-#                     
-#             if len(self._w) == self._w.size:
-#                 if len(self._w) == 1:
-#                     self._numVar = 1
-#                 else:
-#                     self._numVar = len(self._w)
-#             else:
-#                 if self._y.size == len(self._y):
-#                     obsVar = 1
-#                 else:
-#                     numObv, obsVar =  self._y.shape
-# 
-#                 n, p = self._w.shape
-#                 if n == self._numObv:
-#                     if p == obsVar:
-#                         # happy, standard case
-#                         self._obvWeight = n
-#                         self._numVar = obsVar
-#                     else:   
-#                         raise InputError("Input weight not of the same size as y")
-#                 elif p == self._numObv:
-#                     if n == obsVar:
-#                         self._w = self._w.T
-#                         self._obvWeight = p
-#                         self._numVar = n
-#                     else:
-#                         raise InputError("Input weight not of the same size as y")
-#                 else:
-#                     raise InputError("Input weight not of the same size as y")
-        # print self._numObv, self._numVar
-        
-#         print self._y.shape
-#         print self._w.shape
+
         if len(self._w.shape) > 1:
             if 1 == self._w.shape[1]:
                 self._w = self._w.flatten()
 
         assert self._y.shape == self._w.shape, "Input weight not of the same size as y"
-        # print self._w.shape
-        
-        #print self._numVar
-        #print weights
-        #print self._w
+
         self.loss(self._y)
 
     def loss(self, yhat):
