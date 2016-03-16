@@ -35,9 +35,8 @@ import scipy.stats
 
 from .transition import Transition, TransitionType
 from ._modelErrors import InputError, OutputError
-from pygom.model import odeVariable
+from .odeVariable import ODEVariable
 import ode_utils
-from pygom.model import odeVariable
 
 
 class BaseOdeModel(object):
@@ -402,7 +401,7 @@ class BaseOdeModel(object):
         if isinstance(stateList, (list, tuple)):
             for s in stateList:
                 self._addStateSymbol(s)
-        elif isinstance(stateList, (str, odeVariable)):
+        elif isinstance(stateList, (str, ODEVariable)):
             self._addStateSymbol(stateList)
         else:
             raise InputError("Expecting a list")
@@ -629,7 +628,7 @@ class BaseOdeModel(object):
         '''
         if isinstance(inputStr, sympy.Symbol):
             return self._extractStateIndex(str(inputStr))
-        elif isinstance(inputStr, odeVariable):
+        elif isinstance(inputStr, ODEVariable):
             return self._extractStateIndex(inputStr.ID)
         else:
             return self._extractStateIndex(inputStr)
@@ -647,7 +646,7 @@ class BaseOdeModel(object):
             return self._extractParamIndex(inputStr)
         elif isinstance(inputStr, sympy.Symbol):
             return self._extractParamIndex(str(inputStr))
-        elif isinstance(inputStr, odeVariable):
+        elif isinstance(inputStr, ODEVariable):
             return self._extractParamIndex(inputStr.ID)
         elif isinstance(inputStr, (list, tuple)):
             outStr = [self._extractParamIndex(paramName) for paramName in inputStr]
@@ -737,8 +736,8 @@ class BaseOdeModel(object):
 
     def _addStateSymbol(self, inputStr):
         if isinstance(inputStr, str):
-            varObj = odeVariable(inputStr, inputStr)
-        elif isinstance(inputStr, odeVariable):
+            varObj = ODEVariable(inputStr, inputStr)
+        elif isinstance(inputStr, ODEVariable):
             varObj = inputStr
  
 #         print type(varObj)
@@ -757,7 +756,7 @@ class BaseOdeModel(object):
         else:
             for s in symbolName:
                 si = self._addSymbol(str(s))
-                varObj = odeVariable(str(si), str(si))
+                varObj = ODEVariable(str(si), str(si))
                 self._numState = self._addVariable(si, varObj, 
                                 self._stateList, self._stateDict, 
                                 self._numState)
@@ -787,8 +786,8 @@ class BaseOdeModel(object):
 
     def _addParamSymbol(self, inputStr):
         if isinstance(inputStr, str):
-            varObj = odeVariable(inputStr, inputStr)
-        elif isinstance(inputStr, odeVariable):
+            varObj = ODEVariable(inputStr, inputStr)
+        elif isinstance(inputStr, ODEVariable):
             varObj = inputStr
  
         symbolName = self._addSymbol(varObj.ID)
@@ -801,7 +800,7 @@ class BaseOdeModel(object):
         else:
             for s in symbolName:
                 si = self._addSymbol(str(s))
-                varObj = odeVariable(str(si), str(si))
+                varObj = ODEVariable(str(si), str(si))
                 self._numParam = self._addVariable(si, varObj, 
                                   self._paramList, self._paramDict, 
                                   self._numParam)
@@ -819,7 +818,7 @@ class BaseOdeModel(object):
         return None
 
     def _addVariable(self, symbol, varObj, objList, objDict, objCounter):
-        assert isinstance(varObj, odeVariable), "Expecting type ideVariable"
+        assert isinstance(varObj, ODEVariable), "Expecting type ideVariable"
         objList.append(varObj)
         objDict[varObj.ID] = symbol
         return objCounter + 1
