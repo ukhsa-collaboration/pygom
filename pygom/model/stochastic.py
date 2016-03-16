@@ -724,7 +724,7 @@ class SimulateOdeModel(OperateOdeModel):
         F = sympy.zeros(self._numTransition, self._numTransition)
         for i in range(self._numTransition):
             for j, eqn in enumerate(self._transitionVector):
-                for k, state in enumerate(self._stateList):
+                for k, state in enumerate(self._iterStateList()):
                     diffEqn = sympy.diff(eqn, state, 1) 
                     F[i,j] += super(SimulateOdeModel, self)._simplifyEquation(diffEqn) * self._vMat[k,i]
         

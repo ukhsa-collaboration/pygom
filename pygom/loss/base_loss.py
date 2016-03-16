@@ -127,7 +127,7 @@ class BaseLoss(object):
         if stateName is None:
             # then if
             if solution.shape[1] == p:
-                stateName = [str(i) for i in self._ode._stateList]
+                stateName = [str(i) for i in self._ode._iterStateList()]
                 self._setWeight(n, p, stateWeight)
             else:
                 raise InputError("Expecting the name of states for the observations")

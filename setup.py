@@ -12,7 +12,6 @@ cmdclass = {}
 ext_modules =[]
 install_requires = [
     'enum34>=1.0.4',
-    'graphviz',
     'ipython',
     'matplotlib>=1.0.0',
     'numpy>=1.6.0',

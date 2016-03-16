@@ -9,6 +9,7 @@ from __future__ import division, print_function, absolute_import
 from .common_models import *
 from .deterministic import *
 from .ode_utils import *
+from pygom.model.odeVariable import *
 from .stochastic import *
 from .transition import *
 
