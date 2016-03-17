@@ -16,7 +16,7 @@ install_requires = [
     'matplotlib>=1.0.0',
     'numpy>=1.6.0',
     'scipy>=0.10.0',
-    'sympy>=0.7.0'
+    'sympy>=1.0.0'
 ]
 
 tests_require = [

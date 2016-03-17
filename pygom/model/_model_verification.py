@@ -5,19 +5,43 @@ import numpy
 # functions ready to use when evaluating the equations.
 # An alternative is to check for all the maths functions, such
 # as exp, log, trigonometric etc.. and convert them to sympy
-#from sympy.functions import (tan, cos, sin,asin, acos, atan, atan2, acot, cot, sec, csc)
-from sympy.functions.elementary.trigonometric import (tan, cos, sin,
-    asin, acos, atan, atan2, acot, cot, sec, csc)
 from sympy.functions.elementary.exponential import (exp_polar, exp, log,
     LambertW)
+ln = log
+
+from sympy.functions.elementary.trigonometric import (sin, cos, tan,
+        sec, csc, cot, 
+        sinc, 
+        asin, acos, atan, 
+        asec, acsc, acot, 
+        atan2)
+arcsin = asin
+arccos = acos
+arctan = atan
+arcsec = asec
+arccsc = acsc
+arccot = acot
+
+from sympy.functions.elementary.hyperbolic import (sinh, cosh, tanh, 
+        sech, csch, coth, asinh, acosh, atanh, acoth, asech)
+arcsinh = asinh
+arccosh = acosh
+arctanh = atanh
+arcsech = asech
+# arccsch = acsch
+arccoth = acoth
+
+from sympy.functions.elementary.piecewise import Piecewise, piecewise_fold        
 from sympy.functions.combinatorial.factorials import (factorial, factorial2,
     rf, ff, binomial, RisingFactorial, FallingFactorial, subfactorial)
-from sympy.functions.elementary.integers import floor, ceiling
+from sympy.functions.elementary.integers import floor, ceiling, frac
 from sympy.functions.elementary.miscellaneous import (sqrt, root, Min, Max,
     Id, real_root, cbrt)
+from sympy.functions.elementary.complexes import Abs
 from sympy.core.numbers import pi
 from sympy import simplify, symbols, Expr
 # from sympy.physics.units import avogadro, mol
+def power(a,b): a**b
 
 def simplifyEquation(inputStr):
     '''
@@ -40,11 +64,16 @@ def simplifyEquation(inputStr):
     
 def checkEquation(_inputStr, _listOfVariablesDict, _derivedVariableDict):
     '''
-    Convert a string into an equation and checks its validity
+    Convert a string into an equation and checks its validity.  Everything
+    here is prepended with an underscore to ensure that it does not pollute
+    the local environment which is essential for the symbolic equations.
+    An symbol starting with an underscore is not allowed, and should be
+    checked prior to using this function
     '''
+    
     if hasattr(_inputStr, '__iter__'):
         # functional programming approach
-        return [checkEquation(_s, _listOfVariablesDict) for _s in _inputStr]
+        return [checkEquation(_s, _listOfVariablesDict, _derivedVariableDict) for _s in _inputStr]
     else:
         assert isinstance(_inputStr, str), "Equation should be in string format"
         # create the symbols in the local environment
@@ -71,6 +100,5 @@ def checkEquation(_inputStr, _listOfVariablesDict, _derivedVariableDict):
         # them back in the formula
         if isinstance(_eqn, Expr):
             for _key, _value in _derivedVariableDict.iteritems():
-                # print "\n","_eqn.subs(%s, %s)" % (_key, _value)
                 _eqn = eval("_eqn.subs(%s, %s)" % (_key, _value))
         return _eqn 

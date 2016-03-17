@@ -11,9 +11,8 @@ __all__ = ['SimulateOdeModel']
 from .deterministic import OperateOdeModel
 from .stochastic_simulation import directReaction, firstReaction, nextReaction, tauLeap
 from .transition import TransitionType, Transition
-from _modelErrors import InputError, SimulationError
-from _model_verification import simplifyEquation
-from pygom.utilR.distn import rexp, runif, rpois, ppois
+from ._modelErrors import InputError, SimulationError
+from ._model_verification import simplifyEquation
 import ode_utils
 import ode_composition
 
@@ -747,8 +746,6 @@ class SimulateOdeModel(OperateOdeModel):
         # holders
         mu = sympy.zeros(self._numTransition, 1)
         sigma2 = sympy.zeros(self._numTransition, 1)
-        A = self._transitionMatrix
-        BD = self._birthDeathRate
         # we calculate the mean and variance
         for i in range(self._numTransition):
             for j, eqn in enumerate(self._transitionVector):

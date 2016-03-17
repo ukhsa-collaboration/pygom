@@ -8,17 +8,17 @@
 
 __all__ = ['OperateOdeModel']
 
-from base_ode_model import BaseOdeModel
-from _modelErrors import ArrayError, InputError, IntegrationError, InitializeError
-from _model_verification import simplifyEquation
+from .base_ode_model import BaseOdeModel
+from ._modelErrors import ArrayError, InputError, IntegrationError, InitializeError
+from ._model_verification import simplifyEquation
 import ode_utils as myUtil
 import ode_composition
 
-import sympy.core.numbers
-# from sympy.matrices import zeros
+# import sympy.core.numbers
+import sympy
 from sympy.core.function import diff
 import numpy
-import scipy.linalg, scipy.stats
+import scipy.linalg
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 

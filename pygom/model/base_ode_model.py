@@ -12,6 +12,10 @@ import sympy
 from sympy import symbols
 # string evaluation
 import re
+reMath = re.compile(r'[-+*\\]')
+reUnderscore = re.compile('^_')
+reSymbolName = re.compile('[A-Za-z_]+')
+reSymbolIndex = re.compile('.*\[([0-9]+)\]$')
 # numerical computation
 import numpy
 import scipy.stats
@@ -638,16 +642,16 @@ class BaseOdeModel(object):
 
     ####
     #
-    # The first four is deemed to be "private" to encourage the end user to
-    # define things correctly rather than hacking it later on after the
-    # ode object has been initialized
+    # Most of the followings are deemed to be "private" to encourage the
+    # end user to define things correctly rather than hacking it later
+    # on after the ode object has been initialized
     #
     ####
+    
     def _addSymbol(self, inputStr):
-        # empty holder to make things look nicer
-        x = None
-        listSymbol = None
-        # now the real code
+        assert reMath.search(inputStr) is None, "Mathematical operators not allowed in symbol definition"
+        assert reUnderscore.search(inputStr) is None, "A symbol cannot have underscore as first character"
+
         if isinstance(inputStr, (list, tuple)):
             if len(inputStr) == 2:
                 if str(inputStr[1]).lower() in ("complex", "false"):
@@ -662,30 +666,19 @@ class BaseOdeModel(object):
             isReal = 'True'
         else:
             raise InputError("Unexpected input type for symbol")
-        
-        strAdd = 'x = symbols("' +inputStr+ '", real='+isReal+')'
-        exec(strAdd) # this gives us x, our intermediate, and we want it to succeed
-        if isinstance(x, sympy.Symbol):
-            #strAdd = self._assignToSelf(inputStr)+ ' = Symbol("' +inputStr+ '")'
-            strAdd = self._assignToSelf(inputStr)+ ' = symbols("' +inputStr+ '", real='+isReal+')'
-            exec(strAdd)
-            return eval('self.__'+inputStr)
-        elif isinstance(x, tuple):
-            # tests
-            assert len(x) != 0, "Input symbol is not valid"
-            assert re.search('-', inputStr) is None, "Minus sign not allowed in symbol definition"
-            assert re.search('^_', inputStr) is None, "A symbol cannot have underscore as first character"
 
+        tempSym = eval("symbols('%s', real=%s)" % (inputStr, isReal))
+        
+        if isinstance(tempSym, sympy.Symbol):
+            return tempSym
+        elif isinstance(tempSym, tuple):
+            assert len(tempSym) != 0, "Input symbol is not valid"
             # extract the name of the symbol
-            symbolStr = re.search('[A-Za-z]+', inputStr).group()
-            strAdd = self._assignToSelf(symbolStr)+ ' = symbols("' +inputStr+ '", real='+isReal+')'
-            exec(strAdd)
-            strDict = 'self._vectorStateDict["' +symbolStr+ '"] = self.__'+symbolStr
-            # print strDict
-            exec(strDict)
-            # unroll the symbols from the vector into our internal list
-            exec('listSymbol = [i for i in self.__' +symbolStr+ ']')
-            return listSymbol
+            symbolStr = reSymbolName.search(inputStr).group()
+            self._vectorStateDict[symbolStr] = tempSym
+            return list(tempSym)
+        else:
+            raise InputError("Unexpected result using the input string:" +str(tempSym))
 
     def _addStateSymbol(self, inputStr):
         if isinstance(inputStr, str):
@@ -734,14 +727,6 @@ class BaseOdeModel(object):
         return None
 
     def _addDerivedParam(self, name, eqn):
-#         fixedEqn = self._checkEquation(eqn)
-#         strAdd = self._assignToSelf(name)+ ' = ' +fixedEqn
-#         exec(strAdd)
-#         self._derivedParamList.append(eval('self.__' +name))
-#         self._derivedParamDict[name] = eval('self.__'+name)
-#         self._numDerivedParam += 1
-#         self._hasNewTransition = True
-
         varObj = ODEVariable(name, name)
         fixedEqn = checkEquation(eqn, *self._getListOfVariablesDict())
         self._numDerivedParam = self._addVariable(fixedEqn, varObj, 
@@ -768,8 +753,6 @@ class BaseOdeModel(object):
         '''
         if isinstance(transition, Transition):
             if transition.getTransitionType() is TransitionType.T:
-                # self._checkEquation(transition.getEquation())
-                checkEquation(transition.getEquation(), *self._getListOfVariablesDict())
                 self._transitionList.append(transition)
                 self._hasNewTransition = True
             else:
@@ -810,8 +793,6 @@ class BaseOdeModel(object):
         if isinstance(birthDeath, Transition):
             t = birthDeath.getTransitionType()
             if t is TransitionType.B or t is TransitionType.D:
-                # self._checkEquation(birthDeath.getEquation())
-                checkEquation(birthDeath.getEquation(), *self._getListOfVariablesDict())
                 self._birthDeathList.append(birthDeath)
                 self._hasNewTransition = True
             else:
@@ -826,7 +807,7 @@ class BaseOdeModel(object):
         self._birthDeathVector = sympy.zeros(self._numState, 1)
         # go through all the transition objects
         for bdObj in self._birthDeathList:
-            fromIndex, toIndex, eqn = self._unrollTransition(bdObj)
+            fromIndex, _toIndex, eqn = self._unrollTransition(bdObj)
             for i in fromIndex:
                 if bdObj.getTransitionType() is TransitionType.B:
                     self._birthDeathVector[i] += eqn                
@@ -867,7 +848,7 @@ class BaseOdeModel(object):
         if len(self._odeList) <= self._numState:
             self._ode = sympy.zeros(self._numState, 1)
             for transObj in self._odeList:
-                fromIndex, toIndex, eqn = self._unrollTransition(transObj)
+                fromIndex, _toIndex, eqn = self._unrollTransition(transObj)
                 if len(fromIndex) > 1:
                     raise InputError("An explicit ode cannot describe more than a single state")
                 else:
@@ -892,7 +873,7 @@ class BaseOdeModel(object):
             else:
                 transitionObj = self._birthDeathList[j-self._numT]
                 
-            fromIndex, toIndex, eqn = self._unrollTransition(transitionObj)
+            _fromIndex, _toIndex, eqn = self._unrollTransition(transitionObj)
             self._transitionVector[j] = eqn
 
         return self._transitionVector
@@ -918,10 +899,10 @@ class BaseOdeModel(object):
             if j < self._numT:
                 transObj = self._transitionList[j]               
                 # then find out the indices of the states
-                fromIndex, toIndex, eqn = self._unrollTransition(transObj)
+                _fromIndex, _toIndex, eqn = self._unrollTransition(transObj)
             else:
                 bdObj = self._birthDeathList[j-self._numT]
-                fromIndex, toIndex, eqn = self._unrollTransition(bdObj)
+                _fromIndex, _toIndex, eqn = self._unrollTransition(bdObj)
 
             # now go through all the states
             for i in range(self._numState):
@@ -944,19 +925,14 @@ class BaseOdeModel(object):
         for j in range(self._numTransition):
             if j < self._numT:
                 transObj = self._transitionList[j]
-                # then find out the indices of the states
-                fromIndex, toIndex, eqn = self._unrollTransition(transObj)
-                # fromIndex = self._extractStateIndex(transObj.getOrigState())
-                # toIndex = self._extractStateIndex(transObj.getDestState())
+                fromIndex, toIndex, _eqn = self._unrollTransition(transObj)
                 for k1 in fromIndex:
                     self._vMat[k1,j] += -1
                 for k2 in toIndex:
                     self._vMat[k2,j] += 1
             else:
                 bdObj = self._birthDeathList[j - self._numT]
-                fromIndex, toIndex, eqn = self._unrollTransition(bdObj)
-                # then find out the indices of the states
-                # fromIndex = self._extractStateIndex(bdObj.getOrigState())
+                fromIndex, toIndex, _eqn = self._unrollTransition(bdObj)
                 if bdObj.getTransitionType() is TransitionType.B:
                     self._vMat[fromIndex,j] += 1
                 elif bdObj.getTransitionType() is TransitionType.D:
@@ -974,7 +950,6 @@ class BaseOdeModel(object):
         if self._vMat is None:
             self._computeStateChangeMatrix()
 
-        # numTransition = self._numT + self._numBD
         self._GMat = numpy.zeros((self._numTransition, self._numTransition), int)
 
         for i in range(self._numTransition):
@@ -1044,40 +1019,6 @@ class BaseOdeModel(object):
     #
     ########################################################################
 
-#     def _checkEquation(self, inputStr):
-#         # need to do this in sequence because of the possible dependency
-#         for strParam in self._paramDict:
-#             inputStr = self._substituteSelf(inputStr, strParam)
-# 
-#         for strState in self._stateDict:
-#             inputStr = self._substituteSelf(inputStr, strState)
-# 
-#         for strVectorState in self._vectorStateDict:
-#             inputStr = self._substituteSelf(inputStr, strVectorState)
-# 
-#         for strDerivedParam in self._derivedParamDict:
-#             inputStr = self._substituteSelf(inputStr, strDerivedParam)
-# 
-#         # if the evaluation fails then there is a problem with the
-#         # variables
-#         #print inputStr
-#         eval(inputStr)
-#         return inputStr
-# 
-#     def _substituteSelf(self, inputStr, inputName):
-#         '''
-#         given a string, we want to substitute part of the string
-#         that matches "inputName" to one that has "self._" in front
-#         of it.  This then allows the string, getEquation in this case,
-#         to be evaluated later because all the states and parameters
-#         have already been mapped to something internal, i.e. with
-#         a prefix of "self.__"
-#         '''
-#         strNew = 'r\'' +self._assignToSelf(inputName)+ '\''
-#         strTarget = 'r\'' + r'\b' +inputName+ r'\b'+ '\''
-#         inputStr = re.sub(eval(strTarget), eval(strNew), inputStr)
-#         return (inputStr)
-# 
     def _assignToSelf(self, inputStr):
         return 'self.__'+inputStr
 
@@ -1110,17 +1051,20 @@ class BaseOdeModel(object):
                 inputStr = [inputStr] # make this an iterable
         
             if hasattr(inputStr, '__iter__'):
-                return [self._extractStateIndexSingle(input) for input in inputStr]
+                return [self._extractStateIndexSingle(i) for i in inputStr]
             else:
                 raise Exception("Input must be a string or an iterable object of string")
             
     def _extractStateIndexSingle(self, inputStr):
+        symName = reSymbolName.search(inputStr)
         if self._stateExist(inputStr):
             return self._stateList.index(self._stateDict[inputStr])
-        elif self._stateExist(str(eval(self._assignToSelf(inputStr)))):
-            # need the `eval` command to get the symbol out of the vector
-            # then the `str` to convert to a string that is recognizable by the dict
-            return self._stateList.index(self._stateDict[str(eval(self._assignToSelf(inputStr)))])
+        elif symName is not None:
+            if self._vectorStateDict.has_key(symName.group()):
+                index = reSymbolIndex.findall(inputStr) 
+                if index is not None and len(index) == 1:
+                    symSym = self._vectorStateDict[symName.group()][int(index[0])]
+            return self._stateList.index(symSym)
         else:
             raise Exception("Input state: "+inputStr+ " does not exist")
 
@@ -1161,17 +1105,3 @@ class BaseOdeModel(object):
                 B[i,j] = A[i,j]
 
         return B
-
-#     def _simplifyEquation(self, inputStr):
-#         sList = list()
-#         # these are considered the "dangerous" operation that will
-#         # overflow/underflow in numpy
-#         sList.append(len(inputStr.atoms(exp)))
-#         sList.append(len(inputStr.atoms(log)))
-#  
-#         if numpy.sum(sList) != 0:
-#         # it is dangerous to simplify!
-#             self._isDifficult = True
-#             return inputStr
-#         else:
-#             return simplify(inputStr)
