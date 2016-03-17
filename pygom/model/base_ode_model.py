@@ -6,27 +6,10 @@
     into an algebraic machine using sympy
 
 """
-# Although reimporting * is not generally recommended
-# we have to do it here so that it has all the mathematical
-# functions ready to use when evaluating the equations.
-# An alternative is to check for all the maths functions, such
-# as exp, log, trigonometric etc.. and convert them to sympy
-#from sympy.functions import (tan, cos, sin,asin, acos, atan, atan2, acot, cot, sec, csc)
-from sympy.functions.elementary.trigonometric import (tan, cos, sin,
-    asin, acos, atan, atan2, acot, cot, sec, csc)
-from sympy.functions.elementary.exponential import (exp_polar, exp, log,
-    LambertW)
-from sympy.functions.combinatorial.factorials import (factorial, factorial2,
-    rf, ff, binomial, RisingFactorial, FallingFactorial, subfactorial)
-from sympy.functions.elementary.integers import floor, ceiling
-from sympy.functions.elementary.miscellaneous import (sqrt, root, Min, Max,
-    Id, real_root, cbrt)
-from sympy.core.numbers import pi
+
 
 import sympy
 from sympy import symbols
-from sympy.simplify.simplify import simplify
-# from sympy.matrices import zeros
 # string evaluation
 import re
 # numerical computation
@@ -35,9 +18,10 @@ import scipy.stats
 
 from .transition import Transition, TransitionType
 from ._modelErrors import InputError, OutputError
-from .odeVariable import ODEVariable
-import ode_utils
+from ._model_verification import checkEquation
+from .ode_variable import ODEVariable
 
+import ode_utils
 
 class BaseOdeModel(object):
     '''
@@ -329,12 +313,6 @@ class BaseOdeModel(object):
             if isinstance(state, (list, tuple)):
                 if isinstance(state[0], tuple):
                     self._state = [self._extractStateSymbol(s[0], s[1]) for s in state]
-                        
-#                     stateOut = list()
-#                     for i in range(0, len(state)):
-#                         stateOut.append((self._extractStateSymbol(state[i][0]), state[i][1]))
-# 
-#                     self._state = stateOut
                 else:
                     self._state = self._unrollState(state)
             elif isinstance(state, numpy.ndarray):
@@ -420,7 +398,7 @@ class BaseOdeModel(object):
 
         '''
         return self._stateList
-    
+
     def getParamList(self):
         '''
         Returns a list of the parameters in symbol
@@ -432,7 +410,7 @@ class BaseOdeModel(object):
 
         '''
         return self._paramList
-    
+
     def setParamList(self, paramList):
         '''
         Set the set of parameters for the ode system
@@ -453,7 +431,7 @@ class BaseOdeModel(object):
         
         self._hasNewTransition = True
         return self
-    
+
     def getDerivedParamList(self):
         '''
         Returns a list of the derived parameters in symbol
@@ -465,7 +443,7 @@ class BaseOdeModel(object):
 
         '''
         return self._derivedParamList
-    
+
     def setDerivedParamList(self, derivedParamList):
         '''
         Set the set of derived parameters for the ode system
@@ -672,7 +650,7 @@ class BaseOdeModel(object):
         # now the real code
         if isinstance(inputStr, (list, tuple)):
             if len(inputStr) == 2:
-                if str(inputStr[1]).lower() in ("real", "complex", "true", "false"):
+                if str(inputStr[1]).lower() in ("complex", "false"):
                     isReal = 'False'
                 elif str(inputStr[1]).lower() in ("real","true"):
                     isReal = 'True'
@@ -686,7 +664,7 @@ class BaseOdeModel(object):
             raise InputError("Unexpected input type for symbol")
         
         strAdd = 'x = symbols("' +inputStr+ '", real='+isReal+')'
-        exec(strAdd) # this gives us x, our intermediate
+        exec(strAdd) # this gives us x, our intermediate, and we want it to succeed
         if isinstance(x, sympy.Symbol):
             #strAdd = self._assignToSelf(inputStr)+ ' = Symbol("' +inputStr+ '")'
             strAdd = self._assignToSelf(inputStr)+ ' = symbols("' +inputStr+ '", real='+isReal+')'
@@ -694,12 +672,9 @@ class BaseOdeModel(object):
             return eval('self.__'+inputStr)
         elif isinstance(x, tuple):
             # tests
-            if len(x) == 0:
-                # then we have failed already
-                raise InputError("Input symbol is not valid")
-
-            if re.search('-', inputStr) is not None:
-                raise InputError("Minus sign not allowed in symbol definition")
+            assert len(x) != 0, "Input symbol is not valid"
+            assert re.search('-', inputStr) is None, "Minus sign not allowed in symbol definition"
+            assert re.search('^_', inputStr) is None, "A symbol cannot have underscore as first character"
 
             # extract the name of the symbol
             symbolStr = re.search('[A-Za-z]+', inputStr).group()
@@ -712,40 +687,12 @@ class BaseOdeModel(object):
             exec('listSymbol = [i for i in self.__' +symbolStr+ ']')
             return listSymbol
 
-#     def _addStateSymbol(self, inputStr):
-#         if isinstance(inputStr, ideVariable):
-#             symbolName = self._addSymbol(inputStr.ID)
-#         else:
-#             symbolName = self._addSymbol(inputStr)
-# 
-#         if isinstance(symbolName, sympy.Symbol):
-#             self._stateList += [symbolName]
-#             self._stateDict[inputStr] = symbolName
-#             self._numState += 1
-#         else:
-#             self._stateList += symbolName
-#             for i in symbolName:
-#                 self._stateDict[str(i)] = i
-#                 # we are hacking it here.  Basically, we have unrolled the series of
-#                 # numbered symbol and we wish to also make that available when
-#                 # defining the equations
-#                 symbolName = self._addSymbol(str(i))
-#                 self._numState += 1
-# 
-#         return None
-
     def _addStateSymbol(self, inputStr):
         if isinstance(inputStr, str):
             varObj = ODEVariable(inputStr, inputStr)
         elif isinstance(inputStr, ODEVariable):
             varObj = inputStr
- 
-#         print type(varObj)
-#         print varObj
-#         print ideVariable
-#         print repr(varObj)
-#         print repr(ideVariable)
-#         print dir(varObj)
+
         symbolName = self._addSymbol(varObj.ID)
   
         if isinstance(symbolName, sympy.Symbol):
@@ -762,27 +709,6 @@ class BaseOdeModel(object):
                                 self._numState)
 
         return None
-    
-#     def _addParamSymbol(self, inputStr):
-#         symbolName = self._addSymbol(inputStr)
-# 
-#         if isinstance(symbolName, sympy.Symbol):
-#             if symbolName not in self._paramList:
-#                 self._paramList += [symbolName]
-#                 self._paramDict[inputStr] = symbolName
-#                 self._numParam += 1
-#         else:
-#             self._paramList += symbolName
-#             for s in symbolName:
-#                 # if s not in self._paramList:
-#                 self._paramDict[str(s)] = s
-#                 # we are hacking it here.  Basically, we have unrolled the series of
-#                 # numbered symbol and we wish to also make that available when
-#                 # defining the equations
-#                 symbolName = self._addSymbol(str(s))
-#                 self._numParam += 1
-# 
-#         return None
 
     def _addParamSymbol(self, inputStr):
         if isinstance(inputStr, str):
@@ -795,25 +721,32 @@ class BaseOdeModel(object):
         if isinstance(symbolName, sympy.Symbol):
             if symbolName not in self._paramList:
                 self._numParam = self._addVariable(symbolName, varObj, 
-                                  self._paramList, self._paramDict, 
-                                  self._numParam)
+                                self._paramList, self._paramDict, 
+                                self._numParam)
         else:
             for s in symbolName:
                 si = self._addSymbol(str(s))
                 varObj = ODEVariable(str(si), str(si))
                 self._numParam = self._addVariable(si, varObj, 
-                                  self._paramList, self._paramDict, 
-                                  self._numParam)
+                                self._paramList, self._paramDict, 
+                                self._numParam)
 
         return None
 
     def _addDerivedParam(self, name, eqn):
-        fixedEqn = self._checkEquation(eqn)
-        strAdd = self._assignToSelf(name)+ ' = ' +fixedEqn
-        exec(strAdd)
-        self._derivedParamList.append(eval('self.__' +name))
-        self._derivedParamDict[name] = eval('self.__'+name)
-        self._numDerivedParam += 1
+#         fixedEqn = self._checkEquation(eqn)
+#         strAdd = self._assignToSelf(name)+ ' = ' +fixedEqn
+#         exec(strAdd)
+#         self._derivedParamList.append(eval('self.__' +name))
+#         self._derivedParamDict[name] = eval('self.__'+name)
+#         self._numDerivedParam += 1
+#         self._hasNewTransition = True
+
+        varObj = ODEVariable(name, name)
+        fixedEqn = checkEquation(eqn, *self._getListOfVariablesDict())
+        self._numDerivedParam = self._addVariable(fixedEqn, varObj, 
+                                self._derivedParamList, self._derivedParamDict, 
+                                self._numDerivedParam)
         self._hasNewTransition = True
         return None
 
@@ -835,7 +768,8 @@ class BaseOdeModel(object):
         '''
         if isinstance(transition, Transition):
             if transition.getTransitionType() is TransitionType.T:
-                self._checkEquation(transition.getEquation())
+                # self._checkEquation(transition.getEquation())
+                checkEquation(transition.getEquation(), *self._getListOfVariablesDict())
                 self._transitionList.append(transition)
                 self._hasNewTransition = True
             else:
@@ -851,12 +785,10 @@ class BaseOdeModel(object):
         '''
         # holders
         self._transitionMatrix = sympy.zeros(self._numState, self._numState)
-        # going through the list of transition
-        # for transition in self._transitionList:
+        # going through the list of transitions
         for transObj in self._transitionList:
             # then find out the indices of the states
             fromIndex, toIndex, eqn = self._unrollTransition(transObj)
-
             # put the getEquation in the correct element
             for i in fromIndex:
                 for j in toIndex:
@@ -878,7 +810,8 @@ class BaseOdeModel(object):
         if isinstance(birthDeath, Transition):
             t = birthDeath.getTransitionType()
             if t is TransitionType.B or t is TransitionType.D:
-                self._checkEquation(birthDeath.getEquation())
+                # self._checkEquation(birthDeath.getEquation())
+                checkEquation(birthDeath.getEquation(), *self._getListOfVariablesDict())
                 self._birthDeathList.append(birthDeath)
                 self._hasNewTransition = True
             else:
@@ -891,9 +824,7 @@ class BaseOdeModel(object):
     def _computeBirthDeathVector(self):
         # holder
         self._birthDeathVector = sympy.zeros(self._numState, 1)
-        # A = self._birthDeathVector
         # go through all the transition objects
-        
         for bdObj in self._birthDeathList:
             fromIndex, toIndex, eqn = self._unrollTransition(bdObj)
             for i in fromIndex:
@@ -1091,7 +1022,8 @@ class BaseOdeModel(object):
         destState = transitionObj.getDestState()
         toIndex = self._extractStateIndex(destState)
 
-        eqn = eval(self._checkEquation(transitionObj.getEquation()))
+        # eqn = eval(self._checkEquation(transitionObj.getEquation()))
+        eqn = checkEquation(transitionObj.getEquation(), *self._getListOfVariablesDict())
         return fromIndex, toIndex, eqn
     
     def _iterStateList(self):
@@ -1100,7 +1032,11 @@ class BaseOdeModel(object):
 
     def _iterParamList(self):
         for p in self._paramList:
-            yield self._paramDict[p.ID]    
+            yield self._paramDict[p.ID]
+    
+    def _getListOfVariablesDict(self):
+        paramDict = [self._paramDict, self._stateDict, self._vectorStateDict] 
+        return paramDict, self._derivedParamDict
 
     ########################################################################
     #
@@ -1108,40 +1044,40 @@ class BaseOdeModel(object):
     #
     ########################################################################
 
-    def _checkEquation(self, inputStr):
-        # need to do this in sequence because of the possible dependency
-        for strParam in self._paramDict:
-            inputStr = self._substituteSelf(inputStr, strParam)
-
-        for strState in self._stateDict:
-            inputStr = self._substituteSelf(inputStr, strState)
-
-        for strVectorState in self._vectorStateDict:
-            inputStr = self._substituteSelf(inputStr, strVectorState)
-
-        for strDerivedParam in self._derivedParamDict:
-            inputStr = self._substituteSelf(inputStr, strDerivedParam)
-
-        # if the evaluation fails then there is a problem with the
-        # variables
-        #print inputStr
-        eval(inputStr)
-        return inputStr
-
-    def _substituteSelf(self, inputStr, inputName):
-        '''
-        given a string, we want to substitute part of the string
-        that matches "inputName" to one that has "self._" in front
-        of it.  This then allows the string, getEquation in this case,
-        to be evaluated later because all the states and parameters
-        have already been mapped to something internal, i.e. with
-        a prefix of "self._"
-        '''
-        strNew = 'r\'' +self._assignToSelf(inputName)+ '\''
-        strTarget = 'r\'' + r'\b' +inputName+ r'\b'+ '\''
-        inputStr = re.sub(eval(strTarget), eval(strNew), inputStr)
-        return (inputStr)
-
+#     def _checkEquation(self, inputStr):
+#         # need to do this in sequence because of the possible dependency
+#         for strParam in self._paramDict:
+#             inputStr = self._substituteSelf(inputStr, strParam)
+# 
+#         for strState in self._stateDict:
+#             inputStr = self._substituteSelf(inputStr, strState)
+# 
+#         for strVectorState in self._vectorStateDict:
+#             inputStr = self._substituteSelf(inputStr, strVectorState)
+# 
+#         for strDerivedParam in self._derivedParamDict:
+#             inputStr = self._substituteSelf(inputStr, strDerivedParam)
+# 
+#         # if the evaluation fails then there is a problem with the
+#         # variables
+#         #print inputStr
+#         eval(inputStr)
+#         return inputStr
+# 
+#     def _substituteSelf(self, inputStr, inputName):
+#         '''
+#         given a string, we want to substitute part of the string
+#         that matches "inputName" to one that has "self._" in front
+#         of it.  This then allows the string, getEquation in this case,
+#         to be evaluated later because all the states and parameters
+#         have already been mapped to something internal, i.e. with
+#         a prefix of "self.__"
+#         '''
+#         strNew = 'r\'' +self._assignToSelf(inputName)+ '\''
+#         strTarget = 'r\'' + r'\b' +inputName+ r'\b'+ '\''
+#         inputStr = re.sub(eval(strTarget), eval(strNew), inputStr)
+#         return (inputStr)
+# 
     def _assignToSelf(self, inputStr):
         return 'self.__'+inputStr
 
@@ -1226,16 +1162,16 @@ class BaseOdeModel(object):
 
         return B
 
-    def _simplifyEquation(self, inputStr):
-        sList = list()
-        # these are considered the "dangerous" operation that will
-        # overflow/underflow in numpy
-        sList.append(len(inputStr.atoms(exp)))
-        sList.append(len(inputStr.atoms(log)))
-
-        if numpy.sum(sList) != 0:
-        # it is dangerous to simplify!
-            self._isDifficult = True
-            return inputStr
-        else:
-            return simplify(inputStr)
+#     def _simplifyEquation(self, inputStr):
+#         sList = list()
+#         # these are considered the "dangerous" operation that will
+#         # overflow/underflow in numpy
+#         sList.append(len(inputStr.atoms(exp)))
+#         sList.append(len(inputStr.atoms(log)))
+#  
+#         if numpy.sum(sList) != 0:
+#         # it is dangerous to simplify!
+#             self._isDifficult = True
+#             return inputStr
+#         else:
+#             return simplify(inputStr)

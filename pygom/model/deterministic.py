@@ -10,6 +10,7 @@ __all__ = ['OperateOdeModel']
 
 from base_ode_model import BaseOdeModel
 from _modelErrors import ArrayError, InputError, IntegrationError, InitializeError
+from _model_verification import simplifyEquation
 import ode_utils as myUtil
 import ode_composition
 
@@ -208,10 +209,8 @@ class OperateOdeModel(BaseOdeModel):
             # we have explicit ode and we should obtain them directly
             super(OperateOdeModel, self)._computeOdeVector()
         else:
-            super(OperateOdeModel, self)._computeTransitionMatrix()
-            # A = self._transitionMatrix - self._transitionMatrix.transpose()
-            # for i in range(0, self._numState):
-            #     self._ode[i] = sum(A[:,i])
+            # super(OperateOdeModel, self)._computeTransitionMatrix()
+            super(OperateOdeModel, self)._computeTransitionVector()
             # convert the transition matrix into the set of ode
             self._ode = sympy.zeros(self._numState, 1)
             
@@ -242,7 +241,8 @@ class OperateOdeModel(BaseOdeModel):
                                 "We can only deal with an autonomous "+
                                 "system at this moment in time")
 
-            self._ode[i] = super(OperateOdeModel, self)._simplifyEquation(eqn)
+            self. _ode[i], isDifficult = simplifyEquation(eqn)
+            self._isDifficult = self._isDifficult or isDifficult 
 
         if self._isDifficult:
             self._odeCompile = self._SC.compileExprAndFormat(self._sp,
@@ -440,9 +440,10 @@ class OperateOdeModel(BaseOdeModel):
             self.getOde()
             self._Jacobian = sympy.zeros(self._numState, self._numState)
             
-            for i in range(0, self._numState):
-                for j, s in enumerate(self._iterStateList()):#  in range(0, self._numState):
-                    self._Jacobian[i,j] = super(OperateOdeModel, self)._simplifyEquation(diff(self._ode[i], s, 1))
+            for i, eqn in enumerate(self._ode):# in range(self._numState):
+                for j, s in enumerate(self._iterStateList()):
+                    self._Jacobian[i,j], isDifficult = simplifyEquation(diff(eqn, s, 1))
+                    self._isDifficult = self._isDifficult or isDifficult
 
         if self._isDifficult:
             self._JacobianCompile = self._SC.compileExprAndFormat(self._sp,
@@ -616,12 +617,11 @@ class OperateOdeModel(BaseOdeModel):
             
             for eqn in self._ode:
                 J = sympy.zeros(self._numState, self._numState)
-                for i, si in enumerate(self._iterStateList()): # in range(0, self._numState):
-                    diffEqn = super(OperateOdeModel,
-                                    self)._simplifyEquation(diff(eqn, si, 1))
-                    for j, sj in enumerate(self._iterStateList()): # in range(0, self._numState):
-                        J[i,j] = super(OperateOdeModel,
-                                       self)._simplifyEquation(diff(diffEqn, sj, 1))
+                for i, si in enumerate(self._iterStateList()): 
+                    diffEqn, isDifficult1 = simplifyEquation(diff(eqn, si, 1))
+                    for j, sj in enumerate(self._iterStateList()):
+                        J[i,j], isDifficult2 = simplifyEquation(diff(diffEqn, sj, 1))
+                        self._isDifficult = self._isDifficult or isDifficult1 or isDifficult2
                 #binding.
                 diffJac.append(J)
 
@@ -705,8 +705,9 @@ class OperateOdeModel(BaseOdeModel):
             for i in range(self._numState):
                 # need to adjust such that the first index is not
                 # included because it correspond to time
-                for j, p in enumerate(self._iterParamList()): # in range(0, self._numParam):
-                    self._Grad[i,j] = super(OperateOdeModel, self)._simplifyEquation(diff(ode[i], p, 1))
+                for j, p in enumerate(self._iterParamList()):
+                    self._Grad[i,j], isDifficult = simplifyEquation(diff(ode[i], p, 1))
+                    self._isDifficult = self._isDifficult or isDifficult
 
         if self._isDifficult:
             self._GradCompile = self._SC.compileExprAndFormat(self._sp,
@@ -806,10 +807,10 @@ class OperateOdeModel(BaseOdeModel):
             G = self.getGrad()
             for k in range(0, self._numParam):
                 for i in range(0, self._numState):
-                    for j, s in enumerate(self._iterStateList()): # in range(0, self._numState):
+                    for j, s in enumerate(self._iterStateList()):
                         z = k * self._numState + i
-                        # print z
-                        self._GradJacobian[z,j] = super(OperateOdeModel, self)._simplifyEquation(diff(G[i,k], s, 1))
+                        self._GradJacobian[z,j], isDifficult = simplifyEquation(diff(G[i,k], s, 1))
+                        self._isDifficult = self._isDifficult or isDifficult
             # end of the triple loop.  All elements are now filled
 
         if self._isDifficult:
@@ -923,10 +924,11 @@ class OperateOdeModel(BaseOdeModel):
                 H = sympy.zeros(self._numParam, self._numParam)
                 # although this can be simplified by first finding the gradient
                 # it is not required so we will be slow here
-                for i, pi in enumerate(self._iterParamList()): # in range(0, self._numParam):
+                for i, pi in enumerate(self._iterParamList()):
                     a = diff(eqn, pi, 1)
-                    for j, pj in enumerate(self._iterParamList()):# in range(0, self._numParam):
-                        H[i,j] = super(OperateOdeModel, self)._simplifyEquation(diff(a, pj, 1))
+                    for j, pj in enumerate(self._iterParamList()):
+                        H[i,j], isDifficult = simplifyEquation(diff(a, pj, 1))
+                        self._isDifficult = self._isDifficult or isDifficult
                 # end of double loop.  Finished one state
                 self._Hessian.append(H)
 
@@ -953,10 +955,6 @@ class OperateOdeModel(BaseOdeModel):
 
         """
         A = self.evalHessian(state=state, time=time)
-#         A1 = list()
-#         for H in A:
-#             A1.append(numpy.array(H,float))
-#         return A1
         return [numpy.array(H, float) for H in A]
 
     def evalHessian(self, parameters=None, time=None, state=None):
@@ -1988,8 +1986,6 @@ class OperateOdeModel(BaseOdeModel):
         '''
         
         assert self._t0 is not None, "Initial time not set"
-#         if self._t0 is None:
-#             raise InitializeException("Initial time not set")
 
         if myUtil.isListLike(t):
             if myUtil.isNumeric(t[0]):
@@ -2008,8 +2004,6 @@ class OperateOdeModel(BaseOdeModel):
         Integrate using :class:`scipy.integrate.odeint` underneath
         '''
         assert self._t0 is not None, "Initial time not set"
-#         if self._x0 is None:
-#             raise InitializeException("Initial state not set")
 
         self._odeSolution, self._odeOutput = myUtil.integrate(self,
                                                               self._x0,
@@ -2025,8 +2019,6 @@ class OperateOdeModel(BaseOdeModel):
         Integrate using :class:`scipy.integrate.ode` underneath
         '''
         assert self._x0 is not None, "Initial state not set"
-#         if self._x0 is None:
-#             raise InitializeException("Initial state not set")
 
         self._odeSolution, self._odeOutput = myUtil.integrateFuncJac(self.odeT,
                                                                      self.JacobianT,

@@ -12,6 +12,7 @@ from .deterministic import OperateOdeModel
 from .stochastic_simulation import directReaction, firstReaction, nextReaction, tauLeap
 from .transition import TransitionType, Transition
 from _modelErrors import InputError, SimulationError
+from _model_verification import simplifyEquation
 from pygom.utilR.distn import rexp, runif, rpois, ppois
 import ode_utils
 import ode_composition
@@ -726,7 +727,9 @@ class SimulateOdeModel(OperateOdeModel):
             for j, eqn in enumerate(self._transitionVector):
                 for k, state in enumerate(self._iterStateList()):
                     diffEqn = sympy.diff(eqn, state, 1) 
-                    F[i,j] += super(SimulateOdeModel, self)._simplifyEquation(diffEqn) * self._vMat[k,i]
+                    tempEqn, isDifficult = simplifyEquation(diffEqn)
+                    F[i,j] += tempEqn*self._vMat[k,i]
+                    self._isDifficult = self._isDifficult or isDifficult
         
         self._transitionJacobian = F
         return F
