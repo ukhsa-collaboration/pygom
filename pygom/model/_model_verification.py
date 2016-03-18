@@ -62,7 +62,7 @@ def simplifyEquation(inputStr):
     else:
         return simplify(inputStr), False
     
-def checkEquation(_inputStr, _listOfVariablesDict, _derivedVariableDict):
+def checkEquation(_inputStrList, _listOfVariablesDict, _derivedVariableDict):
     '''
     Convert a string into an equation and checks its validity.  Everything
     here is prepended with an underscore to ensure that it does not pollute
@@ -71,10 +71,12 @@ def checkEquation(_inputStr, _listOfVariablesDict, _derivedVariableDict):
     checked prior to using this function
     '''
     
-    if hasattr(_inputStr, '__iter__'):
-        # functional programming approach
-        return [checkEquation(_s, _listOfVariablesDict, _derivedVariableDict) for _s in _inputStr]
-    else:
+    if isinstance(_inputStrList, str): 
+        _inputStrList = [_inputStrList]
+    assert hasattr(_inputStrList, '__iter__'), "Expecting an iterable"
+    
+    _listOut = list()
+    for _inputStr in _inputStrList:
         assert isinstance(_inputStr, str), "Equation should be in string format"
         # create the symbols in the local environment
         for _d in _listOfVariablesDict:
@@ -101,4 +103,8 @@ def checkEquation(_inputStr, _listOfVariablesDict, _derivedVariableDict):
         if isinstance(_eqn, Expr):
             for _key, _value in _derivedVariableDict.iteritems():
                 _eqn = eval("_eqn.subs(%s, %s)" % (_key, _value))
-        return _eqn 
+        _listOut.append(_eqn)
+    if len(_listOut) == 1:
+        return _listOut[0]
+    else:
+        return _listOut 

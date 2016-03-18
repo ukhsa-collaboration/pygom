@@ -203,6 +203,7 @@ class OperateOdeModel(BaseOdeModel):
             sympy.pretty_print(B)
 
     def _findOde(self):
+        self.getNumTransitions()
         # lets see how we have defined our ode
         # if it is explicit, then we go straight to the easy case
         if self._explicitOde:
@@ -210,17 +211,23 @@ class OperateOdeModel(BaseOdeModel):
             super(OperateOdeModel, self)._computeOdeVector()
         else:
             # super(OperateOdeModel, self)._computeTransitionMatrix()
-            super(OperateOdeModel, self)._computeTransitionVector()
+            # super(OperateOdeModel, self)._computeTransitionVector()
             # convert the transition matrix into the set of ode
             self._ode = sympy.zeros(self._numState, 1)
-            
-            for transObj in self._transitionList: #j in range(self._numT):
-                # transObj = self._transitionList[j]               
-                fromIndex, toIndex, eqn = self._unrollTransition(transObj)
-                for k in fromIndex:
+            pureTransitionList = self._getAllTransition(pureTransitions=True)
+            fromList, toList, eqnList = self._unrollTransitionList(pureTransitionList)
+            for i, eqn in enumerate(eqnList):
+                for k in fromList[i]:
                     self._ode[k] -= eqn
-                for k in toIndex:
+                for k in toList[i]:
                     self._ode[k] += eqn
+
+#             for transObj in self._transitionList:             
+#                 fromIndex, toIndex, eqn = self._unrollTransition(transObj)
+#                 for k in fromIndex:
+#                     self._ode[k] -= eqn
+#                 for k in toIndex:
+#                     self._ode[k] += eqn
 
         # now we just need to add in the birth death processes
         super(OperateOdeModel, self)._computeBirthDeathVector()
