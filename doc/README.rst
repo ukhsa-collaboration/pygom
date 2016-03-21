@@ -1,6 +1,6 @@
-===================================
-Documentation for pyGenericOdeModel
-===================================
+=======================
+Documentation for pygom
+=======================
 
 This documentation is written in `sphinx` style.  The starting point (about the
 package) can be found at::
