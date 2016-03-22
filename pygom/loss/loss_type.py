@@ -14,7 +14,7 @@ __all__ = [
 
 import numpy
 
-from pygom.model._modelErrors import InitializeError
+from pygom.model._model_errors import InitializeError
 from pygom.model.ode_utils import checkArrayType, isNumeric, isListLike
 from pygom.utilR.distn import dnorm, dpois
 

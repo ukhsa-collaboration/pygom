@@ -1,25 +1,46 @@
 import sympy
 
 class ODEVariable(object):
-    def __init__(self, ID, name=None, complex=False):
+    '''
+    A class that defines the variables in our ODE
+
+    Parameters
+    ----------
+    ID: str
+        identifier of the variable
+    name: str, optional
+        name of the variable in human readable format.
+        Defaults to None, which then takes the ID as the name 
+    units: str, optional
+        what unit the variable takes. Defaults to None.
+    real: bool, optional
+        if the variable can only be a real number, defaults to True
+    '''
+    def __init__(self, ID, name=None, units=None, real=True):
         self.ID = ID
         if name is None:
             self.name = ID
         else:
             self.name = name
-        self.complex = complex
+        self.units = units
+        self.real = real
         
     def __str__(self):
         return self.name
     
     def __repr__(self):
-        return 'ODEVariable(%s, %s)' % (repr(self.ID), repr(self.name))
+        return 'ODEVariable(%s, %s, %s, %s)' % (
+                                                repr(self.ID), 
+                                                repr(self.name),
+                                                repr(self.units),
+                                                repr(self.real)
+                                                )
     
     def __eq__(self, other):
         if isinstance(other, str):
             return self.ID == other
         elif isinstance(other, ODEVariable):
-            return self.ID == other.ID and self.name == other.name
+            return self.ID == other.ID and self.name == other.name and self.units == other.units
         elif isinstance(other, sympy.Symbol):
             return self.ID == str(other)
         else:

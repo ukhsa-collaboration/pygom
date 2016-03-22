@@ -9,10 +9,10 @@
 __all__ = ['OperateOdeModel']
 
 from .base_ode_model import BaseOdeModel
-from ._modelErrors import ArrayError, InputError, IntegrationError, InitializeError
+from ._model_errors import ArrayError, InputError, IntegrationError, InitializeError
 from ._model_verification import simplifyEquation
 import ode_utils as myUtil
-import ode_composition
+from pygom.model import _ode_composition
 
 # import sympy.core.numbers
 import sympy
@@ -117,6 +117,18 @@ class OperateOdeModel(BaseOdeModel):
         # compile both the formatted and unformatted version.
         self._SC = myUtil.compileCode()
 
+    def __eq__(self, other):
+        if isinstance(other, OperateOdeModel):
+            if self.getOde() == other.getOde():
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    def __repr__(self):
+        return "OperateOdeModel"+self._getModelStr()
+        
     ########################################################################
     #
     # Information about the ode
@@ -222,13 +234,6 @@ class OperateOdeModel(BaseOdeModel):
                 for k in toList[i]:
                     self._ode[k] += eqn
 
-#             for transObj in self._transitionList:             
-#                 fromIndex, toIndex, eqn = self._unrollTransition(transObj)
-#                 for k in fromIndex:
-#                     self._ode[k] -= eqn
-#                 for k in toIndex:
-#                     self._ode[k] += eqn
-
         # now we just need to add in the birth death processes
         super(OperateOdeModel, self)._computeBirthDeathVector()
         self._ode += self._birthDeathVector
@@ -269,11 +274,27 @@ class OperateOdeModel(BaseOdeModel):
         return self._ode
     
     def getTransitionGraph(self, fileName=None, show=True):
-        dot = ode_composition.generateTransitionGraph(self, fileName)
+        '''
+        Returns the transition graph using graphviz
+        
+        Parameters
+        ----------
+        fileName: str, optional
+            name of the output file, defaults to None
+        show: bool, optional
+            If the graph should be plotted, defaults to True
+
+        Returns
+        -------
+        dot:
+            :class:`graphviz.Digraph`
+        '''
+        dot = _ode_composition.generateTransitionGraph(self, fileName)
         if show:
             img = mpimg.imread(io.BytesIO(dot.pipe("png")))
             plt.imshow(img)
-            plt.show()
+            plt.show(block=False)
+            return dot
         else:
             return dot
     
@@ -2097,4 +2118,3 @@ class OperateOdeModel(BaseOdeModel):
             evalParam = list(state) + [time]
 
         return evalParam + self._paramValue
-        

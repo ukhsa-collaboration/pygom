@@ -11,10 +11,10 @@ __all__ = ['SimulateOdeModel']
 from .deterministic import OperateOdeModel
 from .stochastic_simulation import directReaction, firstReaction, nextReaction, tauLeap
 from .transition import TransitionType, Transition
-from ._modelErrors import InputError, SimulationError
+from ._model_errors import InputError, SimulationError
 from ._model_verification import simplifyEquation
 import ode_utils
-import ode_composition
+from pygom.model import _ode_composition
 
 import numpy
 import sympy
@@ -83,6 +83,9 @@ class SimulateOdeModel(OperateOdeModel):
         self._tau = None
         self._tauDict = None
 
+    def __repr__(self):
+        return "SimulateOdeModel"+self._getModelStr()
+
     def simulateParam(self, t, iteration, full_output=False):
         '''
         Simulate the ode by generating new realization of the stochastic
@@ -128,7 +131,7 @@ class SimulateOdeModel(OperateOdeModel):
             dview, canParallel = self._setupParallel(t, iteration, self._stochasticParam)
             if canParallel:
                 print "Parallel"
-                dview.execute('solutionList = [odeS.integrate(t) for i in range(iteration)]')
+                dview.execute('solutionList = [ode.integrate(t) for i in range(iteration)]')
                 solutionList = list()
                 for i in dview['solutionList']:
                     solutionList += i
@@ -205,9 +208,10 @@ class SimulateOdeModel(OperateOdeModel):
         try:
             # check the type of parameter we have as input
             dview, canParallel = self._setupParallel(finalT, iteration, self._paramValue)
+            print "Success in creating parallel environment"
             if canParallel:
                 #print "Parallel"
-                dview.execute('YList = [odeS._jump(t,full_output=True) for i in range(iteration)]')
+                dview.execute('YList = [ode._jump(t,full_output=True) for i in range(iteration)]')
                 # unroll information
                 simXList = list()
                 simTList = list()
@@ -217,13 +221,14 @@ class SimulateOdeModel(OperateOdeModel):
                         simTList.append(simOut[1])
                 #print "Finished"
             else:
+                print "Failed somewhere"
                 raise SimulationError("Cannot run this in parallel")
 
         except Exception as e:
             #print "Serial"
             simXList = list()
             simTList = list()
-            for i in range(iteration):
+            for _i in range(iteration):
                 # now we simulate the jumps
                 simX, simT = self._jump(finalT, full_output=True)
                 # add to list :)
@@ -233,7 +238,7 @@ class SimulateOdeModel(OperateOdeModel):
         # now we want to fix our simulation, if they need fixing that is
         # print timePoint
         if timePoint:
-            for i in range(len(simXList)):
+            for _i in range(len(simXList)):
                 # unroll, always the first element
                 # it is easy to remember that we are accessing the first
                 # element because pop is spelt similar to poop and we
@@ -264,7 +269,7 @@ class SimulateOdeModel(OperateOdeModel):
         \min\{ \abs( t - targetTime) \}
         '''
         y = list()
-        maxTime = max(t)
+        # maxTime = max(t)
         index = 0
         for i in targetTime:
             index = numpy.searchsorted(t, i) - 1
@@ -311,20 +316,20 @@ class SimulateOdeModel(OperateOdeModel):
                                             self.transitionMean,
                                             self.transitionVar)
                     if success is False:
-#                         x, t, success = firstReaction(x, t, self._vMat,
-#                                                   self.transitionVector)
-                        x, t, success = directReaction(x, t, self._vMat,
+                        x, t, success = firstReaction(x, t, self._vMat,
                                                   self.transitionVector)
+#                         x, t, success = directReaction(x, t, self._vMat,
+#                                                   self.transitionVector)
                 else:
-#                     x, t, success = firstReaction(x, t, self._vMat,
-#                                                   self.transitionVector)
-                    x, t, success = directReaction(x, t, self._vMat,
+                    x, t, success = firstReaction(x, t, self._vMat,
                                                   self.transitionVector)
+#                     x, t, success = directReaction(x, t, self._vMat,
+#                                                   self.transitionVector)
                 if success:
                     xList.append(x.copy())
                     tList.append(t)
                 else:
-                    print "huh" + str(t)
+                    print "x: %s, t: %s" % (x, t)
                     raise Exception('WTF')
             except SimulationError:
                 break
@@ -818,11 +823,11 @@ class SimulateOdeModel(OperateOdeModel):
             A = super(SimulateOdeModel, self).getOde()
 
         if transitionExpressionList is None:
-            transitionList = ode_composition.getMatchingExpressionVector(A, True)
+            transitionList = _ode_composition.getMatchingExpressionVector(A, True)
         else:
             transitionList = transitionExpressionList
 
-        bdList = ode_composition.getUnmatchedExpressionVector(A, False)
+        bdList = _ode_composition.getUnmatchedExpressionVector(A, False)
         if len(bdList) > 0:
             M = self._generateTransitionMatrix(A, transitionList)
 
@@ -839,8 +844,8 @@ class SimulateOdeModel(OperateOdeModel):
 
             for i, a in enumerate(diffA):
                 for b in bdList:
-                    if ode_composition._hasExpression(a, b):
-                        if sympy.Integer(-1) in ode_composition.getLeafs(b):
+                    if _ode_composition._hasExpression(a, b):
+                        if sympy.Integer(-1) in _ode_composition.getLeafs(b):
                             bdListUnroll.append(Transition(origState=states[i],
                                                 equation=str(b*-1),
                                                 transitionType=TransitionType.D))
@@ -867,11 +872,11 @@ class SimulateOdeModel(OperateOdeModel):
             A = super(SimulateOdeModel, self).getOde()
 
         if transitionExpressionList is None:
-            transitionList = ode_composition.getMatchingExpressionVector(A, True)
+            transitionList = _ode_composition.getMatchingExpressionVector(A, True)
         else:
             transitionList = transitionExpressionList
             
-        B = ode_composition.generateDirectedDependencyGraph(A, transitionList)
+        B = _ode_composition.generateDirectedDependencyGraph(A, transitionList)
         numRow, numCol = B.shape
 
         M = sympy.zeros(numRow)
@@ -907,12 +912,12 @@ class SimulateOdeModel(OperateOdeModel):
 
             dview.block = True
             # information required to setup the ode object
-            dview.push(dict(stateList=self._stateList,
-                            paramList=self._paramList,
-                            derivedParamList=self._derivedParamList,
-                            transitionList=self._transitionList,
-                            birthDeathList=self._birthDeathList,
-                            odeList=self._odeList))
+#             dview.push(dict(stateList=self._stateList,
+#                             paramList=self._paramList,
+#                             derivedParamList=self._derivedParamList,
+#                             transitionList=self._transitionList,
+#                             birthDeathList=self._birthDeathList,
+#                             odeList=self._odeList))
 
             # initial conditions
             dview.push(dict(x0=self._x0, t0=self._t0, t=t, paramEval=paramEval))
@@ -921,9 +926,11 @@ class SimulateOdeModel(OperateOdeModel):
             dview.push(dict(iteration=iteration/numCore + 1))
 
             # now run the commands that will initialize the models
-            dview.execute('from pygom import SimulateOdeModel', block=True)
-            dview.execute('odeS = SimulateOdeModel([str(i) for i in stateList],[str(i) for i in paramList],derivedParamList,transitionList,birthDeathList,odeList)', block=True)
-            dview.execute('odeS.setInitialValue(x0,t0).setParameters(paramEval)', block=True)
+            # dview.execute('from pygom import SimulateOdeModel', block=True)
+            # dview.execute('odeS = SimulateOdeModel([str(i) for i in stateList],[str(i) for i in paramList],derivedParamList,transitionList,birthDeathList,odeList)', block=True)
+            dview.execute('from pygom import OperateOdeModel, SimulateOdeModel, Transition, ODEVariable', block=True)
+            dview.execute("ode = "+repr(self), block=True)
+            dview.execute('ode.setInitialValue(x0,t0).setParameters(paramEval)', block=True)
             return dview, True
         except Exception as e:
             print e

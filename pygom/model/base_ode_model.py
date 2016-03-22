@@ -6,25 +6,23 @@
     into an algebraic machine using sympy
 
 """
-
-
-import sympy
-from sympy import symbols
 # string evaluation
 import re
 reMath = re.compile(r'[-+*\\]')
 reUnderscore = re.compile('^_')
 reSymbolName = re.compile('[A-Za-z_]+')
 reSymbolIndex = re.compile('.*\[([0-9]+)\]$')
+
+import sympy
+from sympy import symbols
 # numerical computation
 import numpy
 import scipy.stats
 
 from .transition import Transition, TransitionType
-from ._modelErrors import InputError, OutputError
+from ._model_errors import InputError, OutputError
 from ._model_verification import checkEquation
 from .ode_variable import ODEVariable
-
 import ode_utils
 
 class BaseOdeModel(object):
@@ -78,6 +76,7 @@ class BaseOdeModel(object):
 
         self._stateList = list()
         self._derivedParamList = list()
+        self._derivedParamEqn = list()
 
         # this three is not actually that useful
         # but lets leave it here for now
@@ -125,6 +124,7 @@ class BaseOdeModel(object):
         # difference when inferring the parameters of the variables
         if derivedParamList is not None:
             self.setDerivedParamList(derivedParamList)
+            self._derivedParamEqn += derivedParamList
 
         if transitionList is not None:
             self.setTransitionList(transitionList)
@@ -150,6 +150,17 @@ class BaseOdeModel(object):
             
         self.getNumTransitions()
         self._transitionVector = self._computeTransitionVector()
+
+    def _getModelStr(self):
+        modelStr = "(%s, %s, %s, %s, %s, %s)" % (self._stateList, 
+                                                 self._paramList,
+                                                 self._derivedParamEqn,
+                                                 self._transitionList, 
+                                                 self._birthDeathList,
+                                                 self._odeList)
+        if self._parameters is not None:
+            modelStr += ".setParameters(%s)" % {str(key): value for key, value in self._parameters.iteritems()}
+        return modelStr
 
     ########################################################################
     #
@@ -425,8 +436,8 @@ class BaseOdeModel(object):
         if isinstance(paramList, (list, tuple)):
             for p in paramList:
                 self._addParamSymbol(p)
-        elif isinstance(paramList, str):
-            self._addStateSymbol(paramList)
+        elif isinstance(paramList, (str, ODEVariable)):
+            self._addParamSymbol(paramList)
         else:
             raise InputError("Expecting a list")
         
@@ -645,6 +656,7 @@ class BaseOdeModel(object):
         self._numBD = len(self._birthDeathList)
         self._numTransition = self._numPureTransition + self._numBD
         return self._numTransition
+
     ########################################################################
     #
     # Setting the scene
@@ -707,11 +719,6 @@ class BaseOdeModel(object):
         else:
             for sym in symbolName:
                 self._addStateSymbol(str(sym))
-#                 si = self._addSymbol(str(s))
-#                 varObj = ODEVariable(str(si), str(si))
-#                 self._numState = self._addVariable(si, varObj, 
-#                                 self._stateList, self._stateDict, 
-#                                 self._numState)
 
         return None
 
@@ -731,12 +738,6 @@ class BaseOdeModel(object):
         else:
             for sym in symbolName:
                 self._addParamSymbol(str(sym))
-#                 si = self._addSymbol(str(s))
-#                 varObj = ODEVariable(str(si), str(si))
-#                 self._numParam = self._addVariable(si, varObj, 
-#                                 self._paramList, self._paramDict, 
-#                                 self._numParam)
-
         return None
 
     def _addDerivedParam(self, name, eqn):
@@ -788,14 +789,6 @@ class BaseOdeModel(object):
             for i in fromList[k]:
                 for j in toList[k]:
                     self._transitionMatrix[i,j] += eqn
-                    
-#         for transObj in self._transitionList:
-#             # then find out the indices of the states
-#             fromIndex, toIndex, eqn = self._unrollTransition(transObj)
-#             # put the getEquation in the correct element
-#             for i in fromIndex:
-#                 for j in toIndex:
-#                     self._transitionMatrix[i,j] += eqn
 
         return self._transitionMatrix
     
@@ -873,13 +866,6 @@ class BaseOdeModel(object):
                     raise InputError("An explicit ode cannot describe more than a single state")
                 else:
                     self._ode[fromList[i][0]] = eqn
-
-#             for transObj in self._odeList:
-#                 fromIndex, _toIndex, eqn = self._unrollTransition(transObj)
-#                 if len(fromIndex) > 1:
-#                     raise InputError("An explicit ode cannot describe more than a single state")
-#                 else:
-#                     self._ode[fromIndex[0]] = eqn
         else:
             raise InputError("The total number of ode is "+str(len(self._odeList))+
                             " where the number of state is "+str(self._numState))
@@ -920,20 +906,6 @@ class BaseOdeModel(object):
             for i, state in enumerate(self._stateList):
                 if self._stateDict[state.ID] in eqn.atoms():
                     self._lambdaMat[i,j] = 1
-
-#         for j in range(self._numTransition):
-#             if j < self._numPureTransition:
-#                 transObj = self._transitionList[j]               
-#                 # then find out the indices of the states
-#                 _fromIndex, _toIndex, eqn = self._unrollTransition(transObj)
-#             else:
-#                 bdObj = self._birthDeathList[j-self._numPureTransition]
-#                 _fromIndex, _toIndex, eqn = self._unrollTransition(bdObj)
-# 
-#             # now go through all the states
-#             for i in range(self._numState):
-#                 if self._stateList[i] in eqn.atoms():
-#                     self._lambdaMat[i,j] = 1
 
         return self._lambdaMat
 
@@ -1073,18 +1045,6 @@ class BaseOdeModel(object):
     #
     ########################################################################
 
-#     def _assignToSelf(self, inputStr):
-#         return 'self.__'+inputStr
-# 
-#     def _stateExist(self, inputStr):
-#         return self._stateDict.has_key(inputStr)
-# 
-#     def _paramExist(self, inputStr):
-#         return self._paramDict.has_key(inputStr)
-# 
-#     def _derivedParamExist(self, inputStr):
-#         return self._derivedParamDict.has_key(inputStr)
-
     def _extractParamIndex(self, inputStr):
         if self._paramDict.has_key(inputStr):
             return self._paramList.index(self._paramDict[inputStr])
@@ -1092,6 +1052,9 @@ class BaseOdeModel(object):
             raise InputError("Input parameter: "+inputStr+ " does not exist")
 
     def _extractParamSymbol(self, inputStr):
+        if isinstance(inputStr, ODEVariable):
+            inputStr = inputStr.ID
+
         if self._paramDict.has_key(inputStr):
             return self._paramDict[inputStr]
         else:
@@ -1110,21 +1073,16 @@ class BaseOdeModel(object):
                 raise Exception("Input must be a string or an iterable object of string")
             
     def _extractStateIndexSingle(self, inputStr):
-        symName = self._extractStateSymbol(inputStr)
-        return self._stateList.index(symName)
-#         symName = reSymbolName.search(inputStr)
-#         if self._stateDict.has_key(inputStr):
-#             return self._stateList.index(self._stateDict[inputStr])
-#         elif symName is not None:
-#             if self._vectorStateDict.has_key(symName.group()):
-#                 index = reSymbolIndex.findall(inputStr) 
-#                 if index is not None and len(index) == 1:
-#                     symSym = self._vectorStateDict[symName.group()][int(index[0])]
-#             return self._stateList.index(symSym)
-#         else:
-#             raise Exception("Input state: "+inputStr+ " does not exist")
+        if isinstance(inputStr, ODEVariable):
+            self._stateList.index(inputStr) 
+        else:
+            symName = self._extractStateSymbol(inputStr)
+            return self._stateList.index(symName)
 
     def _extractStateSymbol(self, inputStr):
+        if isinstance(inputStr, ODEVariable):
+            inputStr = inputStr.ID
+
         if self._stateDict.has_key(inputStr):
             return self._stateDict[inputStr]
         else:
@@ -1140,7 +1098,6 @@ class BaseOdeModel(object):
                     raise InputError("Cannot find input state, input %s likely to be a vector" % symName)
             else:
                 raise InputError("Input state: "+inputStr+ " does not exist")
-
 
     def _extractUpperTriangle(self, A, nrow=None, ncol=None):
         '''

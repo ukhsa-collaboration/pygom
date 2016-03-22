@@ -9,7 +9,7 @@ __all__ = [
     'compileCode'
     ]
 
-from ._modelErrors import ArrayError, ExpressionErrror, InputError, IntegrationError
+from pygom.model._model_errors import ArrayError, ExpressionErrror, InputError, IntegrationError
 
 import numpy
 import math
@@ -809,14 +809,14 @@ class compileCode(object):
 
         # applicable when the output is already an numpy.ndarray
         # Defining a set of closures
-        def outVec1(y): return a(*y).ravel()
-        def outMat1(y): return a(*y)
-        # if the output is matrix
-        def outVec2(y): return numpy.asarray(a(*y)).ravel()
-        def outMat2(y): return numpy.asarray(a(*y))
-        # if it is something unknown, i.e. mpmath objects
-        def outVec3(y): return numpy.array(a(*y).tolist(), float).ravel()
-        def outMat3(y): return numpy.array(a(*y).tolist(), float)
+#         def outVec1(y): return a(*y).ravel()
+#         def outMat1(y): return a(*y)
+#         # if the output is matrix
+#         def outVec2(y): return numpy.asarray(a(*y)).ravel()
+#         def outMat2(y): return numpy.asarray(a(*y))
+#         # if it is something unknown, i.e. mpmath objects
+#         def outVec3(y): return numpy.array(a(*y).tolist(), float).ravel()
+#         def outMat3(y): return numpy.array(a(*y).tolist(), float)
 
         if outType is None:
             if numRow == 1 or numCol == 1:

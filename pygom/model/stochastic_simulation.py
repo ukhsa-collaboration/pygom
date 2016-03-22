@@ -1,4 +1,4 @@
-from _modelErrors import InputError, SimulationError
+from pygom.model._model_errors import InputError, SimulationError
 from pygom.utilR.distn import rexp, ppois, rpois, runif
 
 import numpy
@@ -148,7 +148,6 @@ def tauLeap(x, t, stateChangeMat, reactantMat, transitionFunc, transitionMeanFun
     rates = transitionFunc(x,t)
     totalRate = sum(rates)
 
-    exceedCDFArray = list()
     safeToJump = False
 
     mu = transitionMeanFunc(x, t)
@@ -170,7 +169,11 @@ def tauLeap(x, t, stateChangeMat, reactantMat, transitionFunc, transitionMeanFun
     # we put in an additional safety mechanism here where we also evaluate
     # the probability that a realization exceeds the observations and further
     # decrease the time step.
+#     print "tauScale Orig = %s " % tauScale
+#     print len(rates)
+#     print reactantMat
     while safeToJump == False:
+        exceedCDFArray = list()
         for i, r in enumerate(rates):
             activeX = x[reactantMat[:,i]]
             for xi in activeX:
@@ -192,7 +195,20 @@ def tauLeap(x, t, stateChangeMat, reactantMat, transitionFunc, transitionMeanFun
     newX = x.copy()
     for i, r in enumerate(rates):
         # realization
-        jumpQuantity = rpois(1, tauScale*r)
+        try:
+            jumpQuantity = rpois(1, tauScale*r)
+        except Exception as e:
+#             print tauScale, r
+#             print "l = %s " % l
+#             print "r = %s " % (top**2 / sigma2)
+#             print "top = %s " % top
+#             print "min (l, r) = (%s, %s)"  % (min(l), min(top**2 / sigma2))
+#             print "tauScale = %s" % tauScale
+#             print "exceed %s " % len(exceedCDFArray)
+#             print "mu = %s " % mu
+#             print "sigma2 = %s " % sigma2 
+            raise e
+            
         # print jumpQuantity
         # move the particles!
         newX = _updateStateWithJump(newX, i, stateChangeMat, jumpQuantity)
@@ -219,6 +235,7 @@ def _checkJump(x, newX, t, jumpTime):
     failedJump = numpy.any(newX < 0)
 
     if failedJump:
+        # print "Illegal jump, x: %s, new x: %s" % (x, newX)
         return x, t, False
     else:
         t += jumpTime
