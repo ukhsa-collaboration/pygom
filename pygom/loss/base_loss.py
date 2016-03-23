@@ -17,7 +17,7 @@ import gc
 
 from pygom.loss.loss_type import Square
 from pygom.model import ode_utils
-from pygom.model._modelErrors import InputError
+from pygom.model._model_errors import InputError
 
 class BaseLoss(object):
     '''
@@ -39,7 +39,13 @@ class BaseLoss(object):
         observations
     stateName: str
         the state which the observations came from
-
+    stateWeight: array like
+        weight for the observations
+    targetParam: str or array like
+        parameters that are not fixed
+    targetState: str or array like
+        states that are not fixed, applicable only when the initial
+        values are also of interest
     '''
     def __init__(self, theta, ode,
                  x0, t0,
@@ -127,7 +133,7 @@ class BaseLoss(object):
         if stateName is None:
             # then if
             if solution.shape[1] == p:
-                stateName = [str(i) for i in self._ode._stateList]
+                stateName = [str(i) for i in self._ode._iterStateList()]
                 self._setWeight(n, p, stateWeight)
             else:
                 raise InputError("Expecting the name of states for the observations")
@@ -183,6 +189,21 @@ class BaseLoss(object):
         if self._t is None or self._y is None or self._stateName is None:
             raise InputError("Error without data currently not implemented")
 
+    def _getModelStr(self):
+        modelStr = "(%s, %s, %s, %s, %s, %s, %s" % (self._theta.tolist(), 
+                                                self._ode, 
+                                                self._x0.tolist(),
+                                                self._t0, 
+                                                self._observeT.tolist(),
+                                                self._y.tolist(),
+                                                self._stateName)
+        if self._stateWeight is not None:
+            modelStr += ", %s" % self._stateWeight.tolist()
+        if self._targetParam is not None:
+            modelStr += ", %s" % self._targetParam
+        if self._targetState is not None:
+            modelStr += ", %s" % self._targetState
+        return modelStr+")"
     ############################################################
     #
     # Gradient operators

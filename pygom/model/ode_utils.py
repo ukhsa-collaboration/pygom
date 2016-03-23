@@ -9,7 +9,7 @@ __all__ = [
     'compileCode'
     ]
 
-from ._modelErrors import ArrayError, ExpressionErrror, InputError, IntegrationError
+from pygom.model._model_errors import ArrayError, ExpressionErrror, InputError, IntegrationError
 
 import numpy
 import math
@@ -713,7 +713,7 @@ class compileCode(object):
         else:
             self._backend = backend
 
-    def compileExpr(self, inputSymb, inputExpr, backend=None, modules=None):
+    def compileExpr(self, inputSymb, inputExpr, backend=None, compileType=False):
         '''
         Compiles the expression given the symbols.  Determines the backend
         if required.
@@ -726,9 +726,10 @@ class compileCode(object):
             expression in sympy
         backend: optional
             the backend we want to use to compile
-        modules: optional
-            in the event that f2py and Cython fails, which modules
-            do we want to try and compile against
+        compileType: optional
+            defaults to False.  If True, return an extra output that informs
+            the end user of the method used to compile the equation, can be
+            one of (numpy, mpmath, sympy)
 
         Returns
         -------
@@ -739,37 +740,44 @@ class compileCode(object):
 
         # unless specified, we are always going to use numpy and forget
         # about the floating point importance
+        compiledFunc = None
+        compileTypeChosen = None
         try:
-            if modules is None:
-                modules = ['numpy', 'mpmath', 'sympy']
-                # we would probably always want to use Theano first if possible
-                if self._backend == 'f2py':
-                    return autowrap(expr=inputExpr, args=inputSymb, backend='f2py')
-                elif self._backend == 'lambda':
-                    return lambdify(expr=inputExpr, args=inputSymb, modules=modules)
-                elif self._backend == 'Cython':
-                    # note that we have another test layer because of the bug previously
-                    # mentioned in __init__ of this class
+            if self._backend == 'f2py':
+                compiledFunc = autowrap(expr=inputExpr, args=inputSymb, backend='f2py')
+                compileTypeChosen = 'numpy'
+            elif self._backend == 'lambda':
+                compiledFunc = lambdify(expr=inputExpr, args=inputSymb, modules='numpy')
+                compileTypeChosen = 'numpy'
+            elif self._backend == 'Cython':
+                # note that we have another test layer because of the bug previously
+                # mentioned in __init__ of this class
+                try:
+                    compiledFunc = autowrap(expr=inputExpr, args=inputSymb, backend='Cython')
+                    compileTypeChosen = 'numpy'
+                except:
+                    # although we don't think it is possible given the checks
+                    # previously performed, we should still try it
                     try:
-                        return autowrap(expr=inputExpr, args=inputSymb, backend='Cython')
+                        compiledFunc = autowrap(expr=inputExpr, args=inputSymb, backend='f2py')
+                        compileTypeChosen = 'numpy'
                     except:
-                        # although we don't think it is possible given the checks
-                        # previously performed, we should still try it
-                        try:
-                            return autowrap(expr=inputExpr, args=inputSymb, backend='f2py')
-                        except:
-                            return lambdify(expr=inputExpr, args=inputSymb, modules=modules)
-                else:
-                    raise ExpressionErrror("The problem is too tough")
+                        compiledFunc = lambdify(expr=inputExpr, args=inputSymb, modules='numpy')
+                        compileTypeChosen = 'numpy'
             else:
-                # we have module input, we assume that we want to compile the function
-                # according to the input
-                return lambdify(expr=inputExpr, args=inputSymb, modules=modules)
+                raise ExpressionErrror("The problem is too tough")
         except:
             try:
-                return lambdify(expr=inputExpr, args=inputSymb, modules='mpmath')
+                compiledFunc = lambdify(expr=inputExpr, args=inputSymb, modules='mpmath')
+                compileTypeChosen = 'mpmath'
             except:
-                return lambdify(expr=inputExpr, args=inputSymb, modules='sympy')
+                compiledFunc = lambdify(expr=inputExpr, args=inputSymb, modules='sympy')
+                compileTypeChosen = 'sympy'
+        
+        if compileType:
+            return compiledFunc, compileTypeChosen
+        else:
+            return compiledFunc
 
     def compileExprAndFormat(self, inputSymb, inputExpr, backend=None, modules=None, outType=None):
         '''
@@ -794,64 +802,44 @@ class compileCode(object):
         Function determined from the input using closures.
         '''
 
-        a = self.compileExpr(inputSymb, inputExpr, backend, modules)
+        a, compileType = self.compileExpr(inputSymb, inputExpr, backend, True)
         numRow = inputExpr.rows
         numCol = inputExpr.cols
-        numIn = len(inputSymb)
-        # evaluate the compiled function
-        # note that it may return rubbish, with overflow, underflow
-        # and division by zero.  We do not care about that, we only
-        # want to know the type of output
-        b = a(*numpy.ones(numIn))
-
         # define the different types of output
 
         # applicable when the output is already an numpy.ndarray
         # Defining a set of closures
-        def outVec1(y): return a(*y).ravel()
-        def outMat1(y): return a(*y)
-        # if the output is matrix
-        def outVec2(y): return numpy.asarray(a(*y)).ravel()
-        def outMat2(y): return numpy.asarray(a(*y))
-        # if it is something unknown, i.e. mpmath objects
-        def outVec3(y): return numpy.array(a(*y).tolist(), float).ravel()
-        def outMat3(y): return numpy.array(a(*y).tolist(), float)
+#         def outVec1(y): return a(*y).ravel()
+#         def outMat1(y): return a(*y)
+#         # if the output is matrix
+#         def outVec2(y): return numpy.asarray(a(*y)).ravel()
+#         def outMat2(y): return numpy.asarray(a(*y))
+#         # if it is something unknown, i.e. mpmath objects
+#         def outVec3(y): return numpy.array(a(*y).tolist(), float).ravel()
+#         def outMat3(y): return numpy.array(a(*y).tolist(), float)
 
         if outType is None:
-            # now we test the type of output we got from evaluating the
-            # compiled function to determine the suitable adjustment
-            if type(b) == numpy.ndarray:
-                if numRow == 1 or numCol == 1:
-                    return outVec1
-                else:
-                    return outMat1
-            elif type(b) == numpy.matrixlib.defmatrix.matrix:
-                if numRow == 1 or numCol == 1:
-                    return outVec2
-                else:
-                    return outMat2
+            if numRow == 1 or numCol == 1:
+                outType = "vec"
             else:
-                if numRow == 1 or numCol == 1:
-                    return outVec3
-                else:
-                    return outMat3
+                outType = "mat"
+
+        if outType.lower() == "vec":
+            if compileType == 'numpy':
+                return lambda x: a(*x).ravel() # outVec1
+#             elif type(b) == numpy.matrixlib.defmatrix.matrix:
+#                 return outVec2
+            else:
+                return lambda x: numpy.array(a(*x).tolist(), float).ravel() # outVec3
+        elif outType.lower() == "mat":
+            if compileType == 'numpy':
+                return lambda x: a(*x) # outMat1
+#             elif type(b) == numpy.matrixlib.defmatrix.matrix:
+#                 return outMat2
+            else:
+                return lambda x: numpy.array(a(*x).tolist(), float) # outMat3
         else:
-            if outType.lower() == "vec":
-                if type(b) == numpy.ndarray:
-                    return outVec1
-                elif type(b) == numpy.matrixlib.defmatrix.matrix:
-                    return outVec2
-                else:
-                    return outVec3
-            elif outType.lower() == "mat":
-                if type(b) == numpy.ndarray:
-                    return outMat1
-                elif type(b) == numpy.matrixlib.defmatrix.matrix:
-                    return outMat2
-                else:
-                    return outMat3
-            else:
-                raise RuntimeError("Specified type of output not recognized")
+            raise RuntimeError("Specified type of output not recognized")
 
 def checkArrayType(x):
     '''

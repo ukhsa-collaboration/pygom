@@ -19,7 +19,7 @@ import scipy.optimize, scipy.integrate
 import copy
 
 from .ode_loss import NormalLoss, SquareLoss, PoissonLoss
-from pygom.model._modelErrors import EstimateError, InputError
+from pygom.model._model_errors import EstimateError, InputError
 from pygom.utilR.distn import qchisq, qnorm
 
 def asymptotic(obj, alpha=None, theta=None, lb=None, ub=None):

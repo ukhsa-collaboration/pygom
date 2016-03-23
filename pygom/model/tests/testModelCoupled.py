@@ -13,11 +13,13 @@ class TestModelCoupled(TestCase):
     
     def test_compareAll(self):
         '''
-        Compare the solution of a coupled ode using three different
-        ways of defining it
+        Compare the solution of a coupled ode using different ways of defining it
         '''
         
-        ## naive version
+        ###
+        ### naive version
+        ### 
+
         n = 2
         s = [str(i) for i in range(n)]
 
@@ -95,7 +97,10 @@ class TestModelCoupled(TestCase):
         solution1 = ode.integrate(t[1::])
 
 
-        ## shorter version
+        ###
+        ### shorter version
+        ### 
+
         n = 2
         s = [str(i) for i in range(n)]
 
@@ -149,7 +154,9 @@ class TestModelCoupled(TestCase):
         ode.setParameters(paramEval).setInitialValue(numpy.array(x01,float),t[0])
         solution2 = ode.integrate(t[1::])
 
-        ## even shorter version
+        ###
+        ### even shorter version
+        ### 
         n = 2
         s = [str(i) for i in range(n)]
         
@@ -201,13 +208,106 @@ class TestModelCoupled(TestCase):
         ode.setParameters(paramEval).setInitialValue(numpy.array(x01,float),t[0])
         solution3 = ode.integrate(t[1::])
 
-        if numpy.any((solution1-solution2)>=0.1):
-            raise Exception("Solution not match")
-        else:
-            print("happy")
+        ###
+        ### very short version
+        ### 
 
-        if numpy.any((solution3-solution2)>=0.1):
+        n = 2
+
+        beta = []
+        lambdaStr = []
+        lambdaName = []
+
+        stateName = ['N','S','E','I','R']
+        for s in stateName:
+            exec('%s = %s' % (s, [s+'_'+str(i) for i in range(n)]))
+
+        for i in range(n):
+            lambdaTemp = '0 '
+            for j in range(n):
+                beta.append('beta_%s%s' % (i,j))
+                lambdaTemp += '+ I_%s * beta_%s%s ' % (j, i, j)
+                if i != j:
+                    lambdaTemp += ' * p'
+            lambdaStr += [lambdaTemp]
+            lambdaName += ['lambda_'+str(i)]
+
+        paramList = beta + ['d','epsilon','gamma','p'] + N
+
+        stateList = S+E+I+R
+        
+        transitionList = []
+        bdList = []
+        derivedParamList = []
+        for i in range(n):
+            derivedParamList += [(lambdaName[i],lambdaStr[i])]
+            transitionList += [Transition(origState=S[i],destState=E[i],equation=lambdaName[i]+ '*' +S[i] ,transitionType=TransitionType.T)]
+            transitionList += [Transition(origState=E[i],destState=I[i],equation=' epsilon * ' +E[i] ,transitionType=TransitionType.T)]
+            transitionList += [Transition(origState=I[i],destState=R[i],equation=' gamma * ' +I[i] ,transitionType=TransitionType.T)]
+    
+            bdList += [Transition(origState=S[i], equation='d * '+N[i], transitionType=TransitionType.B)]
+        for s in stateList:
+            bdList += [Transition(origState=s, equation='d * '+s, transitionType=TransitionType.D)]
+
+        ode = OperateOdeModel(stateList,
+                              paramList,
+                              derivedParamList=derivedParamList,
+                              transitionList=transitionList,
+                              birthDeathList=bdList)
+        
+        ode.setParameters(paramEval).setInitialValue(numpy.array(x01,float),t[0])
+        solution4 = ode.integrate(t[1::])
+        
+        ###
+        ### confused version
+        ### 
+        n = 2
+        stateName = ['N','S','E','I','R']
+        for s in stateName:
+            exec('%s = %s' % (s, [s+'_'+str(i) for i in range(n)]))
+
+        beta = []
+        bdList = list()
+        transitionList = list()
+        derivedParamList = list()
+        for i in range(n):
+            lambdaStr = '0 '
+            for j in range(n):
+                beta.append('beta_%s%s' % (i,j))
+                lambdaStr += '+ I_%s * beta_%s%s ' % (j, i, j)
+                if i != j:
+                    lambdaStr += ' * p'
+            derivedParamList += [('lambda_'+str(i), lambdaStr)]
+
+            transitionList += [Transition(origState=S[i],destState=E[i],equation='lambda_'+str(i)+ '*' +S[i] ,transitionType=TransitionType.T)]
+            transitionList += [Transition(origState=E[i],destState=I[i],equation=' epsilon * ' +E[i] ,transitionType=TransitionType.T)]
+            transitionList += [Transition(origState=I[i],destState=R[i],equation=' gamma * ' +I[i] ,transitionType=TransitionType.T)]
+            bdList += [Transition(origState=S[i], equation='d * '+N[i], transitionType=TransitionType.B)]
+
+        stateList = S+E+I+R
+        for s in stateList:
+            bdList += [Transition(origState=s, equation='d * '+s, transitionType=TransitionType.D)]
+
+        paramList = beta + ['d','epsilon','gamma','p'] + N
+            
+        ode = OperateOdeModel(stateList,
+                              paramList,
+                              derivedParamList=derivedParamList,
+                              transitionList=transitionList,
+                              birthDeathList=bdList)
+        
+        ode.setParameters(paramEval).setInitialValue(numpy.array(x01,float),t[0])
+        solution5 = ode.integrate(t[1::])
+
+        if numpy.any((solution1-solution2) >= 0.001):
             raise Exception("Solution not match")
-        else:
-            print("happy")
+
+        if numpy.any((solution3-solution2) >= 0.001):
+            raise Exception("Solution not match")
+            
+        if numpy.any((solution4-solution3) >= 0.001):
+            raise Exception("Solution not match")
+        
+        if numpy.any((solution5-solution4) >= 0.001):
+            raise Exception("Solution not match")
 

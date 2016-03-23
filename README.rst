@@ -2,6 +2,13 @@
 pygom - ODE modelling in Python
 ===============================
 
+|pypi version|  |Build status|
+ 
+.. |pypi version| image:: https://img.shields.io/pypi/v/pygom.svg
+   :target: https://pypi.python.org/pypi/pygom
+.. |Build status| image:: https://travis-ci.org/PublicHealthEngland/pygom.svg?branch=master
+   :target: https://travis-ci.org/PublicHealthEngland/pygom
+
 Development of a generic framework for ode models, more specifically, 
 aiming to solve compartmental type problems.  
 
@@ -12,10 +19,9 @@ This package depends on::
     numpy
     matplotlib
     scipy
-    sympy  
+    sympy
 
-and they should be installed if not already available.  Standard installation can be
-performed via::
+and they should be installed if not already available.  Installation can be performed via::
 
 $ python setup.py install
 
@@ -31,8 +37,7 @@ Note that building the documentation can be extremely slow depending on the setu
 
 $ doc/README.rst     
 
-Please be aware that there are currently redundant files within 
-the package.
+Please be aware that there may be redundant files within the package as it is under active development.
 
 Contributors
 ============
