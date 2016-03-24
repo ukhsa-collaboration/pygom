@@ -9,12 +9,14 @@
 __all__ = ['SimulateOdeModel']
 
 from .deterministic import OperateOdeModel
-from .stochastic_simulation import directReaction, firstReaction, nextReaction, tauLeap
+from .stochastic_simulation import firstReaction, tauLeap
+# from .stochastic_simulation import directReaction, nextReaction
 from .transition import TransitionType, Transition
 from ._model_errors import InputError, SimulationError
 from ._model_verification import simplifyEquation
 import ode_utils
-from pygom.model import _ode_composition
+# from ._ode_composition import generateDirectedDependencyGraph, getMatchingExpressionVector
+# from pygom.model import _ode_composition
 
 import numpy
 import sympy
@@ -224,7 +226,7 @@ class SimulateOdeModel(OperateOdeModel):
                 print "Failed somewhere"
                 raise SimulationError("Cannot run this in parallel")
 
-        except Exception as e:
+        except Exception as _e: # should do something about the exception?
             #print "Serial"
             simXList = list()
             simTList = list()

@@ -46,11 +46,13 @@ class Transition(object):
         it throws an error
     '''
 
-    def __init__(self, origState, equation, transitionType, destState=None):
+    def __init__(self, origState, equation, transitionType, destState=None, ID=None, name=None):
         '''
         Constructor for the class.
 
         '''
+        self.ID = ID
+        self.name = name
         # we naturally assume that the between state getEquation
         # is false, i.e. everything is either an ode or a birth
         # death process type _equation
@@ -114,14 +116,17 @@ class Transition(object):
             return 'Death process from %s, %s' % (self.origState, self.equation)
         
     def __repr__(self):
+        
         if self.transitionType == TransitionType.T:
-            return """Transition('%s', '%s', 'T', '%s')""" % (self.origState, self.equation, self.destState)
+            reprStr = """Transition('%s', '%s', 'T', '%s'""" % (self.origState, self.equation, self.destState)
         elif self.transitionType == TransitionType.ODE:
-            return """Transition('%s', '%s', 'ODE')""" % (self.origState, self.equation)
+            reprStr = """Transition('%s', '%s', 'ODE'""" % (self.origState, self.equation)
         elif self.transitionType == TransitionType.B:
-            return """Transition('%s', '%s', 'B')""" % (self.origState, self.equation)
+            reprStr = """Transition('%s', '%s', 'B'""" % (self.origState, self.equation)
         elif self.transitionType == TransitionType.D:
-            return """Transition('%s', '%s', 'D')""" % (self.origState, self.equation)
+            reprStr = """Transition('%s', '%s', 'D'""" % (self.origState, self.equation)
+        
+        return reprStr + ", %s, %s)" % (self.ID, self.name)
 
     def __eq__(self, other):
         if isinstance(other, Transition):

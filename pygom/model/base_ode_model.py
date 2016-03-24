@@ -308,7 +308,7 @@ class BaseOdeModel(object):
             A list which contains tuple of two elements, (:mod:`sympy.core.symbol`, numeric)
 
         '''
-        return self._paramters
+        return self._parameters
 
     def setStateValue(self, state):
         '''

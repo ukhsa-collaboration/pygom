@@ -181,7 +181,7 @@ class OperateOdeModel(BaseOdeModel):
     #
     ########################################################################
 
-    def getOde(self):
+    def getOde(self, paramSub=False):
         '''
         Find the algebraic equations of the ode system.
 
@@ -199,7 +199,10 @@ class OperateOdeModel(BaseOdeModel):
         else:
             pass
 
-        return self._ode
+        if paramSub:
+            return self._ode.subs(self._parameters)
+        else:
+            return self._ode
 
     def printOde(self,latexOutput=False):
 
