@@ -1,7 +1,6 @@
 import re
 
 from libsbml import SBMLReader
-
 from pygom import Transition, OperateOdeModel
 from ._compartments import getCompartmentsInfo
 from ._species import getSpeciesInfo

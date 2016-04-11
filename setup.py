@@ -11,8 +11,6 @@ def readme():
 cmdclass = {}
 ext_modules =[]
 install_requires = [
-    'enum34>=1.0.4',
-    'matplotlib>=1.0.0',
     'numpy>=1.6.0',
     'scipy>=0.10.0',
     'sympy>=1.0.0'

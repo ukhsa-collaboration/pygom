@@ -14,9 +14,8 @@ from .stochastic_simulation import firstReaction, tauLeap
 from .transition import TransitionType, Transition
 from ._model_errors import InputError, SimulationError
 from ._model_verification import simplifyEquation
+from pygom.model import _ode_composition
 import ode_utils
-# from ._ode_composition import generateDirectedDependencyGraph, getMatchingExpressionVector
-# from pygom.model import _ode_composition
 
 import numpy
 import sympy

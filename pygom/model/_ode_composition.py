@@ -10,7 +10,6 @@ from transition import TransitionType
 
 import sympy
 import numpy
-from graphviz import Digraph
 
 import re
 
@@ -35,6 +34,8 @@ def generateTransitionGraph(odeModel, fileName=None):
     '''
     assert isinstance(odeModel, BaseOdeModel), "An ode model object required"
 
+    from graphviz import Digraph
+        
     if fileName is None:
         dot = Digraph(comment='ode model')
     else:
@@ -90,55 +91,6 @@ def _makeEquationPretty(eq, param):
     # eq = re.sub('([^\*]?)\*([^\*]?)', '\\1 \\2', eq)
     # eq += " blah<SUP>Yo</SUP> + ha<SUB>Boo</SUB>"
     return eq
-
-def generateTransitionGraphOld(odeModel, fileName=None):
-    '''
-    Generates the transition graph in graphviz given an ode model with transitions
-
-    Parameters
-    ----------
-    odeModel: OperateOdeModel
-        an ode model object
-    fileName: str
-        location of the file, if none entered, then the default directory is used
-    
-    Returns
-    -------
-    dot: graphviz object
-    '''
-
-    if fileName is None:
-        dot = Digraph(comment='ode model', cleanup="true")
-    else:
-        dot = Digraph(comment='ode model', filename=fileName, cleanup="true")
-        
-    dot.body.extend(['rankdir=LR'])
-    
-    M = odeModel.getTransitionMatrix()
-    param = [str(p) for p in odeModel.getParamList()]
-    states = [str(s) for s in odeModel.getStateList()]
-
-    for s in states:
-        dot.node(s)
-
-    for i, s1 in enumerate(states):
-        for j, s2 in enumerate(states):
-            if M[i,j] != 0:
-                b = str(M[i,j])
-                # print "Before", b
-                for p in param:
-                    # print p, p.lower() in greekLetter
-                    if p.lower() in greekLetter:
-                        b = re.sub('(\W?)('+p+')(\W?)', '\\1&'+p+';\\3', b)
-                    
-                #print "After", b
-                b = re.sub('\*', '', b)
-                dot.edge(s1, s2, label=b)
-                
-    for i, s1 in enumerate(states):
-        print i
-
-    return dot
 
 def generateDirectedDependencyGraph(odeMatrix, transitionList=None):
     '''

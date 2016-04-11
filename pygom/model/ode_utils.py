@@ -13,11 +13,9 @@ from pygom.model._model_errors import ArrayError, ExpressionErrror, InputError, 
 
 import numpy
 import math
-import matplotlib.pyplot
+# import matplotlib.pyplot
 import scipy.sparse, scipy.integrate
 import sympy
-# from sympy.printing.theanocode import theano_function
-# from sympy.utilities.autowrap import ufuncify
 from sympy.utilities.lambdify import lambdify
 from sympy.utilities.autowrap import autowrap
 
@@ -350,6 +348,8 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
     If we have 5 states or more, it will always be arrange such
     that it has 3 columns.
     '''
+
+    import matplotlib.pyplot
 
     assert isinstance(solution, numpy.ndarray), "Expecting an numpy.ndarray"
     # if not isinstance(solution, numpy.ndarray):

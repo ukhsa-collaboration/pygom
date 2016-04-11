@@ -46,7 +46,7 @@ class Transition(object):
         it throws an error
     '''
 
-    def __init__(self, origState, equation, transitionType, destState=None, ID=None, name=None):
+    def __init__(self, origState, equation, transitionType='ODE', destState=None, ID=None, name=None):
         '''
         Constructor for the class.
 
@@ -62,18 +62,18 @@ class Transition(object):
         if isinstance(transitionType, TransitionType):
             self.transitionType = transitionType
         elif isinstance(transitionType, str):
-            if transitionType == 'T':
+            if transitionType.lower() in ('t', 'between states'):
                 self.transitionType = TransitionType.T
-            elif transitionType == 'ODE':
+            elif transitionType.lower() in ('ode', 'ode equation'):
                 self.transitionType = TransitionType.ODE
-            elif transitionType == 'B':
+            elif transitionType.lower() in ('b', 'birth process'):
                 self.transitionType = TransitionType.B
-            elif transitionType == 'D':
+            elif transitionType.lower() in ('d', 'death process'):
                 self.transitionType = TransitionType.D
             else:
-                raise TransitionTypeError("Unknown input string, require one of T,ODE,D,B")
+                raise TransitionTypeError("Unknown input string, require one of (T,ODE,D,B)")
         else:
-            raise TransitionTypeError("Input getEquation type requires a TransitionType object")
+            raise TransitionTypeError("Input transitionType requires a TransitionType object or str")
 
         # private variables
         self.origState = None
@@ -268,5 +268,5 @@ class TransitionType(Enum):
     '''
     B = 'Birth process'
     D = 'Death process'
-    T = 'Transition between states'
-    ODE = 'ODE equation'        
+    T = 'Between states'
+    ODE = 'ODE equation'

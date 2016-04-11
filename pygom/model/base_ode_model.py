@@ -1007,6 +1007,7 @@ class BaseOdeModel(object):
             eqnList.append(t.getEquation())
         
         eqnList = checkEquation(eqnList, *self._getListOfVariablesDict())
+        eqnList = eqnList if hasattr(eqnList, '__iter__') else [eqnList]
         return fromList, toList, eqnList
     
     def _getAllTransition(self, pureTransitions=False):

@@ -19,8 +19,8 @@ import sympy
 from sympy.core.function import diff
 import numpy
 import scipy.linalg
-import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
+# import matplotlib.image as mpimg
+# import matplotlib.pyplot as plt
 
 import copy, io
 
