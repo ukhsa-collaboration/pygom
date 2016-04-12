@@ -18,7 +18,7 @@ before_install:
 # command to install dependencies
 install:
   # standard stuff you need for scientific computing
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas enum34 numpy matplotlib nose scipy sympy
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas enum34 ipython matplotlib nose numpy python-libsbml scipy sympy
   - python setup.py install
   - pip install -r requirements.txt
   - python setup.py install
