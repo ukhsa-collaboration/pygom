@@ -122,24 +122,29 @@ class BaseOdeModel(object):
         # base parameters.
         # Making the distinction here because it makes a
         # difference when inferring the parameters of the variables
-        if derivedParamList is not None:
+        if not _noneOrEmptyList(derivedParamList):
             self.setDerivedParamList(derivedParamList)
-            self._derivedParamEqn += derivedParamList
+        # if derivedParamList is not None:
 
-        if transitionList is not None:
+        # if transitionList is not None:
+        if not _noneOrEmptyList(transitionList):
             self.setTransitionList(transitionList)
 
-        if birthDeathList is not None:
+        # if birthDeathList is not None:
+        if not _noneOrEmptyList(birthDeathList):
             self.setBirthDeathList(birthDeathList)
 
-        if odeList is not None:
+        # if odeList is not None:
+        if not _noneOrEmptyList(odeList):
             # we have a set of ode explicitly defined!
             if len(odeList) > 0:
                 # tests on validity of using odeList
-                if transitionList is not None:
+                # if transitionList is not None:
+                if not _noneOrEmptyList(transitionList):
                     raise InputError("Transition equations detected even though "
                                      +"the set of ode is explicitly defined")
-                if birthDeathList is not None:
+                # if birthDeathList is not None:
+                if not _noneOrEmptyList(birthDeathList):
                     raise InputError("Birth Death equations detected even though "
                                      +"the set of ode is explicitly defined")
 
@@ -690,6 +695,7 @@ class BaseOdeModel(object):
         else:
             raise InputError("Unexpected input type for symbol")
 
+        assert inputStr!='lambda', "lambda is a reserved keyword"
         tempSym = eval("symbols('%s', real=%s)" % (inputStr, isReal))
         
         if isinstance(tempSym, sympy.Symbol):
@@ -747,6 +753,7 @@ class BaseOdeModel(object):
                                 self._derivedParamList, self._derivedParamDict, 
                                 self._numDerivedParam)
         self._hasNewTransition = True
+        self._derivedParamEqn += [(name, eqn)]
         return None
 
     def _addVariable(self, symbol, varObj, objList, objDict, objCounter):
@@ -1131,3 +1138,14 @@ class BaseOdeModel(object):
                 B[i,j] = A[i,j]
 
         return B
+
+def _noneOrEmptyList(x):
+    y = False
+    if x is not None:
+        if hasattr(x, '__iter__'):
+            if len(x) == 0:
+                y = True
+    else:
+        y = True
+            
+    return y

@@ -28,18 +28,19 @@ class Transition(object):
     '''
     This class carries the information for transitions defined
     for an ode, which includes the ode itself, a birth death
-    process where only one state is involved and also a getEquation
+    process where only one state is involved and also a transitino
     between two states
 
     Parameters
     ----------
-    origState: string
+    origState: str
         Origin state.
-    equation: string
+    equation: str
         Equation defining the transition
-    transitionType: enum
-        of type :class:`TransitionType`
-    destState: string, optional
+    transitionType: enum or str, optional
+        of type :class:`TransitionType` or one of ('ODE','T','B','D')
+        defaults to 'ODE'
+    destState: str, optional
         Destination State.  If the transition is not between state,
         such as a birth or death process, then this is is not
         required.  If it is stated as a birth, death or an ode then
@@ -53,12 +54,12 @@ class Transition(object):
         '''
         self.ID = ID
         self.name = name
-        # we naturally assume that the between state getEquation
+        # we naturally assume that the between state transition
         # is false, i.e. everything is either an ode or a birth
         # death process type _equation
         self._betweenStateTransition = False
 
-        # we also need the getEquation type
+        # we also need the transition type
         if isinstance(transitionType, TransitionType):
             self.transitionType = transitionType
         elif isinstance(transitionType, str):
@@ -178,12 +179,12 @@ class Transition(object):
 
     def getEquation(self):
         '''
-        Return the transition getEquation
+        Return the transition equation
 
         Returns
         -------
         string
-            The transition _equation
+            The transition equation
 
         '''
         return self.equation

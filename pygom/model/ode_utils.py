@@ -805,19 +805,8 @@ class compileCode(object):
         a, compileType = self.compileExpr(inputSymb, inputExpr, backend, True)
         numRow = inputExpr.rows
         numCol = inputExpr.cols
+
         # define the different types of output
-
-        # applicable when the output is already an numpy.ndarray
-        # Defining a set of closures
-#         def outVec1(y): return a(*y).ravel()
-#         def outMat1(y): return a(*y)
-#         # if the output is matrix
-#         def outVec2(y): return numpy.asarray(a(*y)).ravel()
-#         def outMat2(y): return numpy.asarray(a(*y))
-#         # if it is something unknown, i.e. mpmath objects
-#         def outVec3(y): return numpy.array(a(*y).tolist(), float).ravel()
-#         def outMat3(y): return numpy.array(a(*y).tolist(), float)
-
         if outType is None:
             if numRow == 1 or numCol == 1:
                 outType = "vec"
@@ -826,18 +815,14 @@ class compileCode(object):
 
         if outType.lower() == "vec":
             if compileType == 'numpy':
-                return lambda x: a(*x).ravel() # outVec1
-#             elif type(b) == numpy.matrixlib.defmatrix.matrix:
-#                 return outVec2
+                return lambda x: a(*x).ravel()
             else:
-                return lambda x: numpy.array(a(*x).tolist(), float).ravel() # outVec3
+                return lambda x: numpy.array(a(*x).tolist(), float).ravel()
         elif outType.lower() == "mat":
             if compileType == 'numpy':
-                return lambda x: a(*x) # outMat1
-#             elif type(b) == numpy.matrixlib.defmatrix.matrix:
-#                 return outMat2
+                return lambda x: a(*x)
             else:
-                return lambda x: numpy.array(a(*x).tolist(), float) # outMat3
+                return lambda x: numpy.array(a(*x).tolist(), float)
         else:
             raise RuntimeError("Specified type of output not recognized")
 
