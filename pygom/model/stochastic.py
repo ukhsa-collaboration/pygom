@@ -821,8 +821,11 @@ class SimulateOdeModel(OperateOdeModel):
         TransitionType.D
         '''
         if A is None:
-            eqnList = [t.getEquation() for t in self._odeList]
-            A = sympy.Matrix(checkEquation(eqnList, *self._getListOfVariablesDict(), subsDerived=False))
+            if not ode_utils._noneOrEmptyList(self._odeList):
+                eqnList = [t.getEquation() for t in self._odeList]
+                A = sympy.Matrix(checkEquation(eqnList, *self._getListOfVariablesDict(), subsDerived=False))
+            else:
+                raise Exception("Object was not initialized using a set of ode")
             # A = super(SimulateOdeModel, self).getOde()
 
         bdList, termList = _ode_composition.getUnmatchedExpressionVector(A, True)
@@ -871,9 +874,11 @@ class SimulateOdeModel(OperateOdeModel):
         the equation rather than the states.
         '''
         if A is None:
-            eqnList = [t.getEquation() for t in self._odeList]
-            A = sympy.Matrix(checkEquation(eqnList, *self._getListOfVariablesDict(), subsDerived=False))
-            # A = super(SimulateOdeModel, self).getOde()
+            if not ode_utils._noneOrEmptyList(self._odeList):
+                eqnList = [t.getEquation() for t in self._odeList]
+                A = sympy.Matrix(checkEquation(eqnList, *self._getListOfVariablesDict(), subsDerived=False))
+            else:
+                raise Exception("Object was not initialized using a set of ode")
 
         bdList, termList = _ode_composition.getUnmatchedExpressionVector(A, True)
         fx = _ode_composition.stripBDFromOde(A, bdList)

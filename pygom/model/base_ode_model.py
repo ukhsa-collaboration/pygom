@@ -122,29 +122,29 @@ class BaseOdeModel(object):
         # base parameters.
         # Making the distinction here because it makes a
         # difference when inferring the parameters of the variables
-        if not _noneOrEmptyList(derivedParamList):
+        if not ode_utils._noneOrEmptyList(derivedParamList):
             self.setDerivedParamList(derivedParamList)
         # if derivedParamList is not None:
 
         # if transitionList is not None:
-        if not _noneOrEmptyList(transitionList):
+        if not ode_utils._noneOrEmptyList(transitionList):
             self.setTransitionList(transitionList)
 
         # if birthDeathList is not None:
-        if not _noneOrEmptyList(birthDeathList):
+        if not ode_utils._noneOrEmptyList(birthDeathList):
             self.setBirthDeathList(birthDeathList)
 
         # if odeList is not None:
-        if not _noneOrEmptyList(odeList):
+        if not ode_utils._noneOrEmptyList(odeList):
             # we have a set of ode explicitly defined!
             if len(odeList) > 0:
                 # tests on validity of using odeList
                 # if transitionList is not None:
-                if not _noneOrEmptyList(transitionList):
+                if not ode_utils._noneOrEmptyList(transitionList):
                     raise InputError("Transition equations detected even though "
                                      +"the set of ode is explicitly defined")
                 # if birthDeathList is not None:
-                if not _noneOrEmptyList(birthDeathList):
+                if not ode_utils._noneOrEmptyList(birthDeathList):
                     raise InputError("Birth Death equations detected even though "
                                      +"the set of ode is explicitly defined")
 
@@ -1139,13 +1139,3 @@ class BaseOdeModel(object):
 
         return B
 
-def _noneOrEmptyList(x):
-    y = False
-    if x is not None:
-        if hasattr(x, '__iter__'):
-            if len(x) == 0:
-                y = True
-    else:
-        y = True
-            
-    return y

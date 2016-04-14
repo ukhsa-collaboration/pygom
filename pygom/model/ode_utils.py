@@ -953,3 +953,14 @@ def strOrList(x):
     else:
         raise InputError("Expecting a string or list")
 
+
+def _noneOrEmptyList(x):
+    y = False
+    if x is not None:
+        if hasattr(x, '__iter__'):
+            if len(x) == 0:
+                y = True
+    else:
+        y = True
+            
+    return y

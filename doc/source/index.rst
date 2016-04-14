@@ -18,6 +18,7 @@ Contents:
    stochastic.rst
    unrollOde.rst
    gradient.rst
+   epijson.rst
    fh.rst
    bvpSimple.rst
    estimate1.rst
