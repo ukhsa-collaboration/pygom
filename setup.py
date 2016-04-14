@@ -11,6 +11,7 @@ def readme():
 cmdclass = {}
 ext_modules =[]
 install_requires = [
+    'pandas>=0.15.0',
     'numpy>=1.6.0',
     'scipy>=0.10.0',
     'sympy>=1.0.0'

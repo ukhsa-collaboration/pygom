@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from pygom import SimulateOdeModel, Transition, TransitionType
+from pygom import SimulateOdeModel, Transition, TransitionType, common_models
 import numpy
 import sympy
 
@@ -21,6 +21,9 @@ class TestOdeDecomposition(TestCase):
             raise Exception("Simple: SIR Decomposition failed")
 
     def test_hard(self):
+        # the SLIARD model is considered to be hard because a state can
+        # go to multiple state.  This is not as hard as the SEIHFR model
+        # below.
         stateList = ['S', 'L','I','A','R','D']
         paramList = ['beta','p','kappa','alpha','f','delta','epsilon', 'N']
         odeList = [
@@ -66,3 +69,25 @@ class TestOdeDecomposition(TestCase):
             raise Exception("Birth Death: SIR+BD Decomposition failed")
     
 
+    def test_derived_param(self):
+        # the derived parameters are treated separately when compared to the
+        # normal parametes and the odes
+        ode = common_models.Legrand_Ebola_SEIHFR()
+
+        odeList = [
+            Transition('S', '-(beta_I * S * I + beta_H_Time * S * H + beta_F_Time * S * F)'),
+            Transition('E', '(beta_I * S * I + beta_H_Time * S * H + beta_F_Time * S * F)-alpha * E'),
+            Transition('I','-gamma_I * (1 - theta_1) * (1 - delta_1) * I - gamma_D * (1 - theta_1) * delta_1 * I - gamma_H * theta_1 * I + alpha * E'),
+            Transition('H', 'gamma_H * theta_1 * I - gamma_DH * delta_2 * H - gamma_IH * (1 - delta_2) * H'),
+            Transition('F','- gamma_F * F + gamma_DH * delta_2 * H + gamma_D * (1 - theta_1) * delta_1 * I'),
+            Transition('R', 'gamma_I * (1 - theta_1) * (1 - delta_1) * I + gamma_F * F + gamma_IH * (1 - delta_2) * H'),
+            Transition('tau', '1')
+        ]
+
+        ode1 = SimulateOdeModel(ode._stateList, ode._paramList, ode._derivedParamEqn, odeList=odeList)
+
+        ode2 = ode1.returnObjWithTransitionsAndBD()
+        diffEqZero = map(lambda x: x==0, sympy.simplify(ode.getOde() - ode2.getOde()))
+        
+        if numpy.any(numpy.array(diffEqZero) == False):
+            raise Exception("FAILED!")
