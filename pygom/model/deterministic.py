@@ -1902,7 +1902,7 @@ class OperateOdeModel(BaseOdeModel):
             self._x0 = numpy.array(x0)
         elif isinstance(x0, (int, float)):
             if self._numState == 1:
-                self._x0 = x0
+                self._x0 = numpy.array([x0])
             else:
                 raise InitializeError("More than one state in the defined system")
         else:

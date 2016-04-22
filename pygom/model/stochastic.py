@@ -95,8 +95,9 @@ class SimulateOdeModel(OperateOdeModel):
             the range of time points which we want to see the result of
         iteration: int
             number of iterations you wish to simulate
-        full_output: bool
-            if we want additional information
+        full_output: bool, optional
+            if we want additional information, Yall in the return,
+            defaults o false
 
         Returns
         -------
@@ -150,7 +151,7 @@ class SimulateOdeModel(OperateOdeModel):
         else:
             return numpy.mean(Y, axis=0)
 
-    def simulateJump(self, t, iteration, full_output=False):
+    def simulateJump(self, t, iteration, exact=False, full_output=False):
         '''
         Simulate the ode using stochastic simulation.  It switches
         between a first reaction method and a :math:`\tau`-leap
@@ -163,6 +164,8 @@ class SimulateOdeModel(OperateOdeModel):
             or the final time point
         iteration: int
             number of iterations you wish to simulate
+        exact: bool, optional
+            True if exact simulation is desired, defaults to False
         full_output: bool,optional
             if we want additional information, simT
 
@@ -275,7 +278,7 @@ class SimulateOdeModel(OperateOdeModel):
 
         return numpy.array(y)
 
-    def _jump(self, finalT, full_output=True):
+    def _jump(self, finalT, exact=False, full_output=True):
         '''
         Jumps from the initial time self._t0 to the input time finalT
         '''
@@ -305,24 +308,23 @@ class SimulateOdeModel(OperateOdeModel):
         # keep jumping, Whoop Whoop (put your hands up!).
         while t < finalT:
             try:
-#                 x, t, success, rates, jumpTimes = nextReaction(x, t, self._vMat, self._GMat,
-#                              rates, jumpTimes, self.transitionVector)
-                if numpy.min(x) > 10:
-                    x, t, success = tauLeap(x, t,
-                                            self._vMat, self._lambdaMat,
-                                            self.transitionVector,
-                                            self.transitionMean,
-                                            self.transitionVar)
-                    if success is False:
-                        x, t, success = firstReaction(x, t, self._vMat,
-                                                  self.transitionVector)
-#                         x, t, success = directReaction(x, t, self._vMat,
-#                                                   self.transitionVector)
-                else:
+                if exact:
                     x, t, success = firstReaction(x, t, self._vMat,
                                                   self.transitionVector)
-#                     x, t, success = directReaction(x, t, self._vMat,
-#                                                   self.transitionVector)
+                else:
+                    if numpy.min(x) > 10:
+                        x, t, success = tauLeap(x, t,
+                                                self._vMat, self._lambdaMat,
+                                                self.transitionVector,
+                                                self.transitionMean,
+                                                self.transitionVar)
+                        if success is False:
+                            x, t, success = firstReaction(x, t, self._vMat,
+                                                          self.transitionVector)
+                    else:
+                        x, t, success = firstReaction(x, t, self._vMat,
+                                                          self.transitionVector)
+
                 if success:
                     xList.append(x.copy())
                     tList.append(t)

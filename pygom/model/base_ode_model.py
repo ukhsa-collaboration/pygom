@@ -12,6 +12,7 @@ reMath = re.compile(r'[-+*\\]')
 reUnderscore = re.compile('^_')
 reSymbolName = re.compile('[A-Za-z_]+')
 reSymbolIndex = re.compile('.*\[([0-9]+)\]$')
+reSplitString = re.compile(',|\s')
 
 import sympy
 from sympy import symbols
@@ -112,9 +113,15 @@ class BaseOdeModel(object):
         self._GMat = None
 
         if stateList is not None:
+            if isinstance(stateList, str):
+                stateList = reSplitString.split(stateList)
+                stateList = filter(lambda x: not len(x.strip())==0, stateList)
             self.setStateList(stateList)
 
         if paramList is not None:
+            if isinstance(paramList, str):
+                paramList = reSplitString.split(paramList)
+                paramList = filter(lambda x: not len(x.strip())==0, paramList)
             self.setParamList(paramList)
 
         # this has to go after adding the parameters
