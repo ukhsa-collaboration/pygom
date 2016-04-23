@@ -62,7 +62,7 @@ def simplifyEquation(inputStr):
     else:
         return simplify(inputStr), False
     
-def checkEquation(_inputStrList, _listOfVariablesDict, _derivedVariableDict):
+def checkEquation(_inputStrList, _listOfVariablesDict, _derivedVariableDict, subsDerived=True):
     '''
     Convert a string into an equation and checks its validity.  Everything
     here is prepended with an underscore to ensure that it does not pollute
@@ -98,13 +98,30 @@ def checkEquation(_inputStrList, _listOfVariablesDict, _derivedVariableDict):
         # it returns a symbolic expression 
         _eqn = eval(_inputStr)
         # print _inputStr, type(_eqn), isinstance(_eqn, Expr)
-        # because these are the derived parameters, we need to substitute
-        # them back in the formula
-        if isinstance(_eqn, Expr):
-            for _key, _value in _derivedVariableDict.iteritems():
-                _eqn = eval("_eqn.subs(%s, %s)" % (_key, _value))
+        if subsDerived:
+            # because these are the derived parameters, we need to substitute
+            # them back in the formula
+            if isinstance(_eqn, Expr):
+                for _key, _value in _derivedVariableDict.iteritems():
+                    _eqn = eval("_eqn.subs(%s, %s)" % (_key, _value))
         _listOut.append(_eqn)
+
     if len(_listOut) == 1:
         return _listOut[0]
     else:
         return _listOut 
+
+def checkEquation2(_inputStr, _listOfVariablesStr):
+    '''
+    Uses a functional programming approach
+    '''
+    if hasattr(_inputStr, '__iter__'):
+        from functools import partial
+        f = partial(checkEquation2, _listOfVariablesStr=_listOfVariablesStr)
+        return map(f, _inputStr)
+    else:
+        for _s in _listOfVariablesStr:
+            exec("""%s = symbols('%s')""" % (_s, _s))
+        _eqn = eval(_inputStr)
+        return _eqn
+

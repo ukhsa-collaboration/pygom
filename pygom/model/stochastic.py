@@ -9,20 +9,18 @@
 __all__ = ['SimulateOdeModel']
 
 from .deterministic import OperateOdeModel
-from .stochastic_simulation import directReaction, firstReaction, nextReaction, tauLeap
+from .stochastic_simulation import firstReaction, tauLeap
+# from .stochastic_simulation import directReaction, nextReaction
 from .transition import TransitionType, Transition
 from ._model_errors import InputError, SimulationError
-from ._model_verification import simplifyEquation
-import ode_utils
+from ._model_verification import checkEquation, simplifyEquation
 from pygom.model import _ode_composition
+import ode_utils
 
 import numpy
 import sympy
 import scipy.stats
 import copy
-
-modulesE = ['numpy', 'mpmath', 'sympy']
-modulesH = ['mpmath', 'sympy']
 
 class SimulateOdeModel(OperateOdeModel):
     '''
@@ -97,8 +95,9 @@ class SimulateOdeModel(OperateOdeModel):
             the range of time points which we want to see the result of
         iteration: int
             number of iterations you wish to simulate
-        full_output: bool
-            if we want additional information
+        full_output: bool, optional
+            if we want additional information, Yall in the return,
+            defaults o false
 
         Returns
         -------
@@ -152,7 +151,7 @@ class SimulateOdeModel(OperateOdeModel):
         else:
             return numpy.mean(Y, axis=0)
 
-    def simulateJump(self, t, iteration, full_output=False):
+    def simulateJump(self, t, iteration, exact=False, full_output=False):
         '''
         Simulate the ode using stochastic simulation.  It switches
         between a first reaction method and a :math:`\tau`-leap
@@ -165,6 +164,8 @@ class SimulateOdeModel(OperateOdeModel):
             or the final time point
         iteration: int
             number of iterations you wish to simulate
+        exact: bool, optional
+            True if exact simulation is desired, defaults to False
         full_output: bool,optional
             if we want additional information, simT
 
@@ -224,7 +225,7 @@ class SimulateOdeModel(OperateOdeModel):
                 print "Failed somewhere"
                 raise SimulationError("Cannot run this in parallel")
 
-        except Exception as e:
+        except Exception as _e: # should do something about the exception?
             #print "Serial"
             simXList = list()
             simTList = list()
@@ -277,7 +278,7 @@ class SimulateOdeModel(OperateOdeModel):
 
         return numpy.array(y)
 
-    def _jump(self, finalT, full_output=True):
+    def _jump(self, finalT, exact=False, full_output=True):
         '''
         Jumps from the initial time self._t0 to the input time finalT
         '''
@@ -307,24 +308,23 @@ class SimulateOdeModel(OperateOdeModel):
         # keep jumping, Whoop Whoop (put your hands up!).
         while t < finalT:
             try:
-#                 x, t, success, rates, jumpTimes = nextReaction(x, t, self._vMat, self._GMat,
-#                              rates, jumpTimes, self.transitionVector)
-                if numpy.min(x) > 10:
-                    x, t, success = tauLeap(x, t,
-                                            self._vMat, self._lambdaMat,
-                                            self.transitionVector,
-                                            self.transitionMean,
-                                            self.transitionVar)
-                    if success is False:
-                        x, t, success = firstReaction(x, t, self._vMat,
-                                                  self.transitionVector)
-#                         x, t, success = directReaction(x, t, self._vMat,
-#                                                   self.transitionVector)
-                else:
+                if exact:
                     x, t, success = firstReaction(x, t, self._vMat,
                                                   self.transitionVector)
-#                     x, t, success = directReaction(x, t, self._vMat,
-#                                                   self.transitionVector)
+                else:
+                    if numpy.min(x) > 10:
+                        x, t, success = tauLeap(x, t,
+                                                self._vMat, self._lambdaMat,
+                                                self.transitionVector,
+                                                self.transitionMean,
+                                                self.transitionVar)
+                        if success is False:
+                            x, t, success = firstReaction(x, t, self._vMat,
+                                                          self.transitionVector)
+                    else:
+                        x, t, success = firstReaction(x, t, self._vMat,
+                                                          self.transitionVector)
+
                 if success:
                     xList.append(x.copy())
                     tList.append(t)
@@ -351,7 +351,7 @@ class SimulateOdeModel(OperateOdeModel):
             A matrix of dimension [number of state x number of state]
 
         '''
-        if self._transitionMatrixCompile is not None or self._hasNewTransition:
+        if self._transitionMatrixCompile is not None or self._hasNewTransition == False:
             return self._transitionMatrix
         else:
             return super(SimulateOdeModel, self)._computeTransitionMatrix()
@@ -431,7 +431,7 @@ class SimulateOdeModel(OperateOdeModel):
         if self._isDifficult:
             self._transitionMatrixCompile = self._SC.compileExprAndFormat(self._sp,
                                                                           self._transitionMatrix,
-                                                                          modules=modulesH)
+                                                                          modules='mpmath')
         else:
             self._transitionMatrixCompile = self._SC.compileExprAndFormat(self._sp,
                                                                           self._transitionMatrix)
@@ -497,7 +497,7 @@ class SimulateOdeModel(OperateOdeModel):
         if self._isDifficult:
             self._transitionVectorCompile = self._SC.compileExprAndFormat(self._sp,
                                                                           self._transitionVector,
-                                                                          modules=modulesH)
+                                                                          modules='mpmath')
         else:
             self._transitionVectorCompile = self._SC.compileExprAndFormat(self._sp,
                                                                           self._transitionVector)
@@ -595,7 +595,7 @@ class SimulateOdeModel(OperateOdeModel):
         if self._isDifficult:
             self._birthDeathRateCompile = self._SC.compileExprAndFormat(self._sp,
                                                                         self._birthDeathRate,
-                                                                        modules=modulesH)
+                                                                        modules='mpmath')
         else:
             self._birthDeathRateCompile = self._SC.compileExprAndFormat(self._sp,
                                                                         self._birthDeathRate)
@@ -764,10 +764,10 @@ class SimulateOdeModel(OperateOdeModel):
         if self._isDifficult:
             self._transitionMeanCompile = self._SC.compileExprAndFormat(self._sp,
                                                                         self._transitionMean,
-                                                                        modules=modulesH)
+                                                                        modules='mpmath')
             self._transitionVarCompile = self._SC.compileExprAndFormat(self._sp,
                                                                        self._transitionVar,
-                                                                       modules=modulesH)
+                                                                       modules='mpmath')
         else:
             self._transitionMeanCompile = self._SC.compileExprAndFormat(self._sp, self._transitionMean)
             self._transitionVarCompile = self._SC.compileExprAndFormat(self._sp, self._transitionVar)
@@ -788,9 +788,11 @@ class SimulateOdeModel(OperateOdeModel):
         '''
         transitionList = self.getTransitionsFromOde()
         bdList = self.getBDFromOde()
+
         return SimulateOdeModel(
                                 [str(s) for s in self._stateList],
                                 [str(p) for p in self._paramList],
+                                derivedParamList=self._derivedParamEqn,
                                 transitionList=transitionList,
                                 birthDeathList=bdList
                                 )
@@ -801,6 +803,7 @@ class SimulateOdeModel(OperateOdeModel):
         the odes.  All the elements are of TransitionType.T
         '''
         M = self._generateTransitionMatrix()
+
         transitionList = list()
         for i, s1 in enumerate(self._stateList):
             for j, s2 in enumerate(self._stateList):
@@ -813,30 +816,34 @@ class SimulateOdeModel(OperateOdeModel):
 
         return transitionList
     
-    def getBDFromOde(self, A=None, transitionExpressionList=None):
+    def getBDFromOde(self, A=None):
         '''
         Returns a list of:class:`Transition` from this object by unrolling
         the odes.  All the elements are of TransitionType.B or
         TransitionType.D
         '''
         if A is None:
-            A = super(SimulateOdeModel, self).getOde()
+            if not ode_utils._noneOrEmptyList(self._odeList):
+                eqnList = [t.getEquation() for t in self._odeList]
+                A = sympy.Matrix(checkEquation(eqnList, *self._getListOfVariablesDict(), subsDerived=False))
+            else:
+                raise Exception("Object was not initialized using a set of ode")
+            # A = super(SimulateOdeModel, self).getOde()
 
-        if transitionExpressionList is None:
-            transitionList = _ode_composition.getMatchingExpressionVector(A, True)
-        else:
-            transitionList = transitionExpressionList
+        bdList, termList = _ode_composition.getUnmatchedExpressionVector(A, True)
 
-        bdList = _ode_composition.getUnmatchedExpressionVector(A, False)
         if len(bdList) > 0:
-            M = self._generateTransitionMatrix(A, transitionList)
+            M = self._generateTransitionMatrix(A)
 
-            # reduce the original set of ode to only birth and death process remaining
-            M1 = M - M.transpose()
-            diffA = sympy.zeros(self._numState,1)
-            for i in range(self._numState):
-                a = sympy.simplify(sum(M1[i,:]))
-                diffA[i] = sympy.simplify(a + A[i])
+            # # reduce the original set of ode to only birth and death process remaining
+            # M1 = M - M.transpose()
+            # diffA = sympy.zeros(self._numState,1)
+            # for i in range(self._numState):
+            #     a = sympy.simplify(sum(M1[i,:]))
+            #     diffA[i] = sympy.simplify(a + A[i])
+
+            A1 = _ode_composition.pureTransitionToOde(M)
+            diffA = sympy.simplify(A - A1)
 
             # get our birth and death process
             bdListUnroll = list()
@@ -853,13 +860,13 @@ class SimulateOdeModel(OperateOdeModel):
                             bdListUnroll.append(Transition(origState=states[i],
                                                 equation=str(b),
                                                 transitionType=TransitionType.B))
-                    a -= b
+                        a -= b
             
             return bdListUnroll
         else:
             return []
 
-    def _generateTransitionMatrix(self, A=None, transitionExpressionList=None):
+    def _generateTransitionMatrix(self, A=None): #, transitionExpressionList=None):
         '''
         Finds the transition matrix from the set of ode.  It is 
         important to note that although some of the functions used
@@ -869,22 +876,16 @@ class SimulateOdeModel(OperateOdeModel):
         the equation rather than the states.
         '''
         if A is None:
-            A = super(SimulateOdeModel, self).getOde()
+            if not ode_utils._noneOrEmptyList(self._odeList):
+                eqnList = [t.getEquation() for t in self._odeList]
+                A = sympy.Matrix(checkEquation(eqnList, *self._getListOfVariablesDict(), subsDerived=False))
+            else:
+                raise Exception("Object was not initialized using a set of ode")
 
-        if transitionExpressionList is None:
-            transitionList = _ode_composition.getMatchingExpressionVector(A, True)
-        else:
-            transitionList = transitionExpressionList
-            
-        B = _ode_composition.generateDirectedDependencyGraph(A, transitionList)
-        numRow, numCol = B.shape
-
-        M = sympy.zeros(numRow)
-        for j in range(numCol):
-            i = B[:,j].argmax()
-            k = B[:,j].argmin()
-            M[i,k] += transitionList[j][0]
-
+        bdList, termList = _ode_composition.getUnmatchedExpressionVector(A, True)
+        fx = _ode_composition.stripBDFromOde(A, bdList)
+        states = [s for s in self._iterStateList()]
+        M, remainTermList = _ode_composition.odeToPureTransition(fx, states, True)
         return M
 
     ########################################################################
@@ -899,10 +900,14 @@ class SimulateOdeModel(OperateOdeModel):
 
         Parameters
         ----------
+        t: array like
+            time we wish to consider
+        iteration: int
+            number of iterations
         paramEval: object
-            This can be a dictionary, tuple, list, whatever type that we take in as parameters
-
+            this can be a dictionary, tuple, list, whatever type that we take in as parameters
         '''
+
         try:
             from IPython.parallel import Client
             rc = Client(profile='mpi')
@@ -911,14 +916,6 @@ class SimulateOdeModel(OperateOdeModel):
             #print "The number of cores = " +str(numCore)
 
             dview.block = True
-            # information required to setup the ode object
-#             dview.push(dict(stateList=self._stateList,
-#                             paramList=self._paramList,
-#                             derivedParamList=self._derivedParamList,
-#                             transitionList=self._transitionList,
-#                             birthDeathList=self._birthDeathList,
-#                             odeList=self._odeList))
-
             # initial conditions
             dview.push(dict(x0=self._x0, t0=self._t0, t=t, paramEval=paramEval))
             # and the number of iteration, we always run more or equal to the
@@ -926,8 +923,6 @@ class SimulateOdeModel(OperateOdeModel):
             dview.push(dict(iteration=iteration/numCore + 1))
 
             # now run the commands that will initialize the models
-            # dview.execute('from pygom import SimulateOdeModel', block=True)
-            # dview.execute('odeS = SimulateOdeModel([str(i) for i in stateList],[str(i) for i in paramList],derivedParamList,transitionList,birthDeathList,odeList)', block=True)
             dview.execute('from pygom import OperateOdeModel, SimulateOdeModel, Transition, ODEVariable', block=True)
             dview.execute("ode = "+repr(self), block=True)
             dview.execute('ode.setInitialValue(x0,t0).setParameters(paramEval)', block=True)

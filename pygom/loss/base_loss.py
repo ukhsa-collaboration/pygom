@@ -70,10 +70,6 @@ class BaseLoss(object):
             n, p = y.shape
 
         assert len(t) == n, "Number of observation and time must have equal length"
-        # if len(t) == len(y):
-        #     pass
-        # else:
-        #     raise Exception("Number of observation and time must have equal length")
 
         # TODO: think about whether this should be a copy
         # there are pros and cons with referencing or copy
@@ -191,12 +187,12 @@ class BaseLoss(object):
 
     def _getModelStr(self):
         modelStr = "(%s, %s, %s, %s, %s, %s, %s" % (self._theta.tolist(), 
-                                                self._ode, 
-                                                self._x0.tolist(),
-                                                self._t0, 
-                                                self._observeT.tolist(),
-                                                self._y.tolist(),
-                                                self._stateName)
+                                                    self._ode, 
+                                                    self._x0.tolist(),
+                                                    self._t0, 
+                                                    self._observeT.tolist(),
+                                                    self._y.tolist(),
+                                                    self._stateName)
         if self._stateWeight is not None:
             modelStr += ", %s" % self._stateWeight.tolist()
         if self._targetParam is not None:

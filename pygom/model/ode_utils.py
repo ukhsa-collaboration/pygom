@@ -13,11 +13,9 @@ from pygom.model._model_errors import ArrayError, ExpressionErrror, InputError, 
 
 import numpy
 import math
-import matplotlib.pyplot
+# import matplotlib.pyplot
 import scipy.sparse, scipy.integrate
 import sympy
-# from sympy.printing.theanocode import theano_function
-# from sympy.utilities.autowrap import ufuncify
 from sympy.utilities.lambdify import lambdify
 from sympy.utilities.autowrap import autowrap
 
@@ -350,6 +348,8 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
     If we have 5 states or more, it will always be arrange such
     that it has 3 columns.
     '''
+
+    import matplotlib.pyplot
 
     assert isinstance(solution, numpy.ndarray), "Expecting an numpy.ndarray"
     # if not isinstance(solution, numpy.ndarray):
@@ -805,19 +805,8 @@ class compileCode(object):
         a, compileType = self.compileExpr(inputSymb, inputExpr, backend, True)
         numRow = inputExpr.rows
         numCol = inputExpr.cols
+
         # define the different types of output
-
-        # applicable when the output is already an numpy.ndarray
-        # Defining a set of closures
-#         def outVec1(y): return a(*y).ravel()
-#         def outMat1(y): return a(*y)
-#         # if the output is matrix
-#         def outVec2(y): return numpy.asarray(a(*y)).ravel()
-#         def outMat2(y): return numpy.asarray(a(*y))
-#         # if it is something unknown, i.e. mpmath objects
-#         def outVec3(y): return numpy.array(a(*y).tolist(), float).ravel()
-#         def outMat3(y): return numpy.array(a(*y).tolist(), float)
-
         if outType is None:
             if numRow == 1 or numCol == 1:
                 outType = "vec"
@@ -826,18 +815,14 @@ class compileCode(object):
 
         if outType.lower() == "vec":
             if compileType == 'numpy':
-                return lambda x: a(*x).ravel() # outVec1
-#             elif type(b) == numpy.matrixlib.defmatrix.matrix:
-#                 return outVec2
+                return lambda x: a(*x).ravel()
             else:
-                return lambda x: numpy.array(a(*x).tolist(), float).ravel() # outVec3
+                return lambda x: numpy.array(a(*x).tolist(), float).ravel()
         elif outType.lower() == "mat":
             if compileType == 'numpy':
-                return lambda x: a(*x) # outMat1
-#             elif type(b) == numpy.matrixlib.defmatrix.matrix:
-#                 return outMat2
+                return lambda x: a(*x)
             else:
-                return lambda x: numpy.array(a(*x).tolist(), float) # outMat3
+                return lambda x: numpy.array(a(*x).tolist(), float)
         else:
             raise RuntimeError("Specified type of output not recognized")
 
@@ -968,3 +953,14 @@ def strOrList(x):
     else:
         raise InputError("Expecting a string or list")
 
+
+def _noneOrEmptyList(x):
+    y = False
+    if x is not None:
+        if hasattr(x, '__iter__'):
+            if len(x) == 0:
+                y = True
+    else:
+        y = True
+            
+    return y

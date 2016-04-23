@@ -19,13 +19,10 @@ import sympy
 from sympy.core.function import diff
 import numpy
 import scipy.linalg
-import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
+# import matplotlib.image as mpimg
+# import matplotlib.pyplot as plt
 
 import copy, io
-
-modulesE = ['numpy', 'mpmath', 'sympy']
-modulesH = ['mpmath', 'sympy']
 
 class OperateOdeModel(BaseOdeModel):
     '''
@@ -129,6 +126,7 @@ class OperateOdeModel(BaseOdeModel):
     def __repr__(self):
         return "OperateOdeModel"+self._getModelStr()
         
+
     ########################################################################
     #
     # Information about the ode
@@ -181,7 +179,7 @@ class OperateOdeModel(BaseOdeModel):
     #
     ########################################################################
 
-    def getOde(self):
+    def getOde(self, paramSub=False):
         '''
         Find the algebraic equations of the ode system.
 
@@ -199,7 +197,10 @@ class OperateOdeModel(BaseOdeModel):
         else:
             pass
 
-        return self._ode
+        if paramSub:
+            return self._ode.subs(self._parameters)
+        else:
+            return self._ode
 
     def printOde(self,latexOutput=False):
 
@@ -259,7 +260,7 @@ class OperateOdeModel(BaseOdeModel):
         if self._isDifficult:
             self._odeCompile = self._SC.compileExprAndFormat(self._sp,
                                                              self._ode,
-                                                             modules=modulesH,
+                                                             modules='mpmath',
                                                              outType="vec")
         else:
             self._odeCompile = self._SC.compileExprAndFormat(self._sp,
@@ -466,17 +467,24 @@ class OperateOdeModel(BaseOdeModel):
         '''
         if self._Jacobian is None:
             self.getOde()
-            self._Jacobian = sympy.zeros(self._numState, self._numState)
+            self._Jacobian = self._ode.jacobian([s for s in self._iterStateList()])
+            for i in range(self._numState):
+                for j in range(self._numState):
+                    if self._Jacobian[i,j] != 0:
+                        self._Jacobian[i,j], isDifficult = simplifyEquation(self._Jacobian[i,j])
+                        self._isDifficult = self._isDifficult or isDifficult
+
+            # self._Jacobian = sympy.zeros(self._numState, self._numState)
             
-            for i, eqn in enumerate(self._ode):# in range(self._numState):
-                for j, s in enumerate(self._iterStateList()):
-                    self._Jacobian[i,j], isDifficult = simplifyEquation(diff(eqn, s, 1))
-                    self._isDifficult = self._isDifficult or isDifficult
+            # for i, eqn in enumerate(self._ode):
+            #     for j, s in enumerate(self._iterStateList()):
+            #         self._Jacobian[i,j], isDifficult = simplifyEquation(diff(eqn, s, 1))
+            #         self._isDifficult = self._isDifficult or isDifficult
 
         if self._isDifficult:
             self._JacobianCompile = self._SC.compileExprAndFormat(self._sp,
                                                                   self._Jacobian,
-                                                                  modules=modulesH)
+                                                                  modules='mpmath')
         else:
             self._JacobianCompile = self._SC.compileExprAndFormat(self._sp,
                                                                   self._Jacobian)
@@ -665,7 +673,7 @@ class OperateOdeModel(BaseOdeModel):
         if self._isDifficult:
             self._diffJacobianCompile = self._SC.compileExprAndFormat(self._sp,
                                                                       self._diffJacobian,
-                                                                      modules=modulesH)
+                                                                      modules='mpmath')
         else:
             self._diffJacobianCompile = self._SC.compileExprAndFormat(self._sp,
                                                                       self._diffJacobian)
@@ -740,7 +748,7 @@ class OperateOdeModel(BaseOdeModel):
         if self._isDifficult:
             self._GradCompile = self._SC.compileExprAndFormat(self._sp,
                                                               self._Grad,
-                                                              modules=modulesH,
+                                                              modules='mpmath',
                                                               outType="mat")
         else:
             self._GradCompile = self._SC.compileExprAndFormat(self._sp,
@@ -844,7 +852,7 @@ class OperateOdeModel(BaseOdeModel):
         if self._isDifficult:
             self._GradJacobianCompile = self._SC.compileExprAndFormat(self._sp,
                                                                       self._GradJacobian,
-                                                                      modules=modulesH)
+                                                                      modules='mpmath')
         else:
             self._GradJacobianCompile = self._SC.compileExprAndFormat(self._sp,
                                                                       self._GradJacobian)
@@ -1894,7 +1902,7 @@ class OperateOdeModel(BaseOdeModel):
             self._x0 = numpy.array(x0)
         elif isinstance(x0, (int, float)):
             if self._numState == 1:
-                self._x0 = x0
+                self._x0 = numpy.array([x0])
             else:
                 raise InitializeError("More than one state in the defined system")
         else:

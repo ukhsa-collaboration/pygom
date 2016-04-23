@@ -12,6 +12,7 @@ reMath = re.compile(r'[-+*\\]')
 reUnderscore = re.compile('^_')
 reSymbolName = re.compile('[A-Za-z_]+')
 reSymbolIndex = re.compile('.*\[([0-9]+)\]$')
+reSplitString = re.compile(',|\s')
 
 import sympy
 from sympy import symbols
@@ -112,9 +113,15 @@ class BaseOdeModel(object):
         self._GMat = None
 
         if stateList is not None:
+            if isinstance(stateList, str):
+                stateList = reSplitString.split(stateList)
+                stateList = filter(lambda x: not len(x.strip())==0, stateList)
             self.setStateList(stateList)
 
         if paramList is not None:
+            if isinstance(paramList, str):
+                paramList = reSplitString.split(paramList)
+                paramList = filter(lambda x: not len(x.strip())==0, paramList)
             self.setParamList(paramList)
 
         # this has to go after adding the parameters
@@ -122,24 +129,29 @@ class BaseOdeModel(object):
         # base parameters.
         # Making the distinction here because it makes a
         # difference when inferring the parameters of the variables
-        if derivedParamList is not None:
+        if not ode_utils._noneOrEmptyList(derivedParamList):
             self.setDerivedParamList(derivedParamList)
-            self._derivedParamEqn += derivedParamList
+        # if derivedParamList is not None:
 
-        if transitionList is not None:
+        # if transitionList is not None:
+        if not ode_utils._noneOrEmptyList(transitionList):
             self.setTransitionList(transitionList)
 
-        if birthDeathList is not None:
+        # if birthDeathList is not None:
+        if not ode_utils._noneOrEmptyList(birthDeathList):
             self.setBirthDeathList(birthDeathList)
 
-        if odeList is not None:
+        # if odeList is not None:
+        if not ode_utils._noneOrEmptyList(odeList):
             # we have a set of ode explicitly defined!
             if len(odeList) > 0:
                 # tests on validity of using odeList
-                if transitionList is not None:
+                # if transitionList is not None:
+                if not ode_utils._noneOrEmptyList(transitionList):
                     raise InputError("Transition equations detected even though "
                                      +"the set of ode is explicitly defined")
-                if birthDeathList is not None:
+                # if birthDeathList is not None:
+                if not ode_utils._noneOrEmptyList(birthDeathList):
                     raise InputError("Birth Death equations detected even though "
                                      +"the set of ode is explicitly defined")
 
@@ -308,7 +320,7 @@ class BaseOdeModel(object):
             A list which contains tuple of two elements, (:mod:`sympy.core.symbol`, numeric)
 
         '''
-        return self._paramters
+        return self._parameters
 
     def setStateValue(self, state):
         '''
@@ -690,6 +702,7 @@ class BaseOdeModel(object):
         else:
             raise InputError("Unexpected input type for symbol")
 
+        assert inputStr!='lambda', "lambda is a reserved keyword"
         tempSym = eval("symbols('%s', real=%s)" % (inputStr, isReal))
         
         if isinstance(tempSym, sympy.Symbol):
@@ -747,6 +760,7 @@ class BaseOdeModel(object):
                                 self._derivedParamList, self._derivedParamDict, 
                                 self._numDerivedParam)
         self._hasNewTransition = True
+        self._derivedParamEqn += [(name, eqn)]
         return None
 
     def _addVariable(self, symbol, varObj, objList, objDict, objCounter):
@@ -1007,6 +1021,7 @@ class BaseOdeModel(object):
             eqnList.append(t.getEquation())
         
         eqnList = checkEquation(eqnList, *self._getListOfVariablesDict())
+        eqnList = eqnList if hasattr(eqnList, '__iter__') else [eqnList]
         return fromList, toList, eqnList
     
     def _getAllTransition(self, pureTransitions=False):
@@ -1130,3 +1145,4 @@ class BaseOdeModel(object):
                 B[i,j] = A[i,j]
 
         return B
+
