@@ -10,7 +10,7 @@
 
 #__all__ = [] # don't really want to export this
 
-import copy
+import copy, functools
 import scipy.integrate, scipy.interpolate, scipy.sparse, scipy.optimize
 import numpy
 import gc
@@ -99,7 +99,7 @@ class BaseLoss(object):
             try:
                 solution = self._ode.setInitialValue(x0, t0).integrate2(t)
             except Exception as e:
-                print e
+                print(e)
                 if t0 == t[1]:
                     raise InputError("First time point t[1] is equal to t0")
                 else:
@@ -697,8 +697,8 @@ class BaseLoss(object):
 
         # first we want to find out the number of initial values required to fill the
         # initial conditins
-        numSens = nS * nP
-        numFF = nS * nP * nP
+        numSens = nS*nP
+        numFF = nS*nP*nP
 
         initialStateSens = numpy.append(self._x0, numpy.zeros(numSens + numFF))
         sAndOutAll = ode_utils.integrateFuncJac(self._ode.odeAndForwardforwardT,
@@ -714,7 +714,7 @@ class BaseLoss(object):
         else:
             solutionAll = sAndOutAll
         # the starting index for which the forward forward sensitivities are stored
-        baseIndexHess = nS + nS * nP
+        baseIndexHess = nS + nS*nP
 
         diffLoss = self._lossObj.diffLoss(solutionAll[:,self._stateIndex])
 
@@ -785,7 +785,7 @@ class BaseLoss(object):
 
         '''
 
-        jac,output = self.jac(theta=theta, full_output=True, intName=intName)
+        jac, output = self.jac(theta=theta, full_output=True, intName=intName)
         sens = output['sens']
         diffLoss = output['diffLoss']
         JTJ = self._sensToJTJWithoutIndex(sens)
@@ -832,7 +832,7 @@ class BaseLoss(object):
 
         '''
 
-        jac,output = self.jac(theta=theta, full_output=True, intName=intName)
+        jac, output = self.jac(theta=theta, full_output=True, intName=intName)
         sens = output['sens']
         JTJ = self._sensToJTJWithoutIndex(sens, output['resid'])
 
@@ -919,8 +919,8 @@ class BaseLoss(object):
             solution = self._getSolution(theta)
             return self._lossObj.diffLoss(solution)
         except Exception as e:
-            print e
-            print "parameters = " +str(theta)
+            print(e)
+            print("parameters = " +str(theta))
             return numpy.nan_to_num((numpy.ones(self._y.shape)*numpy.inf))
 
     def residual(self, theta=None):
@@ -953,7 +953,7 @@ class BaseLoss(object):
             solution = self._getSolution(theta)
             return self._lossObj.residual(solution)
         except Exception as e:
-            print e
+            print(e)
             return numpy.nan_to_num((numpy.ones(self._y.shape)*numpy.inf))
 
     ############################################################
@@ -1024,8 +1024,8 @@ class BaseLoss(object):
             solution = self._getSolution()
             return self._lossObj.diffLoss(solution)
         except Exception as e:
-            print e
-            print "parameters = " +str(theta)
+            print(e)
+            print("parameters = " +str(theta))
             return numpy.nan_to_num((numpy.ones(self._y.shape)*numpy.inf))
 
     def residualIV(self, theta=None):
@@ -1060,7 +1060,7 @@ class BaseLoss(object):
             solution = self._getSolution()
             return self._lossObj.residual(solution)
         except Exception as e:
-            print e
+            print(e)
             return numpy.nan_to_num((numpy.ones(self._y.shape)*numpy.inf))
 
     ############################################################
@@ -1093,13 +1093,13 @@ class BaseLoss(object):
         assert n == len(diffLoss), ("Length of sensitivity must equal to the " +
                                     "derivative of the loss function")
                             
-        numOut = p/numS # number of out parameters
+        numOut = int(p/numS) # number of out parameters
 
         sens = numpy.reshape(sens, (n, numS, numOut), 'F')
         for j in range(numOut):
             sens[:,:,j] *= self._stateWeight
 
-        grad = reduce(numpy.add,map(numpy.dot, diffLoss, sens)).ravel()
+        grad = functools.reduce(numpy.add,map(numpy.dot, diffLoss, sens)).ravel()
 
         return grad
 
@@ -1125,7 +1125,7 @@ class BaseLoss(object):
         numS = len(self._stateName)
         n,p = sens.shape
         # obviously divide through to find out the number of parameters we are inferring
-        numOut = p / numS
+        numOut = int(p/numS)
 
         # define our holder accordingly
         J = numpy.zeros((numOut, numOut))
@@ -1155,7 +1155,7 @@ class BaseLoss(object):
 
     def fit(self, x, lb=None, ub=None, A=None, b=None, disp=False, full_output=False):
         '''
-        Find the estimates given the data given an initial guess x.  Note that there
+        Find the estimates given the data and an initial guess x.  Note that there
         is no guarantee that the estimation procedure is successful.  It is
         recommended to at least supply box constraints, i.e. lower and
         upper bounds
@@ -1586,7 +1586,7 @@ class BaseLoss(object):
         '''
         Print x, the parameters
         '''
-        print x
+        print(x)
 
     def thetaCallBack2(self, x, f):
         '''
@@ -1600,7 +1600,7 @@ class BaseLoss(object):
         f:
             f(x)
         '''
-        print "f(x) = " +str(f)+ " ; x = " + str(x)
+        print("f(x) = " +str(f)+ " ; x = " + str(x))
 
     def _selfInner(self, A):
         return A.T.dot(A)

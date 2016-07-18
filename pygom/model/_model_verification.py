@@ -90,7 +90,7 @@ def checkEquation(_inputStrList, _listOfVariablesDict, _derivedVariableDict, sub
                 else:
                     _isReal = True if _d[_s].is_real else False
                     exec("""%s = symbols('%s', real=%s)""" % (_s, _s, _isReal))
-        for _key, _value in _derivedVariableDict.iteritems():
+        for _key, _value in _derivedVariableDict.items():
             _isReal = True if _value.is_real else False
             exec("""%s = symbols('%s', real=%s)""" % (_key, _key, _isReal))
         # if the evaluation fails then there is a problem with the
@@ -102,7 +102,7 @@ def checkEquation(_inputStrList, _listOfVariablesDict, _derivedVariableDict, sub
             # because these are the derived parameters, we need to substitute
             # them back in the formula
             if isinstance(_eqn, Expr):
-                for _key, _value in _derivedVariableDict.iteritems():
+                for _key, _value in _derivedVariableDict.items():
                     _eqn = eval("_eqn.subs(%s, %s)" % (_key, _value))
         _listOut.append(_eqn)
 

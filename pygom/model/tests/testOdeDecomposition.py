@@ -17,7 +17,7 @@ class TestOdeDecomposition(TestCase):
         ode2 = ode.returnObjWithTransitionsAndBD()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.getOde() - ode2.getOde()))
 
-        if numpy.any(numpy.array(diffEqZero) == False):
+        if numpy.any(numpy.array(list(diffEqZero)) == False):
             raise Exception("Simple: SIR Decomposition failed")
 
     def test_hard(self):
@@ -40,7 +40,7 @@ class TestOdeDecomposition(TestCase):
         ode2 = ode.returnObjWithTransitionsAndBD()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.getOde() - ode2.getOde()))
 
-        if numpy.any(numpy.array(diffEqZero) == False):
+        if numpy.any(numpy.array(list(diffEqZero)) == False):
             raise Exception("Hard: SLIARD Decomposition failed")
 
 
@@ -65,7 +65,7 @@ class TestOdeDecomposition(TestCase):
         ode2 = ode.returnObjWithTransitionsAndBD()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.getOde() - ode2.getOde()))
 
-        if numpy.any(numpy.array(diffEqZero) == False):
+        if numpy.any(numpy.array(list(diffEqZero)) == False):
             raise Exception("Birth Death: SIR+BD Decomposition failed")
     
 
@@ -89,5 +89,5 @@ class TestOdeDecomposition(TestCase):
         ode2 = ode1.returnObjWithTransitionsAndBD()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.getOde() - ode2.getOde()))
         
-        if numpy.any(numpy.array(diffEqZero) == False):
+        if numpy.any(numpy.array(list(diffEqZero)) == False):
             raise Exception("FAILED!")

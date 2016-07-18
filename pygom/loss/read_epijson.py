@@ -1,7 +1,8 @@
 import dateutil.parser
-import json
+import json, functools
 import pandas as pd
 import numpy as np
+
 
 def epijsonToDataFrame(inData, full_output=False):
     '''
@@ -31,20 +32,22 @@ def epijsonToDataFrame(inData, full_output=False):
         except:
             with open(inData, 'r') as fp:
                 epijson = json.load(fp)
+    elif isinstance(inData, bytes):
+        epijson = json.loads(inData.decode())
     else:
         epijson = inData
 
     allRecords = checkEpijsonFormat(epijson)
     
     # obtain the data into (event, date)
-    dataTuple = map(lambda x: map(lambda x1: (x1['name'], x1['date']), x), allRecords)
+    dataTuple = map(lambda x: list(map(lambda x1: (x1['name'], x1['date']), x)), allRecords)
 
     # combining the records as information of the individual is
     # unimportant from pygom point of view
-    dataTuple = reduce(lambda x,y: x+y, dataTuple)
+    dataTuple = functools.reduce(lambda x,y: x+y, list(dataTuple))
 
     # parse the dates under ISO 8601
-    data = map(lambda (x,y): (x, _parseDate(y)), dataTuple)
+    data = map(lambda x_y: (x_y[0], _parseDate(x_y[1])), dataTuple)
     # making sure that we have time zone information
 
     # we put the data info in a dict format to
@@ -115,7 +118,7 @@ def checkEpijsonFormat(epijson, returnRecord=True):
 
     # verify the uniqueness of the id in each record
     # this is relatively unimportant
-    y1 = map(lambda x: x['events'], y)
+    y1 = list(map(lambda x: x['events'], y))
     assert sum(map(_checkUniqueID, y1)) == len(y1), "Events id not unique in records"
 
     return y1 if returnRecord else True
@@ -125,6 +128,6 @@ def _checkUniqueID(y):
     Check if the input y is a set or a bag.  Returns
     True if it is a set, False otherwise
     '''
-    ids = map(lambda x: x['id'], y)    
+    ids = list(map(lambda x: x['id'], y))    
     return len(ids) == len(set(ids))
 

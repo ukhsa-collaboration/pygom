@@ -24,7 +24,7 @@ from .transition import Transition, TransitionType
 from ._model_errors import InputError, OutputError
 from ._model_verification import checkEquation
 from .ode_variable import ODEVariable
-import ode_utils
+from . import ode_utils
 
 class BaseOdeModel(object):
     '''
@@ -115,13 +115,13 @@ class BaseOdeModel(object):
         if stateList is not None:
             if isinstance(stateList, str):
                 stateList = reSplitString.split(stateList)
-                stateList = filter(lambda x: not len(x.strip())==0, stateList)
+                stateList = list(filter(lambda x: not len(x.strip())==0, stateList))
             self.setStateList(stateList)
 
         if paramList is not None:
             if isinstance(paramList, str):
                 paramList = reSplitString.split(paramList)
-                paramList = filter(lambda x: not len(x.strip())==0, paramList)
+                paramList = list(filter(lambda x: not len(x.strip())==0, paramList))
             self.setParamList(paramList)
 
         # this has to go after adding the parameters
@@ -171,7 +171,7 @@ class BaseOdeModel(object):
                                                  self._birthDeathList,
                                                  self._odeList)
         if self._parameters is not None:
-            modelStr += ".setParameters(%s)" % {str(key): value for key, value in self._parameters.iteritems()}
+            modelStr += ".setParameters(%s)" % {str(key): value for key, value in self._parameters.items()}
         return modelStr
 
     ########################################################################
@@ -226,8 +226,11 @@ class BaseOdeModel(object):
                             paramOut[indexTemp] = valueTemp
                 # we are happy... I guess
                 elif ode_utils.isNumeric(parameters[0]):
-                    for i in range(0, len(parameters)):
-                        paramOut[self._paramList[i]] = parameters[i]
+                    for i in range(len(parameters)):
+                        if isinstance(self._paramList[i], ODEVariable):
+                            paramOut[str(self._paramList[i])] = parameters[i]
+                        else:
+                            paramOut[self._paramList[i]] = parameters[i]
                 else:
                     raise InputError("Input type should either be a list of tuple with "
                                      +"elements (str,numeric) or a list of numeric value")
@@ -306,7 +309,7 @@ class BaseOdeModel(object):
         #     self._paramValue = dict()
         self._paramValue = [0] * len(self._paramList)
 
-        for k, v in self._parameters.iteritems():
+        for k, v in self._parameters.items():
             index = self.getParamIndex(k)
             self._paramValue[index] = v
 
@@ -983,7 +986,7 @@ class BaseOdeModel(object):
         Information unrolling from vector to sympy in state
         '''
         stateOut = list()
-        if self._stateList == 1:
+        if len(self._stateList) == 1:
             if ode_utils.isNumeric(state):
                 stateOut.append((self._stateList[0], state))
             else:
@@ -1061,7 +1064,7 @@ class BaseOdeModel(object):
     ########################################################################
 
     def _extractParamIndex(self, inputStr):
-        if self._paramDict.has_key(inputStr):
+        if inputStr in self._paramDict:
             return self._paramList.index(self._paramDict[inputStr])
         else:
             raise InputError("Input parameter: "+inputStr+ " does not exist")
@@ -1070,7 +1073,7 @@ class BaseOdeModel(object):
         if isinstance(inputStr, ODEVariable):
             inputStr = inputStr.ID
 
-        if self._paramDict.has_key(inputStr):
+        if inputStr in self._paramDict:
             return self._paramDict[inputStr]
         else:
             raise InputError("Input parameter: "+inputStr+ " does not exist")
@@ -1098,12 +1101,12 @@ class BaseOdeModel(object):
         if isinstance(inputStr, ODEVariable):
             inputStr = inputStr.ID
 
-        if self._stateDict.has_key(inputStr):
+        if inputStr in self._stateDict:
             return self._stateDict[inputStr]
         else:
             symName = reSymbolName.search(inputStr)
             if symName is not None:
-                if self._vectorStateDict.has_key(symName.group()):
+                if symName.group() in self._vectorStateDict:
                     index = reSymbolIndex.findall(inputStr) 
                     if index is not None and len(index) == 1:
                         return self._vectorStateDict[symName.group()][int(index[0])]

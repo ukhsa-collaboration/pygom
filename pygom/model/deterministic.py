@@ -11,8 +11,10 @@ __all__ = ['OperateOdeModel']
 from .base_ode_model import BaseOdeModel
 from ._model_errors import ArrayError, InputError, IntegrationError, InitializeError
 from ._model_verification import simplifyEquation
-import ode_utils as myUtil
-from pygom.model import _ode_composition
+# import ode_utils as myUtil
+# from .ode_utils import shapeAdjust, compileCode
+from . import ode_utils
+from . import _ode_composition
 
 # import sympy.core.numbers
 import sympy
@@ -109,10 +111,10 @@ class OperateOdeModel(BaseOdeModel):
         # operate in the matrix form if possible as it takes up less
         # memory when operating, but the output is required to be of
         # the vector form
-        self._SAUtil = myUtil.shapeAdjust(self._numState, self._numParam)
+        self._SAUtil = ode_utils.shapeAdjust(self._numState, self._numParam)
         # compile the code.  Note that we need the class because we
         # compile both the formatted and unformatted version.
-        self._SC = myUtil.compileCode()
+        self._SC = ode_utils.compileCode()
 
     def __eq__(self, other):
         if isinstance(other, OperateOdeModel):
@@ -154,7 +156,7 @@ class OperateOdeModel(BaseOdeModel):
         # a really stupid way to determining whether it is linear.
         # have not figured out a better way yet...
         a = self._Jacobian.atoms()
-        for s in self._stateList:
+        for s in self._stateDict.keys():
             if s in a:
                 isLinear = False
 #         for i in range(0, self._numState):
@@ -1926,11 +1928,11 @@ class OperateOdeModel(BaseOdeModel):
 
         '''
 
-        if myUtil.isNumeric(t0):
+        if ode_utils.isNumeric(t0):
             self._t0 = t0
-        elif myUtil.isListLike(t0):
+        elif ode_utils.isListLike(t0):
             if len(t0) == 1:
-                if myUtil.isNumeric(t0[0]):
+                if ode_utils.isNumeric(t0[0]):
                     self._t0 = t0[0]
                 else:
                     raise InitializeError("Initial time should be a numeric value")
@@ -2023,12 +2025,12 @@ class OperateOdeModel(BaseOdeModel):
         
         assert self._t0 is not None, "Initial time not set"
 
-        if myUtil.isListLike(t):
-            if myUtil.isNumeric(t[0]):
+        if ode_utils.isListLike(t):
+            if ode_utils.isNumeric(t[0]):
                 t = numpy.append(self._t0, t)
             else:
                 raise ArrayError("Expecting a list of numeric value")
-        elif myUtil.isNumeric(t):
+        elif ode_utils.isNumeric(t):
             t = numpy.append(self._t0, numpy.array(t))
         else:
             raise ArrayError("Expecting an array like input or a single numeric value")
@@ -2041,7 +2043,7 @@ class OperateOdeModel(BaseOdeModel):
         '''
         assert self._t0 is not None, "Initial time not set"
 
-        self._odeSolution, self._odeOutput = myUtil.integrate(self,
+        self._odeSolution, self._odeOutput = ode_utils.integrate(self,
                                                               self._x0,
                                                               t,
                                                               full_output=True)
@@ -2056,7 +2058,7 @@ class OperateOdeModel(BaseOdeModel):
         '''
         assert self._x0 is not None, "Initial state not set"
 
-        self._odeSolution, self._odeOutput = myUtil.integrateFuncJac(self.odeT,
+        self._odeSolution, self._odeOutput = ode_utils.integrateFuncJac(self.odeT,
                                                                      self.JacobianT,
                                                                      self._x0,
                                                                      t[0], t[1::],
@@ -2085,11 +2087,11 @@ class OperateOdeModel(BaseOdeModel):
         if self._odeSolution is None:
             try:
                 self._integrate(self._odeTime)
-                myUtil.plot(self._odeSolution, self._odeTime, self._stateList)
+                ode_utils.plot(self._odeSolution, self._odeTime, self._stateList)
             except:
                 raise IntegrationError("Have not performed the integration yet")
         else:
-            myUtil.plot(self._odeSolution, self._odeTime, self._stateList)
+            ode_utils.plot(self._odeSolution, self._odeTime, self._stateList)
 
     ########################################################################
     # Unrolling of the information from vector to sympy

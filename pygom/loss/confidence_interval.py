@@ -133,10 +133,10 @@ def bootstrap(obj, alpha=None, theta=None, lb=None, ub=None, iteration=0, full_o
         try:
             xhatT = obj2.fit(theta, lb, ub)
         except Exception as e:
-            print e
-            print theta
-            print i
-            print obj2.gradient(theta)
+            print(e)
+            print(theta)
+            print(i)
+            print(obj2.gradient(theta))
             obj2.plot()
             raise Exception("WTF")
 
@@ -558,7 +558,7 @@ def _profileObtainAndVerifyBounds(f, df, ddf, x0, lb, ub, full_output=False):
                                   options={'maxiter':1000})
 
     if res['success'] == False:
-        print res
+        print(res)
         raise EstimateError("Failure in estimation of the profile likelihood: "
                             + res['message'])
     else:

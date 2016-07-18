@@ -15,7 +15,7 @@ from .transition import TransitionType, Transition
 from ._model_errors import InputError, SimulationError
 from ._model_verification import checkEquation, simplifyEquation
 from pygom.model import _ode_composition
-import ode_utils
+from . import ode_utils
 
 import numpy
 import sympy
@@ -129,7 +129,7 @@ class SimulateOdeModel(OperateOdeModel):
 
             dview, canParallel = self._setupParallel(t, iteration, self._stochasticParam)
             if canParallel:
-                print "Parallel"
+                print("Parallel")
                 dview.execute('solutionList = [ode.integrate(t) for i in range(iteration)]')
                 solutionList = list()
                 for i in dview['solutionList']:
@@ -138,8 +138,8 @@ class SimulateOdeModel(OperateOdeModel):
                 raise Exception("Cannot run this in parallel")
 
         except Exception as e:
-            print e
-            print "Serial"
+            print(e)
+            print("Serial")
             solutionList = [self.integrate(t) for i in range(iteration)]
 
         # now make our 3D array
@@ -209,7 +209,7 @@ class SimulateOdeModel(OperateOdeModel):
         try:
             # check the type of parameter we have as input
             dview, canParallel = self._setupParallel(finalT, iteration, self._paramValue)
-            print "Success in creating parallel environment"
+            print("Success in creating parallel environment")
             if canParallel:
                 #print "Parallel"
                 dview.execute('YList = [ode._jump(t,full_output=True) for i in range(iteration)]')
@@ -222,7 +222,7 @@ class SimulateOdeModel(OperateOdeModel):
                         simTList.append(simOut[1])
                 #print "Finished"
             else:
-                print "Failed somewhere"
+                print("Failed somewhere")
                 raise SimulationError("Cannot run this in parallel")
 
         except Exception as _e: # should do something about the exception?
@@ -329,7 +329,7 @@ class SimulateOdeModel(OperateOdeModel):
                     xList.append(x.copy())
                     tList.append(t)
                 else:
-                    print "x: %s, t: %s" % (x, t)
+                    print("x: %s, t: %s" % (x, t))
                     raise Exception('WTF')
             except SimulationError:
                 break
@@ -928,5 +928,5 @@ class SimulateOdeModel(OperateOdeModel):
             dview.execute('ode.setInitialValue(x0,t0).setParameters(paramEval)', block=True)
             return dview, True
         except Exception as e:
-            print e
+            print(e)
             return e, False

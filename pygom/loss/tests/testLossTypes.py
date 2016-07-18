@@ -57,7 +57,7 @@ class TestLossTypes(TestCase):
         # the time points for our observations
         t = numpy.linspace(0, 20, 30).astype('float64')
         # Standard.  Find the solution which we will be used as "observations later"
-        solution,output = ode.integrate(t[1::], full_output=True)
+        solution, output = ode.integrate(t[1::], full_output=True)
         # initial guess
         theta = [0.5, 0.5, 0.5]
 
@@ -90,7 +90,7 @@ class TestLossTypes(TestCase):
         ode = common_models.FitzHugh().setParameters(paramEval).setInitialValue(x0, t[0])
 
         # Standard.  Find the solution which we will be used as "observations later"
-        solution,output = ode.integrate(t[1::], full_output=True)
+        solution, output = ode.integrate(t[1::], full_output=True)
         # initial guess
         theta = [0.5, 0.5, 0.5]
 
@@ -124,7 +124,7 @@ class TestLossTypes(TestCase):
         ode = common_models.FitzHugh().setParameters(paramEval).setInitialValue(x0, t[0])
 
         # Standard.  Find the solution which we will be used as "observations later"
-        solution,output = ode.integrate(t[1::], full_output=True)
+        solution, output = ode.integrate(t[1::], full_output=True)
         # initial guess
         theta = [0.5, 0.5, 0.5]
 
@@ -144,7 +144,7 @@ class TestLossTypes(TestCase):
                 objFH = SquareLoss(theta, ode, x0, t[0], t[1::], solution[1::,:],
                                    ['V','R'], w)    
             except:
-                print i
+                print(i)
                 totalFail += 1
             
         if totalFail != expectedFail:
