@@ -11,9 +11,9 @@
 #__all__ = [] # don't really want to export this
 
 import copy, functools
-import scipy.integrate, scipy.interpolate, scipy.sparse, scipy.optimize
+import scipy.interpolate, scipy.sparse, scipy.optimize
 import numpy
-import gc
+# import gc
 
 from pygom.loss.loss_type import Square
 from pygom.model import ode_utils
@@ -408,10 +408,10 @@ class BaseLoss(object):
 
         '''
 
-        jac,output = self.jac(theta=theta, full_output=True, intName=intName)
+        _jac, output = self.jac(theta=theta, full_output=True, intName=intName)
         sens = output['sens']
         diffLoss = output['diffLoss']
-        resid = output['resid']
+        # resid = output['resid']
         grad = self._sensToGradWithoutIndex(sens, diffLoss)
 
         if full_output:
@@ -538,7 +538,7 @@ class BaseLoss(object):
 
         '''
 
-        jacIV, outputIV = self.jacIV(theta=theta, full_output=True, intName=intName)
+        _jacIV, outputIV = self.jacIV(theta=theta, full_output=True, intName=intName)
         # the most important information! and in fact all the information we need
         # to calculate the gradient
         diffLoss = outputIV['diffLoss']
@@ -785,7 +785,7 @@ class BaseLoss(object):
 
         '''
 
-        jac, output = self.jac(theta=theta, full_output=True, intName=intName)
+        _jac, output = self.jac(theta=theta, full_output=True, intName=intName)
         sens = output['sens']
         diffLoss = output['diffLoss']
         JTJ = self._sensToJTJWithoutIndex(sens)
@@ -832,7 +832,7 @@ class BaseLoss(object):
 
         '''
 
-        jac, output = self.jac(theta=theta, full_output=True, intName=intName)
+        _jac, output = self.jac(theta=theta, full_output=True, intName=intName)
         sens = output['sens']
         JTJ = self._sensToJTJWithoutIndex(sens, output['resid'])
 

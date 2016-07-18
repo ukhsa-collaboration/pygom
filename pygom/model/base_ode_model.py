@@ -172,7 +172,7 @@ class BaseOdeModel(object):
                                                  self._odeList)
         if self._parameters is not None:
             modelStr += ".setParameters(%s)" % {str(key): value for key, value in self._parameters.items()}
-        return modelStr
+        return(modelStr)
 
     ########################################################################
     #
@@ -313,7 +313,7 @@ class BaseOdeModel(object):
             index = self.getParamIndex(k)
             self._paramValue[index] = v
 
-        return self
+        return(self)
 
     def getParameters(self):
         '''
@@ -323,7 +323,7 @@ class BaseOdeModel(object):
             A list which contains tuple of two elements, (:mod:`sympy.core.symbol`, numeric)
 
         '''
-        return self._parameters
+        return(self._parameters)
 
     def setStateValue(self, state):
         '''
@@ -353,7 +353,7 @@ class BaseOdeModel(object):
             raise InputError("Input state is of an unexpected type - "
                              +type(state))
 
-        return self
+        return(self)
 
     def getState(self):
         '''
@@ -380,7 +380,7 @@ class BaseOdeModel(object):
         '''
         if time is not None:
             self._time = time
-        return self
+        return(self)
 
     def getTime(self):
         '''
@@ -391,7 +391,7 @@ class BaseOdeModel(object):
         numeric
 
         '''
-        return self._time
+        return(self._time)
 
     def setStateList(self, stateList):
         '''
@@ -412,7 +412,7 @@ class BaseOdeModel(object):
             raise InputError("Expecting a list")
         
         self._hasNewTransition = True
-        return self
+        return(self)
 
     def getStateList(self):
         '''
@@ -424,7 +424,7 @@ class BaseOdeModel(object):
             with elements as :mod:`sympy.core.symbol`
 
         '''
-        return self._stateList
+        return(self._stateList)
 
     def getParamList(self):
         '''
@@ -436,7 +436,7 @@ class BaseOdeModel(object):
             with elements as :mod:`sympy.core.symbol`
 
         '''
-        return self._paramList
+        return(self._paramList)
 
     def setParamList(self, paramList):
         '''
@@ -457,7 +457,7 @@ class BaseOdeModel(object):
             raise InputError("Expecting a list")
         
         self._hasNewTransition = True
-        return self
+        return(self)
 
     def getDerivedParamList(self):
         '''
@@ -469,7 +469,7 @@ class BaseOdeModel(object):
             with elements as :mod:`sympy.core.symbol`
 
         '''
-        return self._derivedParamList
+        return(self._derivedParamList)
 
     def setDerivedParamList(self, derivedParamList):
         '''
@@ -484,7 +484,7 @@ class BaseOdeModel(object):
         for param in derivedParamList:
             self._addDerivedParam(param[0], param[1])
 
-        return self
+        return(self)
 
     # also need to make it transitionScript class
     def setTransitionList(self, transitionList):
@@ -670,7 +670,7 @@ class BaseOdeModel(object):
         self._numPureTransition = len(self._transitionList)
         self._numBD = len(self._birthDeathList)
         self._numTransition = self._numPureTransition + self._numBD
-        return self._numTransition
+        return(self._numTransition)
 
     ########################################################################
     #
@@ -887,7 +887,7 @@ class BaseOdeModel(object):
             raise InputError("The total number of ode is "+str(len(self._odeList))+
                             " where the number of state is "+str(self._numState))
 
-        return None
+        return(None)
     
     def _computeTransitionVector(self):
         '''
@@ -899,7 +899,7 @@ class BaseOdeModel(object):
         for i, eqn in enumerate(eqnList):
             self._transitionVector[i] = eqn
 
-        return self._transitionVector
+        return(self._transitionVector)
     
     ########################################################################
     #
@@ -924,7 +924,7 @@ class BaseOdeModel(object):
                 if self._stateDict[state.ID] in eqn.atoms():
                     self._lambdaMat[i,j] = 1
 
-        return self._lambdaMat
+        return(self._lambdaMat)
 
     def _computeStateChangeMatrix(self):
         '''
@@ -952,7 +952,7 @@ class BaseOdeModel(object):
                     for k2 in fromList[j]:
                         self._vMat[k2,j] += -1
 
-        return self._vMat
+        return(self._vMat)
 
     def _computeDependencyMatrix(self):
         '''
@@ -973,7 +973,7 @@ class BaseOdeModel(object):
                     d = d or (self._lambdaMat[k,i] and self._vMat[k,j])
                 self._GMat[i,j] = d
 
-        return self._GMat
+        return(self._GMat)
 
 
     ########################################################################
@@ -998,7 +998,7 @@ class BaseOdeModel(object):
             else:
                 raise InputError("Number of input state not as expected")
 
-        return stateOut
+        return(stateOut)
     
     def _unrollTransition(self, transitionObj):
         '''
@@ -1092,17 +1092,17 @@ class BaseOdeModel(object):
             
     def _extractStateIndexSingle(self, inputStr):
         if isinstance(inputStr, ODEVariable):
-            self._stateList.index(inputStr) 
+            return(self._stateList.index(inputStr)) 
         else:
             symName = self._extractStateSymbol(inputStr)
-            return self._stateList.index(symName)
+            return(self._stateList.index(symName))
 
     def _extractStateSymbol(self, inputStr):
         if isinstance(inputStr, ODEVariable):
             inputStr = inputStr.ID
 
         if inputStr in self._stateDict:
-            return self._stateDict[inputStr]
+            return(self._stateDict[inputStr])
         else:
             symName = reSymbolName.search(inputStr)
             if symName is not None:

@@ -1,4 +1,4 @@
-enum34>=1.0.4
+enum34>=1.0.4; python_version == '2.7'
 graphviz>=0.4.9
 ipython>=4.0.0
 matplotlib>=1.0.0

@@ -5,7 +5,7 @@ from pygom import Transition, OperateOdeModel
 from ._compartments import getCompartmentsInfo
 from ._species import getSpeciesInfo
 from ._reactions import getReactionsInfo
-from ._model import getModelInfo, getModelComponents
+from ._model import getModelComponents # , getModelInfo
 
 def readModelFromFile(filePath):
     reader = SBMLReader()
@@ -14,7 +14,7 @@ def readModelFromFile(filePath):
     assert document.getNumErrors() == 0, "Error detected in sbml file"
 
     model = document.getModel()
-    return model
+    return(model)
 
 def getOdeObject(model):
     a = getModelComponents(model)
@@ -58,4 +58,4 @@ def getOdeObject(model):
 
     ode = OperateOdeModel(stateList, paramList, transitionList=transitionList)
     ode = ode.setInitialState(x0).setParameters(paramEval)
-    return ode
+    return(ode)
