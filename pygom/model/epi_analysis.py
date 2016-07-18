@@ -109,8 +109,8 @@ def getR0GivenMatrix(F, V, diseaseState=None):
         dF = F
         dV = V
     else:
-        dF = F.jacobian(stateList)
-        dV = F.jacobian(stateList)
+        dF = F.jacobian(diseaseState)
+        dV = F.jacobian(diseaseState)
 
     K = dF * dV.inv()
     e = K.eigenvals().keys()
@@ -188,7 +188,7 @@ def _getSingleStateName(state):
         state = state[0] if len(state) == 1 else None
     if isinstance(state, str):
         return state
-    elif isinstace(state, sympy.Symbol):
+    elif isinstance(state, sympy.Symbol):
         return str(state)
     else:
         return None

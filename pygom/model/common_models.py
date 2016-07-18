@@ -5,8 +5,8 @@
 
 """
 
-from pygom.model.transition import TransitionType, Transition
-from pygom.model.deterministic import OperateOdeModel
+from .transition import TransitionType, Transition
+from .deterministic import OperateOdeModel
 from collections import OrderedDict
 
 def SIS(param=None):

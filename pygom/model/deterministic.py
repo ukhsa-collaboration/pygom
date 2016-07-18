@@ -443,19 +443,19 @@ class OperateOdeModel(BaseOdeModel):
             Matrix of dimension [number of state x number of state]
 
         '''
-        return self.evalJacobian(time=t, state=state)
+        return(self.evalJacobian(time=t, state=state))
 
     def JacobianT(self, t, state):
         '''
         Same as :meth:`Jacobian` but with t as first parameter
         '''
-        return self.Jacobian(state, t)
+        return(self.Jacobian(state, t))
 
     def _Jacobian_NoCheck(self, state, t):
-        return self._evalJacobian_NoCheck(time=t, state=state)
+        return(self._evalJacobian_NoCheck(time=t, state=state))
 
     def _JacobianT_NoCheck(self, t, state):
-        return self._Jacobian_NoCheck(state, t)
+        return(self._Jacobian_NoCheck(state, t))
 
     def getJacobian(self):
         '''
@@ -491,7 +491,7 @@ class OperateOdeModel(BaseOdeModel):
             self._JacobianCompile = self._SC.compileExprAndFormat(self._sp,
                                                                   self._Jacobian)
 
-        return self._Jacobian
+        return(self._Jacobian)
 
     def evalJacobian(self, parameters=None, time=None, state=None):
         '''
@@ -527,14 +527,14 @@ class OperateOdeModel(BaseOdeModel):
             self.getJacobian()
 
         evalParam = self._getEvalParam(state, time, parameters)
-        return self._JacobianCompile(evalParam)
+        return(self._JacobianCompile(evalParam))
 
     def _evalJacobian_NoCheck(self, time, state):
         '''
         Same as :meth:`evalJacobian` but without the checks
         '''
         evalParam = list(state) + [time] + self._paramValue
-        return self._JacobianCompile(evalParam)
+        return(self._JacobianCompile(evalParam))
 
     ##############################  the sum of jacobian, i.e a_{i} = \sum_{j=1}^{d} J_{i,j}
 
@@ -563,7 +563,7 @@ class OperateOdeModel(BaseOdeModel):
         state = stateParam[0:self._numState]
         sens = stateParam[self._numState::]
 
-        return self.evalSensJacobianState(time=t, state=state, sens=sens)
+        return(self.evalSensJacobianState(time=t, state=state, sens=sens))
 
     def SensJacobianStateT(self, t, state):
         '''
@@ -608,7 +608,7 @@ class OperateOdeModel(BaseOdeModel):
         # dot first, then transpose, then reshape
         # basically, some magic
         # don't ask me what is actually going on here, I did it while having my wizard hat on
-        return numpy.reshape(self.diffJacobian(state, time).dot(self._SAUtil.vecToMatSens(sens)).transpose(),(nS*nP,nS))
+        return(numpy.reshape(self.diffJacobian(state, time).dot(self._SAUtil.vecToMatSens(sens)).transpose(),(nS*nP,nS)))
 
     ############################## derivative of Jacobian
 
@@ -630,13 +630,13 @@ class OperateOdeModel(BaseOdeModel):
             Matrix of dimension [number of state x number of state]
 
         '''
-        return self.evalDiffJacobian(time=t, state=state)
+        return(self.evalDiffJacobian(time=t, state=state))
 
     def diffJacobianT(self, t, state):
         '''
         Same as :meth:`diffJacobian` but with t as first parameter
         '''
-        return self.diffJacobian(state, t)
+        return(self.diffJacobian(state, t))
 
     def getDiffJacobian(self):
         '''
@@ -680,7 +680,7 @@ class OperateOdeModel(BaseOdeModel):
             self._diffJacobianCompile = self._SC.compileExprAndFormat(self._sp,
                                                                       self._diffJacobian)
 
-        return self._diffJacobian
+        return(self._diffJacobian)
 
     def evalDiffJacobian(self, parameters=None, time=None, state=None):
         '''
@@ -717,7 +717,7 @@ class OperateOdeModel(BaseOdeModel):
             self.getDiffJacobian()
 
         evalParam = self._getEvalParam(state, time, parameters)
-        return self._diffJacobianCompile(evalParam)
+        return(self._diffJacobianCompile(evalParam))
 
     ########################################################################
     #
@@ -757,7 +757,7 @@ class OperateOdeModel(BaseOdeModel):
                                                               self._Grad,
                                                               outType="mat")
 
-        return self._Grad
+        return(self._Grad)
 
     def Grad(self, state, time):
         """
@@ -777,13 +777,13 @@ class OperateOdeModel(BaseOdeModel):
             Matrix of dimension [number of state x number of parameters]
 
         """
-        return self.evalGrad(state=state, time=time)
+        return(self.evalGrad(state=state, time=time))
 
     def GradT(self, t, state):
         '''
         Same as :meth:`GradT` but with t as first parameter
         '''
-        return self.Grad(state, t)
+        return(self.Grad(state, t))
 
     def evalGrad(self, parameters=None, time=None, state=None):
         '''
@@ -819,7 +819,7 @@ class OperateOdeModel(BaseOdeModel):
             self.getGrad()
 
         evalParam = self._getEvalParam(state, time, parameters)
-        return self._GradCompile(evalParam)
+        return(self._GradCompile(evalParam))
 
     #
     # Jacobian of the Gradiant
@@ -859,7 +859,7 @@ class OperateOdeModel(BaseOdeModel):
             self._GradJacobianCompile = self._SC.compileExprAndFormat(self._sp,
                                                                       self._GradJacobian)
 
-        return self._GradJacobian
+        return(self._GradJacobian)
 
     def GradJacobian(self, state, time):
         """
@@ -883,13 +883,13 @@ class OperateOdeModel(BaseOdeModel):
         :meth:`.Grad`
 
         """
-        return self.evalGradJacobian(state=state, time=time)
+        return(self.evalGradJacobian(state=state, time=time))
 
     def GradJacobianT(self, t, state):
         '''
         Same as :meth:`GradJacobian` but with t as first parameter
         '''
-        return self.GradJacobian(state, t)
+        return(self.GradJacobian(state, t))
 
     def evalGradJacobian(self, parameters=None, time=None, state=None):
         '''

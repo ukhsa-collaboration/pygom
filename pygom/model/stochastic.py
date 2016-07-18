@@ -14,7 +14,7 @@ from .stochastic_simulation import firstReaction, tauLeap
 from .transition import TransitionType, Transition
 from ._model_errors import InputError, SimulationError
 from ._model_verification import checkEquation, simplifyEquation
-from pygom.model import _ode_composition
+from . import _ode_composition
 from . import ode_utils
 
 import numpy
@@ -674,7 +674,7 @@ class SimulateOdeModel(OperateOdeModel):
             self._computeTransitionMeanVar()
 
         evalParam = self._getEvalParam(state, time, parameters)
-        return self._transitionMeanCompile(evalParam)
+        return(self._transitionMeanCompile(evalParam))
 
     def transitionVar(self, state, t):
         '''
@@ -694,7 +694,7 @@ class SimulateOdeModel(OperateOdeModel):
             an array of size M where M is the number of transition
 
         '''
-        return self.evalTransitionVar(time=t, state=state)
+        return(self.evalTransitionVar(time=t, state=state))
 
     def evalTransitionVar(self, parameters=None, time=None, state=None):
         '''
@@ -720,7 +720,7 @@ class SimulateOdeModel(OperateOdeModel):
             self._computeTransitionMeanVar()
 
         evalParam = self._getEvalParam(state, time, parameters)
-        return self._transitionVarCompile(evalParam)
+        return(self._transitionVarCompile(evalParam))
 
     def _computeTransitionJacobian(self):
         if self._GMat is None:
@@ -736,7 +736,7 @@ class SimulateOdeModel(OperateOdeModel):
                     self._isDifficult = self._isDifficult or isDifficult
         
         self._transitionJacobian = F
-        return F
+        return(F)
 
     def _computeTransitionMeanVar(self):
         '''
@@ -814,7 +814,7 @@ class SimulateOdeModel(OperateOdeModel):
                                    transitionType=TransitionType.T)
                     transitionList.append(t)
 
-        return transitionList
+        return(transitionList)
     
     def getBDFromOde(self, A=None):
         '''
@@ -909,7 +909,7 @@ class SimulateOdeModel(OperateOdeModel):
         '''
 
         try:
-            from IPython.parallel import Client
+            from ipyparallel import Client
             rc = Client(profile='mpi')
             dview = rc[:]
             numCore = len(rc.ids)
@@ -929,4 +929,4 @@ class SimulateOdeModel(OperateOdeModel):
             return dview, True
         except Exception as e:
             print(e)
-            return e, False
+            return(e, False)

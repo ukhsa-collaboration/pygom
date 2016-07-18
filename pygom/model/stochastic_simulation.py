@@ -1,4 +1,4 @@
-from pygom.model._model_errors import InputError, SimulationError
+from ._model_errors import InputError, SimulationError
 from pygom.utilR.distn import rexp, ppois, rpois, runif
 
 import numpy
