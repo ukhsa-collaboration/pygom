@@ -11,7 +11,7 @@ Now we turn to a harder problem that does not have a one to one mapping between 
     \frac{dI}{dt} &= p \kappa L - \alpha I \\
     \frac{dA}{dt} &= (1-p) \kappa L - \eta A \\
     \frac{dR}{dt} &= f \alpha I + \eta A \\
-    \frac{dN}{dt} &= -(1-f) \alpha I.
+    \frac{dN}{dt} &= -(1-f) \alpha I. 
 
 The outflow of state **L**, :math:`\kappa L`, is composed of two transitions, one to **I** and the other to **A** but the ode of **L** only reflects the total flow going out of the state.  Same can be said for state **I**, where the flow :math:`\alpha I` goes to both **R** and **N**.
 
@@ -21,7 +21,7 @@ We slightly change the model by introducing a new state **D** to convert it into
 
     In [1]: from pygom import SimulateOdeModel, Transition, TransitionType
 
-    In [1]: stateList = ['S', 'L','I','A','R','D']
+    In [1]: stateList = ['S', 'L', 'I', 'A', 'R', 'D']
 
     In [2]: paramList = ['beta','p','kappa','alpha','f','delta','epsilon', 'N']
 

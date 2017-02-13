@@ -73,10 +73,6 @@ We have provided two different ways of obtaining the gradient, these are explain
     In [22]: objSIR.sensitivity()
     
     In [25]: objSIR.adjoint()
-
-    In [25]: objSIR.adjoint1()
-
-    In [25]: objSIR.adjoint2()
     
 and the time required to obtain the gradient for the SIR model under :math:`\theta = (0.2,0.2)`, previously entered.
    

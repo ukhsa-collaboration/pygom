@@ -35,9 +35,9 @@ Let's define this using the ode
 
     In [4]: ode3 = Transition(origState='R',equation='gamma*I', transitionType=TransitionType.ODE)
 
-    In [6]: stateList = ['S','I','R']
+    In [6]: stateList = ['S', 'I', 'R']
 
-    In [7]: paramList = ['beta','gamma']
+    In [7]: paramList = ['beta', 'gamma']
 
     In [8]: ode = SimulateOdeModel(stateList,
        ...:                        paramList,

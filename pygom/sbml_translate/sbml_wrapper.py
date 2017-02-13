@@ -35,7 +35,7 @@ def getOdeObject(model):
         # eqnList.append(eqn)
         # paramList += map(lambda x: x['id'], r['kineticlaw']['parameters'])
         paramLocal = map(lambda x: (x['id'], x['value']), r['kineticlaw']['parameters'])
-        
+
         # newTerm = map(lambda x: r['id'] + '_' + x[0], paramLocal)
         # term = map(lambda x: r'\b%s\b' % x[0], paramLocal)
         # this the first line below essentially create the two variables

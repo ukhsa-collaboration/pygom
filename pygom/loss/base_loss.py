@@ -18,6 +18,7 @@ import numpy
 from pygom.loss.loss_type import Square
 from pygom.model import ode_utils
 from pygom.model._model_errors import InputError
+from pygom.model.ode_variable import ODEVariable
 
 class BaseLoss(object):
     '''
@@ -1485,7 +1486,10 @@ class BaseLoss(object):
                         raise InputError("Input length = " +str(len(theta))+
                                          " but we only have one parameter")
                     else:
-                        thetaDict[self._targetParam[0]] = theta[0]
+                        if isinstance(self._targetParam[0], ODEVariable):
+                            thetaDict[str(self._targetParam[0])] = theta[0]
+                        else:
+                            thetaDict[self._targetParam[0]] = theta[0]
                 self._theta = thetaDict
             else:
                 # conver to something sensible
