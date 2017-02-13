@@ -9,7 +9,7 @@ __all__ = [
     'compileCode'
     ]
 
-from pygom.model._model_errors import ArrayError, ExpressionErrror, InputError, IntegrationError
+from ._model_errors import ArrayError, ExpressionErrror, InputError, IntegrationError
 
 import numpy
 import math

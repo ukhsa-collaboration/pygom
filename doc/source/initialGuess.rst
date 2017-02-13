@@ -38,8 +38,8 @@ Below, we try to find the initial guess without supplying any further informatio
 
     In [10]: theta, sInfo = get_init.getInit(solution[1::,:], t, ode, theta=None, full_output=True)
     
-    In [11]: print theta
+    In [11]: print(theta)
     
-    In [12]: print sInfo
+    In [12]: print(sInfo)
     
 As seen above, we have obtained a very good guess of the parameters, in fact almost the same as the generating process.  The information regarding the smoothing factor shows that the amount of penalty used is small, which is expected given that we use the solution of the ode as observations.  

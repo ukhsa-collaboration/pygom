@@ -67,7 +67,7 @@ Obtaining the correct parameters for the FitzHugh model is well known to be diff
        ....:                               options = {'disp':True},
        ....:                               callback=objFH.thetaCallBack)
 
-    In [30]: print res
+    In [30]: print(res)
        
 Then we try the same again but with both state as our target.  Now we won't look at the iterations because they are pretty pointless.
 
@@ -81,7 +81,7 @@ Then we try the same again but with both state as our target.  Now we won't look
        ....:                               bounds = boxBounds,
        ....:                               method = 'L-BFGS-B')
 
-    In [32]: print res
+    In [32]: print(res)
 
 Note how the estimates are the same, unlike other models.  
 
@@ -110,7 +110,7 @@ First, only a single target state
        ....:                               bounds = boxBounds,
        ....:                               method = 'L-BFGS-B')
 
-    In [37]: print res
+    In [37]: print(res)
 
 then both state as target at the same time
 
@@ -124,7 +124,7 @@ then both state as target at the same time
        ....:                               bounds = boxBounds,
        ....:                               method = 'L-BFGS-B')
 
-    In [39]: print res
+    In [39]: print(res)
 
 See the difference between the two estimate with the latter, both state were used, yielding superior estimates.  Note that only the forward sensitivity method is implemented when estimating the initial value, and it is assumed that the starting condition for all the states are unknown.  
 

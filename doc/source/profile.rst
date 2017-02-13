@@ -82,9 +82,9 @@ A pointwise confidence interval is obtained when :math:`k = 1`.  We assume in ou
 
     In [3]: xL, xU = ci.asymptotic(objSIR, alpha, xhat, lb=boxBoundsArray[:,0], ub=boxBoundsArray[:,1])
 
-    In [4]: print xL
+    In [4]: print(xL)
 
-    In [5]: print xU
+    In [5]: print(xU)
 
 Note that the set of bounds here is only used for check the validity of :math:`\hat{\mathbf{x}}` and not used in the calculation of the confidence intervals.   Therefore the resulting output can be outside of the box constraints.
 
@@ -347,6 +347,7 @@ Profile Likelihood Surface
 To investigate why it was hard to find the profile likelihood confidence interval, we can plot the surface of it, i.e. the sum of squares of :eq:`obj`.
 
 .. ipython:: 
+    :options: +SKIP
 
     In [3]: target = numpy.zeros((niter,2))
 

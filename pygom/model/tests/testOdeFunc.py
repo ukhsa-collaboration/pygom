@@ -140,6 +140,6 @@ class TestJacobians(TestCase):
                 ffTemp[j] += h
                 J[i,j] = (ode.odeAndForwardforward(ffTemp,t[index])[i] - J0[i]) / h
 
-        print J - JAnalytic
+        print(J - JAnalytic)
         # Note that the two Jacobian above are not equivalent.  Only block diagonal
         # is implemented in the analytic case

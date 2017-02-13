@@ -77,7 +77,7 @@ Then we optimize, first, assuming that the initial conditions are accurate.  Som
        .....:                               bounds=boxBounds,
        .....:                               method='SLSQP')
 
-    In [9]: print res
+    In [9]: print(res)
 
     @savefig ebola_seir_straight.png
     In [10]: objLegrand.plot()
@@ -100,7 +100,7 @@ Improved initial guess
        .....:                               options={'maxiter':1000},
        .....:                               method='SLSQP')
 
-    In [9]: print res
+    In [9]: print(res)
 
     @savefig ebola_seir_de.png
     In [10]: objLegrand.plot()
@@ -122,7 +122,7 @@ A reason for this type of behavior is that we simply lack the information/data t
 
     In [10]: # we expect the line below to produce something like [3.26106524e+00,   2.24798702e-04,   1.23660721e-02] or [ 0.02701867,  9.00004776,  0.01031861]
 
-    In [10]: print res['x']
+    In [10]: print(res['x'])
 
     In [10]: objLegrand.cost([3.26106524e+00,   2.24798702e-04,   1.23660721e-02]) #ode.setParameters([ 0.02701867,  9.00004776,  0.01031861])
 
@@ -161,7 +161,7 @@ Furthermore, given that we now estimate the initial values for all the states, w
 
     In [18]: # or this line for a refined solution # solution = ode.setInitialValue(res['x'][-4:],-1).setParameters(res['x'][:3]).integrate(t)
 
-    In [19]: print res
+    In [19]: print(res)
 
     @savefig ebola_seir_iv.png
     In [20]: objLegrand.plot()
@@ -224,7 +224,7 @@ We can now try to find the optimal values, but because this is a difficult probl
        .....:                               bounds=boxBounds,
        .....:                               method='SLSQP')
 
-    In [214]: print res
+    In [214]: print(res)
 
     @savefig ebola_legrand_runtime.png
     In [217]: objLegrand.plot()

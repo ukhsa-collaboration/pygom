@@ -2,12 +2,18 @@
 language: python
 python:
   - 2.7
+  - 3.4
 # setup miniconda
 before_install:
-  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+      wget http://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+    else
+      wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
   - chmod +x miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
   - ./miniconda.sh -b
-  - export PATH=/home/travis/miniconda2/bin:$PATH
+  - export PATH="$HOME/miniconda/bin:$PATH"
   - conda update --yes conda
   - conda info -a
 
@@ -18,7 +24,7 @@ before_install:
 # command to install dependencies
 install:
   # standard stuff you need for scientific computing
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas enum34 ipython matplotlib nose pandas numpy scipy sympy
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas ipyparallel matplotlib nose pandas numpy scipy sympy
   - conda install --yes -c http://conda.anaconda.org/bioconda python-libsbml graphviz
   - conda install --yes -c http://conda.anaconda.org/anaconda python-dateutil
   - python setup.py install

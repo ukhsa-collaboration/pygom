@@ -5,10 +5,10 @@
     defined ode
 
 """
-import re
+import re, functools
 
-from base_ode_model import BaseOdeModel
-from transition import TransitionType
+from .base_ode_model import BaseOdeModel
+from .transition import TransitionType
 
 import sympy
 import numpy
@@ -146,7 +146,7 @@ def getUnmatchedExpressionVector(exprVec, full_output=False):
     '''
     assert isinstance(exprVec, sympy.MutableDenseMatrix), "Expecting a vector of expressions"
     
-    transitionList = reduce(lambda x,y: x+y, map(getExpressions, exprVec))
+    transitionList = functools.reduce(lambda x,y: x+y, map(getExpressions, exprVec))
     # transitionList = reduce(lambda x,y: x+y, [getExpressions(expr) for expr in exprVec])
     # transitionList = list()
     # for expr in exprVec:
@@ -246,12 +246,12 @@ def _transitionListToMatchedTuple(transitionList):
 def getExpressions(expr):
     inputDict = dict()
     _getExpression(expr.expand(), inputDict)
-    return inputDict.keys()
+    return list(inputDict.keys())
 
 def getLeafs(expr):
     inputDict = dict()
     _getLeaf(expr.expand(), inputDict)
-    return inputDict.keys()
+    return list(inputDict.keys())
 
 def _getLeaf(expr, inputDict):
     '''
@@ -262,7 +262,7 @@ def _getLeaf(expr, inputDict):
     retain (x**2)
     '''
     t = expr.args
-    tLengths = numpy.array(map(_expressionLength, t))
+    tLengths = numpy.array(list(map(_expressionLength, t)))
     
     for i, ti in enumerate(t):
         if tLengths[i] == 0:
@@ -281,8 +281,8 @@ def _getExpression(expr, inputDict):
     # print t
     
     # find out the length of the components within this node
-    tLengths = numpy.array(map(_expressionLength, t))
-    # print tLengths
+    tLengths = numpy.array(list(map(_expressionLength, t)))
+    # print(tLengths)
     if numpy.all(tLengths == 0):
         # if all components are leafs, then the node is an expression
         inputDict.setdefault(expr, 0)
@@ -398,7 +398,7 @@ def stripBDFromOde(fx, bdList=None):
 
     fxCopy = fx.copy()
     for i, fxi in enumerate(fx):
-        termInExpr = map(lambda x: x in fxi.expand().args, bdList)
+        termInExpr = list(map(lambda x: x in fxi.expand().args, bdList))
         for j, term in enumerate(bdList):
             fxCopy[i] -= term if termInExpr[j]==True else 0
     
@@ -421,9 +421,10 @@ def odeToPureTransition(fx, states, output_remain=False):
         else:
             return A
     else:
-        diffTerm = sympy.Matrix(filter(lambda x: x != 0, diffOde))
+        diffTerm = sympy.Matrix(list(filter(lambda x: x != 0, diffOde)))
         diffTermList = getMatchingExpressionVector(diffTerm, True)
-        diffTermList = map(lambda (x,y): (y,x), diffTermList)
+        # diffTermList = map(lambda (x,y): (y,x), diffTermList)
+        diffTermList = map(lambda x_y: (x_y[0], x_y[1]), diffTermList)
         
         AA, remainTermList = _odeToPureTransition(diffOde, diffTermList, A)
         fx2 = pureTransitionToOde(AA)

@@ -11,8 +11,10 @@ __all__ = ['OperateOdeModel']
 from .base_ode_model import BaseOdeModel
 from ._model_errors import ArrayError, InputError, IntegrationError, InitializeError
 from ._model_verification import simplifyEquation
-import ode_utils as myUtil
-from pygom.model import _ode_composition
+# import ode_utils as myUtil
+# from .ode_utils import shapeAdjust, compileCode
+from . import ode_utils
+from . import _ode_composition
 
 # import sympy.core.numbers
 import sympy
@@ -109,10 +111,10 @@ class OperateOdeModel(BaseOdeModel):
         # operate in the matrix form if possible as it takes up less
         # memory when operating, but the output is required to be of
         # the vector form
-        self._SAUtil = myUtil.shapeAdjust(self._numState, self._numParam)
+        self._SAUtil = ode_utils.shapeAdjust(self._numState, self._numParam)
         # compile the code.  Note that we need the class because we
         # compile both the formatted and unformatted version.
-        self._SC = myUtil.compileCode()
+        self._SC = ode_utils.compileCode()
 
     def __eq__(self, other):
         if isinstance(other, OperateOdeModel):
@@ -154,7 +156,7 @@ class OperateOdeModel(BaseOdeModel):
         # a really stupid way to determining whether it is linear.
         # have not figured out a better way yet...
         a = self._Jacobian.atoms()
-        for s in self._stateList:
+        for s in self._stateDict.keys():
             if s in a:
                 isLinear = False
 #         for i in range(0, self._numState):
@@ -441,19 +443,19 @@ class OperateOdeModel(BaseOdeModel):
             Matrix of dimension [number of state x number of state]
 
         '''
-        return self.evalJacobian(time=t, state=state)
+        return(self.evalJacobian(time=t, state=state))
 
     def JacobianT(self, t, state):
         '''
         Same as :meth:`Jacobian` but with t as first parameter
         '''
-        return self.Jacobian(state, t)
+        return(self.Jacobian(state, t))
 
     def _Jacobian_NoCheck(self, state, t):
-        return self._evalJacobian_NoCheck(time=t, state=state)
+        return(self._evalJacobian_NoCheck(time=t, state=state))
 
     def _JacobianT_NoCheck(self, t, state):
-        return self._Jacobian_NoCheck(state, t)
+        return(self._Jacobian_NoCheck(state, t))
 
     def getJacobian(self):
         '''
@@ -489,7 +491,7 @@ class OperateOdeModel(BaseOdeModel):
             self._JacobianCompile = self._SC.compileExprAndFormat(self._sp,
                                                                   self._Jacobian)
 
-        return self._Jacobian
+        return(self._Jacobian)
 
     def evalJacobian(self, parameters=None, time=None, state=None):
         '''
@@ -525,14 +527,14 @@ class OperateOdeModel(BaseOdeModel):
             self.getJacobian()
 
         evalParam = self._getEvalParam(state, time, parameters)
-        return self._JacobianCompile(evalParam)
+        return(self._JacobianCompile(evalParam))
 
     def _evalJacobian_NoCheck(self, time, state):
         '''
         Same as :meth:`evalJacobian` but without the checks
         '''
         evalParam = list(state) + [time] + self._paramValue
-        return self._JacobianCompile(evalParam)
+        return(self._JacobianCompile(evalParam))
 
     ##############################  the sum of jacobian, i.e a_{i} = \sum_{j=1}^{d} J_{i,j}
 
@@ -561,7 +563,7 @@ class OperateOdeModel(BaseOdeModel):
         state = stateParam[0:self._numState]
         sens = stateParam[self._numState::]
 
-        return self.evalSensJacobianState(time=t, state=state, sens=sens)
+        return(self.evalSensJacobianState(time=t, state=state, sens=sens))
 
     def SensJacobianStateT(self, t, state):
         '''
@@ -606,7 +608,7 @@ class OperateOdeModel(BaseOdeModel):
         # dot first, then transpose, then reshape
         # basically, some magic
         # don't ask me what is actually going on here, I did it while having my wizard hat on
-        return numpy.reshape(self.diffJacobian(state, time).dot(self._SAUtil.vecToMatSens(sens)).transpose(),(nS*nP,nS))
+        return(numpy.reshape(self.diffJacobian(state, time).dot(self._SAUtil.vecToMatSens(sens)).transpose(),(nS*nP,nS)))
 
     ############################## derivative of Jacobian
 
@@ -628,13 +630,13 @@ class OperateOdeModel(BaseOdeModel):
             Matrix of dimension [number of state x number of state]
 
         '''
-        return self.evalDiffJacobian(time=t, state=state)
+        return(self.evalDiffJacobian(time=t, state=state))
 
     def diffJacobianT(self, t, state):
         '''
         Same as :meth:`diffJacobian` but with t as first parameter
         '''
-        return self.diffJacobian(state, t)
+        return(self.diffJacobian(state, t))
 
     def getDiffJacobian(self):
         '''
@@ -678,7 +680,7 @@ class OperateOdeModel(BaseOdeModel):
             self._diffJacobianCompile = self._SC.compileExprAndFormat(self._sp,
                                                                       self._diffJacobian)
 
-        return self._diffJacobian
+        return(self._diffJacobian)
 
     def evalDiffJacobian(self, parameters=None, time=None, state=None):
         '''
@@ -715,7 +717,7 @@ class OperateOdeModel(BaseOdeModel):
             self.getDiffJacobian()
 
         evalParam = self._getEvalParam(state, time, parameters)
-        return self._diffJacobianCompile(evalParam)
+        return(self._diffJacobianCompile(evalParam))
 
     ########################################################################
     #
@@ -755,7 +757,7 @@ class OperateOdeModel(BaseOdeModel):
                                                               self._Grad,
                                                               outType="mat")
 
-        return self._Grad
+        return(self._Grad)
 
     def Grad(self, state, time):
         """
@@ -775,13 +777,13 @@ class OperateOdeModel(BaseOdeModel):
             Matrix of dimension [number of state x number of parameters]
 
         """
-        return self.evalGrad(state=state, time=time)
+        return(self.evalGrad(state=state, time=time))
 
     def GradT(self, t, state):
         '''
         Same as :meth:`GradT` but with t as first parameter
         '''
-        return self.Grad(state, t)
+        return(self.Grad(state, t))
 
     def evalGrad(self, parameters=None, time=None, state=None):
         '''
@@ -817,7 +819,7 @@ class OperateOdeModel(BaseOdeModel):
             self.getGrad()
 
         evalParam = self._getEvalParam(state, time, parameters)
-        return self._GradCompile(evalParam)
+        return(self._GradCompile(evalParam))
 
     #
     # Jacobian of the Gradiant
@@ -857,7 +859,7 @@ class OperateOdeModel(BaseOdeModel):
             self._GradJacobianCompile = self._SC.compileExprAndFormat(self._sp,
                                                                       self._GradJacobian)
 
-        return self._GradJacobian
+        return(self._GradJacobian)
 
     def GradJacobian(self, state, time):
         """
@@ -881,13 +883,13 @@ class OperateOdeModel(BaseOdeModel):
         :meth:`.Grad`
 
         """
-        return self.evalGradJacobian(state=state, time=time)
+        return(self.evalGradJacobian(state=state, time=time))
 
     def GradJacobianT(self, t, state):
         '''
         Same as :meth:`GradJacobian` but with t as first parameter
         '''
-        return self.GradJacobian(state, t)
+        return(self.GradJacobian(state, t))
 
     def evalGradJacobian(self, parameters=None, time=None, state=None):
         '''
@@ -1926,11 +1928,11 @@ class OperateOdeModel(BaseOdeModel):
 
         '''
 
-        if myUtil.isNumeric(t0):
+        if ode_utils.isNumeric(t0):
             self._t0 = t0
-        elif myUtil.isListLike(t0):
+        elif ode_utils.isListLike(t0):
             if len(t0) == 1:
-                if myUtil.isNumeric(t0[0]):
+                if ode_utils.isNumeric(t0[0]):
                     self._t0 = t0[0]
                 else:
                     raise InitializeError("Initial time should be a numeric value")
@@ -2023,12 +2025,12 @@ class OperateOdeModel(BaseOdeModel):
         
         assert self._t0 is not None, "Initial time not set"
 
-        if myUtil.isListLike(t):
-            if myUtil.isNumeric(t[0]):
+        if ode_utils.isListLike(t):
+            if ode_utils.isNumeric(t[0]):
                 t = numpy.append(self._t0, t)
             else:
                 raise ArrayError("Expecting a list of numeric value")
-        elif myUtil.isNumeric(t):
+        elif ode_utils.isNumeric(t):
             t = numpy.append(self._t0, numpy.array(t))
         else:
             raise ArrayError("Expecting an array like input or a single numeric value")
@@ -2041,7 +2043,7 @@ class OperateOdeModel(BaseOdeModel):
         '''
         assert self._t0 is not None, "Initial time not set"
 
-        self._odeSolution, self._odeOutput = myUtil.integrate(self,
+        self._odeSolution, self._odeOutput = ode_utils.integrate(self,
                                                               self._x0,
                                                               t,
                                                               full_output=True)
@@ -2056,7 +2058,7 @@ class OperateOdeModel(BaseOdeModel):
         '''
         assert self._x0 is not None, "Initial state not set"
 
-        self._odeSolution, self._odeOutput = myUtil.integrateFuncJac(self.odeT,
+        self._odeSolution, self._odeOutput = ode_utils.integrateFuncJac(self.odeT,
                                                                      self.JacobianT,
                                                                      self._x0,
                                                                      t[0], t[1::],
@@ -2085,11 +2087,11 @@ class OperateOdeModel(BaseOdeModel):
         if self._odeSolution is None:
             try:
                 self._integrate(self._odeTime)
-                myUtil.plot(self._odeSolution, self._odeTime, self._stateList)
+                ode_utils.plot(self._odeSolution, self._odeTime, self._stateList)
             except:
                 raise IntegrationError("Have not performed the integration yet")
         else:
-            myUtil.plot(self._odeSolution, self._odeTime, self._stateList)
+            ode_utils.plot(self._odeSolution, self._odeTime, self._stateList)
 
     ########################################################################
     # Unrolling of the information from vector to sympy

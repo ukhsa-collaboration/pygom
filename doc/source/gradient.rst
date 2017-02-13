@@ -211,23 +211,11 @@ which is again an integration.  An unfortunate situation arise here for non-line
 
 Given a non-linearity ode, we must store information about the states between :math:`t_{0}` and :math:`T` in order to perform the integration.  There are two options, both require storing many evaluated :math:`x(j)` within the interval :math:`\left[t_{0},T\right]`.  Unfortunately, only one is available; interpolation over all states and integrate using the interpolating functions.  The alternative of using observed :math:`x(j)'s` at fixed points is not competitive because we are unable to use fortran routines for the integration
 
-There are two different ways of integrating using interpolation.  Although the interpolation method is the same (at the moment, a univariate spline), we allow integration be performed using a linear step method: spline with explicit knots at the observed time points 
+The method of choice here to perform the adjoint calcuation is to run a forward integration, then perform an interpolation using splines with explicit knots at the observed time points. 
 
 .. ipython::
 
     In [326]: odeSIRAdjoint,outputAdjoint = objSIR.adjoint(full_output=True)
-
-or a spline between each of the time points
-
-.. ipython::
-
-    In [323]: odeSIRAdjoint2,outputAdjoint2 = objSIR.adjoint2(full_output=True)
-
-Alternatively, we also also integration via a Runge-Kutta type method
-
-.. ipython:: 
-
-    In [326]: odeSIRAdjoint1,outputAdjoint1 = objSIR.adjoint1(full_output=True)
 
 This is because evaluating the Jacobian may be expensive and Runge-kutta method suffers as the complexity increases.  In non-linear model such as those found in epidemiology, each element of the Jacobian may be the result of a complicated equation where linear step method will shine as it makes as little function evaluation as possible.  
 Note that derivations in the literature, the initial condition when evaluating the adjoint equation is :math:`\lambda(T)=0`.  But in our code we used :math:`\lambda(T) = -2(y(T)-x(T))`. Recall that we have observation :math:`y(T)` and simulation :math:`x(T)`, so that the adjoint equation evaluated at time :math:`T`
@@ -248,10 +236,6 @@ A simple time comparison between the different methods reveals that the forward 
     In [319]: %timeit gradSens = objSIR.sensitivity()
 
     In [326]: %timeit odeSIRAdjoint,outputAdjoint = objSIR.adjoint(full_output=True)
-
-    In [326]: %timeit odeSIRAdjoint1,outputAdjoint1 = objSIR.adjoint1(full_output=True)
-
-    In [323]: %timeit odeSIRAdjoint2,outputAdjoint2 = objSIR.adjoint2(full_output=True)
 
 
 Hessian

@@ -10,7 +10,7 @@
 all = ['EpijsonLoss']
 
 from .ode_loss import PoissonLoss
-from read_epijson import epijsonToDataFrame
+from .read_epijson import epijsonToDataFrame
 from pygom.model._model_errors import InputError
 
 import dateutil
