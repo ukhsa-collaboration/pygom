@@ -85,7 +85,7 @@ Setting up the second boundary condition :math:`y(4) = -2` is easy, because that
                              
     In [9]: thetaHat = minimize(fun=obj.costIV, x0=[0.0])
     
-    In [9]: print thetaHat
+    In [9]: print(thetaHat)
     
     In [9]: model.setInitialValue(initialState, t[0])
     
@@ -154,7 +154,7 @@ Now we are ready to setup the estimation.  Like before, we setup the second boun
 
     In [2]: xhatObj = minimize(obj.cost,[15])
 
-    In [2]: print xhatObj
+    In [2]: print(xhatObj)
 
     In [3]: model = model.setParameters([('p',xhatObj['x'][0])]).setInitialValue([1,0,0],t[0])
 

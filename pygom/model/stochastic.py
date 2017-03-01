@@ -324,7 +324,7 @@ class SimulateOdeModel(OperateOdeModel):
                     else:
                         x, t, success = firstReaction(x, t, self._vMat,
                                                           self.transitionVector)
-
+                        ## print("Directly into the firstReaction method and is it good? %s" % success) 
                 if success:
                     xList.append(x.copy())
                     tList.append(t)

@@ -23,7 +23,7 @@ which consists of two transitions
 		I -> R [ label = "&gamma;I" ];
 	}
 
-Let's define this using the ode 
+Let's define this using the code block below
 
 .. ipython::
 
@@ -45,7 +45,7 @@ Let's define this using the ode
 
     In [9]: ode.getTransitionMatrix()
 
-and the last line shows that the transition matrix is empty.  This is the expected result because :class:`SimulateOdeModel` was not initialized using transitions.
+and the last line shows that the transition matrix is empty.  This is the expected result because :class:`SimulateOdeModel` was not initialized using transitions.  We populate the transition matrix below and demonstrate the difference. 
 
 .. ipython::
 

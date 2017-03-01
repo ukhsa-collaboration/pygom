@@ -34,8 +34,6 @@ def getDFE(ode, diseaseState):
     for s in states:
         if s not in statesSubs.keys() and s not in DFE.keys():
             DFE.setdefault(s, 0)
-            # if s not in DFE.keys():
-            #     DFE.setdefault(s, 0)
     return DFE
 
 def getR0(ode, diseaseState):
@@ -112,7 +110,7 @@ def getR0GivenMatrix(F, V, diseaseState=None):
         dF = F.jacobian(diseaseState)
         dV = F.jacobian(diseaseState)
 
-    K = dF * dV.inv()
+    K = dF*dV.inv()
     e = K.eigenvals().keys()
     e = filter(lambda x: x!= 0, e)
     return e
@@ -152,11 +150,6 @@ def getDiseaseProgressionMatrices(ode, diseaseState, diff=True):
     for t in ode.getTransitionList():
         orig = _getSingleStateName(t.getOrigState())
         dest = _getSingleStateName(t.getDestState())
-        # if hasattr(orig, '__iter__'):
-        #     orig = orig[0] if len(orig) == 1 else None
-        # if hasattr(dest, '__iter__'):
-        #     dest = dest[0] if len(dest) == 1 else None
-        # if isinstance(orig, (str, sympy.Symbol)) and isinstance(dest, (str, sympy.Symbol)):
         if isinstance(orig, str) and isinstance(dest, str):
             if orig not in diseaseState and dest in diseaseState:
                 FList.append(t)
@@ -171,13 +164,6 @@ def getDiseaseProgressionMatrices(ode, diseaseState, diff=True):
     if diff:
         dF = F.jacobian(stateList)
         dV = V.jacobian(stateList)
-        # dF = sympy.zeros(n,n)
-        # dV = sympy.zeros(n,n)
-        # for j, s in enumerate(ode._iterStateList()):
-        #     if j in index:
-        #         for i, Fi in enumerate(F):
-        #             dF[i,diseaseIndex.index(j)] = sympy.diff(Fi, s)
-        #             dV[i,diseaseIndex.index(j)] = sympy.diff(V[i], s)
         return dF, dV
     else:
         return F,V

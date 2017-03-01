@@ -273,28 +273,28 @@ Just to demonstate how it works, lets look at the Hessian at the optimal point. 
 
     In [212]: import scipy.linalg,scipy.optimize
 
-    In [212]: boxBounds = [(0.0,2.0),(0.0,2.0)]
+    In [212]: boxBounds = [(0.0,2.0), (0.0,2.0)]
 
-    In [213]: res = scipy.optimize.minimize(fun = objSIR.cost,
-       .....:                               jac = objSIR.sensitivity,
-       .....:                               x0 = theta,
-       .....:                               bounds = boxBounds,
-       .....:                               method = 'L-BFGS-B')
+    In [213]: res = scipy.optimize.minimize(fun=objSIR.cost,
+       .....:                               jac=objSIR.sensitivity,
+       .....:                               x0=theta,
+       .....:                               bounds=boxBounds,
+       .....:                               method='L-BFGS-B')
 
 Then compare again the least square estimate of the covariance matrix against our version
 
 .. ipython::
 
-    In [211]: resLS,cov_x,infodict,mesg,ier = scipy.optimize.leastsq(func = objSIR.residual, x0 = res['x'], full_output = True)
+    In [211]: resLS, cov_x, infodict, mesg, ier = scipy.optimize.leastsq(func=objSIR.residual, x0=res['x'], full_output=True)
 
-    In [212]: HJTJ,outputHJTJ = objSIR.hessian(full_output=True)
+    In [212]: HJTJ, outputHJTJ = objSIR.hessian(full_output=True)
 
-    In [311]: print scipy.linalg.inv(HJTJ)
+    In [311]: print(scipy.linalg.inv(HJTJ))
 
-    In [312]: print cov_x
+    In [312]: print(cov_x)
 
 also note the difference between the Hessian and the approximation using the Jacobian, which is in fact what the least squares routine uses.
 
 .. ipython::
 
-    In [313]: print scipy.linalg.inv(outputHJTJ['JTJ'])
+    In [313]: print(scipy.linalg.inv(outputHJTJ['JTJ']))

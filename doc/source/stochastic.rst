@@ -45,13 +45,13 @@ In our first scenario, we assume that the parameters follow some underlying dist
 
     In [1]: d = dict()
 
-    In [1]: d['beta'] = (rgamma,{'shape':100.0,'rate':200.0})
+    In [1]: d['beta'] = (rgamma,{'shape':100.0, 'rate':200.0})
 
-    In [1]: d['gamma'] = (rgamma,(100.0,300.0))
+    In [1]: d['gamma'] = (rgamma,(100.0, 300.0))
 
     In [1]: odeS.setParameters(d)
 
-    In [1]: Ymean,Yall = odeS.simulateParam(t[1::],10,full_output=True)
+    In [1]: Ymean,Yall = odeS.simulateParam(t[1::], 10, full_output=True)
 
 Note that a message is printed above where it is trying to connect to an mpi backend, as our module has the capability to compute in parallel using the IPython.   We have simulated a total of 10 different solutions using different parameters, the plots can be seen below
 
@@ -97,7 +97,7 @@ and we repeat the process with the number of simulation increased
 
 .. ipython::
 
-    In [1]: Ymean,Yall = odeS.simulateParam(t[1::],10000,full_output=True)
+    In [1]: Ymean,Yall = odeS.simulateParam(t[1::], 1000, full_output=True)
 
     In [1]: f,axarr = plt.subplots(1,3)
 
@@ -117,7 +117,7 @@ Obviously, there may be scenarios where only some of the parameters are stochast
 
     In [1]: odeS.setParameters(d)
 
-    In [1]: YmeanSingle,YallSingle = odeS.simulateParam(t[1::],10,full_output=True)
+    In [1]: YmeanSingle,YallSingle = odeS.simulateParam(t[1::], 10, full_output=True)
 
     In [1]: f,axarr = plt.subplots(1,3)
 
@@ -159,15 +159,15 @@ A couple of the commmon implementation for the jump process have been implemente
 
     In [1]: odeS = SimulateOdeModel(stateList,paramList,transitionList=transitionList)
 
-    In [1]: odeS.setParameters([0.5,1.0/3.0,x0[0]]).setInitialValue(x0,t[0])
+    In [1]: odeS.setParameters([0.5,1.0/3.0,x0[0]]).setInitialValue(x0, t[0])
 
     In [1]: solutionReference = odeS.integrate(t[1::])
 
-    In [1]: simX,simT = odeS.simulateJump(t[1:10],10,full_output=True)
+    In [1]: simX,simT = odeS.simulateJump(t[1:10], 10, full_output=True)
 
     In [1]: f,axarr = plt.subplots(1,3)
 
-    In [1]: for i in range(0,len(simX)):
+    In [1]: for i in range(0, len(simX)):
        ...:     solution = simX[i]
        ...:     axarr[0].plot(t[:9],solution[:,0])
        ...:     axarr[1].plot(t[:9],solution[:,1])
@@ -182,9 +182,9 @@ Above, we see ten different simulation, again using the SIR model but the initia
 
 .. ipython::
 
-    In [1]: simX,simT = odeS.simulateJump(t,10,full_output=True)
+    In [1]: simX, simT = odeS.simulateJump(t, 10, full_output=True)
 
-    In [1]: simMean = numpy.mean(simX,axis=0)
+    In [1]: simMean = numpy.mean(simX, axis=0)
 
     In [1]: f,axarr = plt.subplots(1,3)
 
@@ -200,9 +200,9 @@ same as above, we increase the number of simulation and plot the difference
 
 .. ipython::
 
-    In [1]: simX,simT = odeS.simulateJump(t,5,full_output=True)
+    In [1]: simX,simT = odeS.simulateJump(t, 5, full_output=True)
 
-    In [1]: simMean = numpy.mean(simX,axis=0)
+    In [1]: simMean = numpy.mean(simX, axis=0)
 
     In [1]: f,axarr = plt.subplots(1,3)
 
@@ -220,7 +220,7 @@ The difference is significantly greater than the previous assumption, where we a
 
     In [1]: f,axarr = plt.subplots(1,3)
 
-    In [1]: for i in range(0,len(simX)):
+    In [1]: for i in range(0, len(simX)):
        ...:     solution = simX[i]
        ...:     axarr[0].plot(t,solution[:,0])
        ...:     axarr[1].plot(t,solution[:,1])

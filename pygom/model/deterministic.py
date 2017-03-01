@@ -21,8 +21,8 @@ import sympy
 from sympy.core.function import diff
 import numpy
 import scipy.linalg
-# import matplotlib.image as mpimg
-# import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
 
 import copy, io
 
@@ -297,9 +297,9 @@ class OperateOdeModel(BaseOdeModel):
             img = mpimg.imread(io.BytesIO(dot.pipe("png")))
             plt.imshow(img)
             plt.show(block=False)
-            return dot
+            return(dot)
         else:
-            return dot
+            return(dot)
     
     #
     # this is the main ode solver
@@ -475,13 +475,6 @@ class OperateOdeModel(BaseOdeModel):
                     if self._Jacobian[i,j] != 0:
                         self._Jacobian[i,j], isDifficult = simplifyEquation(self._Jacobian[i,j])
                         self._isDifficult = self._isDifficult or isDifficult
-
-            # self._Jacobian = sympy.zeros(self._numState, self._numState)
-            
-            # for i, eqn in enumerate(self._ode):
-            #     for j, s in enumerate(self._iterStateList()):
-            #         self._Jacobian[i,j], isDifficult = simplifyEquation(diff(eqn, s, 1))
-            #         self._isDifficult = self._isDifficult or isDifficult
 
         if self._isDifficult:
             self._JacobianCompile = self._SC.compileExprAndFormat(self._sp,
@@ -1471,21 +1464,8 @@ class OperateOdeModel(BaseOdeModel):
 
         # now the Jacobian of the state vs initial value
         DJ = self.diffJacobian(state, t)
-        # print stateParam
-        # print len(stateParam)
-        # print stateParam[(nS*(nP+1))::]
-        # print nS
-        # print nS*(nP+1)
-        # print numpy.reshape(stateParam[nS::], (nS, nS), 'F')
-        # if nP == 0:
-        #     A = DJ.dot(numpy.reshape(stateParam[nS::], (nS, nS), 'F'))
-        # else:
-        #     A = DJ.dot(numpy.reshape(stateParam[(nS*(nP+1))::], (nS, nS), 'F'))
         A = DJ.dot(numpy.reshape(stateParam[(nS*(nP+1))::], (nS, nS), 'F'))
         A = numpy.reshape(A.transpose(), (nS*nS, nS))
-        # print A.dtype
-        # print DJ.dtype
-        # print J.dtype
         
         if nP == 0:
             return numpy.asarray(numpy.bmat([

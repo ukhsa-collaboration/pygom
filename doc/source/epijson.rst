@@ -18,7 +18,7 @@ This package provides the functionality to process EpiJSON data.  Due to the nat
 
     In [3]: df = epijsonToDataFrame(data)
 
-    In [4]: print df
+    In [4]: print(df)
 
 Given that the aim of loading the data is usually for model fitting, we allow EpiJSON as input directly to the loss class :class:`pygom.loss.EpijsonLoss` which uses the Poisson loss under the hood.  
 
@@ -32,9 +32,9 @@ Given that the aim of loading the data is usually for model fitting, we allow Ep
 
     In [4]: obj = EpijsonLoss([0.005,0.03], ode, data, 'Death', 'R', [300,2,0])
 
-    In [5]: print obj.cost()
+    In [5]: print(obj.cost())
 
-    In [6]: print obj._df
+    In [6]: print(obj._df)
 
 Given an initialized object, all the operations are inherited from :class:`pygom.loss.BaseLoss`.  We demonstrated above how to calculate the cost and the rest will not be shown for brevity.  The data frame is stored inside of the loss object and can be retrieved for inspection at any time point.
 

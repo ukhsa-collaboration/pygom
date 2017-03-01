@@ -1,7 +1,7 @@
 .. _unrollBD:
 
-Problem With Birth and Death Process
-====================================
+ODE With Birth and Death Process
+================================
 
 We follow on from the SIR model of :ref:`unrollSimple` but with additional birth and death processes.
 
@@ -47,7 +47,6 @@ Let's define this in terms of ODEs, and unroll it back to the individual process
        ...:                       equation='beta * S * I - gamma * I - mu * I',
        ...:                       transitionType=TransitionType.ODE),
        ...:            Transition(origState='R', 
-       ...:                       destState='R', 
        ...:                       equation='gamma * I',
        ...:                       transitionType=TransitionType.ODE)
        ...:            ]
