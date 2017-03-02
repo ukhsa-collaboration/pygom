@@ -40,11 +40,13 @@ def epijsonToDataFrame(inData, full_output=False):
     allRecords = checkEpijsonFormat(epijson)
     
     # obtain the data into (event, date)
-    dataTuple = map(lambda x: list(map(lambda x1: (x1['name'], x1['date']), x)), allRecords)
+    f = lambda x: list(map(lambda x1: (x1['name'], x1['date']), x))
+    dataTuple = map(f, allRecords)
+    ## dataTuple = map(lambda x: list(map(lambda x1: (x1['name'], x1['date']), x)), allRecords)
 
     # combining the records as information of the individual is
     # unimportant from pygom point of view
-    dataTuple = functools.reduce(lambda x,y: x+y, list(dataTuple))
+    dataTuple = functools.reduce(lambda x,y: x + y, list(dataTuple))
 
     # parse the dates under ISO 8601
     data = map(lambda x_y: (x_y[0], _parseDate(x_y[1])), dataTuple)
@@ -74,7 +76,7 @@ def epijsonToDataFrame(inData, full_output=False):
     # for date in rowName:
     #     dataList.append(_eventNameToVector(dataDict[date], colName))
 
-    # dataList = map(lambda x: _eventNameToVector(dataDict[x], colName),  rowName)
+    # dataList = map(lambda x: _eventNameToVector(dataDict[x], colName), rowName)
     
     dataList = [_eventNameToVector(dataDict[date], colName) for date in rowName]
 
@@ -119,7 +121,8 @@ def checkEpijsonFormat(epijson, returnRecord=True):
     # verify the uniqueness of the id in each record
     # this is relatively unimportant
     y1 = list(map(lambda x: x['events'], y))
-    assert sum(map(_checkUniqueID, y1)) == len(y1), "Events id not unique in records"
+    assert sum(map(_checkUniqueID, y1)) == len(y1), \
+        "Events id not unique in records"
 
     return y1 if returnRecord else True
     

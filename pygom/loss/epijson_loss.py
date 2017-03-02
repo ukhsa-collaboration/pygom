@@ -1,5 +1,4 @@
 """
-
     .. moduleauthor:: Edwin Tye <Edwin.Tye@phe.gov.uk>
 
     This extends PoissonLoss to take care of case where EpiJSON
@@ -35,7 +34,9 @@ class EpijsonLoss(PoissonLoss):
         elif not hasattr(colName, '__iter__'):
             raise Exception("colName should be a string or iterable")
 
-        assert sum(map(lambda x: x in df.columns, colName)) == len(colName), "Not all column name can be found, columns in data are: %s" % df.columns
+        assert sum(map(lambda x: x in df.columns, colName)) == len(colName), \
+            "Not all column name can be found, columns in data are: %s" % \
+            df.comlumns
 
         if t0 is None:
             t0 = df.index[0]
@@ -55,15 +56,10 @@ class EpijsonLoss(PoissonLoss):
         # we just take the positives.  This also defines the starting
         # time point at zero
         tau = df.index - t0
-        tau = tau.total_seconds() / secondsInDay
+        tau = tau.total_seconds()/secondsInDay
 
-        # print tau
-        # print df
-        X = df.loc[:,colName].values[tau>0]
+        X = df.loc[:,colName].values[tau > 0]
         T = tau[tau>0]
-        # print "Finish Loading Data"
-        # print X
-        # print T
 
         self._df = df
 

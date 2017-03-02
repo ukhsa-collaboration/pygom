@@ -352,27 +352,6 @@ def _hasExpression(eq, expr):
         out = True
     return out
 
-# def _obtainPureTransitionMatrix(odeObj):
-#     '''
-#     Get the pure transition matrix between states
-
-#     Parameters
-#     ----------
-#     ode: :class:`.BaseOdeModel`
-#        an ode object
-#     Returns
-#     -------
-#     A: :class:`sympy.Matrix`
-#         resulting transition matrix
-#     remain: list
-#         list of  which contains the unmatched
-#         transitions
-#     '''
-#     A = odeObj.getOde()
-#     termList = getMatchingExpressionVector(A, True)
-#     T, remainTerms = _obtainPureTransitionMatrixFromOde(A, termList)
-#     return T
-
 def pureTransitionToOde(A):
     '''
     Get the ode from a pure transition matrix
@@ -423,11 +402,19 @@ def odeToPureTransition(fx, states, output_remain=False):
     else:
         diffTerm = sympy.Matrix(list(filter(lambda x: x != 0, diffOde)))
         diffTermList = getMatchingExpressionVector(diffTerm, True)
-        # diffTermList = map(lambda (x,y): (y,x), diffTermList)
-        diffTermList = map(lambda x_y: (x_y[0], x_y[1]), diffTermList)
+        ## diffTermList = map(lambda (x,y): (y,x), diffTermList)
+        ## If there is some single origin transition not being matched up
+        ## it is most likely because the transition originates from a
+        ## combination like (1-x) which got split into two parts - the
+        ## "1" and the "x" part.  So we try to reverse the sign to see
+        ## if it helps.
+        ## TODO: increase robustness so if it does not help, then we
+        ## either bail out or revert to the normal version
+        diffTermList = map(lambda x_y: (x_y[1], x_y[0]), diffTermList)
+        A, remainTermList = _singleOriginTransition(diffOde, diffTermList, states, A)
         
-        AA, remainTermList = _odeToPureTransition(diffOde, diffTermList, A)
-        fx2 = pureTransitionToOde(AA)
+        AA, remainTermList = _odeToPureTransition(diffOde, remainTermList, A)
+        ## fx2 = pureTransitionToOde(AA)
         if output_remain:
             return AA, remainTermList
         else:
@@ -485,15 +472,18 @@ def _singleOriginTransition(fx, termList, states, A=None):
     for k, transitionTuple in enumerate(termList):
         t1, t2 = transitionTuple    
         possibleOrigin = list()
+        remain = True
         for i, s in enumerate(states):
             if s in t1.atoms():
                 possibleOrigin.append(i)
         if len(possibleOrigin) == 1:
             for j, fxj in enumerate(fx):
+                # print(t1, fxj, possibleOrigin[0] != j, _hasExpression(fxj, t2))
                 if possibleOrigin[0] != j and _hasExpression(fxj, t1):
                     A[possibleOrigin[0],j] += t1
-                        # print t1, possibleOrigin, j, fxj, "\n"
-        else:
+                    remain = False
+                    # print(t1, possibleOrigin, j, fxj, "\n")
+        if remain:
             remainTermList.append(transitionTuple)
 
     return A, remainTermList

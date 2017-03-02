@@ -59,7 +59,6 @@ class NormalLoss(BaseLoss):
                     return Normal(self._y, 1/self._stateWeight.flatten())
                 else:
                     return Normal(self._y, 1/self._stateWeight)
-                    # raise RuntimeError("Normal loss can only use standard deviation")
             else:
                 return Normal(self._y, 1/self._stateWeight)
 

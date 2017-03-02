@@ -24,9 +24,9 @@ A method to obtain such initial guess based on the collocation is available in t
 
     In [5]: # params
 
-    In [6]: paramEval = [('a',0.2), ('b',0.2),('c',3.0)]
+    In [6]: paramEval = [('a',0.2), ('b',0.2), ('c',3.0)]
 
-    In [7]: ode = common_models.FitzHugh().setParameters(paramEval).setInitialValue(x0,t0)
+    In [7]: ode = common_models.FitzHugh().setParameters(paramEval).setInitialValue(x0, t0)
 
     In [8]: t = numpy.linspace(1, 20, 30).astype('float64')
 

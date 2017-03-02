@@ -63,7 +63,7 @@ First ,we are going to fit a standard **SEIR** model to the data.  Details of th
     
     In [6]: t0 = t[0]
 
-    In [7]: objLegrand = SquareLoss(theta,ode,x0,t0,t[1::],y[1::,:],['I','R'],[1175e4,1175e4])
+    In [7]: objLegrand = SquareLoss(theta, ode, x0, t0, t[1::], y[1::,:], ['I','R'], [1175e4,1175e4])
 
 Then we optimize, first, assuming that the initial conditions are accurate.  Some relatively large bounds are used for this particular problem.  
 

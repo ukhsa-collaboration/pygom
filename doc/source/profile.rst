@@ -197,9 +197,9 @@ The integration is perform from :math:`t = 0` to :math:`1` and is all handled in
 
     In [1]: %timeit xLGeometricO, xUGeometricO = ci.geometric(objSIR, alpha, xhat, geometry="o")
 
-    In [2]: print xLGeometric
+    In [2]: print(xLGeometric)
 
-    In [3]: print xUGeometric
+    In [3]: print(xUGeometric)
 
 Bootstrap
 =========
@@ -224,9 +224,9 @@ with :math:`\mathcal{F}` being the empirical distribution of the raw errors.  A 
 
     In [1]: xLBootstrap, xUBootstrap, setX = ci.bootstrap(objSIR, alpha, xhat, iteration=100, lb=boxBoundsArray[:,0], ub=boxBoundsArray[:,1], full_output=True)
 
-    In [2]: print xLBootstrap
+    In [2]: print(xLBootstrap)
 
-    In [3]: print xUBootstrap
+    In [3]: print(xUBootstrap)
 
 The additional information here can be used to compute the bias, tail effects and test against the normality assumption.  If desired, a simultaneous confidence interval can also be approximated empirically.  Note however that because we are using a semi--parameter method here, if the model specification is wrong then the resulting estimates for the bias is also wrong.  The confidence interval still has the normal approximation guarantee if number of sample is large.
 
@@ -258,58 +258,52 @@ Although we have shown the numerical values for the confidence interval obtained
 
     In [1]: niter = 1000
 
-    In [2]: randNum = numpy.random.rand(niter,2) * 2.0
-
-    In [3]: # target = numpy.zeros((niter,1))
-
-    In [4]: # for i in range(0,niter): target[i] = objSIR.cost(randNum[i,:])
+    In [2]: randNum = numpy.random.rand(niter,2)*2.0
 
     In [3]: target = [objSIR.cost(randNum[i,:]) for i in range(niter)]
 
-    In [5]: # z = numpy.reshape(target,(niter,))
-
-    In [5]: z = numpy.array(target)
+    In [4]: z = numpy.array(target)
 
     In [5]: x = randNum[:,0]
 
-    In [5]: y = randNum[:,1]
+    In [6]: y = randNum[:,1]
 
-    In [6]: from scipy.interpolate import griddata
+    In [7]: from scipy.interpolate import griddata
 
-    In [7]: xi = numpy.linspace(0.0, 2.0, 100)
+    In [8]: xi = numpy.linspace(0.0, 2.0, 100)
 
-    In [8]: yi = numpy.linspace(0.0, 2.0, 100)
+    In [9]: yi = numpy.linspace(0.0, 2.0, 100)
 
-    In [9]: zi = griddata((x, y), numpy.log(z), (xi[None,:], yi[:,None]), method='linear')
+    In [10]: zi = griddata((x, y), numpy.log(z), (xi[None,:], yi[:,None]), method='linear')
 
-    In [10]: CS = plt.contour(xi, yi, zi, linewidth=0.5)
+    In [11]: CS = plt.contour(xi, yi, zi, linewidth=0.5)
 
-    In [10]: plt.clabel(CS, fontsize=10, inline=1);
+    In [12]: plt.clabel(CS, fontsize=10, inline=1);
 
-    In [10]: l0 = plt.scatter(xhat[0], xhat[1], marker='o', c='k', s=30)
+    In [13]: l0 = plt.scatter(xhat[0], xhat[1], marker='o', c='k', s=30)
 
-    In [11]: l1 = plt.scatter(numpy.append(xL[0], xU[0]),numpy.append(xL[1], xU[1]), marker='x', c='m', s=30)
+    In [14]: l1 = plt.scatter(numpy.append(xL[0], xU[0]), numpy.append(xL[1], xU[1]), marker='x', c='m', s=30)
 
-    In [12]: l2 = plt.scatter(numpy.append(xLBootstrap[0], xUBootstrap[0]),numpy.append(xLBootstrap[1], xUBootstrap[1]), marker='x', c='g', s=30)
+    In [15]: l2 = plt.scatter(numpy.append(xLBootstrap[0], xUBootstrap[0]),numpy.append(xLBootstrap[1], xUBootstrap[1]), marker='x', c='g', s=30)
 
-    In [13]: l3 = plt.scatter(numpy.append(xLGeometric[0], xUGeometric[0]),numpy.append(xLGeometric[1], xUGeometric[1]), marker='x', c='r', s=30)
+    In [16]: l3 = plt.scatter(numpy.append(xLGeometric[0], xUGeometric[0]),numpy.append(xLGeometric[1], xUGeometric[1]), marker='x', c='r', s=30)
 
-    In [13]: l4 = plt.scatter(numpy.append(xLProfile[0], xUProfile[0]),numpy.append(xLProfile[1], xUProfile[1]), marker='x', c='y', s=30)
+    In [17]: l4 = plt.scatter(numpy.append(xLProfile[0], xUProfile[0]),numpy.append(xLProfile[1], xUProfile[1]), marker='x', c='y', s=30)
 
-    In [14]: plt.legend((l0,l1,l2,l3,l4), ('MLE','Asymptotic','Boostrap','Geometric','Profile'), loc='upper left');
+    In [18]: plt.legend((l0,l1,l2,l3,l4), ('MLE','Asymptotic','Boostrap','Geometric','Profile'), loc='upper left');
 
-    In [15]: plt.ylabel(r'Estimates of $\gamma$');
+    In [19]: plt.ylabel(r'Estimates of $\gamma$');
 
-    In [16]: plt.xlabel(r'Estimates of $\beta$');
+    In [20]: plt.xlabel(r'Estimates of $\beta$');
 
-    In [17]: plt.title('Location of the confidence intervals on the likelihood surface');
+    In [21]: plt.title('Location of the confidence intervals on the likelihood surface');
 
-    In [18]: plt.tight_layout();
+    In [22]: plt.tight_layout();
 
     @savefig compareCI.png 
-    In [19]: plt.show()
+    In [23]: plt.show()
 
-    In [20]: plt.close()
+    In [24]: plt.close()
 
 In the plot above, the bootstrap confidence interval were so close to the MLE, it is impossible to distinguish the two on such a coarse scale.
 
@@ -317,13 +311,13 @@ Furthermore, because the geometric confidence interval is the result of an integ
 
 .. ipython::
 
-    In [1]: CS = plt.contour(xi,yi,zi,linewidth=0.5)
+    In [1]: CS = plt.contour(xi, yi, zi, linewidth=0.5)
 
-    In [2]: plt.clabel(CS,fontsize=10,inline=1)
+    In [2]: plt.clabel(CS, fontsize=10, inline=1)
 
-    In [3]: l1 = plt.scatter(xLList[0][:,0],xLList[0][:,1],marker='o',c='m',s=10);
+    In [3]: l1 = plt.scatter(xLList[0][:,0], xLList[0][:,1], marker='o', c='m', s=10);
 
-    In [4]: l2 = plt.scatter(xUList[0][:,0],xUList[0][:,1],marker='x',c='m',s=10);
+    In [4]: l2 = plt.scatter(xUList[0][:,0], xUList[0][:,1], marker='x', c='m', s=10);
 
     In [5]: plt.legend((l1,l2), ('Lower CI path','Upper CI path'), loc='upper left');
 
@@ -385,7 +379,7 @@ Both upper confidence region does not appear to have a nice quadratic shape whil
     In [6]: for i in range(numIter):
        ...:     paramEval = [('beta',x2[i]), ('gamma',x2[i])]
        ...:     ode2 = copy.deepcopy(ode).setParameters(paramEval).setInitialValue(x0,t[0])
-       ...:     objSIR2 = NormalLoss(x2[i],ode2,x0,t[0],t[1::],yObv.copy(),targetState,targetParam='gamma')
+       ...:     objSIR2 = NormalLoss(x2[i], ode2, x0, t[0], t[1::], yObv.copy(), targetState, targetParam='gamma')
        ...:     res = scipy.optimize.minimize(fun=objSIR2.cost,
        ...:                                   jac=objSIR2.gradient,
        ...:                                   x0=x2[i],
@@ -426,12 +420,12 @@ Evidently, the lower confidence interval can be found, but the part between of :
 
     In [4]: objSIR = NormalLoss(theta,ode,x0,t[0],t[1::],y.copy(),targetState)
 
-    In [5]: xhat = objSIR.fit(theta, lb=boxBoundsArray[:,0], ub=boxBoundsArray[:,1]))
+    In [5]: xhat = objSIR.fit(theta, lb=boxBoundsArray[:,0], ub=boxBoundsArray[:,1])
 
     In [6]: for i in range(numIter):
        ...:     paramEval = [('beta',x2[i]), ('gamma',x2[i])]
-       ...:     ode2 = copy.deepcopy(ode).setParameters(paramEval).setInitialValue(x0,t[0])
-       ...:     objSIR2 = NormalLoss(x2[i],ode2,x0,t[0],t[1::],y.copy(),targetState,targetParam='gamma')
+       ...:     ode2 = copy.deepcopy(ode).setParameters(paramEval).setInitialValue(x0, t[0])
+       ...:     objSIR2 = NormalLoss(x2[i], ode2, x0, t[0], t[1::], y.copy(), targetState, targetParam='gamma')
        ...:     res = scipy.optimize.minimize(fun=objSIR2.cost,
        ...:                                   jac=objSIR2.gradient,
        ...:                                   x0=x2[i],
@@ -443,7 +437,7 @@ Evidently, the lower confidence interval can be found, but the part between of :
 
     In [10]: plt.plot(x2,objSIR.cost(xhat)-funcOut);
 
-    In [11]: l1 = plt.axhline(-0.5 * qchisq(1-alpha, df=1),0,2,color='r')
+    In [11]: l1 = plt.axhline(-0.5*qchisq(1 - alpha, df=1), 0, 2, color='r')
 
     In [12]: plt.ylabel(r'$\mathcal{L}(\hat{\theta}) - \mathcal{L}(\theta \mid \beta)$');
 

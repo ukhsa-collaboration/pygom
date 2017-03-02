@@ -30,13 +30,13 @@ The current plan is to extend the functionality to include
 Obtaining the package
 =====================
 
-The location of the package is current in the MRA git repository and can be pulled via SSH from::
+The location of the package is current no GitHub and can be pulled via http from::
 
-    git@mragitlab.phe.gov.uk:Edwin.Tye/pygenericodemodel.git
+    https://github.com/PublicHealthEngland/pygom.git
 
 The package is currently as follows::
 
-  pygenericodemodel/
+  pygom/
       bin/
       doc/
       pygom/
@@ -44,10 +44,12 @@ The package is currently as follows::
               tests/
           model/
               tests/
+          sbml_translate/
+          utilR/
       LICENSE.txt
-      MANIFEST.in
-      setup.py
       README.rst
+      requirements.txt
+      setup.py
       
 with files in each of the three main folder not shown.  You can install the package via command line::
 

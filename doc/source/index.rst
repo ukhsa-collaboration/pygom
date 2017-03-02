@@ -17,6 +17,7 @@ Contents:
    transition.rst
    stochastic.rst
    unrollOde.rst
+   epi.rst
    gradient.rst
    epijson.rst
    fh.rst
