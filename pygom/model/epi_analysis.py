@@ -2,6 +2,13 @@ import sympy
 
 from .stochastic import SimulateOdeModel
 
+__all__ = [
+           'getDFE',
+           'getR0',
+           'getR0GivenMatrix',
+           'getDiseaseProgressionMatrices'
+           ]
+
 def getDFE(ode, diseaseState):
     '''
     Returns the disease free equilibrium from an ode object
@@ -31,6 +38,8 @@ def getDFE(ode, diseaseState):
     eqn = eqn.subs(statesSubs)
 
     DFE = sympy.solve(eqn, states)
+    if len(DFE) == 0: DFE = {}
+
     for s in states:
         if s not in statesSubs.keys() and s not in DFE.keys():
             DFE.setdefault(s, 0)
@@ -64,19 +73,21 @@ def getR0(ode, diseaseState):
     '''
 
     F, V = getDiseaseProgressionMatrices(ode, diseaseState)
-    index = ode.getStateIndex(diseaseState)
+    ## index = ode.getStateIndex(diseaseState)
     e = getR0GivenMatrix(F, V)
     DFE = getDFE(ode, diseaseState)
     e = [eig.subs(DFE) for eig in e]
     if ode.getParameters() is not None:
         e = [eig.subs(ode.getParameters()) for eig in e]
 
-    e = filter(lambda x: sympy.Integer(-1) not in x.args, e)
+    e = list(filter(lambda x: sympy.Integer(-1) not in x.args, e))
     return (e if len(e) > 1 else e[0])
 
 def getR0GivenMatrix(F, V, diseaseState=None):
     '''
-    Returns the symbolic form of the basic reproduction number
+    Returns the symbolic form of the basic reproduction number. This will
+    include the states symbols which is different from :func:`getR0` where
+    the states is replaced by the values of the disease-free equilibrium.
 
     Parameters
     ----------
@@ -112,8 +123,8 @@ def getR0GivenMatrix(F, V, diseaseState=None):
 
     K = dF*dV.inv()
     e = K.eigenvals().keys()
-    e = filter(lambda x: x!= 0, e)
-    return e
+    e = filter(lambda x: x != 0, e)
+    return list(e)
 
 def getDiseaseProgressionMatrices(ode, diseaseState, diff=True):
     '''
@@ -132,19 +143,20 @@ def getDiseaseProgressionMatrices(ode, diseaseState, diff=True):
     Returns
     -------
     (F, V): tuple
-        the progression matrices
+        The progression matrices.  If diff=False, then we return the F_{i} and
+        V_{i} matrices as per [1].  
 
     References
     ----------
     .. [1] Chapter 6, Mathematical Epidemiology, Lecture Notes in Mathematics,
            Brauer Fred, Springer 2008
     '''
+
     diseaseIndex = ode.getStateIndex(diseaseState)
     stateList = list()
     for i, s in enumerate(ode._iterStateList()):
         if i in diseaseIndex:
             stateList.append(s)
-    n = len(diseaseIndex)
 
     FList = list()
     for t in ode.getTransitionList():

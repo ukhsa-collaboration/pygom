@@ -595,7 +595,7 @@ class BaseOdeModel(object):
             # of the correct type
             self.addOdeEquation(odeList)
         else:
-            raise InputError("Input not as expected.  It is not a list "+
+            raise InputError("Input not as expected.  It is not a list " +
                              "or a Transition")
 
         return self

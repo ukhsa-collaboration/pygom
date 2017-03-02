@@ -8,6 +8,7 @@ from __future__ import division, print_function, absolute_import
 
 from .common_models import *
 from .deterministic import *
+from .epi_analysis import *
 from .ode_utils import *
 from .ode_variable import *
 from .stochastic import *

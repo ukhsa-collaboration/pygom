@@ -413,7 +413,7 @@ def odeToPureTransition(fx, states, output_remain=False):
         diffTermList = map(lambda x_y: (x_y[1], x_y[0]), diffTermList)
         A, remainTermList = _singleOriginTransition(diffOde, diffTermList, states, A)
         
-        AA, remainTermList = _odeToPureTransition(diffOde, diffTermList, A)
+        AA, remainTermList = _odeToPureTransition(diffOde, remainTermList, A)
         ## fx2 = pureTransitionToOde(AA)
         if output_remain:
             return AA, remainTermList
