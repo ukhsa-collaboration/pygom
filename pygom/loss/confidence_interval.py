@@ -565,7 +565,7 @@ def _profileObtainAndVerifyBounds(f, df, ddf, x0, lb, ub, full_output=False):
                    x0=x0,
                    bounds=np.reshape(np.append(lb, ub), (len(lb),2), 'F'),
                    method='l-bfgs-b',
-                   options={'maxiter':2000})
+                   options={'maxiter':1000})
 
     if res["success"] == False:
         raise EstimateError("Failure in estimation of the profile " + 
@@ -755,17 +755,23 @@ def _profileFhessian(xhat, i, alpha, obj, approx=True):
         G[i] = g.copy()
         lvector = g.copy()
         lvector[i] = obj.cost(x) - c
-        if approx:
-            return 2*G.T.dot(G)
-        else:
-            A = 2*G.T.dot(G)
-            ## here we assume that only the second derivative is
-            ## significant.
+        A = 2*G.T.dot(G)
+        if not approx:
             for s in lvector:
                 A += s*H
-            ## return np.diag(lvector).dot(H) + 2 * G.T.dot(G)
-            ## return 2 * G.T.dot(G)
-            return A
+        return A
+
+#         if approx:
+#             return 2*G.T.dot(G)
+#         else:
+#             A = 2*G.T.dot(G)
+#             ## here we assume that only the second derivative is
+#             ## significant.
+#             for s in lvector:
+#                 A += s*H
+#             ## return np.diag(lvector).dot(H) + 2 * G.T.dot(G)
+#             ## return 2 * G.T.dot(G)
+#             return A
 
     return func
 

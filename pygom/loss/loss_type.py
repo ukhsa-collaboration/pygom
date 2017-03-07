@@ -48,7 +48,8 @@ class Square(object):
             if 1 == self._w.shape[1]:
                 self._w = self._w.flatten()
 
-        assert self._y.shape == self._w.shape, "Input weight not of the same size as y"
+        assert self._y.shape == self._w.shape, \
+            "Input weight not of the same size as y"
 
         self.loss(self._y)
 
@@ -148,6 +149,7 @@ class Normal(object):
     '''
 
     def __init__(self, y, sigma=1.0):
+        err_str = "Standard deviation not of the correct "
         self._y = checkArrayType(y)
         if isinstance(sigma, numpy.ndarray):
             if len(sigma.shape) > 1:
@@ -157,16 +159,16 @@ class Normal(object):
                 if y.shape == sigma.shape:
                     self._sigma = sigma
                 else:
-                    raise InitializeError("Standard deviation not of the correct size")
+                    raise InitializeError(err_str + "size")
             else:
                 if y.shape == sigma.shape:
                     self._sigma = sigma
                 else:
-                    raise InitializeError("Standard deviation not of the correct size")
+                    raise InitializeError(err_str + "size")
         elif sigma is None or sigma == 1.0:
             self._sigma = numpy.ones(self._y.shape)
         else:
-            raise InitializeError("Standard deviation not of the correct type")
+            raise InitializeError(err_str + "type")
 
         self._sigma2 = self._sigma**2
         self.loss(self._y)

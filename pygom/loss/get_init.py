@@ -6,12 +6,37 @@ from scipy.integrate import simps
 from scipy.optimize import leastsq, minimize_scalar
 
 def getInit(y, t, ode, theta=None, full_output=False):
+    '''
+    Get an initial guess of theta given the observations and the corresponding
+    time points.
+    
+    Parameters
+    ----------
+    y: :array like
+        observed values
+    t: array like
+        time
+    ode: :class:`pygom.model.OperateOdeModel`
+        an ode object
+    theta: array like
+        paramter value
+    full_output: bool, optional
+        True if the optimization result should be returned. Defaults to False.
+        
+    Returns
+    -------
+    theta: array like
+        a guess of the parameters
+
+    '''
     if theta is None:
         p = ode.getNumParam()
         theta = numpy.ones(p)/2.0
+
     f = functools.partial(_fitGivenSmoothness, y, t, ode, theta)
     output = minimize_scalar(f, bounds=(0,10), method='bounded')
     thetaNew = numpy.array(ode._paramValue) 
+
     if full_output:
         return thetaNew, output
     else:
@@ -22,7 +47,7 @@ def _fitGivenSmoothness(y, t, ode, theta, s):
     # d = ode.getNumState()
 
     splineList = interpolate(y, t, s=s)
-    interval = numpy.linspace(t[1],t[-1],1000)
+    interval = numpy.linspace(t[1], t[-1], 1000)
     # xApprox, fxApprox, t = _getApprox(splineList, interval)
 
     # g2 = functools.partial(residualSample, ode, fxApprox, xApprox, interval)
@@ -38,7 +63,7 @@ def _fitGivenSmoothness(y, t, ode, theta, s):
     # approximate the integral using fixed points
     r = numpy.reshape(res[2]['fvec']**2, (len(interval), len(splineList)), 'F')
 
-    return (r.sum())*(interval[1]-interval[0]) + loss
+    return (r.sum())*(interval[1] - interval[0]) + loss
 
 def interpolate(solution, t, s=0):
     '''
@@ -62,25 +87,26 @@ def interpolate(solution, t, s=0):
 
     n, p = solution.shape
     assert len(t) == n, "Number of observations and time point not equal"
-    if isinstance(s, (numpy.ndarray, list, tuple)):
+    # if isinstance(s, (numpy.ndarray, list, tuple)):
+    if hasattr(s, '__iter__'):
         if len(s) == 1:
             assert s >= 0, "Smoothing factor must be non-negative"
             s = numpy.ones(p)*s
         else:
-            assert len(s) == p, "Number of smoothing factor must be equal to input solution columns"
+            assert len(s) == p, "Number of smoothing factor must be " + \
+                "equal to input solution columns"
     else:
         assert s >= 0, "Smoothing factor must be non-negative"
         s = numpy.ones(p)*s
     
-    splineList = [UnivariateSpline(t, solution[:,j], s=s[j]) for j in range(0, p)]
+    splineList = [UnivariateSpline(t, solution[:,j], s=s[j]) for j in range(p)]
     
     return splineList
         
 def costGradInterpolant(ode, splineList, t, theta):
     '''
-    Returns the cost (sum of squared residuals) and the gradient
-    between the first derivative of the interpolant and the
-    function of the ode
+    Returns the cost (sum of squared residuals) and the gradient between the
+    first derivative of the interpolant and the function of the ode
     
     Parameters
     ----------
@@ -190,12 +216,11 @@ def costSample(ode, fxApprox, xApprox, t, theta, vec=True, aggregate=True):
     vec: bool, optional
         if the matrix should be flattened to be a vector
     aggregate: bool/str, optional
-        sum the vector/matrix.  If this is equals to 'int' then
-        the Simpsons rule is applied to the samples.  Also changes
-        the behaviour of vec, where True outputs a vector where
-        the elements contain the values of the integrand on each
-        of the dimensions of the ode.  False returns the sum of this
-        vector, a scalar.
+        sum the vector/matrix.  If this is equals to 'int' then the Simpsons
+        rule is applied to the samples.  Also changes the behaviour of vec,
+        where True outputs a vector where the elements contain the values of
+        the integrand on each of the dimensions of the ode.  False returns
+        the sum of this vector, a scalar.
         
     Returns
     -------
@@ -210,9 +235,9 @@ def costSample(ode, fxApprox, xApprox, t, theta, vec=True, aggregate=True):
             if vec:
                 return integrand
             else: 
-                return sum(integrand) 
+                return numpy.sum(integrand) 
         else:
-            raise RuntimeError('Aggregation method not recognized')
+            raise RuntimeError("Aggregation method not recognized")
     elif isinstance(aggregate, bool):
         c = residualSample(ode, fxApprox, xApprox, t, theta, vec)**2
         if aggregate:
@@ -220,7 +245,7 @@ def costSample(ode, fxApprox, xApprox, t, theta, vec=True, aggregate=True):
         else:
             return c
     else:
-        raise RuntimeError('Aggregation method not recognized')
+        raise RuntimeError("Aggregation method not recognized")
 
 def residualSample(ode, fxApprox, xApprox, t, theta, vec=True):
     ode = ode.setParameters(theta)
@@ -229,9 +254,9 @@ def residualSample(ode, fxApprox, xApprox, t, theta, vec=True):
         fx[i] = ode.ode(x, t[i])
 
     if vec:
-        return (fxApprox-fx).flatten('F')
+        return (fxApprox - fx).flatten('F')
     else:
-        return fxApprox-fx
+        return fxApprox - fx
 
 def jacSample(ode, fxApprox, xApprox, t, theta, vec=True):
     ode = ode.setParameters(theta)
@@ -240,20 +265,21 @@ def jacSample(ode, fxApprox, xApprox, t, theta, vec=True):
     p = ode.getNumParam()
     g = numpy.zeros((n, d, p))
     for i, x in enumerate(xApprox):
-        g[i] = -2*ode.Grad(x,t[i])
+        g[i] = -2*ode.Grad(x, t[i])
 
     if vec:
         return numpy.reshape(g.transpose(1,0,2), (n*d, p))
     else:
         return g
 
-def gradSample(ode, fxApprox, xApprox, t, theta, vec=False, outputResidual=False):
+def gradSample(ode, fxApprox, xApprox, t, theta,
+               vec=False, outputResidual=False):
     ode = ode.setParameters(theta)
     r = residualSample(ode, fxApprox, xApprox, t, theta, vec=False)
 
     g = numpy.zeros((len(fxApprox), ode.getNumParam()))
     for i, x in enumerate(xApprox):
-        g[i] = -2*ode.Grad(x,t[i]).T.dot(r[i])
+        g[i] = -2*ode.Grad(x, t[i]).T.dot(r[i])
 
     if outputResidual:
         return g.sum(0), r
@@ -261,7 +287,7 @@ def gradSample(ode, fxApprox, xApprox, t, theta, vec=False, outputResidual=False
         return g.sum(0)
 
 def _getApprox(splineList, t):
-    if not isinstance(t, (numpy.ndarray, list, tuple)):
+    if not hasattr(t, '__iter__'):
         t = numpy.array([t])
 
     n = len(t)

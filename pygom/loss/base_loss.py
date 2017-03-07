@@ -580,8 +580,8 @@ class BaseLoss(object):
             input value of the parameters
         full_output: bool, optional
             if additional output is required
-        intName: str, optinal
-            Choice between lsoda,vode and dopri5, the three integrator provided
+        intName: str, optional
+            Choice between lsoda, vode and dopri5, the three integrator provided
             by scipy.  Defaults to lsoda
 
         Returns

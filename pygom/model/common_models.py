@@ -20,10 +20,10 @@ def SIS(param=None):
     Examples
     --------
 
-    >>> ode = common_models.SIS({'beta':0.5,'gamma':0.2})
-    >>> t = numpy.linspace(0,20,101)
-    >>> x0 = [1.0,0.1]
-    >>> ode.setInitialValue(x0,t[0])
+    >>> ode = common_models.SIS({'beta':0.5, 'gamma':0.2})
+    >>> t = numpy.linspace(0, 20, 101)
+    >>> x0 = [1.0, 0.1]
+    >>> ode.setInitialValue(x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
 
@@ -32,9 +32,9 @@ def SIS(param=None):
     stateList = ['S', 'I']
     paramList = ['beta', 'gamma']
     transitionList = [
-        Transition(origState='S', destState='I', equation='beta * S * I',
+        Transition(origState='S', destState='I', equation='beta*S*I',
                    transitionType=TransitionType.T),
-        Transition(origState='I', destState='S', equation='gamma * I',
+        Transition(origState='I', destState='S', equation='gamma*I',
                    transitionType=TransitionType.T)
         ]
     # initialize the model
@@ -73,19 +73,19 @@ def SIS_Periodic(param=None):
     --------
 
     >>> ode = common_models.SIS_Periodic({'alpha':1.0})
-    >>> t = numpy.linspace(0,10,101)
-    >>> x0 = [0.1,0.]
-    >>> ode.setInitialValue(x0,t[0])
+    >>> t = numpy.linspace(0, 10, 101)
+    >>> x0 = [0.1, 0.0]
+    >>> ode.setInitialValue(x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
 
     '''
     stateList = ['I', 'tau']
     paramList = ['alpha']
-    derivedParamList = [('betaT', '2 - 1.8 * cos(5*tau)')]
+    derivedParamList = [('betaT', '2 - 1.8*cos(5*tau)')]
     odeList = [
         Transition(origState='I',
-                   equation='(betaT - alpha)* I - betaT * I * I',
+                   equation='(betaT - alpha)*I - betaT*I*I',
                    transitionType=TransitionType.ODE),
         Transition(origState='tau',
                    equation='1',
@@ -122,21 +122,21 @@ def SIR(param=None):
     The model that produced top two graph in Figure 1.3 of the reference above.
     First, when everyone is susceptible and only one individual was infected.
 
-    >>> ode = common_models.SIR({'beta':3.6,'gamma':0.2})
-    >>> t = numpy.linspace(0,730,1001)
+    >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
+    >>> t = numpy.linspace(0, 730, 1001)
     >>> N = 7781984.0
-    >>> x0 = [1.0,10/N,0.0]
-    >>> ode.setInitialValue(x0,t[0])
+    >>> x0 = [1.0, 10/N, 0.0]
+    >>> ode.setInitialValue(x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
 
     Second model with a more *realistic* scenario
 
-    >>> ode = common_models.SIR({'beta':3.6,'gamma':0.2})
-    >>> t = numpy.linspace(0,730,1001)
+    >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
+    >>> t = numpy.linspace(0, 730, 1001)
     >>> N = 7781984.0
-    >>> x0 = [0.065,123*(5.0/30.0)/N,0.0]
-    >>> ode.setInitialValue(x0,t[0])
+    >>> x0 = [0.065, 123*(5.0/30.0)/N, 0.0]
+    >>> ode.setInitialValue(x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
 
@@ -144,9 +144,9 @@ def SIR(param=None):
     stateList = ['S', 'I', 'R']
     paramList = ['beta', 'gamma']
     transitionList = [
-        Transition(origState='S', destState='I', equation='beta * S * I',
+        Transition(origState='S', destState='I', equation='beta*S*I',
                    transitionType=TransitionType.T),
-        Transition(origState='I', destState='R', equation='gamma * I',
+        Transition(origState='I', destState='R', equation='gamma*I',
                    transitionType=TransitionType.T)
         ]
     # initialize the model
@@ -181,21 +181,21 @@ def SIR_N(param=None):
     The model that produced top two graph in Figure 1.3 of the reference above.
     First, when everyone is susceptible and only one individual was infected.
 
-    >>> ode = common_models.SIR({'beta':3.6,'gamma':0.2})
-    >>> t = numpy.linspace(0,730,1001)
+    >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
+    >>> t = numpy.linspace(0, 730, 1001)
     >>> N = 7781984.0
-    >>> x0 = [1.0,10/N,0.0]
-    >>> ode.setInitialValue(x0,t[0])
+    >>> x0 = [1.0, 10/N, 0.0]
+    >>> ode.setInitialValue(x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
 
     Second model with a more *realistic* scenario
 
-    >>> ode = common_models.SIR({'beta':3.6,'gamma':0.2})
-    >>> t = numpy.linspace(0,730,1001)
+    >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
+    >>> t = numpy.linspace(0, 730, 1001)
     >>> N = 7781984.0
-    >>> x0 = [0.065,123*(5.0/30.0)/N,0.0]
-    >>> ode.setInitialValue(x0,t[0])
+    >>> x0 = [0.065, 123*(5.0/30.0)/N, 0.0]
+    >>> ode.setInitialValue(x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
 
@@ -203,9 +203,9 @@ def SIR_N(param=None):
     stateList = ['S', 'I', 'R']
     paramList = ['beta', 'gamma','N']
     transitionList = [
-        Transition(origState='S', destState='I', equation='beta * S * I / N',
+        Transition(origState='S', destState='I', equation='beta*S*I/N',
                    transitionType=TransitionType.T),
-        Transition(origState='I', destState='R', equation='gamma * I',
+        Transition(origState='I', destState='R', equation='gamma*I',
                    transitionType=TransitionType.T)
         ]
     # initialize the model
@@ -241,11 +241,12 @@ def SIR_Birth_Death(param=None):
 
     >>> B = 126372.0/365.0
     >>> N = 7781984.0
-    >>> ode = common_models.SIR_Birth_Death({'beta':3.6,'gamma':0.2,'B':B/N,'mu':B/N})
-    >>> t = numpy.linspace(0,35*365,10001)
-    >>> x0 = [0.065,123.0*(5.0/30.0)/N,0.0]
-    >>> ode.setInitialValue(x0,t[0])
-    >>> solution,output = ode.integrate(t[1::],full_output=True)
+    >>> params = {'beta':3.6, 'gamma':0.2, 'B':B/N, 'mu':B/N}
+    >>> ode = common_models.SIR_Birth_Death(params)
+    >>> t = numpy.linspace(0, 35*365, 10001)
+    >>> x0 = [0.065, 123.0*(5.0/30.0)/N, 0.0]
+    >>> ode.setInitialValue(x0, t[0])
+    >>> solution,output = ode.integrate(t[1::], full_output=True)
     >>> ode.plot()
 
     See also
@@ -255,16 +256,19 @@ def SIR_Birth_Death(param=None):
     stateList = ['S', 'I', 'R']
     paramList = ['beta', 'gamma', 'B', 'mu']
     transitionList = [
-        Transition(origState='S', destState='I', equation='beta * S * I',
+        Transition(origState='S', destState='I', equation='beta*S*I',
                    transitionType=TransitionType.T),
-        Transition(origState='I', destState='R', equation='gamma * I',
+        Transition(origState='I', destState='R', equation='gamma*I',
                    transitionType=TransitionType.T)
         ]
     # our birth and deaths
     birthDeathList = [
-        Transition(origState='S', equation='B', transitionType=TransitionType.B),
-        Transition(origState='S', equation='mu * S', transitionType=TransitionType.D),
-        Transition(origState='I', equation='mu * I', transitionType=TransitionType.D)
+        Transition(origState='S', equation='B',
+                   transitionType=TransitionType.B),
+        Transition(origState='S', equation='mu*S',
+                   transitionType=TransitionType.D),
+        Transition(origState='I', equation='mu*I',
+                   transitionType=TransitionType.D)
         ]
 
     # initialize the model
@@ -293,11 +297,11 @@ def SEIR(param=None):
     Examples
     --------
 
-    >>> ode = common_models.SEIR({'beta':1800,'gamma':100,'alpha':35.84})
-    >>> t = numpy.linspace(0,50,1001)
-    >>> x0 = [0.0658,0.0007,0.0002,0.0]
-    >>> ode.setInitialValue(x0,t[0])
-    >>> solution,output = ode.integrate(t[1::],full_output=True)
+    >>> ode = common_models.SEIR({'beta':1800, 'gamma':100, 'alpha':35.84})
+    >>> t = numpy.linspace(0, 50, 1001)
+    >>> x0 = [0.0658, 0.0007, 0.0002, 0.0]
+    >>> ode.setInitialValue(x0, t[0])
+    >>> solution,output = ode.integrate(t[1::], full_output=True)
     >>> ode.plot()
 
     See also
@@ -309,11 +313,11 @@ def SEIR(param=None):
     paramList = ['beta', 'alpha', 'gamma']
 
     transitionList = [
-        Transition(origState='S', destState='E', equation='beta * S * I',
+        Transition(origState='S', destState='E', equation='beta*S*I',
                    transitionType=TransitionType.T),
-        Transition(origState='E', destState='I', equation='alpha * E',
+        Transition(origState='E', destState='I', equation='alpha*E',
                    transitionType=TransitionType.T),
-        Transition(origState='I', destState='R', equation='gamma * I',
+        Transition(origState='I', destState='R', equation='gamma*I',
                    transitionType=TransitionType.T)
         ]
 
@@ -347,12 +351,12 @@ def SEIR_Birth_Death(param=None):
     Uses the same set of parameters as the examples in :func:`.SEIR`
     apart from :math:`\mu` which is new.
 
-    >>> params = {'beta':1800,'gamma':100,'alpha':35.84,'mu':0.02}
+    >>> params = {'beta':1800, 'gamma':100, 'alpha':35.84, 'mu':0.02}
     >>> ode = common_models.SEIR_Birth_Death(params)
-    >>> t = numpy.linspace(0,50,1001)
-    >>> x0 = [0.0658,0.0007,0.0002,0.0]
-    >>> ode.setInitialValue(x0,t[0])
-    >>> solution,output = ode.integrate(t[1::],full_output=True)
+    >>> t = numpy.linspace(0, 50, 1001)
+    >>> x0 = [0.0658, 0.0007, 0.0002, 0.0]
+    >>> ode.setInitialValue(x0, t[0])
+    >>> solution,output = ode.integrate(t[1::], full_output=True)
     >>> ode.plot()
 
     See also
@@ -364,19 +368,23 @@ def SEIR_Birth_Death(param=None):
     paramList = ['beta', 'alpha', 'gamma', 'mu']
 
     transitionList = [
-        Transition(origState='S', destState='E', equation='beta * S * I',
+        Transition(origState='S', destState='E', equation='beta*S*I',
                    transitionType=TransitionType.T),
-        Transition(origState='E', destState='I', equation='alpha * E',
+        Transition(origState='E', destState='I', equation='alpha*E',
                    transitionType=TransitionType.T),
-        Transition(origState='I', destState='R', equation='gamma * I',
+        Transition(origState='I', destState='R', equation='gamma*I',
                    transitionType=TransitionType.T)
         ]
 
     bdList = [
-        Transition(origState='S', equation='mu * S', transitionType=TransitionType.D),
-        Transition(origState='E', equation='mu * E', transitionType=TransitionType.D),
-        Transition(origState='I', equation='mu * I', transitionType=TransitionType.D),
-        Transition(origState='S', equation='mu', transitionType=TransitionType.B)
+        Transition(origState='S', equation='mu*S',
+                   transitionType=TransitionType.D),
+        Transition(origState='E', equation='mu*E',
+                   transitionType=TransitionType.D),
+        Transition(origState='I', equation='mu*I',
+                   transitionType=TransitionType.D),
+        Transition(origState='S', equation='mu',
+                   transitionType=TransitionType.B)
         ]
 
     ode = OperateOdeModel(stateList,
@@ -404,7 +412,8 @@ def SEIR_Birth_Death_Periodic(param=None):
     .. math::
         \\beta(t) = \\beta_{0} (1 + \\beta_{1} \\cos(2 \\pi t)).
 
-    An extension of an SEIR birth death model by varying the contact rate through time.
+    An extension of an SEIR birth death model by varying the contact rate
+    through time.
 
     References
     ----------
@@ -414,15 +423,15 @@ def SEIR_Birth_Death_Periodic(param=None):
 
     Examples
     --------
-    Uses the same set of parameters as the examples in :func:`SEIR_Birth_Death` but
-    now we have two beta parameters instead of one.
+    Uses the same set of parameters as the examples in
+    :func:`SEIR_Birth_Death` but now we have two beta parameters instead of one.
 
     >>> params = {'beta0':1800,'beta1':0.2,'gamma':100,'alpha':35.84,'mu':0.02}
     >>> ode = common_models.SEIR_Birth_Death_Periodic(params)
     >>> t = numpy.linspace(0,50,1001)
-    >>> x0 = [0.0658,0.0007,0.0002,0.0]
-    >>> ode.setInitialValue(x0,t[0])
-    >>> solution,output = ode.integrate(t[1::],full_output=True)
+    >>> x0 = [0.0658, 0.0007, 0.0002, 0.0]
+    >>> ode.setInitialValue(x0, t[0])
+    >>> solution,output = ode.integrate(t[1::], full_output=True)
     >>> ode.plot()
     >>> import matplotlib.pyplot as plt
     >>> plt.plot(numpy.log(solution[:,0]),numpy.log(solution[:,1]))
@@ -439,11 +448,11 @@ def SEIR_Birth_Death_Periodic(param=None):
     paramList = ['mu', 'alpha', 'gamma', 'beta_0', 'beta_1']
     derivedParamList = [('beta_S', 'beta_0 * (1 + beta_1 * cos(2 * pi * tau))')]
     odeList = [
-        Transition(origState='S', equation='mu - beta_S * S * I - mu * S',
+        Transition(origState='S', equation='mu - beta_S*S*I - mu*S',
                    transitionType=TransitionType.ODE),
-        Transition(origState='E', equation='beta_S * S * I - (mu + alpha) * E',
+        Transition(origState='E', equation='beta_S*S*I - (mu + alpha)*E',
                    transitionType=TransitionType.ODE),
-        Transition(origState='I', equation='alpha * E - (mu + gamma) * I',
+        Transition(origState='I', equation='alpha*E - (mu + gamma)*I',
                    transitionType=TransitionType.ODE),
         Transition(origState='tau', equation='1',
                    transitionType=TransitionType.ODE)
@@ -486,9 +495,10 @@ def SEIR_Multiple(n=2, param=None):
     >>> paramEval = {'beta_00':0.0010107,'beta_01':0.0010107,'beta_10':0.0010107,
     >>>              'beta_11':0.0010107,'d':0.02,'epsilon':45.6,'gamma':73.0,
     >>>              'N_0':10**6,'N_1':10**6,'p':0.01}
-    >>> x0 = [36139.3224081278, 422.560577637822, 263.883351688369, 963174.233662546]
+    >>> x0 = [36139.3224081278, 422.560577637822,
+    >>>       263.883351688369, 963174.233662546]
     >>> ode = common_models.SEIR_Multiple()
-    >>> t = numpy.linspace(0,40,100)
+    >>> t = numpy.linspace(0, 40, 100)
     >>> x01 = []
     >>> for s in x0:
     >>>     x01 += [s]
@@ -540,7 +550,10 @@ def SEIR_Multiple(n=2, param=None):
     derivedParamList = []
     for i in range(n):
         derivedParamList += [(lambdaName[i],lambdaStr[i])]
-        transitionList += [Transition(origState=states['S'][i],destState=states['E'][i],equation=lambdaName[i]+ '*' +states['S'][i] ,transitionType=TransitionType.T)]
+        transitionList += [Transition(origState=states['S'][i],
+                                      destState=states['E'][i],
+                                      equation=lambdaName[i]+ '*' +states['S'][i] ,
+                                      transitionType=TransitionType.T)]
         transitionList += [Transition(origState=states['E'][i],destState=states['I'][i],equation=' epsilon * ' +states['E'][i] ,transitionType=TransitionType.T)]
         transitionList += [Transition(origState=states['I'][i],destState=states['R'][i],equation=' gamma * ' +states['I'][i] ,transitionType=TransitionType.T)]
         for v in states:
@@ -577,20 +590,20 @@ def Influenza_SLIARN(param=None):
            Brauer Fred, Springer 2008
     '''
     
-    stateList = ['S', 'L','I','A','R','N']
-    paramList = ['beta','p','kappa','alpha','f','delta','epsilon']
+    stateList = ['S', 'L', 'I', 'A', 'R', 'N']
+    paramList = ['beta', 'p', 'kappa', 'alpha', 'f', 'delta', 'epsilon']
     odeList = [
-               Transition(origState='S', equation='- beta * S * ( I + delta * A)',
+               Transition(origState='S', equation='-beta*S*( I + delta*A)',
                transitionType=TransitionType.ODE),
-               Transition(origState='L', equation='beta * S * (I + delta * A) - kappa * L',
+               Transition(origState='L', equation='beta*S*(I + delta*A) - kappa*L',
                transitionType=TransitionType.ODE),
-               Transition(origState='I', equation='p * kappa * L - alpha * I',
+               Transition(origState='I', equation='p*kappa*L - alpha*I',
                transitionType=TransitionType.ODE),
-               Transition(origState='A', equation='(1-p) * kappa * L - epsilon * A',
+               Transition(origState='A', equation='(1-p)*kappa*L - epsilon*A',
                transitionType=TransitionType.ODE),
-               Transition(origState='R', equation='f * alpha * I + epsilon * A',
+               Transition(origState='R', equation='f*alpha*I + epsilon*A',
                transitionType=TransitionType.ODE),
-               Transition(origState='N', equation='-(1-f) * alpha * I',
+               Transition(origState='N', equation='-(1 - f)*alpha*I',
                transitionType=TransitionType.ODE)
                ]
     # initialize the model
@@ -655,12 +668,12 @@ def Legrand_Ebola_SEIHFR(param=None):
         ('alpha', '1/alphaInv'),
         ('gamma_IH', '1/((1/gamma_I) - (1/gamma_H))'),
         ('gamma_DH', '1/((1/gamma_D) - (1/gamma_H))'),
-        ('delta_1', 'delta * gamma_I / (delta * gamma_I + (1 - delta) * gamma_D)'),
-        ('delta_2', 'delta * gamma_IH / (delta * gamma_IH + (1 - delta) * gamma_DH)'),
-        ('theta_A', 'theta * (gamma_I * (1 - delta_1) + gamma_D * delta_1)'),
-        ('theta_1', 'theta_A/ (theta_A +  (1 - theta) * gamma_H)'),
-        ('beta_H_Time', 'beta_H * (1 - (1/ (1+exp(-kappa*(tau-interventionTime)))))'),
-        ('beta_F_Time', 'beta_F * (1 - (1/ (1+exp(-kappa*(tau-interventionTime)))))')
+        ('delta_1', 'delta*gamma_I/(delta*gamma_I + (1 - delta)*gamma_D)'),
+        ('delta_2', 'delta*gamma_IH / (delta*gamma_IH + (1 - delta)*gamma_DH)'),
+        ('theta_A', 'theta*(gamma_I*(1 - delta_1) + gamma_D*delta_1)'),
+        ('theta_1', 'theta_A/(theta_A + (1 - theta)*gamma_H)'),
+        ('beta_H_Time', 'beta_H*(1 - (1/ (1 + exp(-kappa*(tau - interventionTime)))))'),
+        ('beta_F_Time', 'beta_F*(1 - (1/ (1 + exp(-kappa*(tau - interventionTime)))))')
         ]
 
     # alternatively, we can do it on the operate ode model
@@ -676,28 +689,28 @@ def Legrand_Ebola_SEIHFR(param=None):
 
     transitionList = [
         Transition(origState='S', destState='E',
-                   equation='(beta_I * S * I + beta_H_Time * S * H + beta_F_Time * S * F)',
+                   equation='(beta_I*S*I + beta_H_Time*S*H + beta_F_Time*S*F)',
                    transitionType=TransitionType.T),
         Transition(origState='E', destState='I',
-                   equation='alpha * E',
+                   equation='alpha*E',
                    transitionType=TransitionType.T),
         Transition(origState='I', destState='H',
-                   equation='gamma_H * theta_1 * I',
+                   equation='gamma_H*theta_1*I',
                    transitionType=TransitionType.T),
         Transition(origState='I', destState='F',
-                   equation='gamma_D * (1 - theta_1) * delta_1 * I',
+                   equation='gamma_D*(1 - theta_1) * delta_1*I',
                    transitionType=TransitionType.T),
         Transition(origState='I', destState='R',
-                   equation='gamma_I * (1 - theta_1) * (1 - delta_1) * I',
+                   equation='gamma_I*(1 - theta_1)*(1 - delta_1)*I',
                    transitionType=TransitionType.T),
         Transition(origState='H', destState='F',
-                   equation='gamma_DH * delta_2 * H',
+                   equation='gamma_DH*delta_2*H',
                    transitionType=TransitionType.T),
         Transition(origState='H', destState='R',
-                   equation='gamma_IH * (1 - delta_2) * H',
+                   equation='gamma_IH*(1 - delta_2)*H',
                    transitionType=TransitionType.T),
         Transition(origState='F', destState='R',
-                   equation='gamma_F * F',
+                   equation='gamma_F*F',
                    transitionType=TransitionType.T)
         ]
     #print transitionList
@@ -732,9 +745,9 @@ def Lotka_Volterra(param=None):
     Examples
     --------
 
-    >>> params = {'alpha':1,'delta':3,'c':2,'gamma':6}
-    >>> ode = common_models.Lotka_Volterra(params).setInitialValue([2.0,6.0],0)
-    >>> t = numpy.linspace(0.1,100,10000)
+    >>> params = {'alpha':1, 'delta':3, 'c':2, 'gamma':6}
+    >>> ode = common_models.Lotka_Volterra(params).setInitialValue([2.0, 6.0], 0)
+    >>> t = numpy.linspace(0.1, 100, 10000)
     >>> ode.integrate(t)
     >>> ode.plot()
 
@@ -747,9 +760,9 @@ def Lotka_Volterra(param=None):
     paramList = ['alpha', 'delta', 'c', 'gamma']
     # then define the set of ode
     odeList = [
-        Transition(origState='x', equation='alpha * x - c * x * y',
+        Transition(origState='x', equation='alpha*x - c*x*y',
                    transitionType=TransitionType.ODE),
-        Transition(origState='y', equation='-delta * y + gamma * x * y',
+        Transition(origState='y', equation='-delta*y + gamma*x*y',
                    transitionType=TransitionType.ODE)
         ]
 
@@ -784,9 +797,10 @@ def Lotka_Volterra_4State(param=None):
     --------
 
     >>> x0 = [150.0, 10.0, 10.0, 0.0]
-    >>> t = numpy.linspace(0,15,100)
-    >>> params = [0.01,0.1,1.0]
-    >>> ode = common_models.Lotka_Volterra_4State(params).setInitialValue(x0,t[0])
+    >>> t = numpy.linspace(0,15, 100)
+    >>> params = [0.01, 0.1, 1.0]
+    >>> ode = common_models.Lotka_Volterra_4State(params)
+    >>> ode = ode.setInitialValue(x0, t[0])
     >>> ode.integrate(t[1::])
     >>> ode.plot()
 
@@ -800,13 +814,13 @@ def Lotka_Volterra_4State(param=None):
     # then define the set of ode
     transitionList = [
         Transition(origState='a', destState='x',
-                   equation='k0 * a * x',
+                   equation='k0*a*x',
                    transitionType=TransitionType.T),
         Transition(origState='x', destState='y',
-                   equation='k1 * x * y',
+                   equation='k1*x*y',
                    transitionType=TransitionType.T),
         Transition(origState='y', destState='b',
-                   equation='k2 * y',
+                   equation='k2*y',
                    transitionType=TransitionType.T)
         ]
 
@@ -835,10 +849,10 @@ def FitzHugh(param=None):
     Examples
     --------
 
-    >>> ode = common_models.FitzHugh({'a':0.2,'b':0.2,'c':3.0})
-    >>> t = numpy.linspace(0,20,101)
-    >>> x0 = [1.0,-1.0]
-    >>> ode.setInitialValue(x0,t[0])
+    >>> ode = common_models.FitzHugh({'a':0.2, 'b':0.2, 'c':3.0})
+    >>> t = numpy.linspace(0, 20, 101)
+    >>> x0 = [1.0, -1.0]
+    >>> ode.setInitialValue(x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
 
@@ -851,9 +865,9 @@ def FitzHugh(param=None):
 
     # the set of ode
     odeList = [
-        Transition(origState='V', equation='c * (V - (V * V * V)/3 + R)',
+        Transition(origState='V', equation='c*(V - (V*V*V)/3 + R)',
                    transitionType=TransitionType.ODE),
-        Transition(origState='R', equation='-( (V - a + b * R)/c )',
+        Transition(origState='R', equation='-( (V - a + b*R)/c )',
                    transitionType=TransitionType.ODE)
         ]
     # setup our ode
@@ -889,11 +903,11 @@ def Lorenz(param=None):
     --------
 
     >>> import matplotlib.pyplot as plt
-    >>> t = numpy.linspace(0,20,101)
-    >>> params = {'beta':8.0/3.0,'sigma':10.0,'rho':28.0}
-    >>> ode = common_models.Lorenze(params).setInitialValue([1.,1.,1.],t[0])
+    >>> t = numpy.linspace(0, 20, 101)
+    >>> params = {'beta':8.0/3.0, 'sigma':10.0, 'rho':28.0}
+    >>> ode = common_models.Lorenze(params).setInitialValue([1., 1., 1.], t[0])
     >>> solution = ode.integrate(t[1::])
-    >>> plt.plot(solution[:,0],solution[:,2])
+    >>> plt.plot(solution[:,0], solution[:,2])
     >>> plt.show()
 
     '''
@@ -901,11 +915,11 @@ def Lorenz(param=None):
     stateList = ['x', 'y', 'z']
     paramList = ['beta', 'sigma', 'rho']
     odeList = [
-        Transition(origState='x', equation='sigma * (y - x)',
+        Transition(origState='x', equation='sigma*(y - x)',
                    transitionType=TransitionType.ODE),
-        Transition(origState='y', equation='x * (rho - z) - y',
+        Transition(origState='y', equation='x*(rho - z) - y',
                    transitionType=TransitionType.ODE),
-        Transition(origState='z', equation='x * y - beta * z',
+        Transition(origState='z', equation='x*y - beta*z',
                    transitionType=TransitionType.ODE)
         ]
     # initialize the model
@@ -924,7 +938,8 @@ def vanDelPol(param=None):
     .. math::
         y^{\prime\prime} - \mu (1-y^{2}) y^{\prime} + y = 0
 
-    where :math:`\mu > 0`.  This can be converted to a first order ode by equating :math:`x = y^{\prime}`
+    where :math:`\mu > 0`.  This can be converted to a first
+    order ode by equating :math:`x = y^{\prime}`
 
     .. math::
         x^{\prime} - \mu (1 - y^{2}) x + y = 0
@@ -949,8 +964,9 @@ def vanDelPol(param=None):
 
     >>> from odeModel import common_models
     >>> import numpy
-    >>> t = numpy.linspace(0,20,1000)
-    >>> ode = common_models.vanDelPol({'mu':1.0}).setInitialValue([2.0,0.0],t[0])
+    >>> t = numpy.linspace(0, 20, 1000)
+    >>> ode = common_models.vanDelPol({'mu':1.0})
+    >>> ode = ode..setInitialValue([2.0,0.0], t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
     '''
@@ -960,7 +976,7 @@ def vanDelPol(param=None):
     odeList = [
         Transition(origState='y', equation='x',
                    transitionType=TransitionType.ODE),
-        Transition(origState='x', equation='mu * (1-y*y) * x -  y',
+        Transition(origState='x', equation='mu * (1 - y*y)*x -  y',
                    transitionType=TransitionType.ODE)
         ]
     # initialize the model
@@ -974,7 +990,8 @@ def vanDelPol(param=None):
 
 def Robertson(param=None):
     '''
-    The so called Robertson problem, which is a standard example used to test stiff integrator.
+    The so called Robertson problem, which is a standard example used to
+    test stiff integrator.
 
     .. math::
         \\frac{dy_{1}}{dt} &= -0.04 y_{1} + 1 \cdot 10^{4} y_{2} y_{3} \\\\
@@ -991,8 +1008,8 @@ def Robertson(param=None):
 
     >>> from odeModel import common_models
     >>> import numpy
-    >>> t = numpy.append(0,4*numpy.logspace(-6,6,1000))
-    >>> ode = common_models.Robertson().setInitialValue([1.0,0.0,0.0],t[0]).integrate(t[1::])
+    >>> t = numpy.append(0,4*numpy.logspace(-6, 6, 1000))
+    >>> ode = common_models.Robertson().setInitialValue([1.0,0.0,0.0], t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot() # note that this is not being plotted in the log scale
 
@@ -1007,10 +1024,10 @@ def Robertson(param=None):
                    equation='0.04*y1',
                    transitionType=TransitionType.T),
         Transition(origState='y2', destState='y1',
-                   equation='1e4 * y2 * y3',
+                   equation='1e4*y2*y3',
                    transitionType=TransitionType.T),
         Transition(origState='y2', destState='y3',
-                   equation='3e7 * y2 * y2',
+                   equation='3e7*y2*y2',
                    transitionType=TransitionType.T)
         ]
     # initialize the model

@@ -12,9 +12,9 @@ from .ode_loss import PoissonLoss
 from .read_epijson import epijsonToDataFrame
 from pygom.model._model_errors import InputError
 
-import dateutil
-import dateutil.parser
 import pandas as pd
+import datetime
+from dateutil import parser, tz
 
 secondsInDay = float(24 * 60 * 60)
 
@@ -42,13 +42,13 @@ class EpijsonLoss(PoissonLoss):
             t0 = df.index[0]
         else:
             if isinstance(t0, str):
-                t0 = dateutil.parser.parse(t0)
+                t0 = parser.parse(t0)
                 # we should always put things as utc if possible and
                 # convert it if that is not the case
                 if t0.tzinfo is None:
-                    t0 = pd.Timestamp(t0, tz=dateutil.tz.tzutc())
+                    t0 = pd.Timestamp(t0, tz=tz.tzutc())
                 else:
-                    t0 = pd.Timestamp(t0).tz_convert(dateutil.tz.tzutc())
+                    t0 = pd.Timestamp(t0).tz_convert(tz.tzutc())
             elif isinstance(t0, (float, int)):
                 t0 = df.index[0] + datetime.timedelta(days=t0)
 

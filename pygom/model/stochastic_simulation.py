@@ -68,7 +68,8 @@ def firstReaction(x, t, stateChangeMat, transitionFunc):
         newX = _updateStateWithJump(x, minIndex, stateChangeMat)
         return _checkJump(x, newX, t, jumpTimes[minIndex])
 
-def nextReaction(x, t, stateChangeMat, dependencyGraph, oldRates, jumpTimes, transitionFunc):
+def nextReaction(x, t, stateChangeMat, dependencyGraph,
+                 oldRates, jumpTimes, transitionFunc):
     '''
     The next reaction method
     '''
@@ -105,7 +106,8 @@ def nextReaction(x, t, stateChangeMat, dependencyGraph, oldRates, jumpTimes, tra
         raise SimulationError("Cannot perform any more reactions")
 
 
-def tauLeap(x, t, stateChangeMat, reactantMat, transitionFunc, transitionMeanFunc, transitionVarFunc, epsilon=0.1):
+def tauLeap(x, t, stateChangeMat, reactantMat,
+            transitionFunc, transitionMeanFunc, transitionVarFunc, epsilon=0.1):
     '''
     The Poisson :math:`\tau`-Leap
     
