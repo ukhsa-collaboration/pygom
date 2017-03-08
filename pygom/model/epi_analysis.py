@@ -15,7 +15,7 @@ def getDFE(ode, diseaseState):
 
     Parameters
     ----------
-    ode: :class:`BaseOdeModel`
+    ode: :class:`.BaseOdeModel`
         a class object from pygom
     diseaseState: array like
         name of the disease states
@@ -52,7 +52,7 @@ def getR0(ode, diseaseState):
 
     Parameters
     ----------
-    ode: :class:`BaseOdeModel`
+    ode: :class:`.BaseOdeModel`
         a class object from pygom
     diseaseStateIndex: array like
         name of the disease states
@@ -91,18 +91,18 @@ def getR0GivenMatrix(F, V, diseaseState=None):
 
     Parameters
     ----------
-    F: :class:`sympy.Matrices`
+    F: :class:`sympy.matrices.MatrixBase`
         secondary infection rates        
-    V: :class:`sympy.Matrices`
+    V: :class:`sympy.matrices.MatrixBase`
         disease progression rates
     diseaseState: list like, optional
         list of the disease state as :class:`sympy.Symbol`.  Defaults
-        to None which assumes that F,V had been differentiated
+        to None which assumes that :math:`F,V` had been differentiated
     
     Returns
     -------
-    e: :class:`sympy.Matrices`
-        the eigenvalues of FV^{-1} for the disease states
+    e: :class:`sympy.matrices.MatrixBase`
+        the eigenvalues of :math:`FV^{-1}` for the disease states
 
     See Also
     --------
@@ -133,7 +133,7 @@ def getDiseaseProgressionMatrices(ode, diseaseState, diff=True):
 
     Parameters
     ----------
-    ode: :class:`BaseOdeModel`
+    ode: :class:`.BaseOdeModel`
         an ode class in pygom
     diseaseStates: array like
         the name of the disease states
@@ -143,8 +143,8 @@ def getDiseaseProgressionMatrices(ode, diseaseState, diff=True):
     Returns
     -------
     (F, V): tuple
-        The progression matrices.  If diff=False, then we return the F_{i} and
-        V_{i} matrices as per [1].  
+        The progression matrices.  If diff=False, then we return the :math:`F_{i}` and
+        :math:`V_{i}` matrices as per [1].  
 
     References
     ----------

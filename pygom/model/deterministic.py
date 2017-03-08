@@ -648,8 +648,9 @@ class OperateOdeModel(BaseOdeModel):
         Returns
         -------
         list
-            list of size (num of state,) each with :mod:`sympy.matrices.matrices`
-            of dimension [number of state x number of state]
+            list of size (num of state,) each with
+            :mod:`sympy.matrices.matrices` of dimension
+            [number of state x number of state]
 
         '''
         if self._diffJacobian is None:
@@ -740,6 +741,7 @@ class OperateOdeModel(BaseOdeModel):
 
         '''
         # finds
+        
         if self._Grad is None:
             ode = self.getOde()
             self._Grad = sympy.zeros(self._numState, self._numParam)
@@ -1367,7 +1369,7 @@ class OperateOdeModel(BaseOdeModel):
         Returns
         -------
         :class:`numpy.ndarray`
-            f(s(x,\theta)) and f(s(x_{0}))
+            :math:`f(s(x,\\theta))` and :math:`f(s(x_{0}))`
 
         Notes
         -----
@@ -1726,7 +1728,7 @@ class OperateOdeModel(BaseOdeModel):
 
     def forwardforward(self, ff, t, state, s):
         '''
-        Evaluate a single f(x) of the forward-forward sensitivities
+        Evaluate a single :math:`f(x)` of the forward-forward sensitivities
 
         Parameters
         ----------
@@ -1742,7 +1744,7 @@ class OperateOdeModel(BaseOdeModel):
         Returns
         -------
         :class:`numpy.ndarray`
-            f(x) of size [number of state *
+            :math:`f(x)` of size [number of state *
             (number of parameters * number of parameters)]
 
         '''

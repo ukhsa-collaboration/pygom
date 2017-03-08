@@ -155,7 +155,7 @@ class SimulateOdeModel(OperateOdeModel):
     def simulateJump(self, t, iteration, exact=False, full_output=False):
         '''
         Simulate the ode using stochastic simulation.  It switches
-        between a first reaction method and a :math:`\tau`-leap
+        between a first reaction method and a :math:`\\tau`-leap
         algorithm internally.
 
         Parameters
@@ -270,8 +270,8 @@ class SimulateOdeModel(OperateOdeModel):
     def _extractObservationAtTime(self, X, t, targetTime):
         '''
         Given simulation and a set of time points which we would like to
-        observe, we extract the observations x_{t} with
-        \min\{ \abs( t - targetTime) \}
+        observe, we extract the observations :math:`x_{t}` with
+        :math:`\\min\\{ \\abs( t - targetTime) \\}`
         '''
         y = list()
         # maxTime = max(t)

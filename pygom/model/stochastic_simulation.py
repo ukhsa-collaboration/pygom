@@ -38,9 +38,10 @@ def firstReaction(x, t, stateChangeMat, transitionFunc):
     t: double
         time
     stateChangeMat: array like
-        State change matrix V_{i,j} where i = state and j = transition
-        V_{i,j} is some non--zero integer such that transition j happen means
-        that state i changes by V_{i,j} amount
+        State change matrix :math:`V_{i,j}` where :math:`i,j` represent the
+        state and transition respectively.  :math:`V_{i,j}` is some
+        non-zero integer such that transition :math:`j` happens means
+        that state :math:`i` changes by :math:`V_{i,j}` amount
     transitionFunc: callable
         a function that takes the input argument (x,t) and returns the vector
         of transition rates
@@ -109,7 +110,7 @@ def nextReaction(x, t, stateChangeMat, dependencyGraph,
 def tauLeap(x, t, stateChangeMat, reactantMat,
             transitionFunc, transitionMeanFunc, transitionVarFunc, epsilon=0.1):
     '''
-    The Poisson :math:`\tau`-Leap
+    The Poisson :math:`\\tau`-Leap
     
     Parameters
     ----------
@@ -118,11 +119,13 @@ def tauLeap(x, t, stateChangeMat, reactantMat,
     t: double
         time
     stateChangeMat: array like
-        State change matrix V_{i,j} where i = state and j = transition
-        V_{i,j} is some non--zero integer such that transition j happen means
-        that state i changes by V_{i,j} amount
+        State change matrix :math:`V_{i,j}` where :math:`i,j` represent the
+        state and transition respectively.  :math:`V_{i,j}` is some
+        non-zero integer such that transition :math:`j` happens means
+        that state :math:`i` changes by :math:`V_{i,j}` amount
     reactantMat:array like
-        Reactant matrix of \lambda_{i,j} where i = state and j = transition
+        Reactant matrix of :math:`\\lambda_{i,j}` where :math:`i,j` represents
+        the index of the state and transition respectively.
         A value of 1 if state i is involved in transition j
     transitionFunc: callable
         a function that takes the input argument (x,t) and returns the vector

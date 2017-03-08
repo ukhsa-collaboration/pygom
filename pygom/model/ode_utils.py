@@ -81,7 +81,10 @@ class shapeAdjust(object):
         A: array like
             a 2d array
         pre: bool, optional
-            If True, then returns I kron A.  If False then A kron I
+            If True, then returns :math:`I \otimes A`.
+            If False then :math:`A \otimes I`, where :math:`A` is the input
+            matrix, :math:`I` is the identity matrix and :math:`\otimes` is
+            the kron operator
         '''
         if pre:
             return scipy.sparse.kron(scipy.sparse.eye(self._d), A)
@@ -98,7 +101,10 @@ class shapeAdjust(object):
         A: array like
             a 2d array
         pre: bool, optional
-            If True, then returns I kron A.  If False then A kron I
+            If True, then returns :math:`I \otimes A`.
+            If False then :math:`A \otimes I`, where :math:`A` is the input
+            matrix, :math:`I` is the identity matrix and :math:`\otimes` is
+            the kron operator
         '''
         if pre:
             return scipy.sparse.kron(scipy.sparse.eye(self._p), A)
@@ -147,9 +153,9 @@ def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
     Parameters
     ----------
     func: callable
-        the ode f(x)
+        the ode :math:`f(x)`
     jac: callable
-        Jacobian of the ode, :math:`J_{i,j} = \\nabla_{x_{j} f_{i}(x)
+        Jacobian of the ode, :math:`J_{i,j} = \\nabla_{x_{j}} f_{i}(x)`
     x0: float
         initial value of the states
     t0: float
@@ -174,7 +180,7 @@ def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
     solution: array like
         a :class:`numpy.ndarray` of shape (len(t),len(x0)) if includeOrigin is
         False, else an extra row with x0 being the first.
-    output : dict, only returned if full_output == True
+    output : dict, only returned if full_output=True
         Dictionary containing additional output information
 
         =========  ===========================================
@@ -443,14 +449,14 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
     # note that we can probably reduce the codes here significantly but
     # i have not thought of a good way of doing it yet.
     if numState > 9:
-        numFigure = int(math.ceil(numState / 9.0))
+        numFigure = int(math.ceil(numState/9.0))
         k = 0
         last = False
         # loop over all the figures minus 1
-        for z in range(0, numFigure - 1):
+        for z in range(numFigure - 1):
             f, axarr = matplotlib.pyplot.subplots(3, 3)
-            for i in range(0, 3):
-                for j in range(0, 3):
+            for i in range(3):
+                for j in range(3):
                     axarr[i, j].plot(t, solution[:, k])
                     if stateList is not None:
                         axarr[i, j].set_title(stateList[k])
@@ -463,10 +469,10 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
             # a single plot finished, now we move on to the next one
 
         # now we are getting to the last one
-        row = int(math.ceil((numState - (9 * (numFigure - 1))) / 3.0))
+        row = int(math.ceil((numState - (9*(numFigure - 1)))/3.0))
         f, axarr = matplotlib.pyplot.subplots(row, 3)
         if row == 1:
-            for j in range(0, 3):
+            for j in range(3):
                 if last == True:
                     break
                 axarr[j].plot(t, solution[:, k])
@@ -481,10 +487,10 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
                 if k == numState:
                     last = True
         else:
-            for i in range(0, row):
+            for i in range(row):
                 if last == True:
                     break
-                for j in range(0, 3):
+                for j in range(3):
                     if last == True:
                         break
                     axarr[i, j].plot(t, solution[:, k])
@@ -509,7 +515,7 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
         else:
             # we can deal with it in a single plot, in the format of 1x3
             f, axarr = matplotlib.pyplot.subplots(1, numState)
-            for i in range(0, numState):
+            for i in range(numState):
                 axarr[i].plot(t, solution[:, i])
                 if stateList is not None:
                     axarr[i].set_title(stateList[i])
@@ -525,8 +531,8 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
         # Going across first before going down
         f, axarr = matplotlib.pyplot.subplots(2, 2)
         k = 0
-        for i in range(0, 2):
-            for j in range(0, 2):
+        for i in range(2):
+            for j in range(2):
                 axarr[i, j].plot(t, solution[:, k])
                 if stateList is not None:
                     axarr[i, j].set_title(stateList[k])
@@ -540,12 +546,12 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
                 if numState == k:
                     break
     else:
-        row = int(math.ceil(numState / 3.0))
+        row = int(math.ceil(numState/3.0))
         # print(row)
         f, axarr = matplotlib.pyplot.subplots(row, 3)
         k = 0
-        for i in range(0, row):
-            for j in range(0, 3):
+        for i in range(row):
+            for j in range(3):
                 axarr[i, j].plot(t, solution[:, k])
                 if stateList is not None:
                     axarr[i, j].set_title(stateList[k])
@@ -611,7 +617,7 @@ def vecToMatFF(ff, numState, numParam):
     :func:`matToVecFF`
 
     '''
-    return numpy.reshape(ff, (numState * numParam, numParam))
+    return numpy.reshape(ff, (numState*numParam, numParam))
 
 def matToVecSens(S, numState, numParam):
     '''
@@ -681,7 +687,7 @@ class compileCode(object):
         if backend is None:
             self._backend = None
             x = sympy.Symbol('x')
-            expr = sympy.sin(x) / x
+            expr = sympy.sin(x)/x
 
             # lets assume that we can't do theano.... (for now)
             # now lets explore the other options

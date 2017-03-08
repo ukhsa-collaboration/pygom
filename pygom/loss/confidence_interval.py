@@ -27,7 +27,7 @@ from pygom.utilR.distn import qchisq, qnorm
 def asymptotic(obj, alpha=0.05, theta=None, lb=None, ub=None):
     '''
     Finds the confidence interval at the :math:`\\alpha` level
-    under the :math:`\\mathcal{X}^{2}` assumption for the
+    under the :math:`\mathcal{X}^{2}` assumption for the
     likelihood
 
     Parameters
@@ -37,8 +37,8 @@ def asymptotic(obj, alpha=0.05, theta=None, lb=None, ub=None):
     alpha: numeric, optional
         confidence level, :math:`0 < \\alpha < 1`.  Defaults to 0.05.
     theta: array like, optional
-        the MLE parameters.  Defaults to None which then theta will be inferred
-        from the input obj
+        the MLE parameters.  Defaults to None which then theta will be
+        inferred from the input obj
     lb: array like, optional
         expected lower bound
     ub: array like, optional
@@ -87,7 +87,7 @@ def bootstrap(obj, alpha=0.05, theta=None, lb=None, ub=None,
         lower bound for the parameters
     iteration: int, optional
         number of bootstrap samples, defaults to 0 which is interpreted as
-        2*n where n is the number of data points.
+        :math:`2n` where :math:`n` is the number of data points.
     full_output: bool
         if the full set of estimates is required.
 
@@ -172,13 +172,13 @@ def geometric(obj, alpha=0.05, theta=None,
         optimal using methods provided by obj
     method: string
         construction of the covariance matrix.  jtj is the :math:`J^{\\top}`
-        where :math:`J` is the Jacobian of the ode.  hessian is the hessian
-        of the ode.  fisher is the fisher information found by
-        :math:`cov(\partial_{\\theta}\\mathcal{L})`.
+        where :math:`J` is the Jacobian of the ode.  'hessian' is the hessian
+        of the ode while 'fisher' is the fisher information found by
+        :math:`cov(\\nabla_{\\theta}\mathcal{L})`.
     geometry: string
         the two types of geometry defined in [1]. c geometry uses the covariance
-        at the maximum likelihood estimate :math:`\\hat{\\theta}`.  'o' geometry
-        is the covariance defined at point :math:`\\theta`.
+        at the maximum likelihood estimate :math:`\hat{\\theta}`.  The 'o'
+        geometry is the covariance defined at point :math:`\\theta`.
     full_output: bool, optional
         If True then both the l_path and u_path will be outputted, else only the
         point estimates of l and u
@@ -190,7 +190,7 @@ def geometric(obj, alpha=0.05, theta=None,
     u: array like
         upper confidence interval
     l_path: list
-        path from :math:`\\hat{\\theta}` to the lower :math:`1-\\alpha/2` point
+        path from :math:`\hat{\\theta}` to the lower :math:`1 - \\alpha/2` point
         for all parameters
     u_path: list
         same as l_path but for the upper confidence interval
@@ -309,15 +309,6 @@ def profile(obj, alpha, theta=None, lb=None, ub=None, full_output=False):
         lbT = np.ones(p)*-np.Inf if lb is None else lb.copy()
         ubT = np.ones(p)*np.Inf if ub is None else ub.copy()
 
-        # if lb is None:
-        #     lbT = np.ones(p)*-np.Inf
-        # else:
-        #     lbT = lb.copy()
-
-        # if ub is None:
-        #     ubT = np.ones(p)*np.Inf
-        # else:
-        #     ubT = ub.copy()
         ubT[i] = theta[i]
 
         try:
@@ -335,15 +326,6 @@ def profile(obj, alpha, theta=None, lb=None, ub=None, full_output=False):
         lbT = np.ones(p)*-np.Inf if lb is None else lb.copy()
         ubT = np.ones(p)*np.Inf if ub is None else ub.copy()
 
-        # if lb is None:
-        #     lbT = np.ones(p)*-np.Inf
-        # else:
-        #     lbT = lb.copy()
-
-        # if ub is None:
-        #     ubT = np.ones(p)*np.Inf
-        # else:
-        #     ubT = ub.copy()
         lbT[i] = theta[i]
 
         try:
@@ -369,11 +351,11 @@ def profile(obj, alpha, theta=None, lb=None, ub=None, full_output=False):
     else:
         return xL, xU
 
-def _profileGetInitialValues(theta, i, alpha, obj, approx=True, lb=None, ub=None):
+def _profileGetInitialValues(theta, i, alpha, obj, approx=True,
+                             lb=None, ub=None):
     '''
-    We would not use an approximation in general because if theta
-    is an optimal value, then we would expect the Hessian to be
-    a PSD matrix.
+    We would not use an approximation in general because if the input theta
+    is an optimal value, then we would expect the Hessian to be a PSD matrix.
     '''
     p = len(theta)
     setIndex = set(range(p))
@@ -632,7 +614,7 @@ def _profileGSecondOrderCorrection(xhat, i, alpha, obj, approx=True):
     second order, i.e. :math:`\\delta^{\top} D(\\theta) \\delta`
     in [1].  If the system
     of non-linear equations is a, then we return :math:`a + s`
-    instead of G^{-1}a, i.e. we have incorporated the correction
+    instead of :math:`G^{-1}a`, i.e. we have incorporated the correction
     into the gradient
     
     Parameters
@@ -644,7 +626,7 @@ def _profileGSecondOrderCorrection(xhat, i, alpha, obj, approx=True):
     i: int
         our target variable
     alpha: numeric
-        confidence level, between (0,1)
+        confidence level, between :math:`(0,1)`
     obj:
         ode object
     approx: bool, optional

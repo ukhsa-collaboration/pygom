@@ -100,7 +100,7 @@ def generateDirectedDependencyGraph(odeMatrix, transitionList=None):
     
     Parameters
     ----------
-    odeMatrix: :class:`sympy.MutableDenseMatrix`
+    odeMatrix: :class:`sympy.matrcies.MatrixBase`
         A matrix of size [number of states x 1].  Obtained by
         invoking :meth:`OperateOdeModel.getOde`
     transitionList: list, optional
@@ -115,7 +115,7 @@ def generateDirectedDependencyGraph(odeMatrix, transitionList=None):
         -1 and 1 to indicate the direction of the transition and the state. 
         All column sum to one, i.e. transition must have a source and target.
     '''
-    assert isinstance(odeMatrix, sympy.MutableDenseMatrix), \
+    assert isinstance(odeMatrix, sympy.matrices.MatrixBase), \
         "Expecting a vector of expressions"
     
     if transitionList is None:
@@ -139,7 +139,7 @@ def getUnmatchedExpressionVector(exprVec, full_output=False):
     
     Parameters
     ----------
-    exprVec: :class:`sympy.MutableDenseMatrix`
+    exprVec: :class:`sympy.matrices.MatrixBase`
         A matrix of size [number of states x 1].  
     full_output: bool, optional
         Defaults to False, if True, also output the list of matched expressions
@@ -149,7 +149,7 @@ def getUnmatchedExpressionVector(exprVec, full_output=False):
     list: 
         of unmatched expressions, i.e. birth or death processes
     '''
-    assert isinstance(exprVec, sympy.MutableDenseMatrix), \
+    assert isinstance(exprVec, sympy.matrices.MatrixBase), \
         "Expecting a vector of expressions"
     
     transitionList = reduce(lambda x,y: x+y, map(getExpressions, exprVec))
@@ -167,7 +167,7 @@ def getMatchingExpressionVector(exprVec, outTuple=False):
     
     Parameters
     ----------
-    exprVec: :class:`sympy.MutableDenseMatrix`
+    exprVec: :class:`sympy.matrices.MatrixBase`
         A matrix of size [number of states x 1].  
     outTuple: bool, optional
         Defaults to False, if True, the output is a tuple of length two
@@ -179,9 +179,9 @@ def getMatchingExpressionVector(exprVec, outTuple=False):
     list: 
         of matched expressions, i.e. transitions
     '''
-    assert isinstance(exprVec, sympy.MutableDenseMatrix), \
+    assert isinstance(exprVec, sympy.matrices.MatrixBase), \
         "Expecting a vector of expressions"
-    
+
     transitionList = list()
     for expr in exprVec:
         transitionList += getExpressions(expr)
@@ -324,7 +324,7 @@ def _findIndex(eqVec, expr):
     
     Parameters
     ----------
-    eqVec: :class:`sympy.MutableDenseMatrix`
+    eqVec: :class:`sympy.Matrix`
         vector of sympy equation
     expr: sympy type
         An expression that we would like to find
@@ -381,7 +381,7 @@ def stripBDFromOde(fx, bdList=None):
     for i, fxi in enumerate(fx):
         termInExpr = list(map(lambda x: x in fxi.expand().args, bdList))
         for j, term in enumerate(bdList):
-            fxCopy[i] -= term if termInExpr[j]==True else 0
+            fxCopy[i] -= term if termInExpr[j] == True else 0
     
     # simplify converts it to an ImmutableMatrix, so we make it into
     # a mutable object again because we want the expanded form
@@ -428,18 +428,18 @@ def _odeToPureTransition(fx, termList=None, A=None):
 
     Parameters
     ----------
-    fx: :class:`sympy.Matrix`
-       input ode in symbolic form, f(x) 
+    fx: :class:`sympy.matrices.MatrixBase`
+       input ode in symbolic form, :math:`f(x)` 
     termList:
         list of two element tuples which contains the
         matching terms
-    A:  `sympy.Matrix`, optional
+    A:  `sympy.matricies.MatrixBase`, optional
         the matrix to be filled.  Defaults to None, which
         will lead to the creation of a [len(fx), len(fx)] matrix
         with all zero elements
     Returns
     -------
-    A: :class:`sympy.Matrix`
+    A: :class:`sympy.matricies.MatrixBase`
         resulting transition matrix
     remain: list
         list of  which contains the unmatched

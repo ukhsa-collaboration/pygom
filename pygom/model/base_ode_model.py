@@ -319,7 +319,7 @@ class BaseOdeModel(object):
         # unroll the parameter values into the appropriate list
         # if self._paramValue is None or isinstance(self._paramValue, list):
         #     self._paramValue = dict()
-        self._paramValue = [0] * len(self._paramList)
+        self._paramValue = [0]*len(self._paramList)
 
         for k, v in self._parameters.items():
             index = self.getParamIndex(k)
@@ -515,7 +515,7 @@ class BaseOdeModel(object):
             :class:`.getTransitionType`
         '''
         if isinstance(transitionList, (list, tuple)):
-            for i in range(0, len(transitionList)):
+            for i in range(len(transitionList)):
                 self.addTransition(transitionList[i])
         else:
             raise InputError("Expecting a list")
@@ -550,7 +550,7 @@ class BaseOdeModel(object):
 
         '''
         if isinstance(birthDeathList, (list, tuple)):
-            for i in range(0, len(birthDeathList)):
+            for i in range(len(birthDeathList)):
                 self.addBirthDeath(birthDeathList[i])
         elif isinstance(birthDeathList, Transition):
             self.addBirthDeath(birthDeathList)
@@ -588,7 +588,7 @@ class BaseOdeModel(object):
 
         '''
         if isinstance(odeList, list):
-            for i in range(0, len(odeList)):
+            for i in range(len(odeList)):
                 self.addOdeEquation(odeList[i])
         elif isinstance(odeList, Transition):
             # if it is not a list, then at least it should be an object
@@ -1017,7 +1017,7 @@ class BaseOdeModel(object):
                 raise InputError("Number of input state not as expected")
         else:
             if len(state) == len(self._stateList):
-                for i in range(0, self._numState):
+                for i in range(self._numState):
                     stateOut.append((self._stateList[i], state[i]))
             else:
                 raise InputError("Number of input state not as expected")

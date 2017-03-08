@@ -1,4 +1,4 @@
-import functools
+from functools import partial
 
 import numpy
 from scipy.interpolate import UnivariateSpline
@@ -7,8 +7,8 @@ from scipy.optimize import leastsq, minimize_scalar
 
 def getInit(y, t, ode, theta=None, full_output=False):
     '''
-    Get an initial guess of theta given the observations and the corresponding
-    time points.
+    Get an initial guess of theta given the observations y and the
+    corresponding time points t.
     
     Parameters
     ----------
@@ -19,7 +19,7 @@ def getInit(y, t, ode, theta=None, full_output=False):
     ode: :class:`pygom.model.OperateOdeModel`
         an ode object
     theta: array like
-        paramter value
+        parameter value
     full_output: bool, optional
         True if the optimization result should be returned. Defaults to False.
         
@@ -33,7 +33,7 @@ def getInit(y, t, ode, theta=None, full_output=False):
         p = ode.getNumParam()
         theta = numpy.ones(p)/2.0
 
-    f = functools.partial(_fitGivenSmoothness, y, t, ode, theta)
+    f = partial(_fitGivenSmoothness, y, t, ode, theta)
     output = minimize_scalar(f, bounds=(0,10), method='bounded')
     thetaNew = numpy.array(ode._paramValue) 
 
@@ -50,10 +50,10 @@ def _fitGivenSmoothness(y, t, ode, theta, s):
     interval = numpy.linspace(t[1], t[-1], 1000)
     # xApprox, fxApprox, t = _getApprox(splineList, interval)
 
-    # g2 = functools.partial(residualSample, ode, fxApprox, xApprox, interval)
-    # g2J = functools.partial(jacSample, ode, fxApprox, xApprox, interval)
-    g2 = functools.partial(residualInterpolant, ode, splineList, interval)
-    g2J = functools.partial(jacInterpolant, ode, splineList, interval)
+    # g2 = partial(residualSample, ode, fxApprox, xApprox, interval)
+    # g2J = partial(jacSample, ode, fxApprox, xApprox, interval)
+    g2 = partial(residualInterpolant, ode, splineList, interval)
+    g2J = partial(jacInterpolant, ode, splineList, interval)
 
     res = leastsq(func=g2, x0=theta, Dfun=g2J, full_output=True)
 
@@ -174,7 +174,7 @@ def residualInterpolant(ode, splineList, t, theta, vec=True):
     t: array like
         time
     theta: array list
-        paramter value
+        parameter value
     vec: bool, optional
         if the matrix should be flattened to be a vector
     aggregate: bool, optional
@@ -201,20 +201,22 @@ def costSample(ode, fxApprox, xApprox, t, theta, vec=True, aggregate=True):
     '''
     Returns the cost (sum of squared residuals) between the first
     derivative of the interpolant and the function of the ode using
-    samples at time point t.
+    samples at time points t.
     
     Parameters
     ----------
     ode: :class:`pygom.model.OperateOdeModel`
         an ode object
-    splineList: list
-        list of :class:`scipy.interpolate.UnivariateSpline`
+    fxApprox: list
+        list of approximated values for the first derivative 
+    xApprox: list
+        list of approximated values for the states
     t: array like
         time
     theta: array list
-        paramter value
+        parameter value
     vec: bool, optional
-        if the matrix should be flattened to be a vector
+        if the matrix should be flattened to be a vector.
     aggregate: bool/str, optional
         sum the vector/matrix.  If this is equals to 'int' then the Simpsons
         rule is applied to the samples.  Also changes the behaviour of vec,
@@ -225,7 +227,11 @@ def costSample(ode, fxApprox, xApprox, t, theta, vec=True, aggregate=True):
     Returns
     -------
     r: array list
-        the residuals
+        the cost or the residuals if vec is True
+    
+    See Also
+    --------
+    :func:`residualSample`
     '''
     
     if isinstance(aggregate, str):
@@ -238,6 +244,7 @@ def costSample(ode, fxApprox, xApprox, t, theta, vec=True, aggregate=True):
                 return numpy.sum(integrand) 
         else:
             raise RuntimeError("Aggregation method not recognized")
+
     elif isinstance(aggregate, bool):
         c = residualSample(ode, fxApprox, xApprox, t, theta, vec)**2
         if aggregate:
@@ -248,6 +255,35 @@ def costSample(ode, fxApprox, xApprox, t, theta, vec=True, aggregate=True):
         raise RuntimeError("Aggregation method not recognized")
 
 def residualSample(ode, fxApprox, xApprox, t, theta, vec=True):
+    '''
+    Returns the residuals between the first derivative of the
+    interpolant and the function of the ode using samples at
+    time points t.
+    
+    Parameters
+    ----------
+    ode: :class:`pygom.model.OperateOdeModel`
+        an ode object
+    fxApprox: list
+        list of approximated values for the first derivative 
+    xApprox: list
+        list of approximated values for the states
+    t: array like
+        time
+    theta: array list
+        paramter value
+    vec: bool, optional
+        if the matrix should be flattened to be a vector
+        
+    Returns
+    -------
+    r: array list
+        the residuals
+        
+    See Also
+    --------
+    :func:`costSample`
+    '''
     ode = ode.setParameters(theta)
     fx = numpy.zeros(fxApprox.shape)
     for i, x in enumerate(xApprox):
@@ -259,6 +295,36 @@ def residualSample(ode, fxApprox, xApprox, t, theta, vec=True):
         return fxApprox - fx
 
 def jacSample(ode, fxApprox, xApprox, t, theta, vec=True):
+    '''
+    Returns the Jacobian of the objective value using the state
+    values of the interpolant given samples at time points t. Note
+    that the parameters taken here is chosen to be same as
+    :func:`costSample` for convenience.
+    
+    Parameters
+    ----------
+    ode: :class:`pygom.model.OperateOdeModel`
+        an ode object
+    fxApprox: list
+        list of approximated values for the first derivative 
+    xApprox: list
+        list of approximated values for the states
+    t: array like
+        time
+    theta: array list
+        parameter value
+    vec: bool, optional
+        if the matrix should be flattened to be a vector
+        
+    Returns
+    -------
+    r: array list
+        the residuals
+        
+    See Also
+    --------
+    :func:`costSample`
+    '''
     ode = ode.setParameters(theta)
     n = len(fxApprox)
     d = ode.getNumState()
@@ -274,6 +340,39 @@ def jacSample(ode, fxApprox, xApprox, t, theta, vec=True):
 
 def gradSample(ode, fxApprox, xApprox, t, theta,
                vec=False, outputResidual=False):
+    '''
+    Returns the gradient of the objective value using the state
+    values of the interpolant given samples at time points t. Note
+    that the parameters taken here is chosen to be same as
+    :func:`costSample` for convenience.
+    
+    Parameters
+    ----------
+    ode: :class:`pygom.model.OperateOdeModel`
+        an ode object
+    fxApprox: list
+        list of approximated values for the first derivative 
+    xApprox: list
+        list of approximated values for the states
+    t: array like
+        time
+    theta: array list
+        parameter value
+    vec: bool, optional
+        if the matrix should be flattened to be a vector
+    outputResidual: bool, optional
+        if True, then the residuals will be returned as an
+        additional argument
+        
+    Returns
+    -------
+    g: :class:`numpy.ndarray`
+        gradient of the objective function
+        
+    See Also
+    --------
+    :func:`jacSample`
+    '''
     ode = ode.setParameters(theta)
     r = residualSample(ode, fxApprox, xApprox, t, theta, vec=False)
 
@@ -287,6 +386,32 @@ def gradSample(ode, fxApprox, xApprox, t, theta,
         return g.sum(0)
 
 def _getApprox(splineList, t):
+    '''
+    Returns the approximated values of the states and the function
+    value of the ode given the interpolants and a series of time
+    points.  The interpolants are expected to have been interpolated
+    against observations of the states.
+    
+    Parameters
+    ----------
+    splinelist: list of :class:`scipy.interpolate.UnivariateSpline`
+        the interpolating function of the state values
+    t: array like
+        time
+        
+    Returns
+    -------
+    x: :class:`numpy.ndarray`
+        extrapolation of the function at t
+    fx: :class:`numpy.ndarray`
+        extrapolation of the first derivative at t
+    t: :class:`numpy.ndarray`
+        the inputted time
+        
+    See Also
+    --------
+    :func:`costSample`, :func:`jacSample`
+    '''  
     if not hasattr(t, '__iter__'):
         t = numpy.array([t])
 

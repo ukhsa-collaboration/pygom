@@ -29,7 +29,7 @@ class Transition(object):
     '''
     This class carries the information for transitions defined
     for an ode, which includes the ode itself, a birth death
-    process where only one state is involved and also a transitino
+    process where only one state is involved and also a transition
     between two states
 
     Parameters

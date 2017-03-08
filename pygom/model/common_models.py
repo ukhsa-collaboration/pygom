@@ -534,13 +534,13 @@ def SEIR_Multiple(n=2, param=None):
         for j in s: 
             beta += ['beta_'+i+j]
             if i==j:
-                lambdaTemp += '+ I_'+j+'*beta_'+i+j
+                lambdaTemp += '+ I_' +j+ '*beta_' +i+j
             else:
-                lambdaTemp += '+ I_'+j+'*beta_'+i+j+ ' * p'
+                lambdaTemp += '+ I_' +j+ '*beta_' +i+j+ ' * p'
         lambdaStr += [lambdaTemp]
-        lambdaName += ['lambda_'+i]
+        lambdaName += ['lambda_' + i]
 
-    paramList = beta + ['d','epsilon','gamma','p'] + N
+    paramList = beta + ['d', 'epsilon', 'gamma', 'p'] + N
 
     stateList = []
     for v in states: stateList += states[v]
@@ -580,9 +580,9 @@ def Influenza_SLIARN(param=None):
         \\frac{dS}{dt} &= -S \\beta (I + \\delta A) \\\\
         \\frac{dL}{dt} &= S \\beta (I + \\delta A) - \\kappa L \\\\
         \\frac{dI}{dt} &= p \\kappa L - \\alpha I \\\\
-        \\frac{dA}{dt} &= (1-p) \\kappa L - \\eta A \\\\
+        \\frac{dA}{dt} &= (1 - p) \\kappa L - \\eta A \\\\
         \\frac{dR}{dt} &= f \\alpha I + \\eta A \\\\ 
-        \\frac{dN}{dt} &= -(1-f) \\alpha I
+        \\frac{dN}{dt} &= -(1 - f) \\alpha I
         
     References
     ----------
@@ -797,7 +797,7 @@ def Lotka_Volterra_4State(param=None):
     --------
 
     >>> x0 = [150.0, 10.0, 10.0, 0.0]
-    >>> t = numpy.linspace(0,15, 100)
+    >>> t = numpy.linspace(0, 15, 100)
     >>> params = [0.01, 0.1, 1.0]
     >>> ode = common_models.Lotka_Volterra_4State(params)
     >>> ode = ode.setInitialValue(x0, t[0])
@@ -947,8 +947,8 @@ def vanDelPol(param=None):
     which result in a coupled ode
 
     .. math::
-        x^{\\prime} &= \\mu (1 - y^{2}) x - y \\\\
-        y^{\\prime} &= x
+        x^{\prime} &= \\mu (1 - y^{2}) x - y \\\\
+        y^{\prime} &= x
 
     and this can be solved via standard method
 

@@ -27,7 +27,7 @@ class SquareLoss(BaseLoss):
                                          stateWeight, targetParam, targetState)
 
     def __repr__(self):
-        return "SquareLoss"+self._getModelStr()
+        return "SquareLoss" + self._getModelStr()
     
     def _setLossType(self):
         self._lossObj = Square(self._y, self._stateWeight)
@@ -45,10 +45,10 @@ class NormalLoss(BaseLoss):
         else:
             sigma = checkArrayType(sigma)
             super(NormalLoss, self).__init__(theta, ode, x0, t0, t, y, stateName,
-                                             1/sigma, targetParam, targetState)
+                                             1.0/sigma, targetParam, targetState)
 
     def __repr__(self):
-        return "NormalLoss"+self._getModelStr()
+        return "NormalLoss" + self._getModelStr()
 
     def _setLossType(self):
         if self._stateWeight is None:
@@ -56,11 +56,11 @@ class NormalLoss(BaseLoss):
         else:
             if len(self._stateWeight.shape) > 1:
                 if 1 in self._stateWeight.shape:
-                    return Normal(self._y, 1/self._stateWeight.flatten())
+                    return Normal(self._y, 1.0/self._stateWeight.flatten())
                 else:
-                    return Normal(self._y, 1/self._stateWeight)
+                    return Normal(self._y, 1.0/self._stateWeight)
             else:
-                return Normal(self._y, 1/self._stateWeight)
+                return Normal(self._y, 1.0/self._stateWeight)
 
 class PoissonLoss(BaseLoss):
     '''
@@ -71,7 +71,7 @@ class PoissonLoss(BaseLoss):
         super(PoissonLoss, self).__init__(theta, ode, x0, t0, t, y, stateName,
                                           None, targetParam, targetState)
     def __repr__(self):
-        return "PoissonLoss"+self._getModelStr()
+        return "PoissonLoss" + self._getModelStr()
     
     def _setLossType(self):
         return Poisson(self._y)
