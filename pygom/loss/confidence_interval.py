@@ -109,7 +109,7 @@ def bootstrap(obj, alpha=0.05, theta=None, lb=None, ub=None,
     if len(r) == r.size:
         n, m = len(r), 1
     else:
-        n, m = r.shape    
+        n, m = r.shape
 
     if iteration == 0:
         iteration = 2*n
@@ -176,9 +176,9 @@ def geometric(obj, alpha=0.05, theta=None,
         of the ode while 'fisher' is the fisher information found by
         :math:`cov(\\nabla_{\\theta}\mathcal{L})`.
     geometry: string
-        the two types of geometry defined in [1]. c geometry uses the covariance
-        at the maximum likelihood estimate :math:`\hat{\\theta}`.  The 'o'
-        geometry is the covariance defined at point :math:`\\theta`.
+        the two types of geometry defined in [Moolgavkar1987]_. c geometry uses the
+        covariance at the maximum likelihood estimate :math:`\hat{\\theta}`. 
+        The 'o' geometry is the covariance defined at point :math:`\\theta`.
     full_output: bool, optional
         If True then both the l_path and u_path will be outputted, else only the
         point estimates of l and u
@@ -195,11 +195,6 @@ def geometric(obj, alpha=0.05, theta=None,
     u_path: list
         same as l_path but for the upper confidence interval
         
-    References
-    ----------
-    .. [1] Confidence Regions for Parameters of the Proportional Hazard
-           Model: A Simulation Study, Moolgavkar S.H. and Venzon, D.J.,
-           Scandianvian Journal of Statistics, Vol. 14, No. 1, 1987, 43-56
     '''
     alpha, theta, lb, ub = _checkInput(obj, alpha, theta, None, None)
 
@@ -611,8 +606,8 @@ def _profileG(xhat, i, alpha, obj):
 def _profileGSecondOrderCorrection(xhat, i, alpha, obj, approx=True):
     '''
     Finds the correction term when approximating the gradient to
-    second order, i.e. :math:`\\delta^{\top} D(\\theta) \\delta`
-    in [1].  If the system
+    second order [Venzon1988]_, i.e. :math:`\\delta^{\\top} D(\\theta) \\delta`
+    in [Venzon1988]_.  If the system
     of non-linear equations is a, then we return :math:`a + s`
     instead of :math:`G^{-1}a`, i.e. we have incorporated the correction
     into the gradient
@@ -637,12 +632,6 @@ def _profileGSecondOrderCorrection(xhat, i, alpha, obj, approx=True):
     g: array like
         corrected set of non-linear equations
         
-    References
-    ----------
-    .. [1] Venzon and Moolgavkar, A Method for Computing
-           Profile-Likelihood-Based Confidence Intervals,
-           Journal of the Royal Statistical Society, Series
-           C, Vol 37, No. 1, 1988, 87-94.
     '''
     s = sympy.symbols('s')
     c = obj.cost(xhat) + 0.5*qchisq(1 - alpha, df=1)

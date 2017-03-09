@@ -25,10 +25,6 @@ def getDFE(ode, diseaseState):
     e: array like
         disease free equilibrium
 
-    References
-    ----------
-    .. [1] Chapter 6, Mathematical Epidemiology, Lecture Notes in Mathematics,
-           Brauer Fred, Springer 2008
     '''
 
     eqn = ode.getOde()
@@ -66,10 +62,6 @@ def getR0(ode, diseaseState):
     --------
     :func:`getDiseaseProgressionMatrices`, :func:`getR0GivenMatrix`
 
-    References
-    ----------
-    .. [1] Chapter 6, Mathematical Epidemiology, Lecture Notes in Mathematics,
-           Brauer Fred, Springer 2008
     '''
 
     F, V = getDiseaseProgressionMatrices(ode, diseaseState)
@@ -107,11 +99,6 @@ def getR0GivenMatrix(F, V, diseaseState=None):
     See Also
     --------
     :func:`getDiseaseProgressionMatrices`, :func:`getR0`
-
-    References
-    ----------
-    .. [1] Chapter 6, Mathematical Epidemiology, Lecture Notes in Mathematics,
-           Brauer Fred, Springer 2008
     '''
 
     if diseaseState is None:
@@ -144,12 +131,7 @@ def getDiseaseProgressionMatrices(ode, diseaseState, diff=True):
     -------
     (F, V): tuple
         The progression matrices.  If diff=False, then we return the :math:`F_{i}` and
-        :math:`V_{i}` matrices as per [1].  
-
-    References
-    ----------
-    .. [1] Chapter 6, Mathematical Epidemiology, Lecture Notes in Mathematics,
-           Brauer Fred, Springer 2008
+        :math:`V_{i}` matrices as per [Brauer2008]_.
     '''
 
     diseaseIndex = ode.getStateIndex(diseaseState)

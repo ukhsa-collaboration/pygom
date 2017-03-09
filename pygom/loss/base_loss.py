@@ -89,7 +89,7 @@ class BaseLoss(object):
         # and targetState and another class extending it.  The only problem of
         # that is the lost of ability to make faster calculation, which is not
         # even possible now because of how OperateOdeModel works.  Ideally,
-        # operateOdeModel will take in the targetParam in a way so that the
+        # OperateOdeModel will take in the targetParam in a way so that the
         # gradient information is only computed on those targeted instead of
         # computing the full vector before extracting the relevant elements.
         # Basically, it will require a lot of work to make things sync and that
@@ -209,7 +209,7 @@ class BaseLoss(object):
     #
     ############################################################
 
-    def gradient(self,theta=None,full_output=False):
+    def gradient(self, theta=None, full_output=False):
         '''
         Returns the gradient calculated by solving the forward sensitivity
         equation.  Identical to :meth:`sensitivity` without the choice of
@@ -291,7 +291,7 @@ class BaseLoss(object):
         # holder, assuming that the index/order is kept (and correct) in the list
         # we perform our interpolation per state and only need the functional form
         interpolateList = list()
-        for j in range(0, self._numState):
+        for j in range(self._numState):
             spl = LSQUnivariateSpline(self._interpolateTime.tolist(),
                                       solutionInterpolate[:,j],
                                       self._t[1:-1])
@@ -319,7 +319,7 @@ class BaseLoss(object):
         interpolateTime = np.array([self._t[0]])
         interpolateTimeIndex = list()
         numTime = len(self._t)
-        for i in range(numTime-1):
+        for i in range(numTime - 1):
             tTemp = np.linspace(self._t[i], self._t[i+1], 20)[1::]
             interpolateTime = np.append(interpolateTime, tTemp)
             interpolateTimeIndex += [len(interpolateTime) - 1]
@@ -442,8 +442,8 @@ class BaseLoss(object):
         full_output: bool, optional
             if additional output is required
         intName: str, optional
-            Choice between lsoda,vode and dopri5, the three integrator provided
-            by scipy.  Defaults to lsoda
+            Choice between lsoda, vode and dopri5, the three integrator
+            provided by scipy.  Defaults to lsoda.
 
         Returns
         -------
@@ -778,7 +778,7 @@ class BaseLoss(object):
         Returns
         -------
         jtj: :class:`numpy.ndarray`
-            :math:`J^{\top}J` of the objective function
+            :math:`J^{\\top}J` of the objective function
         infodict : dict, only returned if full_output=True
             Dictionary containing additional output information
 
@@ -928,7 +928,6 @@ class BaseLoss(object):
         See also
         --------
         :meth:`cost`
-
         '''
         try:
             # the solution does not include the origin
@@ -956,12 +955,12 @@ class BaseLoss(object):
 
         Notes
         -----
-        Makes a direct call to :meth:`residual` using the initialized
-        information
+        Makes a direct call to initialized loss object which has a
+        method called residual
 
         See also
         --------
-        :meth:`cost`, :meth:`residual`
+        :meth:`cost`
         '''
 
         try:
@@ -980,7 +979,7 @@ class BaseLoss(object):
 
     def costIV(self, theta=None):
         '''
-        Find the cost/loss given the parameters.  The input theta
+        Find the cost/loss given the parameters. The input theta
         here is assumed to include both the parameters as well as the
         initial values
 
@@ -1023,7 +1022,7 @@ class BaseLoss(object):
 
         See also
         --------
-        :meth:`costIV`,:meth:`diffLoss`
+        :meth:`costIV`, :meth:`diffLoss`
 
         '''
         if theta is not None:
@@ -1055,7 +1054,8 @@ class BaseLoss(object):
 
         Notes
         -----
-        Makes a direct call to :meth:`residual` using the initialized information
+        Makes a direct call to :meth:`residual` using the
+        initialized information
 
         See also
         --------
@@ -1092,7 +1092,7 @@ class BaseLoss(object):
 
         Returns
         -------
-        g: :class:`numpy.ndarray'
+        g: :class:`numpy.ndarray`
             gradient of the loss function
         '''
         # the number of states which we will have residuals for
@@ -1116,7 +1116,7 @@ class BaseLoss(object):
 
     def sensToJTJ(self, sens, resid=None):
         '''
-        forward sensitivites to :math:`J^{\top}J` where :math:`J` is the
+        forward sensitivites to :math:`J^{\\top}J` where :math:`J` is the
         Jacobian. The approximation to the Hessian.
 
         Parameters
@@ -1126,7 +1126,7 @@ class BaseLoss(object):
 
         Returns
         -------
-        JTJ: :class:`numpy.ndarray'
+        JTJ: :class:`numpy.ndarray`
             An approximation to the Hessian using the inner product
             of the Jacobian
         '''
@@ -1165,13 +1165,13 @@ class BaseLoss(object):
         ode_utils.plot(solution, self._observeT, self._ode._stateList,
                         self._y, self._stateName)
 
-    def fit(self, x, lb=None, ub=None, A=None, b=None, disp=False,
-            full_output=False):
+    def fit(self, x, lb=None, ub=None, A=None, b=None,
+            disp=False, full_output=False):
         '''
         Find the estimates given the data and an initial guess :math:`x`. 
         Note that there is no guarantee that the estimation procedure is
-        successful.  It is recommended to at least supply box constraints, i.e.
-        lower and upper bounds
+        successful.  It is recommended to at least supply box constraints,
+        i.e. lower and upper bounds
 
         Parameters
         ----------
@@ -1217,11 +1217,11 @@ class BaseLoss(object):
                 A = np.ndarray(A)
                 n,p = A.shape
             if n != len(b):
-                raise InputError("Number of rows in A needs to be equal to length of b "+
-                                 "in the equality Ax<=b")
+                raise InputError("Number of rows in A needs to be equal to " + 
+                                 "length of b in the equality Ax<=b")
             if p != len(x):
-                raise InputError("Number of box constraints must equal to the "+
-                                 "number of variables")
+                raise InputError("Number of box constraints must equal to " +
+                                 "the number of variables")
 
             def F(a, x):
                 def func(x):
@@ -1302,7 +1302,7 @@ class BaseLoss(object):
 
     def _sensToJTJWithoutIndex(self, sens, diffLoss=None):
         '''
-        forward sensitivites to :math:`J^{\top}J: where :math:`J` is
+        forward sensitivites to :math:`J^{\\top}J: where :math:`J` is
         the Jacobian. The approximation to the Hessian.
         '''
         indexOut = self._getTargetParamSensIndex()
@@ -1334,8 +1334,9 @@ class BaseLoss(object):
         if isinstance(stateIndex, list):
             for j in stateIndex:
                 for i in indexList:
-                    # always ignore the first numState because they are outputs
-                    # from the actual ode and not the sensitivities. Hence the +1
+                    # always ignore the first numState because they are
+                    # outputs from the actual ode and not the sensitivities.
+                    # Hence the +1
                     indexOut.append(j + (i+1) * self._numState)
         else:
             # else, happy times!
@@ -1380,7 +1381,7 @@ class BaseLoss(object):
         else:
             # else, happy times!
             for i in indexList:
-                indexOut.append(stateIndex + (i+1+self._numParam)*self._numState)
+                indexOut.append(stateIndex +(i+1+self._numParam)*self._numState)
 
         return np.sort(np.array(indexOut)).tolist()
 
@@ -1389,7 +1390,7 @@ class BaseLoss(object):
         Get the indices of our targeted states
         '''
         if self._targetState is None:
-            indexList = range(0, self._numState)
+            indexList = range(self._numState)
         else:
             indexList = [self._ode.getStateIndex(i) for i in self._targetState]
             # indexList = list()
@@ -1408,7 +1409,7 @@ class BaseLoss(object):
             if len(theta) == len(self._targetParam):
                 self._unrollParam(theta)
             else:
-                raise InputError("Expecting input to the parameters of length "+
+                raise InputError("Expecting input theta to be of length " +
                                  str(len(self._targetParam)))
 
     def _setParamStateInput(self, theta):
@@ -1455,7 +1456,7 @@ class BaseLoss(object):
                     # then the states
                     # x0 = theta[-self._numState:]
                     self._setX0(theta[-self._numState:])
-                elif len(theta) == (self._numState+len(self._targetParam)):
+                elif len(theta) == (self._numState + len(self._targetParam)):
                     # again we have all the states
                     self._unrollParam(theta[:len(self._targetParam)])
                     # x0 = theta[-self._numState:]
@@ -1486,7 +1487,9 @@ class BaseLoss(object):
             self._theta = None
         else:
             if self._targetParam is not None:
+                theta = ode_utils.checkArrayType(theta)
                 thetaDict = dict()
+
                 l1, l2 = len(theta), len(self._targetParam)
                 if len(self._targetParam) > 1:
                     if len(theta) != len(self._targetParam):
@@ -1499,7 +1502,7 @@ class BaseLoss(object):
                     if ode_utils.isNumeric(theta):
                         thetaDict[self._targetParam[0]] = theta
                     elif len(theta) > 1:
-                        raise InputError("Input length = " +str(l1)+
+                        raise InputError("Input length = "  +str(l1) +
                                          " but we only have one parameter")
                     else:
                         if isinstance(self._targetParam[0], ODEVariable):
@@ -1541,8 +1544,8 @@ class BaseLoss(object):
             if q == 1 and m == 1:
                 self._stateWeight = np.ones((n,p))*w
             else:
-                raise InputError("Number of input weights differs from the " +
-                                 "number of observations")
+                raise InputError("Number of input weights differs from " +
+                                 "the number of observations")
 
     def _setX0(self, x0):
         '''
@@ -1615,7 +1618,7 @@ class BaseLoss(object):
         f:
             f(x)
         '''
-        print("f(x) = " +str(f)+ " ; x = " + str(x))
+        print("f(x) = " + str(f) + " ; x = " + str(x))
 
     def _selfInner(self, A):
         return A.T.dot(A)

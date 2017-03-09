@@ -1841,7 +1841,7 @@ class OperateOdeModel(BaseOdeModel):
 
     def odeAndForwardforwardT(self, t, stateParam):
         '''
-        Same as :method:`odeAndForwardForward` but with time
+        Same as :meth:`odeAndForwardForward` but with time
         as the first input
 
         '''

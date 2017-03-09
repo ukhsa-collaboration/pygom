@@ -19,14 +19,12 @@ def SIS(param=None):
 
     Examples
     --------
-
     >>> ode = common_models.SIS({'beta':0.5, 'gamma':0.2})
     >>> t = numpy.linspace(0, 20, 101)
     >>> x0 = [1.0, 0.1]
     >>> ode.setInitialValue(x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
-
     '''
 
     stateList = ['S', 'I']
@@ -51,7 +49,7 @@ def SIS(param=None):
 
 def SIS_Periodic(param=None):
     '''
-    A SIS model with periodic contact, defined by the ode
+    A SIS model with periodic contact, defined by the ode as per [Hethcote1973]_
 
     .. math::
         \\frac{dI}{dt} = (\\beta(t)N - \\alpha) I - \\beta(t)I^{2}
@@ -63,23 +61,17 @@ def SIS_Periodic(param=None):
 
     As the name suggests, it achieves a (stable) periodic solution.
 
-    References
-    ----------
-    .. [1] Asymptotic behavior in a deterministic epidemic model,
-           Hethcote Herbert W, Bulletin of Mathematical Biology,
-           Volume 35, pg. 607-614, 1973
-
     Examples
     --------
-
+    >>> from pygom import common_models
     >>> ode = common_models.SIS_Periodic({'alpha':1.0})
     >>> t = numpy.linspace(0, 10, 101)
     >>> x0 = [0.1, 0.0]
     >>> ode.setInitialValue(x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
-
     '''
+
     stateList = ['I', 'tau']
     paramList = ['alpha']
     derivedParamList = [('betaT', '2 - 1.8*cos(5*tau)')]
@@ -105,17 +97,13 @@ def SIS_Periodic(param=None):
 
 def SIR(param=None):
     '''
-    A standard SIR model
+    A standard SIR model as per [Brauer2008]_
 
     .. math::
         \\frac{dS}{dt} &= -\\beta SI \\\\
         \\frac{dI}{dt} &= \\beta SI - \\gamma I \\\\
         \\frac{dR}{dt} &= \\gamma I
 
-    References
-    ----------
-    .. [1] Mathematical Epidemiology, Lecture Notes in Mathematics,
-           Brauer Fred, Springer 2008
 
     Examples
     --------
@@ -163,18 +151,13 @@ def SIR(param=None):
 
 def SIR_N(param=None):
     '''
-    A standard SIR model with population N.  This is the unnormalized
+    A standard SIR model [Brauer2008]_ with population N.  This is the unnormalized
     version of the SIR model.
 
     .. math::
         \\frac{dS}{dt} &= -\\beta SI/N \\\\
         \\frac{dI}{dt} &= \\beta SI /N- \\gamma I \\\\
         \\frac{dR}{dt} &= \\gamma I
-
-    References
-    ----------
-    .. [1] Mathematical Epidemiology, Lecture Notes in Mathematics,
-           Brauer Fred, Springer 2008
 
     Examples
     --------
@@ -223,17 +206,13 @@ def SIR_N(param=None):
 
 def SIR_Birth_Death(param=None):
     '''
-    Extension of the standard SIR model to also include birth and death
+    Extension of the standard SIR model [Brauer2008]_ to also include birth and death
 
     .. math::
         \\frac{dS}{dt} &= B -\\beta SI - \\mu S \\\\
         \\frac{dI}{dt} &= \\beta SI - \\gamma I - \\mu I \\\\
         \\frac{dR}{dt} &= \\gamma I
 
-    References
-    ----------
-    .. [1] Mathematical Epidemiology, Lecture Notes in Mathematics,
-           Brauer Fred, Springer 2008
 
     Examples
     --------
@@ -286,7 +265,7 @@ def SIR_Birth_Death(param=None):
 
 def SEIR(param=None):
     '''
-    A standard SEIR model, defined by the ode
+    A standard SEIR model [Brauer2008]_, defined by the ode
 
     .. math::
         \\frac{dS}{dt} &= -\\beta SI \\\\
@@ -332,7 +311,7 @@ def SEIR(param=None):
 
 def SEIR_Birth_Death(param=None):
     '''
-    A standard SEIR model with birth and death, defined by the ode
+    A standard SEIR model with birth and death [Aron1984]_, defined by the ode
 
     .. math::
         \\frac{dS}{dt} &= \\mu - \\beta SI - \\mu S \\\\
@@ -340,16 +319,10 @@ def SEIR_Birth_Death(param=None):
         \\frac{dI}{dt} &= \\alpha E - (\\mu + \\gamma) I \\\\
         \\frac{dR}{dt} &= \\gamma I
 
-    References
-    ----------
-    .. [1] Seasonality and period-doubling bifurcations in an epidemic model,
-           Aron J.L. and Schwartz I.B., Journal of Theoretical Biology,
-           Volume 110, Issue 4, pg 665-679, 1984
-
     Examples
     --------
     Uses the same set of parameters as the examples in :func:`.SEIR`
-    apart from :math:`\mu` which is new.
+    apart from :math:`\\mu` which is new.
 
     >>> params = {'beta':1800, 'gamma':100, 'alpha':35.84, 'mu':0.02}
     >>> ode = common_models.SEIR_Birth_Death(params)
@@ -399,7 +372,7 @@ def SEIR_Birth_Death(param=None):
 
 def SEIR_Birth_Death_Periodic(param=None):
     '''
-    A SEIR birth death model with periodic contact, defined by the ode
+    A SEIR birth death model with periodic contact [Aron1984]_, defined by the ode
 
     .. math::
         \\frac{dS}{dt} &= \\mu - \\beta(t)SI - \\mu S \\\\
@@ -415,12 +388,6 @@ def SEIR_Birth_Death_Periodic(param=None):
     An extension of an SEIR birth death model by varying the contact rate
     through time.
 
-    References
-    ----------
-    .. [1] Seasonality and period-doubling bifurcations in an epidemic model,
-           Aron J.L. and Schwartz I.B., Journal of Theoretical Biology,
-           Volume 110, Issue 4, pg 665-679, 1984
-
     Examples
     --------
     Uses the same set of parameters as the examples in
@@ -434,9 +401,9 @@ def SEIR_Birth_Death_Periodic(param=None):
     >>> solution,output = ode.integrate(t[1::], full_output=True)
     >>> ode.plot()
     >>> import matplotlib.pyplot as plt
-    >>> plt.plot(numpy.log(solution[:,0]),numpy.log(solution[:,1]))
+    >>> plt.plot(numpy.log(solution[:,0]), numpy.log(solution[:,1]))
     >>> plt.show()
-    >>> plt.plot(numpy.log(solution[:,0]),numpy.log(solution[:,2]))
+    >>> plt.plot(numpy.log(solution[:,0]), numpy.log(solution[:,2]))
     >>> plt.show()
 
     See also
@@ -446,7 +413,7 @@ def SEIR_Birth_Death_Periodic(param=None):
     '''
     stateList = ['S', 'E', 'I', 'tau']
     paramList = ['mu', 'alpha', 'gamma', 'beta_0', 'beta_1']
-    derivedParamList = [('beta_S', 'beta_0 * (1 + beta_1 * cos(2 * pi * tau))')]
+    derivedParamList = [('beta_S', 'beta_0 * (1 + beta_1*cos(2*pi*tau))')]
     odeList = [
         Transition(origState='S', equation='mu - beta_S*S*I - mu*S',
                    transitionType=TransitionType.ODE),
@@ -471,29 +438,31 @@ def SEIR_Birth_Death_Periodic(param=None):
     
 def SEIR_Multiple(n=2, param=None):
     '''
-    An SEIR model that describe spatial heterogeneity [1], page 180.  The
-    model originated from [2] and notations used here follows [1].
+    An SEIR model that describe spatial heterogeneity [Brauer2008]_, page 180.
+    The model originated from [Lloyd1996]_ and notations used here
+    follows [Brauer2008]_.
 
     .. math::
-        \\frac{dS_{i}}{dt} &= dN_{i} - dS_{i} - \\lambda_{i}S_{i} \\\\
-        \\frac{dE_{i}}{dt} &= \\lambda_{i}S_{i} - (d+\\epsilon)E_{i} \\\\
-        \\frac{dI_{i}}{dt} &= \\epsilon E_{i} - (d+\\gamma) I_{i} \\\\
+        \\frac{dS_{i}}{dt} &= dN_{i} - dS_{i} - \\lambda_{i} S_{i} \\\\
+        \\frac{dE_{i}}{dt} &= \\lambda_{i}S_{i} - (d + \\epsilon) E_{i} \\\\
+        \\frac{dI_{i}}{dt} &= \\epsilon E_{i} - (d + \\gamma) I_{i} \\\\
         \\frac{dR_{i}}{dt} &= \\gamma I_{i} - dR_{i}
-    
+
     where 
     
     .. math::
-        \\lambda_{i} = \\sum_{j=1}^{n} \\beta_{i,j} I_{j} (1\\{i\neqj\\} p)
+        \\lambda_{i} = \\sum_{j=1}^{n} \\beta_{i,j} I_{j} (1\\{i \\neq j\\} p)
         
     with :math:`n` being the number of patch and :math:`p` the coupled factor.
 
     Examples
     --------
     Use the initial conditions that were derived from the stationary condition
-    specified in [2].
+    specified in [Brauer2008].
 
-    >>> paramEval = {'beta_00':0.0010107,'beta_01':0.0010107,'beta_10':0.0010107,
-    >>>              'beta_11':0.0010107,'d':0.02,'epsilon':45.6,'gamma':73.0,
+    >>> paramEval = {'beta_00':0.0010107, 'beta_01':0.0010107,
+    >>>              'beta_10':0.0010107, 'beta_11':0.0010107,
+    >>>              'd':0.02,'epsilon':45.6, 'gamma':73.0,
     >>>              'N_0':10**6,'N_1':10**6,'p':0.01}
     >>> x0 = [36139.3224081278, 422.560577637822,
     >>>       263.883351688369, 963174.233662546]
@@ -503,16 +472,9 @@ def SEIR_Multiple(n=2, param=None):
     >>> for s in x0:
     >>>     x01 += [s]
     >>>     x01 += [s]
-    >>> ode.setParameters(paramEval).setInitialValue(numpy.array(x01,float),t[0])
-    >>> solution,output = ode.integrate(t[1::],full_output=True)
+    >>> ode.setParameters(paramEval).setInitialValue(numpy.array(x01, float), t[0])
+    >>> solution,output = ode.integrate(t[1::], full_output=True)
     >>> ode.plot()
-
-    References
-    ----------
-    .. [1] Mathematical Epidemiology, Lecture Notes in Mathematics,
-           Brauer Fred, Springer 2008
-    .. [2] Lloyd A.L. and May R.M., Spatial Heterogeneity in Epidemic Models,
-           Journal of Theoretical Biology, Vol 179, no. 1, pg 1-11, 1996
     '''
     if n is None:
         n = 2
@@ -522,21 +484,21 @@ def SEIR_Multiple(n=2, param=None):
     lambdaStr = []
     lambdaName = []
 
-    stateName = ["S","E","I","R"]
-    states = OrderedDict.fromkeys(stateName,[])
+    stateName = ["S", "E", "I", "R"]
+    states = OrderedDict.fromkeys(stateName, [])
     N =  []
 
     for i in s:
         for v in states:
-            states[v] = states[v]+[str(v)+"_"+i]
-        N += ['N_'+i]
+            states[v] = states[v] + [str(v) + "_" + i]
+        N += ['N_' + i]
         lambdaTemp = '0'
         for j in s: 
-            beta += ['beta_'+i+j]
+            beta += ['beta_' + i + j]
             if i==j:
-                lambdaTemp += '+ I_' +j+ '*beta_' +i+j
+                lambdaTemp += '+ I_' + j + '*beta_' + i + j
             else:
-                lambdaTemp += '+ I_' +j+ '*beta_' +i+j+ ' * p'
+                lambdaTemp += '+ I_' + j + '*beta_' + i + j + '*p'
         lambdaStr += [lambdaTemp]
         lambdaName += ['lambda_' + i]
 
@@ -552,13 +514,13 @@ def SEIR_Multiple(n=2, param=None):
         derivedParamList += [(lambdaName[i],lambdaStr[i])]
         transitionList += [Transition(origState=states['S'][i],
                                       destState=states['E'][i],
-                                      equation=lambdaName[i]+ '*' +states['S'][i] ,
+                                      equation=lambdaName[i] + '*' +states['S'][i] ,
                                       transitionType=TransitionType.T)]
-        transitionList += [Transition(origState=states['E'][i],destState=states['I'][i],equation=' epsilon * ' +states['E'][i] ,transitionType=TransitionType.T)]
-        transitionList += [Transition(origState=states['I'][i],destState=states['R'][i],equation=' gamma * ' +states['I'][i] ,transitionType=TransitionType.T)]
+        transitionList += [Transition(origState=states['E'][i], destState=states['I'][i], equation='epsilon*' + states['E'][i], transitionType=TransitionType.T)]
+        transitionList += [Transition(origState=states['I'][i], destState=states['R'][i], equation='gamma*' + states['I'][i], transitionType=TransitionType.T)]
         for v in states:
-            bdList += [Transition(origState=states[v][i], equation='d * '+states[v][i], transitionType=TransitionType.D)]
-        bdList += [Transition(origState=states['S'][i], equation='d * '+N[i], transitionType=TransitionType.B)]
+            bdList += [Transition(origState=states[v][i], equation='d*' + states[v][i], transitionType=TransitionType.D)]
+        bdList += [Transition(origState=states['S'][i], equation='d*' + N[i], transitionType=TransitionType.B)]
             
     ode = OperateOdeModel(stateList,
                           paramList,
@@ -574,7 +536,7 @@ def SEIR_Multiple(n=2, param=None):
 
 def Influenza_SLIARN(param=None):
     '''
-    A simple influenza model from [1], page 323.
+    A simple influenza model from [Brauer2008]_, page 323.
 
     .. math::
         \\frac{dS}{dt} &= -S \\beta (I + \\delta A) \\\\
@@ -584,10 +546,6 @@ def Influenza_SLIARN(param=None):
         \\frac{dR}{dt} &= f \\alpha I + \\eta A \\\\ 
         \\frac{dN}{dt} &= -(1 - f) \\alpha I
         
-    References
-    ----------
-    .. [1] Mathematical Epidemiology, Lecture Notes in Mathematics,
-           Brauer Fred, Springer 2008
     '''
     
     stateList = ['S', 'L', 'I', 'A', 'R', 'N']
@@ -599,7 +557,7 @@ def Influenza_SLIARN(param=None):
                transitionType=TransitionType.ODE),
                Transition(origState='I', equation='p*kappa*L - alpha*I',
                transitionType=TransitionType.ODE),
-               Transition(origState='A', equation='(1-p)*kappa*L - epsilon*A',
+               Transition(origState='A', equation='(1 - p)*kappa*L - epsilon*A',
                transitionType=TransitionType.ODE),
                Transition(origState='R', equation='f*alpha*I + epsilon*A',
                transitionType=TransitionType.ODE),
@@ -619,7 +577,7 @@ def Influenza_SLIARN(param=None):
 
 def Legrand_Ebola_SEIHFR(param=None):
     '''
-    The Legrand Ebola model with 6 compartments that includes the
+    The Legrand Ebola model [Legrand2007]_ with 6 compartments that includes the
     H = hospitalization and F = funeral state. Note that because this
     is an non-autonomous system, there are in fact a total of 7 states
     after conversion.  The set of equations that describes the model are
@@ -631,12 +589,6 @@ def Legrand_Ebola_SEIHFR(param=None):
         \\frac{dH}{dt} &= \\gamma_{H}\\theta_{1}I - (\\gamma_{DH}\\delta_{2} + \\gamma_{IH}(1-\\delta_{2}))H \\\\
         \\frac{dF}{dt} &= \\gamma_{D}(1-\\theta_{1})\\delta_{1}I + \\gamma_{DH}\\delta_{2}H - \\gamma_{F}F \\\\
         \\frac{dR}{dt} &= \\gamma_{I}(1-\\theta_{1})(1-\\delta_{1})I + \\gamma_{IH}(1-\\delta_{2})H + \\gamma_{F}F.
-
-    References
-    ----------
-    .. [1] Understanding the dynamics of Ebola epidemics,
-           Legrand J. et al. Epidemiology and Infection,
-           Volume 135, Issue 4, pg 610-621, 2007
 
     Examples
     --------
@@ -730,17 +682,11 @@ def Legrand_Ebola_SEIHFR(param=None):
 
 def Lotka_Volterra(param=None):
     '''
-    Standard Lotka-Volterra model with two states and four parameters
+    Standard Lotka-Volterra model with two states and four parameters [Lotka1920]_
 
     .. math::
         \\frac{dx}{dt} &= \\alpha x - cxy \\\\
         \\frac{dy}{dt} &= -\\delta y + \\gamma xy
-
-    References
-    ----------
-    .. [1] Analytical Note on Certain Rhythmic Relations in Organic Systems,
-           Lotka Alfred J., Proceedings of the National Academy of Sciences of the
-           United States of America, Volume 7, Issue 7, pg. 410-415, 1920.
 
     Examples
     --------
@@ -778,7 +724,7 @@ def Lotka_Volterra(param=None):
 
 def Lotka_Volterra_4State(param=None):
     '''
-    The four state Lotka-Volterra model. A common interpretation is that
+    The four state Lotka-Volterra model [Lotka1920]_. A common interpretation is that
     a = Grass, x = rabbits, y = foxes and b is the death of foxes.
 
     .. math::
@@ -786,12 +732,6 @@ def Lotka_Volterra_4State(param=None):
         \\frac{dx}{dt} &= k_{0} a x - k_{1} x y \\\\
         \\frac{dy}{dt} &= k_{1} x y - k_{2} y \\\\
         \\frac{db}{dt} &= k_{2} y
-
-    References
-    ----------
-    .. [1] Analytical Note on Certain Rhythmic Relations in Organic Systems,
-           Lotka Alfred J., Proceedings of the National Academy of Sciences of the
-           United States of America, Volume 7, Issue 7, pg. 410-415, 1920.
 
     Examples
     --------
@@ -835,20 +775,14 @@ def Lotka_Volterra_4State(param=None):
 
 def FitzHugh(param=None):
     '''
-    The standard FitzHugh model without external input
+    The standard FitzHugh model without external input [FitzHugh1961]_
 
     .. math::
         \\frac{dV}{dt} &=  c ( V - \\frac{V^{3}}{3} + R) \\\\
         \\frac{dR}{dt} &= -\\frac{1}{c}(V - a + bR).
 
-    References
-    ----------
-    .. [1] Impulses and Physiological States in Theoretical Models of Nerve Membrane,
-           Biophysical Journal, FitzHugh Richard, Volume 1, Issue 6, pg. 445-466, 1961.
-
     Examples
     --------
-
     >>> ode = common_models.FitzHugh({'a':0.2, 'b':0.2, 'c':3.0})
     >>> t = numpy.linspace(0, 20, 101)
     >>> x0 = [1.0, -1.0]
@@ -887,21 +821,15 @@ def FitzHugh(param=None):
 def Lorenz(param=None):
     '''
     Lorenz attractor define by three parameters, :math:`\\beta,\\sigma,\\rho`
+    as per [Lorenz1963]_.
 
     .. math::
         \\frac{dx}{dt} &= \\sigma (y-x) \\\\
         \\frac{dy}{dt} &= x (\\rho - z) - y \\\\
         \\frac{dz}{dt} &= xy - \\beta z
 
-    References
-    ----------
-    .. [1] Deterministic Nonperiodic Flow, Lorenz, Edward N.,
-           Journal of the Atmospheric Sciences,
-           Volume 20, Issus 2, pgs 130-141, 1963
-
     Examples
     --------
-
     >>> import matplotlib.pyplot as plt
     >>> t = numpy.linspace(0, 20, 101)
     >>> params = {'beta':8.0/3.0, 'sigma':10.0, 'rho':28.0}
@@ -933,7 +861,7 @@ def Lorenz(param=None):
 
 def vanDelPol(param=None):
     '''
-    The van der Pol equation, a second order ode
+    The van der Pol equation [vanderpol1926]_, a second order ode
 
     .. math::
         y^{\prime\prime} - \mu (1-y^{2}) y^{\prime} + y = 0
@@ -950,23 +878,15 @@ def vanDelPol(param=None):
         x^{\prime} &= \\mu (1 - y^{2}) x - y \\\\
         y^{\prime} &= x
 
-    and this can be solved via standard method
-
-    References
-    ----------
-    .. [1] On Relaxed Oscillations, van der Pol, Balthasar,
-           The London, Edinburgh, and Dublin Philosophical Magazine 
-           and Journal of Science,
-           Volume 2, Issue 11, pg.  978-992, 1926
+    and this can be solved via standard method.
 
     Examples
     --------
-
-    >>> from odeModel import common_models
+    >>> from pygom import common_models
     >>> import numpy
     >>> t = numpy.linspace(0, 20, 1000)
     >>> ode = common_models.vanDelPol({'mu':1.0})
-    >>> ode = ode..setInitialValue([2.0,0.0], t[0])
+    >>> ode = ode.setInitialValue([2.0,0.0], t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
     '''
@@ -976,7 +896,7 @@ def vanDelPol(param=None):
     odeList = [
         Transition(origState='y', equation='x',
                    transitionType=TransitionType.ODE),
-        Transition(origState='x', equation='mu * (1 - y*y)*x -  y',
+        Transition(origState='x', equation='mu*(1 - y*y)*x -  y',
                    transitionType=TransitionType.ODE)
         ]
     # initialize the model
@@ -990,7 +910,7 @@ def vanDelPol(param=None):
 
 def Robertson(param=None):
     '''
-    The so called Robertson problem, which is a standard example used to
+    The so called Robertson problem [Robertson1966]_, which is a standard example used to
     test stiff integrator.
 
     .. math::
@@ -998,17 +918,12 @@ def Robertson(param=None):
         \\frac{dy_{2}}{dt} &= 0.04 y_{1} - 1 \cdot 10^{4} y_{2} y_{3} - 3 \cdot 10^{7} y_{2}^{2}\\\\
         \\frac{dy_{3}}{dt} &= 3 \cdot 10^{7} y_{2}^{2}
 
-    References
-    ----------
-    .. [1] The solution of a set of reaction rate equations, Robertson, H.H.,
-           pg. 178-182, Academic Press, 1966
-
     Examples
     --------
 
-    >>> from odeModel import common_models
+    >>> from pygom import common_models
     >>> import numpy
-    >>> t = numpy.append(0,4*numpy.logspace(-6, 6, 1000))
+    >>> t = numpy.append(0, 4*numpy.logspace(-6, 6, 1000))
     >>> ode = common_models.Robertson().setInitialValue([1.0,0.0,0.0], t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot() # note that this is not being plotted in the log scale

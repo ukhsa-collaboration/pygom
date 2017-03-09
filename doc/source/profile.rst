@@ -4,7 +4,7 @@
 Confidence Interval of Estimated Parameters
 *******************************************
 
-After obtaining the *best* fit, it is natural to report both the point estimate and the confidence level at the :math:`\alpha` level.  The easiest way to do this is by invoking the normality argument and use Fisher information of the likelihood.  As explained previously at the bottom of :ref:`gradient`, we can find the Hessian, :math:`\mathbf{H}`, or the approximated Hessian for the estimated parameters.  The Cram\`e r--Rao inequality, we know that
+After obtaining the *best* fit, it is natural to report both the point estimate and the confidence level at the :math:`\alpha` level.  The easiest way to do this is by invoking the normality argument and use Fisher information of the likelihood.  As explained previously at the bottom of :ref:`gradient`, we can find the Hessian, :math:`\mathbf{H}`, or the approximated Hessian for the estimated parameters.  The Cram\\`e r--Rao inequality, we know that
 
 .. math::
 	Var(\hat{\theta}) \ge \frac{1}{I(\theta)},
