@@ -18,7 +18,7 @@ A method to obtain such initial guess based on the collocation is available in t
     
     In [2]: import numpy
 
-    In [3]: x0 = [-1.0,1.0]
+    In [3]: x0 = [-1.0, 1.0]
 
     In [4]: t0 = 0
 

@@ -14,8 +14,9 @@ model
     common_models
     transition
     deterministic
-    odeutils
     stochastic
+    epi_analysis
+    odeutils
 
 ====
 loss
@@ -26,4 +27,4 @@ loss
     odeloss
     losstype
     confidence_interval
-	
+    get_init

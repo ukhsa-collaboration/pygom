@@ -22,15 +22,14 @@ Continuing from the example above, but now with a much longer time frame.  Note 
     
     In [1]: N = 7781984.0
     
-    In [1]: ode = common_models.SIR_Birth_Death({'beta':3.6,'gamma':0.2,'B':B/N,'mu':B/N})
+    In [1]: ode = common_models.SIR_Birth_Death({'beta':3.6, 'gamma':0.2, 'B':B/N, 'mu':B/N})
     
-    In [1]: t = numpy.linspace(0,35*365,10001)
+    In [1]: t = numpy.linspace(0, 35*365, 10001)
     
-    In [1]: x0 = [0.065,123*(5.0/30.0)/N,0.0]
+    In [1]: x0 = [0.065, 123.0*(5.0/30.0)/N, 0.0]
     
-    In [1]: solution = ode.setInitialValue(x0,t[0]).integrate(t[1::])
+    In [1]: solution = ode.setInitialValue(x0, t[0]).integrate(t[1::])
     
     @savefig common_models_sir_bd.png  
     In [1]: ode.plot()
     
-[1] Mathematical Epidemiology, Lecture Notes in Mathematics, Brauer Fred, Springer 2008

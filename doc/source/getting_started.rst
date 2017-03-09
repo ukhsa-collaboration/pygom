@@ -30,7 +30,7 @@ The current plan is to extend the functionality to include
 Obtaining the package
 =====================
 
-The location of the package is current no GitHub and can be pulled via http from::
+The location of the package is current on GitHub and can be pulled via https from::
 
     https://github.com/PublicHealthEngland/pygom.git
 

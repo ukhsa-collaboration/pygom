@@ -10,7 +10,7 @@ Extending it to also include birth death process with equal rate :math:`\mu`
     \frac{dI}{dt} &= \alpha E - (\mu + \gamma) I \\
     \frac{dR}{dt} &= \gamma I
     
-Same parameters value as the SEIR example above is used.
+Same parameters value taken from [Aron1984]_ as the SEIR example above is used here.  Observe how the introduction of a birth and a death process changes the graph even though the rest of the parameters remains the same.
 
 .. ipython::
      
@@ -20,19 +20,16 @@ Same parameters value as the SEIR example above is used.
 
     In [1]: import numpy
 
-    In [1]: ode = common_models.SEIR_Birth_Death({'beta':1800,'gamma':100,'alpha':35.84,'mu':0.02})
+    In [1]: ode = common_models.SEIR_Birth_Death({'beta':1800, 'gamma':100, 'alpha':35.84, 'mu':0.02})
     
-    In [1]: t = numpy.linspace(0,50,1001)
+    In [1]: t = numpy.linspace(0, 50, 1001)
     
-    In [1]: x0 = [0.0658,0.0007,0.0002,0.0]
+    In [1]: x0 = [0.0658, 0.0007, 0.0002, 0.0]
     
-    In [1]: solution = ode.setInitialValue(x0,t[0]).integrate(t[1::],full_output=True)
+    In [1]: solution = ode.setInitialValue(x0, t[0]).integrate(t[1::], full_output=True)
     
     @savefig common_models_seir_bd.png    
     In [1]: ode.plot()
 
     In [1]: plt.close()    
 
-**References**
-
-[1] Seasonality and period-doubling bifurcations in an epidemic model, Aron J.L. and Schwartz I.B., Journal of Theoretical Biology, Volume 110, Issue 4, pg 665-679, 1984

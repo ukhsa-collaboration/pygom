@@ -1,7 +1,7 @@
 :func:`.Legrand_Ebola_SEIHFR`
 =============================
 
-A commonly used model in the literature to model Ebola outbreaks is the SEIHFR model proposed by Legrand et al. [1].  There are two extra compartments on top of the standard SEIR, **H** for hospitialization and **F** for funeral.  A total of ten parameters (with some describing the inverse) are required for the model, they are:
+A commonly used model in the literature to model Ebola outbreaks is the SEIHFR model proposed by [Legrand2007]_.  There are two extra compartments on top of the standard SEIR, :math:`H` for hospitialization and :math:`F` for funeral.  A total of ten parameters (with some describing the inverse) are required for the model, they are:
 
 ==================   ============================================
      Symbol                          Process
@@ -53,7 +53,7 @@ with :math:`\beta_{F}(t) = \beta_{F}` if :math:`t > c` and :math:`0` otherwise. 
 
 .. math::
 
-    \beta_{F}(t) = \beta_{F} \left(1 - \frac{1}{1+\exp(-\kappa (t - c))} \right)
+    \beta_{F}(t) = \beta_{F} \left(1 - \frac{1}{1 + \exp(-\kappa (t - c))} \right)
 
 A brief example (from [3]) is given here with a slightly more in depth example in :ref:`estimate2`.
 
@@ -82,13 +82,10 @@ A brief example (from [3]) is given here with a slightly more in depth example i
        ...:                                    ('interventionTime',7.0)
        ...:                                    ])
 
-    In [1]: solution = ode.setInitialValue(x0,0).integrate(t)
+    In [1]: solution = ode.setInitialValue(x0, 0).integrate(t)
 
     @savefig common_models_seihfr.png
     In [1]: ode.plot()
 
 Note also that we have again standardized so that the number of susceptible is 1 and equal to the whole population, i.e. :math:`N` does not exist in our set of ode's as defined in :mod:`.common_models`.
 
-**References**
-
-[1] Understanding the dynamics of Ebola epidemics, Legrand J. et al. Epidemiology and Infection, Volume 135, Issue 4, pg 610-621, 2007

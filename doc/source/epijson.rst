@@ -28,9 +28,9 @@ Given that the aim of loading the data is usually for model fitting, we allow Ep
 
     In [2]: from pygom.loss.epijson_loss import EpijsonLoss
 
-    In [3]: ode = common_models.SIR().setParameters([0.5,0.3])
+    In [3]: ode = common_models.SIR().setParameters([0.5, 0.3])
 
-    In [4]: obj = EpijsonLoss([0.005,0.03], ode, data, 'Death', 'R', [300,2,0])
+    In [4]: obj = EpijsonLoss([0.005, 0.03], ode, data, 'Death', 'R', [300, 2, 0])
 
     In [5]: print(obj.cost())
 
