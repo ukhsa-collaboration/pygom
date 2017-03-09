@@ -25,11 +25,11 @@ We can simply define the set of ode, as seen previously, via
 
     In [1]: from pygom import Transition, TransitionType, common_models
 
-    In [2]: ode1 = Transition(origState='S',equation='-beta*S*I',transitionType=TransitionType.ODE)
+    In [2]: ode1 = Transition(origState='S', equation='-beta*S*I', transitionType=TransitionType.ODE)
 
-    In [3]: ode2 = Transition(origState='I',equation='beta*S*I - gamma*I',transitionType=TransitionType.ODE)
+    In [3]: ode2 = Transition(origState='I', equation='beta*S*I - gamma*I', transitionType=TransitionType.ODE)
 
-    In [4]: ode3 = Transition(origState='R',equation='gamma*I',transitionType=TransitionType.ODE)
+    In [4]: ode3 = Transition(origState='R', equation='gamma*I', transitionType=TransitionType.ODE)
 
 Note that we need to state explicitly the type of equation we are inputting, which is simply of type **ODE** in this case.  We can confirm this has been entered correctly by putting it into :class:`OperateOdeModel`
 
@@ -37,13 +37,13 @@ Note that we need to state explicitly the type of equation we are inputting, whi
 
     In [1]: from pygom import OperateOdeModel
 
-    In [2]: stateList = ['S','I','R']
+    In [2]: stateList = ['S', 'I', 'R']
 
-    In [3]: paramList = ['beta','gamma']
+    In [3]: paramList = ['beta', 'gamma']
 
     In [4]: model = OperateOdeModel(stateList,
        ...:                         paramList,
-       ...:                         odeList=[ode1,ode2,ode3])
+       ...:                         odeList=[ode1, ode2, ode3])
 
 and check it 
 
@@ -79,13 +79,13 @@ where :math:`S \rightarrow I` denotes a transition from state :math:`S` to state
 
     In [600]: from pygom import SimulateOdeModel
     
-    In [601]: t1 = Transition(origState='S',destState='I',equation='beta*S*I',transitionType=TransitionType.T)
+    In [601]: t1 = Transition(origState='S', destState='I', equation='beta*S*I', transitionType=TransitionType.T)
 
-    In [602]: t2 = Transition(origState='I',destState='R',equation='gamma*I',transitionType=TransitionType.T)
+    In [602]: t2 = Transition(origState='I', destState='R', equation='gamma*I', transitionType=TransitionType.T)
 
     In [603]: modelTrans = SimulateOdeModel(stateList,
-       .....:                              paramList,
-       .....:                              transitionList=[t1,t2])
+       .....:                               paramList,
+       .....:                               transitionList=[t1, t2])
 
     In [604]: modelTrans.getOde()
 
@@ -93,18 +93,20 @@ We can see that the resulting ode is exactly the same, as expected.  The transit
 
 .. ipython::
 
-    In [1]: modelTrans.getTransitionMatrix()
+    In [1]: import matplotlib.pyplot as plt
+
+    In [2]: f = plt.figure()
+
+    In [3]: modelTrans.getTransitionMatrix()
     
     @savefig sir_transition_graph.png
-    In [2]: dot = modelTrans.getTransitionGraph()
+    In [4]: dot = modelTrans.getTransitionGraph()
 
-If we put in via the wrong argument, then an error will appear
+If we put in via the wrong argument like below (not run), then an error will appear.
 
 .. ipython::
 
-    In [603]: modelTrans = OperateOdeModel(stateList,
-       .....:                              paramList,
-       .....:                              odeList=[t1,t2])
+    In [1]: # modelTrans = OperateOdeModel(stateList, paramList, odeList=[t1, t2])
 
 because :class:`TranstionType` was defined explicitly as a transition instead of an ode.  The same can be observed when the wrong :class:`TransitionType` is used for any of the input argument.
 
@@ -112,15 +114,15 @@ This though, only encourages us to define the transitions carefully.  We can als
 
 .. ipython::
 
-    In [619]: birth1 = Transition(origState='S',equation='-beta*S*I',transitionType=TransitionType.B)
+    In [619]: birth1 = Transition(origState='S', equation='-beta*S*I', transitionType=TransitionType.B)
 
-    In [620]: birth2 = Transition(origState='I',equation='beta*S*I - gamma*I',transitionType=TransitionType.B)
+    In [620]: birth2 = Transition(origState='I', equation='beta*S*I - gamma*I', transitionType=TransitionType.B)
 
-    In [621]: birth3 = Transition(origState='R',equation='gamma*I',transitionType=TransitionType.B)
+    In [621]: birth3 = Transition(origState='R', equation='gamma*I', transitionType=TransitionType.B)
 
     In [622]: modelBirth = OperateOdeModel(stateList,
        .....:                              paramList,
-       .....:                              birthDeathList=[birth1,birth2,birth3])
+       .....:                              birthDeathList=[birth1, birth2, birth3])
 
     In [623]: modelBirth.getOde()
 
@@ -128,15 +130,15 @@ which will yield the same set result.  Alternatively, we can use the negative of
 
 .. ipython::
 
-    In [624]: death1 = Transition(origState='S',equation='beta*S*I',transitionType=TransitionType.D)
+    In [624]: death1 = Transition(origState='S', equation='beta*S*I', transitionType=TransitionType.D)
 
-    In [625]: birth2 = Transition(origState='I',equation='beta*S*I - gamma*I',transitionType=TransitionType.B)
+    In [625]: birth2 = Transition(origState='I', equation='beta*S*I - gamma*I', transitionType=TransitionType.B)
 
-    In [626]: death3 = Transition(origState='R',equation='-gamma*I',transitionType=TransitionType.D)
+    In [626]: death3 = Transition(origState='R', equation='-gamma*I', transitionType=TransitionType.D)
 
     In [627]: modelBD = OperateOdeModel(stateList,
        .....:                           paramList,
-       .....:                           birthDeathList=[death1,birth2,death3])
+       .....:                           birthDeathList=[death1, birth2, death3])
 
     In [628]: modelBD.getOde()
 
@@ -152,7 +154,7 @@ Because we allow the separation of transitions between states and birth/death pr
 
     In [1]: modelBD2 = modelTrans
     
-    In [1]: modelBD2.setParamList(paramList + ['mu','B'])
+    In [1]: modelBD2.setParamList(paramList + ['mu', 'B'])
     
     In [1]: birthDeathList = [Transition(origState='S', equation='B', transitionType=TransitionType.B),
        ...:                   Transition(origState='S', equation='mu*S', transitionType=TransitionType.D),

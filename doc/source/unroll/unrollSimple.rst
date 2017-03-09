@@ -8,7 +8,7 @@ For a simple problem, we consider the SIR model defined by
 .. math::
 
   \frac{dS}{dt} &= -\beta SI \\
-  \frac{dI}{dt} &= \beta SI- \gamma I \\
+  \frac{dI}{dt} &= \beta SI - \gamma I \\
   \frac{dR}{dt} &= \gamma I.
 
 which consists of two transitions
@@ -31,7 +31,7 @@ Let's define this using the code block below
 
     In [2]: ode1 = Transition(origState='S',equation='-beta*S*I', transitionType=TransitionType.ODE)
 
-    In [3]: ode2 = Transition(origState='I',equation='beta*S*I - gamma * I', transitionType=TransitionType.ODE)
+    In [3]: ode2 = Transition(origState='I',equation='beta*S*I - gamma*I', transitionType=TransitionType.ODE)
 
     In [4]: ode3 = Transition(origState='R',equation='gamma*I', transitionType=TransitionType.ODE)
 
@@ -41,7 +41,7 @@ Let's define this using the code block below
 
     In [8]: ode = SimulateOdeModel(stateList,
        ...:                        paramList,
-       ...:                        odeList=[ode1,ode2,ode3])
+       ...:                        odeList=[ode1, ode2, ode3])
 
     In [9]: ode.getTransitionMatrix()
 

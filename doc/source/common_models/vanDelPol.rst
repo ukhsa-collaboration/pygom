@@ -1,7 +1,7 @@
 :func:`.vanDelPol`
 ==================
 
-The van Del Pol oscillator
+The van Del Pol oscillator [vanderpol1926]_
 
 .. math::
     
@@ -19,9 +19,9 @@ A classic example is
     
     In [1]: import matplotlib.pyplot as plt
     
-    In [1]: t = numpy.linspace(0,20,1000)
+    In [1]: t = numpy.linspace(0, 20, 1000)
     
-    In [1]: ode = common_models.vanDelPol({'mu':1.0}).setInitialValue([2.0,0.0],t[0])
+    In [1]: ode = common_models.vanDelPol({'mu':1.0}).setInitialValue([2.0, 0.0],t[0])
     
     In [1]: solution = ode.integrate(t[1::])
     
@@ -29,6 +29,8 @@ A classic example is
     In [1]: ode.plot()
     
     In [1]: plt.close()
+
+    In [1]: f = plt.figure()
 
     In [1]: plt.plot(solution[:,0],solution[:,1]);
 
@@ -41,12 +43,14 @@ When we change the value, as per `Wolfram <http://mathworld.wolfram.com/vanderPo
 
 .. ipython::
 	
-    In [1]: t = numpy.linspace(0,100,1000)
+    In [1]: t = numpy.linspace(0, 100, 1000)
 
-    In [1]: ode = ode.setParameters({'mu':1.0}).setInitialValue([0.0,0.2],t[0])
+    In [1]: ode = ode.setParameters({'mu':1.0}).setInitialValue([0.0, 0.2],t[0])
 	
     In [1]: solution = ode.integrate(t[1::])
     
+    In [1]: f = plt.figure()
+
     In [1]: plt.plot(solution[:,0],solution[:,1]);
 
     @savefig common_models_vanDelPol_yprime_y_2.png    
@@ -54,17 +58,15 @@ When we change the value, as per `Wolfram <http://mathworld.wolfram.com/vanderPo
     
     In [1]: plt.close()
     
-    In [1]: ode = ode.setParameters({'mu':0.2}).setInitialValue([0.0,0.2],t[0])
+    In [1]: ode = ode.setParameters({'mu':0.2}).setInitialValue([0.0, 0.2],t[0])
 	
     In [1]: solution = ode.integrate(t[1::])
 
-    In [1]: plt.plot(solution[:,0],solution[:,1]);
+    In [1]: f = plt.figure()
+
+    In [1]: plt.plot(solution[:,0], solution[:,1]);
     
     @savefig common_models_vanDelPol_yprime_y_3.png
     In [1]: plt.show()
     
     In [1]: plt.close()
-
-**Reference**
-
-[1] On Relaxed Oscillations, van der Pol, Balthasar, The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science, Volume 2, Issue 11, pg.  978-992, 1926

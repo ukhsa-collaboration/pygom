@@ -48,7 +48,8 @@ class Square(object):
             if 1 == self._w.shape[1]:
                 self._w = self._w.flatten()
 
-        assert self._y.shape == self._w.shape, "Input weight not of the same size as y"
+        assert self._y.shape == self._w.shape, \
+            "Input weight not of the same size as y"
 
         self.loss(self._y)
 
@@ -63,7 +64,7 @@ class Square(object):
 
         Returns
         -------
-        :math:`\sum_{i=1}^{n} (\hat{y} - y)^{2}`
+        :math:`\\sum_{i=1}^{n} (\\hat{y} - y)^{2}`
         '''
         return (self.residual(yhat)**2).sum()
 
@@ -82,7 +83,7 @@ class Square(object):
         -------
         :math:`-2(y_{i} - \hat{y}_{i})`
         '''
-        return -2 * self.residual(yhat)
+        return -2*self.residual(yhat)
 
     def diff2Loss(self, yhat):
         '''
@@ -95,11 +96,11 @@ class Square(object):
     
         Returns
         -------
-        2: array like
+        array with values of 2:
             either a scalar, vector or matrix depending on the shape of
             of the input yhat
         '''
-        return self._weightedResidual(2 * numpy.ones(yhat.shape))
+        return self._weightedResidual(2*numpy.ones(yhat.shape))
 
     def residual(self, yhat):
         '''
@@ -113,7 +114,7 @@ class Square(object):
 
         Returns
         -------
-        :math:`y_{i}-\hat{y}_{i}`
+        :math:`y_{i} - \hat{y}_{i}`
 
         '''
         return self._weightedResidual(yhat)
@@ -148,6 +149,7 @@ class Normal(object):
     '''
 
     def __init__(self, y, sigma=1.0):
+        err_str = "Standard deviation not of the correct "
         self._y = checkArrayType(y)
         if isinstance(sigma, numpy.ndarray):
             if len(sigma.shape) > 1:
@@ -157,16 +159,16 @@ class Normal(object):
                 if y.shape == sigma.shape:
                     self._sigma = sigma
                 else:
-                    raise InitializeError("Standard deviation not of the correct size")
+                    raise InitializeError(err_str + "size")
             else:
                 if y.shape == sigma.shape:
                     self._sigma = sigma
                 else:
-                    raise InitializeError("Standard deviation not of the correct size")
+                    raise InitializeError(err_str + "size")
         elif sigma is None or sigma == 1.0:
             self._sigma = numpy.ones(self._y.shape)
         else:
-            raise InitializeError("Standard deviation not of the correct type")
+            raise InitializeError(err_str + "type")
 
         self._sigma2 = self._sigma**2
         self.loss(self._y)
@@ -183,7 +185,7 @@ class Normal(object):
 
         Returns
         -------
-        negative log-likelihood, :math:`\mathcal{L}(\hat{y},y)`
+        negative log-likelihood, :math:`\\mathcal{L}(\\hat{y},y)`
 
         '''
         # note that we input the standard deviation here
@@ -194,7 +196,8 @@ class Normal(object):
 
     def diffLoss(self, yhat):
         '''
-        Derivative of the loss function which is :math:`\sigma^{-1}(y-\hat{y})`
+        Derivative of the loss function which is
+        :math:`\\sigma^{-1}(y - \\hat{y})`
 
         Parameters
         ----------
@@ -204,7 +207,7 @@ class Normal(object):
         Returns
         -------
         r: array like
-            :math:`\\nabla \mathcal{L}(\hat{y},y)`
+            :math:`\\nabla \\mathcal{L}(\\hat{y}, y)`
 
         '''
         r = self.residual(yhat)
@@ -224,7 +227,7 @@ class Normal(object):
         s: array like
             inverse of the variance with shape = yhat.shape
         '''
-        return numpy.ones(yhat.shape) / self._sigma2
+        return numpy.ones(yhat.shape)/self._sigma2
 
     def residual(self, yhat):
         '''
@@ -277,7 +280,7 @@ class Poisson(object):
 
         Returns
         -------
-        negative log-likelihood, :math:`\mathcal{L}(\hat{y},y)`
+        negative log-likelihood, :math:`\\mathcal{L}(\\hat{y}, y)`
 
         '''
         if len(yhat.shape) > 1:
@@ -288,7 +291,7 @@ class Poisson(object):
 
     def diffLoss(self, yhat):
         '''
-        Derivative of the loss function, :math:`1 - y\hat{y}^{-1}`
+        Derivative of the loss function, :math:`1 - y\\hat{y}^{-1}`
 
         Parameters
         ----------
@@ -297,7 +300,7 @@ class Poisson(object):
 
         Returns
         -------
-        :math:`\\nabla \mathcal{L}(\hat{y},y)`
+        :math:`\\nabla \\mathcal{L}(\\hat{y},y)`
 
         '''
         if len(yhat.shape) > 1:
@@ -317,7 +320,7 @@ class Poisson(object):
         Returns
         -------
         s: array like
-            :math:`\\frac{y}{\hat{y}^{2}} with shape = yhat.shape
+            :math:`\\frac{y}{\\hat{y}^{2}}` with shape = yhat.shape
         '''
         return self.y / (yhat**2)
     

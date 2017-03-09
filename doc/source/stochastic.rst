@@ -14,17 +14,17 @@ There are multiple interpretation of stochasticity of a deterministic ode.  We h
 
     In [1]: import numpy
 
-    In [1]: x0 = [1,1.27e-6,0]
+    In [1]: x0 = [1, 1.27e-6, 0]
 
     In [1]: t = numpy.linspace(0, 150, 100)
 
-    In [1]: stateList = ['S','I','R']
+    In [1]: stateList = ['S', 'I', 'R']
 
-    In [1]: paramList = ['beta','gamma']
+    In [1]: paramList = ['beta', 'gamma']
 
     In [1]: transitionList = [
-       ...:                   Transition(origState='S',destState='I',equation='beta*S*I',transitionType=TransitionType.T),
-       ...:                   Transition(origState='I',destState='R',equation='gamma*I',transitionType=TransitionType.T)
+       ...:                   Transition(origState='S', destState='I', equation='beta*S*I', transitionType=TransitionType.T),
+       ...:                   Transition(origState='I', destState='R', equation='gamma*I', transitionType=TransitionType.T)
        ...:                   ]
 
     In [1]: odeS = SimulateOdeModel(stateList,paramList,transitionList=transitionList)
@@ -57,12 +57,12 @@ Note that a message is printed above where it is trying to connect to an mpi bac
 
 .. ipython::
 
-    In [1]: f,axarr = plt.subplots(1,3)
+    In [1]: f, axarr = plt.subplots(1,3)
 
     In [1]: for solution in Yall:
-       ...:     axarr[0].plot(t,solution[:,0])
-       ...:     axarr[1].plot(t,solution[:,1])
-       ...:     axarr[2].plot(t,solution[:,2])
+       ...:     axarr[0].plot(t, solution[:,0])
+       ...:     axarr[1].plot(t, solution[:,1])
+       ...:     axarr[2].plot(t, solution[:,2])
 
     @savefig stochastic_param_all.png
     In [1]: plt.show()
@@ -83,9 +83,9 @@ differs from the reference solution
 
 .. ipython::
 
-    In [1]: f,axarr = plt.subplots(1,3)
+    In [1]: f, axarr = plt.subplots(1,3)
 
-    In [1]: for i in range(0,3):
+    In [1]: for i in range(3):
        ...:     axarr[i].plot(t,Ymean[:,i] - solutionReference[:,i])
 
     @savefig stochastic_param_compare.png
@@ -97,11 +97,11 @@ and we repeat the process with the number of simulation increased
 
 .. ipython::
 
-    In [1]: Ymean,Yall = odeS.simulateParam(t[1::], 1000, full_output=True)
+    In [1]: Ymean, Yall = odeS.simulateParam(t[1::], 1000, full_output=True)
 
-    In [1]: f,axarr = plt.subplots(1,3)
+    In [1]: f, axarr = plt.subplots(1, 3)
 
-    In [1]: for i in range(0,3):
+    In [1]: for i in range(3):
        ...:     axarr[i].plot(t,Ymean[:,i] - solutionReference[:,i])
 
     @savefig stochastic_param_compare_large_n.png
@@ -117,9 +117,9 @@ Obviously, there may be scenarios where only some of the parameters are stochast
 
     In [1]: odeS.setParameters(d)
 
-    In [1]: YmeanSingle,YallSingle = odeS.simulateParam(t[1::], 10, full_output=True)
+    In [1]: YmeanSingle, YallSingle = odeS.simulateParam(t[1::], 10, full_output=True)
 
-    In [1]: f,axarr = plt.subplots(1,3)
+    In [1]: f, axarr = plt.subplots(1,3)
 
     In [1]: for solution in YallSingle:
        ...:     axarr[0].plot(t,solution[:,0])
@@ -146,32 +146,32 @@ A couple of the commmon implementation for the jump process have been implemente
 
 .. ipython::
 
-    In [1]: x0 = [2362206.0,3.0,0.0]
+    In [1]: x0 = [2362206.0, 3.0, 0.0]
 
-    In [1]: stateList = ['S','I','R']
+    In [1]: stateList = ['S', 'I', 'R']
 
-    In [1]: paramList = ['beta','gamma','N']
+    In [1]: paramList = ['beta', 'gamma', 'N']
 
     In [1]: transitionList = [
-       ...:                   Transition(origState='S',destState='I',equation='beta * S * I/N',transitionType=TransitionType.T),
-       ...:                   Transition(origState='I',destState='R',equation='gamma * I',transitionType=TransitionType.T)
+       ...:                   Transition(origState='S', destState='I', equation='beta*S*I/N', transitionType=TransitionType.T),
+       ...:                   Transition(origState='I', destState='R', equation='gamma*I', transitionType=TransitionType.T)
        ...:                   ]
 
-    In [1]: odeS = SimulateOdeModel(stateList,paramList,transitionList=transitionList)
+    In [1]: odeS = SimulateOdeModel(stateList, paramList, transitionList=transitionList)
 
-    In [1]: odeS.setParameters([0.5,1.0/3.0,x0[0]]).setInitialValue(x0, t[0])
+    In [1]: odeS.setParameters([0.5, 1.0/3.0, x0[0]]).setInitialValue(x0, t[0])
 
     In [1]: solutionReference = odeS.integrate(t[1::])
 
     In [1]: simX,simT = odeS.simulateJump(t[1:10], 10, full_output=True)
 
-    In [1]: f,axarr = plt.subplots(1,3)
+    In [1]: f, axarr = plt.subplots(1, 3)
 
-    In [1]: for i in range(0, len(simX)):
+    In [1]: for i in range(len(simX)):
        ...:     solution = simX[i]
-       ...:     axarr[0].plot(t[:9],solution[:,0])
-       ...:     axarr[1].plot(t[:9],solution[:,1])
-       ...:     axarr[2].plot(t[:9],solution[:,2])
+       ...:     axarr[0].plot(t[:9], solution[:,0])
+       ...:     axarr[1].plot(t[:9], solution[:,1])
+       ...:     axarr[2].plot(t[:9], solution[:,2])
 
     @savefig stochastic_process.png
     In [1]: plt.show()
@@ -186,9 +186,9 @@ Above, we see ten different simulation, again using the SIR model but the initia
 
     In [1]: simMean = numpy.mean(simX, axis=0)
 
-    In [1]: f,axarr = plt.subplots(1,3)
+    In [1]: f,axarr = plt.subplots(1, 3)
 
-    In [1]: for i in range(0,3):
+    In [1]: for i in range(3):
        ...:     axarr[i].plot(t,simMean[:,i] - solutionReference[:,i])
 
     @savefig stochastic_process_compare.png
@@ -204,9 +204,9 @@ same as above, we increase the number of simulation and plot the difference
 
     In [1]: simMean = numpy.mean(simX, axis=0)
 
-    In [1]: f,axarr = plt.subplots(1,3)
+    In [1]: f, axarr = plt.subplots(1,3)
 
-    In [1]: for i in range(0,3):
+    In [1]: for i in range(3):
        ...:     axarr[i].plot(t,simMean[:,i] - solutionReference[:,i])
 
     @savefig stochastic_process_compare_large_n.png
@@ -220,11 +220,11 @@ The difference is significantly greater than the previous assumption, where we a
 
     In [1]: f,axarr = plt.subplots(1,3)
 
-    In [1]: for i in range(0, len(simX)):
+    In [1]: for i in range(len(simX)):
        ...:     solution = simX[i]
-       ...:     axarr[0].plot(t,solution[:,0])
-       ...:     axarr[1].plot(t,solution[:,1])
-       ...:     axarr[2].plot(t,solution[:,2])
+       ...:     axarr[0].plot(t, solution[:,0])
+       ...:     axarr[1].plot(t, solution[:,1])
+       ...:     axarr[2].plot(t, solution[:,2])
 
     @savefig stochastic_process_compare_large_n_curves.png
     In [1]: plt.show()

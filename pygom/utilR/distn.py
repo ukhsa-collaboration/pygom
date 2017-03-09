@@ -3,7 +3,7 @@
 
     Functions of distributions that replicate those in R.
     See the R online documentation for each of the functions
-    with matching names, i.e. dgamma,pgamma and rgamma
+    with matching names, i.e. dgamma, pgamma and rgamma
     can be found at
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html
 

@@ -8,7 +8,7 @@ We follow on from the SIR model of :ref:`unrollSimple` but with additional birth
 .. math::
 
   \frac{dS}{dt} &= -\beta SI + B - \mu S\\
-  \frac{dI}{dt} &= \beta SI- \gamma I - \mu I\\
+  \frac{dI}{dt} &= \beta SI - \gamma I - \mu I\\
   \frac{dR}{dt} &= \gamma I.
 
 which consists of two transitions and three birth and death process
@@ -35,25 +35,29 @@ Let's define this in terms of ODEs, and unroll it back to the individual process
 
     In [1]: from pygom import Transition, TransitionType, SimulateOdeModel, common_models
     
+    In [1]: import matplotlib.pyplot as plt
+    
     In [1]: stateList = ['S', 'I', 'R']
 
     In [1]: paramList = ['beta', 'gamma', 'B', 'mu']
 
     In [1]: odeList = [
        ...:            Transition(origState='S', 
-       ...:                       equation='-beta * S * I + B - mu * S',
+       ...:                       equation='-beta*S*I + B - mu*S',
        ...:                       transitionType=TransitionType.ODE),
        ...:            Transition(origState='I', 
-       ...:                       equation='beta * S * I - gamma * I - mu * I',
+       ...:                       equation='beta*S*I - gamma*I - mu*I',
        ...:                       transitionType=TransitionType.ODE),
        ...:            Transition(origState='R', 
-       ...:                       equation='gamma * I',
+       ...:                       equation='gamma*I',
        ...:                       transitionType=TransitionType.ODE)
        ...:            ]
 
     In [1]: ode = SimulateOdeModel(stateList, paramList, odeList=odeList)
     
     In [1]: ode2 = ode.returnObjWithTransitionsAndBD()
+    
+    In [1]: f = plt.figure()
     
     @savefig sir_unrolled_transition_graph.png
     In [1]: ode2.getTransitionGraph()

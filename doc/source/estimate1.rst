@@ -7,7 +7,7 @@ Example: Parameter Estimation 1
 Estimation under square loss
 ============================
 
-To ease the estimation process when given data, a separate module :mod:`odeLossFunc` has been constructed for observations coming from a single state.  We demonstrate how to do it via two examples, first, a standard SIR model, then the **Legrand** SEIHFR model used for Ebola.
+To ease the estimation process when given data, a separate module :mod:`ode_loss` has been constructed for observations coming from a single state.  We demonstrate how to do it via two examples, first, a standard SIR model, then the **Legrand** SEIHFR model used for Ebola.
 
 SIR Model
 ---------
@@ -39,7 +39,7 @@ and we assume that we have perfect information about the **R** compartment.
 
 .. ipython::
 
-    In [196]: x0 = [1,1.27e-6,0]
+    In [196]: x0 = [1, 1.27e-6, 0]
 
     In [197]: # Time, including the initial time t0 at t=0
 
@@ -47,7 +47,7 @@ and we assume that we have perfect information about the **R** compartment.
 
     In [200]: # Standard.  Find the solution.
 
-    In [201]: solution = scipy.integrate.odeint(ode.ode,x0,t)
+    In [201]: solution = scipy.integrate.odeint(ode.ode, x0, t)
 
     In [202]: y = solution[:,1:3].copy()
 
@@ -57,7 +57,7 @@ Initialize the class with some initial guess
 
     In [209]: # our initial guess
 
-    In [210]: theta = [0.2,0.2]
+    In [210]: theta = [0.2, 0.2]
 
     In [176]: objSIR = SquareLoss(theta, ode, x0, t[0], t[1::], y[1::,:], ['I','R'])
 
@@ -92,7 +92,7 @@ If we change the number of observations from 1000 to 10
 
     In [17]: ode = common_models.SIR().setParameters(paramEval)
 
-    In [17]: solution = scipy.integrate.odeint(ode.ode,x0,t)
+    In [17]: solution = scipy.integrate.odeint(ode.ode, x0, t)
 
     In [202]: y = solution[:,1:3].copy()
 

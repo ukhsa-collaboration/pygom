@@ -6,9 +6,9 @@ import numpy as np
 
 def epijsonToDataFrame(inData, full_output=False):
     '''
-    Obtain a :class:`pandas.DataFrame' given EpiJSON input. The
-    data is aggregated (through time).  The original can be
-    obtained by setting full_output to True
+    Obtain a :class:`pandas.DataFrame' given EpiJSON input. The data is
+    aggregated (through time).  The original can be obtained by setting
+    full_output to True
 
     Parameters
     ----------

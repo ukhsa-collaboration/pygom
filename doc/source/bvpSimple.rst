@@ -57,16 +57,18 @@ We check that the equations are correct before proceeding to set up our loss fun
 
     In [2]: initialState = [0.0, 1.0]
 
-    In [3]: t = numpy.linspace(0,4,100)
+    In [3]: t = numpy.linspace(0, 4, 100)
 
-    In [4]: model.setInitialValue(initialState, t[0])
+    In [4]: model = model.setInitialValue(initialState, t[0])
     
     In [5]: solution = model.integrate(t[1::])
     
-    @savefig bvp1_random_guess_plot.png
-    In [6]: model.plot()
+    In [6]: f = plt.figure()
     
-    In [7]: plt.close()
+    @savefig bvp1_random_guess_plot.png
+    In [7]: model.plot()
+    
+    In [8]: plt.close()
 
 Setting up the second boundary condition :math:`y(4) = -2` is easy, because that is just a single observation attached to the state :math:`y_{1}`.  Enforcing the first boundary condition require us to set it as the initial condition.  Because the condition only states that :math:`y(0) = 0`, the starting value of the other state :math:`y_1` is free.  We let our loss object know that it is free through the targetState input argument.
     
@@ -87,14 +89,14 @@ Setting up the second boundary condition :math:`y(4) = -2` is easy, because that
     
     In [9]: print(thetaHat)
     
-    In [9]: model.setInitialValue(initialState, t[0])
-    
-    In [9]: model.setInitialValue([0.0] + thetaHat['x'].tolist(), t[0])
+    In [9]: model = model.setInitialValue([0.0] + thetaHat['x'].tolist(), t[0])
     
     In [5]: solution = model.integrate(t[1::])
     
+    In [6]: f = plt.figure()
+    
     @savefig bvp1_solution_plot.png
-    In [6]: model.plot()
+    In [7]: model.plot()
     
     In [7]: plt.close()
     
@@ -119,27 +121,29 @@ and we aim to solve it by converting it to a first order ODE and tackle it as an
 
 .. ipython::
 
-    In [1]: stateList = ['y0','y1','tau']
+    In [1]: stateList = ['y0', 'y1', 'tau']
 
     In [2]: paramList = ['p']
 
-    In [3]: ode1 = Transition('y0','y1',TransitionType.ODE)
+    In [3]: ode1 = Transition('y0', 'y1', TransitionType.ODE)
 
-    In [4]: ode2 = Transition('y1','-(p - 2*5*cos(2*tau))*y0',TransitionType.ODE)
+    In [4]: ode2 = Transition('y1', '-(p - 2*5*cos(2*tau))*y0', TransitionType.ODE)
 
-    In [5]: ode3 = Transition('tau','1',TransitionType.ODE)
+    In [5]: ode3 = Transition('tau', '1', TransitionType.ODE)
 
-    In [6]: model = OperateOdeModel(stateList,paramList,odeList=[ode1,ode2,ode3])
+    In [6]: model = OperateOdeModel(stateList,paramList,odeList=[ode1, ode2, ode3])
 
-    In [7]: theta = [1,1,0]
+    In [7]: theta = [1.0, 1.0, 0.0]
 
     In [7]: p = 15.0
 
-    In [7]: t = numpy.linspace(0,numpy.pi)
+    In [7]: t = numpy.linspace(0, numpy.pi)
 
     In [8]: model = model.setParameters([('p',p)]).setInitialValue(theta,t[0])
 
     In [8]: solution = model.integrate(t[1::])
+    
+    In [9]: f = plt.figure()
 
     @savefig bvp2_random_guess_plot.png
     In [9]: model.plot()
@@ -150,20 +154,22 @@ Now we are ready to setup the estimation.  Like before, we setup the second boun
 
 .. ipython::
 
-    In [1]: obj = SquareLoss(15,model,x0=[1,0,0],t0=0,t=numpy.pi,y=0,stateName='y1')
+    In [1]: obj = SquareLoss(15.0, model, x0=[1.0, 0.0, 0.0], t0=0.0, t=numpy.pi, y=0.0, stateName='y1')
 
     In [2]: xhatObj = minimize(obj.cost,[15])
 
-    In [2]: print(xhatObj)
+    In [3]: print(xhatObj)
 
-    In [3]: model = model.setParameters([('p',xhatObj['x'][0])]).setInitialValue([1,0,0],t[0])
+    In [4]: model = model.setParameters([('p',xhatObj['x'][0])]).setInitialValue([1.0, 0.0, 0.0], t[0])
 
-    In [4]: solution = model.integrate(t[1::])
+    In [5]: solution = model.integrate(t[1::])
+    
+    In [6]: f = plt.figure()
 
     @savefig bvp2_solution_plot.png
-    In [5]: model.plot()
+    In [7]: model.plot()
     
-    In [7]: plt.close()
+    In [8]: plt.close()
 
 The plot of the solution shows the path that satisfies all boundary condition.  The last subplot is time which obvious is redundant here but the :meth:`OperateOdeModel.plot` method is not yet able to recognize the time component.  Possible speed up can be achieved through the use of derivative information or via root finding method that tackles the gradient directly, instead of the cost function.
 

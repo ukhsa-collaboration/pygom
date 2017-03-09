@@ -1,4 +1,3 @@
-
 ode_loss
 ========
 
@@ -8,7 +7,7 @@ These are basically the interfaces for :class:`pygom.loss.BaseLoss`
     :members:
     :noindex:
 
-Calculations
+calculations
 ============
 
 The base class which contains has all the calculation implemented
