@@ -130,7 +130,7 @@ Obviously, the time indicies are dropped above but all the terms above are evalu
 
 .. math::
 
-    \frac{\partial l(x(j),\theta)}{\partial g} = \left\{ \begin{array}{ll} -2(y_{i} - x(j)) & , \; j = t_{i} \\ 0 & \; otherwise \end{array} \right.
+    \frac{\partial l(x(j),\theta)}{\partial g} = \left\{ \begin{array}{ll} -2(y_{i} - x(j)) & , \; j = t_{i} \\ 0 & \; \text{otherwise} \end{array} \right.
 
 When :math:`g(\cdot)` is an identity function (which is assumed to be the case in :class:`SquareLoss`)
 
@@ -165,7 +165,7 @@ with :math:`f(x,\theta)` our non-linear function and :math:`J` our Jacobian with
 
 .. math::
 
-    J_{i}=\frac{\partial f(x_{i},\boldsymbol{\theta})}{\partial \boldsymbol{\theta}}.
+    J_{i} = \frac{\partial f(x_{i},\boldsymbol{\theta})}{\partial \boldsymbol{\theta}}.
 
 This is exactly what we have seen previously, substituting in reveals that :math:`J = \mathbf{S}`.  Hence, the Jacobian is (a necessary)by product when we wish to obtain the gradient.  In fact, this is exactly how we proceed in :func:`sensitivity <pygom.SquareLoss.sensitivity>` where it makes an internal call to :func:`jac <pygom.SqaureLoss.jac>` to obtain the Jacobian first.  This allows the end user to have more options when choosing which type of algorithms to use, i.e. Gauss-Newton or Levenberg-Marquardt.
 
@@ -215,7 +215,7 @@ The method of choice here to perform the adjoint calcuation is to run a forward 
 
 .. ipython::
 
-    In [326]: odeSIRAdjoint,outputAdjoint = objSIR.adjoint(full_output=True)
+    In [326]: odeSIRAdjoint, outputAdjoint = objSIR.adjoint(full_output=True)
 
 This is because evaluating the Jacobian may be expensive and Runge-kutta method suffers as the complexity increases.  In non-linear model such as those found in epidemiology, each element of the Jacobian may be the result of a complicated equation where linear step method will shine as it makes as little function evaluation as possible.  
 Note that derivations in the literature, the initial condition when evaluating the adjoint equation is :math:`\lambda(T)=0`.  But in our code we used :math:`\lambda(T) = -2(y(T)-x(T))`. Recall that we have observation :math:`y(T)` and simulation :math:`x(T)`, so that the adjoint equation evaluated at time :math:`T`
@@ -271,7 +271,7 @@ Just to demonstate how it works, lets look at the Hessian at the optimal point. 
 
 .. ipython:: 
 
-    In [212]: import scipy.linalg,scipy.optimize
+    In [211]: import scipy.linalg,scipy.optimize
 
     In [212]: boxBounds = [(0.0, 2.0), (0.0, 2.0)]
 

@@ -45,8 +45,7 @@ First, we show the deterministic approach.  Then we also show the different proc
 
     In [1]: f,axarr = plt.subplots(1,3)
     
-    In [1]: for i in range(0,len(simX)):
-       ...:     solution = simX[i]
+    In [1]: for solution in simX:
        ...:     axarr[0].plot(simT,solution[:,0])
        ...:     axarr[1].plot(simT,solution[:,1])
        ...:     axarr[2].plot(simT,solution[:,2])

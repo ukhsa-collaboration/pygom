@@ -49,7 +49,7 @@ Now we are ready to state the full set of ode's,
     \frac{dF}{dt} &= \gamma_{D}(1-\theta_{1})\delta_{1}I + \gamma_{DH}\delta_{2}H - \gamma_{F}F \\
     \frac{dR}{dt} &= \gamma_{I}(1-\theta_{1})(1-\delta_{1})I + \gamma_{IH}(1-\delta_{2})H + \gamma_{F}F.
 
-with :math:`\beta_{F}(t) = \beta_{F}` if :math:`t > c` and :math:`0` otherwise.  We use a slightly modified version by replacing the delta function with a sigmoid function namely, a logistic function
+with :math:`\beta_{F}(t) = \beta_{F}` if :math:`t > c` and :math:`0` otherwise.  We use a slightly modified version by replacing the delta function with a sigmoid function namely, the logistic function
 
 .. math::
 

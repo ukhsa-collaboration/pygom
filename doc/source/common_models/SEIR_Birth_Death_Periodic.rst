@@ -31,13 +31,13 @@ Now extending the SEIR to also have periodic contact, as in [Aron1984]_.
 
     In [1]: plt.close()
 	
-The periodicity is obvious when looking at the the plot between states **S** and **E**, in logarithmic scale.
+The periodicity is obvious when looking at the the plot between states :math:`S` and :math:`E`, in logarithmic scale.
 
 .. ipython::
 
     In [1]: fig = plt.figure();
    	    
-    In [1]: plt.plot(numpy.log(solution[:,0]),numpy.log(solution[:,1]));
+    In [1]: plt.plot(numpy.log(solution[:,0]), numpy.log(solution[:,1]));
    
     In [1]: plt.xlabel('log of S');
 
@@ -48,13 +48,13 @@ The periodicity is obvious when looking at the the plot between states **S** and
         
     In [1]: plt.close()
 
-Similarly, we can see the same thing bewteen the states **E** and **I**.
+Similarly, we can see the same thing bewteen the states :math:`E` and :math:`I`.
 
 .. ipython::
 
     In [1]: fig = plt.figure();
     
-    In [1]: plt.plot(numpy.log(solution[:,1]),numpy.log(solution[:,2]));
+    In [1]: plt.plot(numpy.log(solution[:,1]), numpy.log(solution[:,2]));
     
     In [1]: plt.xlabel('log of E');
 

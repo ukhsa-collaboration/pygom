@@ -49,11 +49,11 @@ In our first scenario, we assume that the parameters follow some underlying dist
 
     In [1]: d['gamma'] = (rgamma,(100.0, 300.0))
 
-    In [1]: odeS.setParameters(d)
+    In [1]: odeS = odeS.setParameters(d)
 
     In [1]: Ymean,Yall = odeS.simulateParam(t[1::], 10, full_output=True)
 
-Note that a message is printed above where it is trying to connect to an mpi backend, as our module has the capability to compute in parallel using the IPython.   We have simulated a total of 10 different solutions using different parameters, the plots can be seen below
+Note that a message is printed above where it is trying to connect to an mpi backend, as our module has the capability to compute in parallel using the IPython.  We have simulated a total of 10 different solutions using different parameters, the plots can be seen below
 
 .. ipython::
 
@@ -85,39 +85,24 @@ differs from the reference solution
 
     In [1]: f, axarr = plt.subplots(1,3)
 
-    In [1]: for i in range(3):
-       ...:     axarr[i].plot(t,Ymean[:,i] - solutionReference[:,i])
+    In [1]: for i in range(3): axarr[i].plot(t, Ymean[:,i] - solutionReference[:,i])
 
     @savefig stochastic_param_compare.png
     In [1]: plt.show()
 
     In [1]: plt.close()
 
-and we repeat the process with the number of simulation increased
+The difference is relatively large especially for the :math:`S` state.  We can decrease this difference as we increase the number of simulation, and more sophisticated sampling method for the generation of random variables can also decrease the difference.
 
-.. ipython::
-
-    In [1]: Ymean, Yall = odeS.simulateParam(t[1::], 1000, full_output=True)
-
-    In [1]: f, axarr = plt.subplots(1, 3)
-
-    In [1]: for i in range(3):
-       ...:     axarr[i].plot(t,Ymean[:,i] - solutionReference[:,i])
-
-    @savefig stochastic_param_compare_large_n.png
-    In [1]: plt.show()
-
-    In [1]: plt.close()
-
-Obviously, there may be scenarios where only some of the parameters are stochastic.  Let's say that the :math:`\gamma` parameter is fixed at :math:`1/3`, then simply replace the distribution information with a scalar.  A quick look at the resulting plot reveals that it has less variation when compared to the case where both parameters are stochastic.
+Obviously, there may be scenarios where only some of the parameters are stochastic.  Let's say that the :math:`\gamma` parameter is fixed at :math:`1/3`, then simply replace the distribution information with a scalar.  A quick visual inspection at the resulting plot suggests that the system of ODE potentially has less variation when compared to the case where both parameters are stochastic.
 
 .. ipython::
 
     In [1]: d['gamma'] = 1.0/3.0
 
-    In [1]: odeS.setParameters(d)
+    In [1]: odeS = odeS.setParameters(d)
 
-    In [1]: YmeanSingle, YallSingle = odeS.simulateParam(t[1::], 10, full_output=True)
+    In [1]: YmeanSingle, YallSingle = odeS.simulateParam(t[1::], 5, full_output=True)
 
     In [1]: f, axarr = plt.subplots(1,3)
 
@@ -138,11 +123,11 @@ Another common method of introducing stochasticity into a set of ode is by assum
 
 .. math::
 
-    \Pr(\textnormal{process $j$ jump within time } \tau) = \lambda_{j} e^{-\lambda_{j} \tau},
+    \Pr(\text{process $j$ jump within time } \tau) = \lambda_{j} e^{-\lambda_{j} \tau},
 
 where :math:`\lambda_{j}` is the rate of transition for process :math:`j` and :math:`\tau` the time elapsed after current time :math:`t`.
 
-A couple of the commmon implementation for the jump process have been implemented where two of them are used during a normal simulation; the first reaction method [1] and the :math:`\tau`-Leap method [2].  The two changes interactively depending on the size of the states.
+A couple of the commmon implementation for the jump process have been implemented where two of them are used during a normal simulation; the first reaction method [Gillespie1977]_ and the :math:`\tau`-Leap method [Cao2006]_.  The two changes interactively depending on the size of the states.
 
 .. ipython::
 
@@ -159,7 +144,7 @@ A couple of the commmon implementation for the jump process have been implemente
 
     In [1]: odeS = SimulateOdeModel(stateList, paramList, transitionList=transitionList)
 
-    In [1]: odeS.setParameters([0.5, 1.0/3.0, x0[0]]).setInitialValue(x0, t[0])
+    In [1]: odeS = odeS.setParameters([0.5, 1.0/3.0, x0[0]]).setInitialValue(x0, t[0])
 
     In [1]: solutionReference = odeS.integrate(t[1::])
 
@@ -167,8 +152,7 @@ A couple of the commmon implementation for the jump process have been implemente
 
     In [1]: f, axarr = plt.subplots(1, 3)
 
-    In [1]: for i in range(len(simX)):
-       ...:     solution = simX[i]
+    In [1]: for solution in simX:
        ...:     axarr[0].plot(t[:9], solution[:,0])
        ...:     axarr[1].plot(t[:9], solution[:,1])
        ...:     axarr[2].plot(t[:9], solution[:,2])
@@ -178,25 +162,7 @@ A couple of the commmon implementation for the jump process have been implemente
 
     In [1]: plt.close()
 
-Above, we see ten different simulation, again using the SIR model but the initial conditions are not standardized.  The time frame is shortened to 10 so that the individual changes can be seen more clearly.
-
-.. ipython::
-
-    In [1]: simX, simT = odeS.simulateJump(t, 10, full_output=True)
-
-    In [1]: simMean = numpy.mean(simX, axis=0)
-
-    In [1]: f,axarr = plt.subplots(1, 3)
-
-    In [1]: for i in range(3):
-       ...:     axarr[i].plot(t,simMean[:,i] - solutionReference[:,i])
-
-    @savefig stochastic_process_compare.png
-    In [1]: plt.show()
-
-    In [1]: plt.close()
-
-same as above, we increase the number of simulation and plot the difference
+Above, we see ten different simulation, again using the SIR model but without standardization of the initial conditions.  We restrict our time frame to be only the first 10 time points so that the individual changes can be seen more clearly above.  If we use the same time frame as the one used previously for the deterministic system (as shown below), the trajectories are smoothed out and we no longer observe the *jumps*.  Looking at the raw trajectories of the ODE below, it is obvious that the mean from a jump process is very different to the deterministic solution.  The reason behind this is that the jump process above was able to fully remove all the initial infected individuals before any new ones. 
 
 .. ipython::
 
@@ -206,22 +172,7 @@ same as above, we increase the number of simulation and plot the difference
 
     In [1]: f, axarr = plt.subplots(1,3)
 
-    In [1]: for i in range(3):
-       ...:     axarr[i].plot(t,simMean[:,i] - solutionReference[:,i])
-
-    @savefig stochastic_process_compare_large_n.png
-    In [1]: plt.show()
-
-    In [1]: plt.close()
-
-The difference is significantly greater than the previous assumption, where we assume that the parameters follow some distribution.  The reason behind this is that the jump process above was able to fully remove all the initial infected individuals before any new ones.  Plotting all the epidemiology curve above makes this obvious, note the horizontal lines at the top of the leftmost figure
-
-.. ipython::
-
-    In [1]: f,axarr = plt.subplots(1,3)
-
-    In [1]: for i in range(len(simX)):
-       ...:     solution = simX[i]
+    In [1]: for solution in simX:
        ...:     axarr[0].plot(t, solution[:,0])
        ...:     axarr[1].plot(t, solution[:,1])
        ...:     axarr[2].plot(t, solution[:,2])
@@ -231,8 +182,3 @@ The difference is significantly greater than the previous assumption, where we a
 
     In [1]: plt.close()
 
-**Reference**
-
-[1] Exact stochastic simulation of coupled chemical reactions, Gillespie, Danial T., The Journal of Physical Chemistry, Volume 81, Issue 25, pg. 2340-2361, 1977
-
-[2] Efficient step size selection for the tau-leaping simulation method, Cao et el.,  The Journal of Chemical Physics, Volume 124, Issue 4, pg. 044109, 2006

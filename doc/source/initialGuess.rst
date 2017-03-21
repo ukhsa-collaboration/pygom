@@ -32,7 +32,7 @@ A method to obtain such initial guess based on the collocation is available in t
 
     In [9]: solution = ode.integrate(t)
 
-Below, we try to find the initial guess without supplying any further information.  The underlying method fits a cubic spline against the observation and tries to minimize the difference between the first derivative of the spline and the function of the ode.  Varying degree of smoothness penalty is applied to the spline and the best set of parameters is the ones that yield the smallest total error, combining both the fit of the spline against data and the spline against the ode.
+Below, we try to find the initial guess without supplying any further information.  The underlying method fits a cubic spline against the observation and tries to minimize the difference between the first derivative of the spline and the function of the ode.  Varying degree of smoothness penalty is applied to the spline and the best set of parameters is the ones that yields the smallest total error, combining both the fit of the spline against data and the spline against the ode.
 
 .. ipython::
 

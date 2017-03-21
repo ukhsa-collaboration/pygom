@@ -41,7 +41,7 @@ We demonstrate the estimation on the recent Ebola outbreak in West Africa.   We 
 Simple estimation
 -----------------
 
-First ,we are going to fit a standard **SEIR** model to the data.  Details of the models can be found in :func:`modelDef.SEIR` Defining the model as usual with some random guess on what the parameters might be, here, we choose the values to be the mid point of our feasible region (defined by our box constraints later)
+First ,we are going to fit a standard **SEIR** model to the data.  Details of the models can be found in :mod:`common_models` Defining the model as usual with some random guess on what the parameters might be, here, we choose the values to be the mid point of our feasible region (defined by our box constraints later)
 
 .. ipython:: 
 
@@ -86,7 +86,7 @@ Then we optimize, first, assuming that the initial conditions are accurate.  Som
 
     In [13]: plt.close()
 
-We can see from our visual confirmation that the estimated parameters are not exactly ideal. This is confirmed by the information returned from the :func:`scipy.optimize.minimize` routine, and probably caused by the poor starting point.  An attempt to find a more suitable value can be done by some form of parameter space exploration.  Given that the evaluation of the objective function is not expensive here, we have plenty of options to choose from.  To reduce the number of packages required to build this documentaion, routines from :mod:`scipy.optimize` remains our preferred option.  
+We can see from our visual confirmation that the estimated parameters are not exactly ideal. This is confirmed by the information returned from the :func:`scipy.optimize.minimize` routine, and probably caused by the poor starting point.  An attempt to find a more suitable value can be done by some form of parameter space exploration.  Given that the evaluation of the objective function is not expensive here, we have plenty of options to choose from.  To reduce the number of packages required to build this documentation, routines from :mod:`scipy.optimize` remains our preferred option.  
 
 Improved initial guess
 ----------------------
@@ -104,7 +104,7 @@ Improved initial guess
 
     In [12]: plt.close()
 
-Looking at the output of the estimates (below this paragraph), we can see our inference on Ebola is wrong when comapred to the *known* values (from field observation) even though the graphs looks *``reasonable"*.  Namely, :math:`\gamma^{-1}` the third element in the vector below, our time from infectious to death, is within the expected range but :math:`\alpha^{-1}` (second element), the incubation period, is a lot higher than expected.
+Looking at the output of the estimates (below this paragraph), we can see our inference on Ebola is wrong when compared to the *known* values (from field observation) even though the graphs looks *``reasonable"*.  Namely, :math:`\gamma^{-1}` the third element in the vector below, our time from infectious to death, is within the expected range but :math:`\alpha^{-1}` (second element), the incubation period, is a lot higher than expected.
 
 .. ipython::
 
@@ -113,13 +113,13 @@ Looking at the output of the estimates (below this paragraph), we can see our in
 Multimodal surface
 ------------------
 
-A reason for this type of behavior is that we simply lack the information/data to make proper inference.  Without data on the state **E**, the parameters :math:`\beta,\alpha` for the two states **I** and **E** are dependent only on observations on **I**.  Hence, some other random combination of :math:`\beta,\alpha` that is capable of generating realization close to observations in **I** is feasible.  In such cases, the only requirement is that there exist some :math:`\gamma` in the feasible region that can compensate for the ill suited :math:`\beta,\alpha`.  For example, we know (obtained elsewhere and not shown here) that there is another set of parameters capable of generating a similar looking curves as before.  Note the reversal of magnitude in :math:`\beta` and :math:`\alpha`.
+A reason for this type of behavior is that we simply lack the information/data to make proper inference.  Without data on the state :math:`E`, the parameters :math:`\beta,\alpha` for the two states :math:`I` and :math:`E` are dependent only on observations on :math:`I`.  Hence, some other random combination of :math:`\beta,\alpha` that is capable of generating realization close to observations in :math:`I` is feasible.  In such cases, the only requirement is that there exist some :math:`\gamma` in the feasible region that can compensate for the ill suited :math:`\beta,\alpha`.  For example, we know (obtained elsewhere and not shown here) that there is another set of parameters capable of generating a similar looking curves as before.  Note the reversal of magnitude in :math:`\beta` and :math:`\alpha`.
 
 .. ipython:: 
 
     In [11]: objLegrand.cost([3.26106524e+00,   2.24798702e-04,   1.23660721e-02]) 
 
-	In [12]: ## objLegrand.cost([ 0.02701867,  9.00004776,  0.01031861]) # similar graph
+    In [12]: ## objLegrand.cost([ 0.02701867,  9.00004776,  0.01031861]) # similar graph
 
     @savefig ebola_seir_prior.png
     In [13]: objLegrand.plot()
@@ -129,11 +129,12 @@ A reason for this type of behavior is that we simply lack the information/data t
 With initial values as parameters
 ---------------------------------
 
-Obviously, the assumption that the whole population being susceptible is an overestimate.  We now try to estimate the initial conditions of the ode as well.  Given previous estimates of the parameters :math:`\hat{\beta},\hat{\alpha},\hat{\gamma}` it is appropriate to start our initial guess there.  
+Obviously, the assumption that the whole population being susceptible is an overestimate.  We now try to estimate the initial conditions of the ode as well.  Given previous estimates of the parameters :math:`\hat{\beta}, \hat{\alpha}, \hat{\gamma}` it is appropriate to start our initial guess there.  
 
-Furthermore, given that we now estimate the initial values for all the states, we can use the first time point as our observation.  So our time begins at :math:`t = -1` where our observations include the previous initial condition, i.e. 49 and 29 for the number of cases and death at :math:`t=0` respectively.
+Furthermore, given that we now estimate the initial values for all the states, we can use the first time point as our observation.  So our time begins at :math:`t = -1` where our observations include the previous initial condition, i.e. 49 and 29 for the number of cases and death at :math:`t = 0` respectively.  The following code block demonstrates how we would do that; feel free to try it out yourself to see the much improved result.
 
 .. ipython:: 
+    :verbatim:
 
     In [1]: thetaIV = theta.tolist() + x0
 
@@ -149,7 +150,6 @@ Furthermore, given that we now estimate the initial values for all the states, w
 
     In [7]: f = plt.figure()
 
-    @savefig ebola_seir_iv.png
     In [8]: objLegrand.plot()
 
     In [9]: plt.close()
@@ -179,7 +179,7 @@ Next, we demonstrate the estimation on a model that is widely used in the recent
 
     In [32]: objLegrand = SquareLoss(theta, ode, x0, t[0], t[1::], y[1::,:], ['I','R'], numpy.sqrt([population]*2))
 
-Now, it is important to set additional constraints accurately because a simply box constraint is much larger than the feasible set.  Namely, :math:`\omega_{I},\omega_{D}` are the time taken from onset until end of infectious/death, which has to be bigger than :math:`\omega_{H}`, onset to hospitalization given the nature of the disease.  Therefore, we create extra inequality constraints in addition to the box constraints
+Now, it is important to set additional constraints accurately because a simply box constraint is much larger than the feasible set.  Namely, :math:`\omega_{I}, \omega_{D}` are the time taken from onset until end of infectious/death, which has to be bigger than :math:`\omega_{H}`, onset to hospitalization given the nature of the disease.  Therefore, we create extra inequality constraints in addition to the box constraints
 
 .. ipython::
 
@@ -198,9 +198,9 @@ Now, it is important to set additional constraints accurately because a simply b
        .....:              (0.,218.)   # intervention tine 
        .....:             ]
 
-    In [550]: cons = ({'type': 'ineq', 'fun' : lambda x: numpy.array([x[3]-x[5], x[4]-x[5]]) })
+    In [550]: cons = ({'type': 'ineq', 'fun' : lambda x: numpy.array([x[3]-x[5], x[4]-x[5]])})
 
-We can now try to find the optimal values, but because this is a difficult problem that takes a very long time without guarantee on the quality of solution
+We can now try to find the optimal values, but because this is a difficult problem that can take a very long time without guarantee on the quality of solution
 
 .. ipython:: 
 
@@ -235,7 +235,7 @@ As the estimate does not appear to provide anything sensible, we also provide a 
 
     In [2]: solution = ode.integrate(t[1::])
 
-    In [3]: f,axarr = plt.subplots(2,3)
+    In [3]: f, axarr = plt.subplots(2,3)
     
     In [4]: axarr[0,0].plot(t, solution[:,0]);
 
@@ -265,9 +265,9 @@ As the estimate does not appear to provide anything sensible, we also provide a 
 
     In [17]: axarr[1,2].set_title('Removed');
     
-    In [18]: plt.xlabel('Days from outbreak');
+    In [18]: f.text(0.5, 0.04, 'Days from outbreak', ha='center');
     
-    In [19]: plt.ylabel('Population');
+    In [19]: f.text(0.01, 0.5, 'Population', va='center', rotation='vertical');
 
     In [20]: f.tight_layout();
     

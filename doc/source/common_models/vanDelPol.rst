@@ -21,7 +21,7 @@ A classic example is
     
     In [1]: t = numpy.linspace(0, 20, 1000)
     
-    In [1]: ode = common_models.vanDelPol({'mu':1.0}).setInitialValue([2.0, 0.0],t[0])
+    In [1]: ode = common_models.vanDelPol({'mu':1.0}).setInitialValue([2.0, 0.0], t[0])
     
     In [1]: solution = ode.integrate(t[1::])
     
@@ -45,7 +45,7 @@ When we change the value, as per `Wolfram <http://mathworld.wolfram.com/vanderPo
 	
     In [1]: t = numpy.linspace(0, 100, 1000)
 
-    In [1]: ode = ode.setParameters({'mu':1.0}).setInitialValue([0.0, 0.2],t[0])
+    In [1]: ode = ode.setParameters({'mu':1.0}).setInitialValue([0.0, 0.2], t[0])
 	
     In [1]: solution = ode.integrate(t[1::])
     
@@ -58,7 +58,7 @@ When we change the value, as per `Wolfram <http://mathworld.wolfram.com/vanderPo
     
     In [1]: plt.close()
     
-    In [1]: ode = ode.setParameters({'mu':0.2}).setInitialValue([0.0, 0.2],t[0])
+    In [1]: ode = ode.setParameters({'mu':0.2}).setInitialValue([0.0, 0.2], t[0])
 	
     In [1]: solution = ode.integrate(t[1::])
 

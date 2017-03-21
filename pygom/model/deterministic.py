@@ -1160,7 +1160,7 @@ class OperateOdeModel(BaseOdeModel):
         A = numpy.dot(J, S) + G
         
         if byState:
-            return numpy.reshape(A, self._numState * self._numParam)
+            return numpy.reshape(A, self._numState*self._numParam)
         else:
             return self._SAUtil.matToVecSens(A)
 
@@ -1271,9 +1271,9 @@ class OperateOdeModel(BaseOdeModel):
             for j in range(0, self._numParam):
                 for i in range(0, self._numState):
                     if i == 0:
-                        arrangeVector[k] = (i * self._numState) + j
+                        arrangeVector[k] = (i*self._numState) + j
                     else:
-                        arrangeVector[k] = (i * (self._numState - 1)) + j
+                        arrangeVector[k] = (i*(self._numState - 1)) + j
                     k += 1
 
             outJ = outJ[numpy.array(arrangeVector,int),:]
@@ -1501,16 +1501,16 @@ class OperateOdeModel(BaseOdeModel):
             outJ = numpy.kron(numpy.eye(nP), J)
 
             # jacobian of the gradient
-            GJ = self.GradJacobian(state,t)
-            GS = self.SensJacobianState(stateParam[:(nS*(nP+1))], t)
+            GJ = self.GradJacobian(state, t)
+            GS = self.SensJacobianState(stateParam[:(nS*(nP + 1))], t)
             sensJacobianOfState = GJ + GS
 
             # The Jacobian of the ode, then the sensitivities w.r.t state 
             # and the sensitivities. In block form
             return numpy.asarray(numpy.bmat([
-                [J, numpy.zeros((nS, nS * nP)), numpy.zeros((nS, nS*nS))],
+                [J, numpy.zeros((nS, nS*nP)), numpy.zeros((nS, nS*nS))],
                 [sensJacobianOfState, outJ, numpy.zeros((nS*nP, nS*nS))],
-                [A, numpy.zeros((nS*nS, nS * nP)), numpy.kron(numpy.eye(nS), J)]
+                [A, numpy.zeros((nS*nS, nS*nP)), numpy.kron(numpy.eye(nS), J)]
             ]))
 
     def odeAndSensitivityIVJacobianT(self, t, stateParam):
@@ -1819,7 +1819,7 @@ class OperateOdeModel(BaseOdeModel):
         if len(stateParam) == self._numState:
             raise InputError("You have only inputed the initial condition " +
                              "for the states and not the sensitivity")
-        elif len(stateParam) == ((self._numState+1) * self._numParam):
+        elif len(stateParam) == ((self._numState + 1)*self._numParam):
             raise InputError("You have only inputed the initial condition " +
                              "for the states and the sensitivity but not the " +
                              "forward forward condition")
@@ -1877,7 +1877,7 @@ class OperateOdeModel(BaseOdeModel):
         # instead of the full one unlike some of the other methods within
         # this class
         outJS = numpy.kron(numpy.eye(self._numParam), J)
-        outJFF = numpy.kron(numpy.eye(self._numParam * self._numParam), J)
+        outJFF = numpy.kron(numpy.eye(self._numParam*self._numParam), J)
         # The Jacobian of the ode, then the sensitivities, then the
         # forward forward sensitivities
         return scipy.linalg.block_diag(J, outJS, outJFF)

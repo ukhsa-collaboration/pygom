@@ -31,7 +31,7 @@ We are going to investigate another classic model here, the FitzHugh-Nagumo, or 
 
     In [5]: ode = common_models.FitzHugh().setParameters(paramEval).setInitialValue(x0, t0)
 
-Define a set of time points and lets see how the two states **V** and **R** are suppose to behave.
+Define a set of time points and lets see how the two states :math:`V` and :math:`R` are suppose to behave.
 
 .. ipython:: 
 
@@ -86,9 +86,9 @@ Note how the estimates are the same, unlike other models.
 Estimate initial value
 ======================
 
-We can further assume that we have no idea about the initial values for **V** and **R** as well.  We also provide guesstimate to set off the optimization.  The input vector :math:`\theta` must have the parameters first, then the initial values, along with the corresponding bounds.
+We can further assume that we have no idea about the initial values for :math:`V` and :math:`R` as well.  We also provide guesstimate to set off the optimization.  The input vector :math:`\theta` must have the parameters first, then the initial values, along with the corresponding bounds.
 
-First, only a single target state, i.e. we only have observations for one of states which is **R** in this case
+First, only a single target state, i.e. we only have observations for one of states which is :math:`R` in this case
 
 .. ipython::
 

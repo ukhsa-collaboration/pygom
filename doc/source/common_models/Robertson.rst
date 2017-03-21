@@ -19,7 +19,7 @@ This is a problem that describes an autocatalytic reaction.  One of those common
     
     In [1]: import matplotlib.pyplot as plt
     
-    In [1]: t = numpy.append(0,4*numpy.logspace(-6, 6, 1000))
+    In [1]: t = numpy.append(0, 4*numpy.logspace(-6, 6, 1000))
 
     In [1]: # note how we define the states    
 

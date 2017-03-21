@@ -156,7 +156,7 @@ def SIR_N(param=None):
 
     .. math::
         \\frac{dS}{dt} &= -\\beta SI/N \\\\
-        \\frac{dI}{dt} &= \\beta SI /N- \\gamma I \\\\
+        \\frac{dI}{dt} &= \\beta SI/N- \\gamma I \\\\
         \\frac{dR}{dt} &= \\gamma I
 
     Examples
@@ -393,9 +393,9 @@ def SEIR_Birth_Death_Periodic(param=None):
     Uses the same set of parameters as the examples in
     :func:`SEIR_Birth_Death` but now we have two beta parameters instead of one.
 
-    >>> params = {'beta0':1800,'beta1':0.2,'gamma':100,'alpha':35.84,'mu':0.02}
+    >>> params = {'beta0':1800, 'beta1':0.2, 'gamma':100, 'alpha':35.84, 'mu':0.02}
     >>> ode = common_models.SEIR_Birth_Death_Periodic(params)
-    >>> t = numpy.linspace(0,50,1001)
+    >>> t = numpy.linspace(0, 50, 1001)
     >>> x0 = [0.0658, 0.0007, 0.0002, 0.0]
     >>> ode.setInitialValue(x0, t[0])
     >>> solution,output = ode.integrate(t[1::], full_output=True)
@@ -551,7 +551,7 @@ def Influenza_SLIARN(param=None):
     stateList = ['S', 'L', 'I', 'A', 'R', 'N']
     paramList = ['beta', 'p', 'kappa', 'alpha', 'f', 'delta', 'epsilon']
     odeList = [
-               Transition(origState='S', equation='-beta*S*( I + delta*A)',
+               Transition(origState='S', equation='-beta*S*(I + delta*A)',
                transitionType=TransitionType.ODE),
                Transition(origState='L', equation='beta*S*(I + delta*A) - kappa*L',
                transitionType=TransitionType.ODE),
@@ -594,7 +594,7 @@ def Legrand_Ebola_SEIHFR(param=None):
     --------
     >>> x0 = [1.0, 3.0/200000.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     >>> t = numpy.linspace(0, 25, 100)
-    >>> ode = common_models.Legrand_Ebola_SEIHFR([('beta_I',0.588),('beta_H',0.794),('beta_F',7.653),('omega_I',10.0/7.0),('omega_D',9.6/7.0),('omega_H',5.0/7.0),('omega_F',2.0/7.0),('alphaInv',7.0/7.0),('delta',0.81),('theta',0.80),('kappa',300.0),('interventionTime',7.0)]).setInitialValue(x0,t[0])
+    >>> ode = common_models.Legrand_Ebola_SEIHFR([('beta_I',0.588),('beta_H',0.794),('beta_F',7.653),('omega_I',10.0/7.0),('omega_D',9.6/7.0),('omega_H',5.0/7.0),('omega_F',2.0/7.0),('alphaInv',7.0/7.0),('delta',0.81),('theta',0.80),('kappa',300.0),('interventionTime',7.0)]).setInitialValue(x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
 

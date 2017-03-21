@@ -4,7 +4,7 @@
 Confidence Interval of Estimated Parameters
 *******************************************
 
-After obtaining the *best* fit, it is natural to report both the point estimate and the confidence level at the :math:`\alpha` level.  The easiest way to do this is by invoking the normality argument and use Fisher information of the likelihood.  As explained previously at the bottom of :ref:`gradient`, we can find the Hessian, :math:`\mathbf{H}`, or the approximated Hessian for the estimated parameters.  The Cram\\`e r--Rao inequality, we know that
+After obtaining the *best* fit, it is natural to report both the point estimate and the confidence level at the :math:`\alpha` level.  The easiest way to do this is by invoking the normality argument and use Fisher information of the likelihood.  As explained previously at the bottom of :ref:`gradient`, we can find the Hessian, :math:`\mathbf{H}`, or the approximated Hessian for the estimated parameters.  The Cramer--Rao inequality, we know that
 
 .. math::
 	Var(\hat{\theta}) \ge \frac{1}{I(\theta)},
@@ -27,7 +27,7 @@ where :math:`I(\theta)` is the Fisher information, which is the Hessian subject 
 
     In [7]: ode = common_models.SIR().setParameters([('beta', 0.5), ('gamma', 1.0/3.0)])
 
-and we assume that we only have observed realization from the **R** compartment
+and we assume that we only have observed realization from the :math:`R` compartment
 
 .. ipython::
 
@@ -35,9 +35,9 @@ and we assume that we only have observed realization from the **R** compartment
 
     In [2]: t = numpy.linspace(0, 150, 100).astype('float64')
 
-    In [2]: ode.setInitialValue(x0, t[0])
+    In [3]: ode = ode.setInitialValue(x0, t[0])
 
-    In [3]: solution = ode.integrate(t[1::])
+    In [4]: solution = ode.integrate(t[1::])
 
     In [5]: theta = [0.2, 0.2]
 
@@ -47,15 +47,15 @@ and we assume that we only have observed realization from the **R** compartment
 
     In [8]: y = solution[1::,targetStateIndex] + numpy.random.normal(0, 0.01, (len(solution[1::,targetStateIndex]), 1))
 
-    In [4]: yObv = y.copy()
+    In [9]: yObv = y.copy()
 
-    In [9]: objSIR = NormalLoss(theta, ode, x0, t[0], t[1::], y, targetState)
+    In [10]: objSIR = NormalLoss(theta, ode, x0, t[0], t[1::], y, targetState)
 
-    In [10]: boxBounds = [(1e-8, 2.0), (1e-8, 2.0)]
+    In [11]: boxBounds = [(1e-8, 2.0), (1e-8, 2.0)]
 
-    In [11]: boxBoundsArray = numpy.array(boxBounds)
+    In [12]: boxBoundsArray = numpy.array(boxBounds)
 
-    In [12]: xhat = objSIR.fit(theta, lb=boxBoundsArray[:,0], ub=boxBoundsArray[:,1])
+    In [13]: xhat = objSIR.fit(theta, lb=boxBoundsArray[:,0], ub=boxBoundsArray[:,1])
 
 Asymptotic
 ==========
@@ -91,7 +91,7 @@ Note that the set of bounds here is only used for check the validity of :math:`\
 Profile Likelihood
 ==================
 
-Another approach to calculate the confidence interval is to tackle one parameter at a time, treating the rest of them as nuisance parameters, hence the term *profile*.  Let :math:`\mathcal{L}(\boldsymbol{\theta})` be our log--likelihood with paramter :math:`\boldsymbol{\theta}`.  Let :math:`\theta_{j}` be our parameter of interest and :math:`\boldsymbol{\theta}_{-j}` the complement such that :math:`\boldsymbol{\theta} = \theta_{j} \cup \boldsymbol{\theta}_{-j}`.  For simply models such as linear regression with only regression coefficients :math:`\boldsymbol{\beta}`, then :math:`\boldsymbol{\theta} = \boldsymbol{\beta}`.  
+Another approach to calculate the confidence interval is to tackle one parameter at a time, treating the rest of them as nuisance parameters, hence the term *profile*.  Let :math:`\mathcal{L}(\boldsymbol{\theta})` be our log--likelihood with parameter :math:`\boldsymbol{\theta}`.  Element :math:`\theta_{j}` is our parameter of interest and :math:`\boldsymbol{\theta}_{-j}` represents the complement such that :math:`\boldsymbol{\theta} = \theta_{j} \cup \boldsymbol{\theta}_{-j}`.  For simply models such as linear regression with only regression coefficients :math:`\boldsymbol{\beta}`, then :math:`\boldsymbol{\theta} = \boldsymbol{\beta}`.  
 
 To shorten the notation, let
 
@@ -105,7 +105,7 @@ which is the maxima of :math:`\boldsymbol{\theta}_{-j}` given :math:`\theta_{j}`
     \theta_{j}^{U} &= \sup \left\{ \mathcal{L}(\hat{\boldsymbol{\theta}}) - \mathcal{L}(\boldsymbol{\theta} \mid \theta_{j}) \le \frac{1}{2} \chi_{1 - \alpha}^{2}(1) \right\} \\
     \theta_{j}^{L} &= \inf \left\{ \mathcal{L}(\hat{\boldsymbol{\theta}}) - \mathcal{L}(\boldsymbol{\theta} \mid \theta_{j}) \le \frac{1}{2} \chi_{1 - \alpha}^{2}(1) \right\}
 
-where again we have made use of the normal approximation, but without imposing symmetry.  The set of equations above means that the interval width is :math:`\theta_{j}^{U} - \theta_{j}^{L}` and 
+where again we have made use of the normal approximation, but without imposing symmetry.  The set of equations above automatically implies that the interval width is :math:`\theta_{j}^{U} - \theta_{j}^{L}` and 
 
 .. math::
 
@@ -119,12 +119,13 @@ As mentioned previously, :math:`\boldsymbol{\theta}_{-j}` is the maximizer of th
 where :math:`c = \mathcal{L}(\hat{\boldsymbol{\theta}}) + \frac{1}{2} \chi_{1-\alpha}^{2}(1)`.  Solving this set of system of equations only need simple Newton like steps, possibly with correction terms as per [Venzon1988]_.  We provide a function to obtain such estimate
 
 .. ipython::
+    :verbatim:
 
     In [1]: xLProfile, xUProfile, xLProfileList, xUProfileList = ci.profile(objSIR, alpha, xhat, lb=boxBoundsArray[:,0], ub=boxBoundsArray[:,1], full_output=True)
 
 but unfortunately this is not accurate most of the time due to the complicated surface at locations not around :math:`\hat{\theta}`.  This is a common scenario for non--linear least square problems because the Hessian is not guaranteed to be a PSD everywhere.  Therefore, a safeguard is in place to obtain the :math:`\theta_{j}^{U},\theta_{j}^{L}` by iteratively by updating :math:`\theta_{j}` and find the solution to :eq:`nuisanceOptim`.
 
-Furthermore, we also provide the functions necessary to obtain the estimates such as the four below.  
+Furthermore, we also provide the functions necessary to obtain the estimates such as the four below.
 
 .. ipython::
 
@@ -151,24 +152,22 @@ Geometric profile likelihood
 Due to the difficulty in obtain a profile likelihood via the standard Newton like steps, we also provide a way to generate a similar result using the geometric structure of the likelihood surface.  We follow the method in [Moolgavkar1987]_, which involves solving a set of differential equations
 
 .. math::
-
     \frac{d\beta_{j}}{dt} &= k g^{-1/2} \\
-
     \frac{d\boldsymbol{\beta}_{-j}}{dt} &= \frac{d\boldsymbol{\beta}_{-j}}{d\beta_{j}} \frac{d\beta_{j}}{dt},
 
 where :math:`k = \Phi(1-\alpha)` is the quantile we want to obtain under a normal distribution, and
 
 .. math::
 
-    g = J_{\beta_{j}}^{\top} I^{\boldsymbol{\beta}} J_{\beta_{j}}, \quad J_{\beta_{j}} = \left( \begin{array}{c} 1 \\ \frac{d\boldsymbol{\beta}_{-j}}{d\beta_{j}} \end{array}\right).
+    g = J_{\beta_{j}}^{\top} I^{\boldsymbol{\beta}} J_{\beta_{j}}, \quad J_{\beta_{j}} = \left( \begin{array}{c} 1 \\ \frac{d\boldsymbol{\beta}_{-j}}{d\beta_{j}} \end{array} \right).
 
 Here, :math:`J_{\beta_{j}}` is the Jacobian between :math:`\beta_{j}` and :math:`\boldsymbol{\beta}_{-j}` with the term
 
 .. math:: 
 
-    \frac{d\boldsymbol{\beta}_{-j}}{d\beta_{j}} = -\left( \frac{\partial^{2} \mathcal{L}}{\partial \boldsymbol{\beta}_{-j}\partial \boldsymbol{\beta}_{-j}^{\top} }\right)^{-1} \frac{\partial^{2} \mathcal{L}}{\partial \beta_{j} \partial \beta_{-j}^{\top}}
+    \frac{d\boldsymbol{\beta}_{-j}}{d\beta_{j}} = -\left( \frac{\partial^{2} \mathcal{L}}{\partial \boldsymbol{\beta}_{-j}\partial \boldsymbol{\beta}_{-j}^{\top} } \right)^{-1} \frac{\partial^{2} \mathcal{L}}{\partial \beta_{j} \partial \beta_{-j}^{\top}}
 
-and hence the first element is 1 (identity transformation).  :math:`I^{\boldsymbol{\beta}}` is the Fisher information of :math:`\boldsymbol{\beta}`, which is
+and hence the first element is :math:`1` (identity transformation).  :math:`I^{\boldsymbol{\beta}}` is the Fisher information of :math:`\boldsymbol{\beta}`, which is
 
 .. math::
 
@@ -192,10 +191,6 @@ The integration is perform from :math:`t = 0` to :math:`1` and is all handled in
 
     In [1]: xLGeometric, xUGeometric, xLList, xUList = ci.geometric(objSIR, alpha, xhat, full_output=True)
 
-    In [1]: %timeit xLGeometricC, xUGeometricC = ci.geometric(objSIR, alpha, xhat, geometry="c")
-
-    In [1]: %timeit xLGeometricO, xUGeometricO = ci.geometric(objSIR, alpha, xhat, geometry="o")
-
     In [2]: print(xLGeometric)
 
     In [3]: print(xUGeometric)
@@ -203,7 +198,7 @@ The integration is perform from :math:`t = 0` to :math:`1` and is all handled in
 Bootstrap
 =========
 
-This is perhaps the favorite method to estimate confidence interval for a lot of people.  Although there are many ways to implement bootstrap, semi-parametric is the only logical choice (even though the underlying assumptions may be violated at times).  As we have only implemented OLS type loss functions in this package, the parametric approach seem to be inappropriate when there is no self--efficiency guarantee.  Non-parametric approach requires at least a conditional independence assumption, something easily violated by our **ode**.  Block bootstrap is an option by we are also aware that the errors of an **ode** can be rather rigid, and consistently over/under estimate at certain periods of time.
+This is perhaps the favorite method to estimate confidence interval for a lot of people.  Although there are many ways to implement bootstrap, semi-parametric is the only logical choice (even though the underlying assumptions may be violated at times).  As we have only implemented OLS type loss functions in this package, the parametric approach seem to be inappropriate when there is no self--efficiency guarantee.  Non-parametric approach requires at least a conditional independence assumption, something easily violated by our **ode**.  Block bootstrap is an option but we are also aware that the errors of an **ode** can be rather rigid, and consistently over/under estimate at certain periods of time.
 
 When we say semi-parametric, we mean the exchange of errors between the observations.  Let our raw error be
 
@@ -253,9 +248,10 @@ In this case, because the error in the observation is extremely small, the confi
 Comparison Between Methods
 ==========================
 
-Although we have shown the numerical values for the confidence interval obtained using different method, it may be hard to comprehend how they vary.  As they say, a picture says a million word, so lets see what the contour plot looks like
+Although we have shown the numerical values for the confidence interval obtained using different method, it may be hard to comprehend how they vary.  As they say, a picture says a million word, and given that this particular model only has two parameters, we can obtain inspect and compare the methods visually via a contour plot.  The code to perform this is shown below but the code block will not be run to save time and space.
 
 .. ipython ::
+    :verbatim:
 
     In [1]: niter = 1000
 
@@ -291,9 +287,7 @@ Although we have shown the numerical values for the confidence interval obtained
 
     In [17]: l3 = plt.scatter(numpy.append(xLGeometric[0], xUGeometric[0]), numpy.append(xLGeometric[1], xUGeometric[1]), marker='x', c='r', s=30)
 
-    In [18]: l4 = plt.scatter(numpy.append(xLProfile[0], xUProfile[0]), numpy.append(xLProfile[1], xUProfile[1]), marker='x', c='y', s=30)
-
-    In [19]: plt.legend((l0, l1, l2, l3, l4), ('MLE', 'Asymptotic', 'Boostrap', 'Geometric', 'Profile'), loc='upper left');
+    In [19]: plt.legend((l0, l1, l2, l3), ('MLE', 'Asymptotic', 'Bootstrap', 'Geometric'), loc='upper left');
 
     In [20]: plt.ylabel(r'Estimates of $\gamma$');
 
@@ -303,59 +297,59 @@ Although we have shown the numerical values for the confidence interval obtained
 
     In [23]: plt.tight_layout();
 
-    @savefig compareCI.png 
     In [24]: plt.show()
 
     In [25]: plt.close()
 
 In the plot above, the bootstrap confidence interval were so close to the MLE, it is impossible to distinguish the two on such a coarse scale.
 
-Furthermore, because the geometric confidence interval is the result of an integration, we can trace the simulated path.
+Furthermore, because the geometric confidence interval is the result of an integration, we can trace the path that lead to the final output that was shown previously.  Again, we are space conscious (and time constrained) so the code block below will not be run.
 
 .. ipython::
+    :verbatim: 
 
     In [1]: fig = plt.figure()
 
-    In [1]: CS = plt.contour(xi, yi, zi, linewidth=0.5)
+    In [2]: CS = plt.contour(xi, yi, zi, linewidth=0.5)
 
-    In [2]: plt.clabel(CS, fontsize=10, inline=1)
+    In [3]: plt.clabel(CS, fontsize=10, inline=1)
 
-    In [3]: l1 = plt.scatter(xLList[0][:,0], xLList[0][:,1], marker='o', c='m', s=10);
+    In [4]: l1 = plt.scatter(xLList[0][:,0], xLList[0][:,1], marker='o', c='m', s=10);
 
-    In [4]: l2 = plt.scatter(xUList[0][:,0], xUList[0][:,1], marker='x', c='m', s=10);
+    In [5]: l2 = plt.scatter(xUList[0][:,0], xUList[0][:,1], marker='x', c='m', s=10);
 
-    In [5]: plt.legend((l1, l2), ('Lower CI path', 'Upper CI path'), loc='upper left');
+    In [6]: plt.legend((l1, l2), ('Lower CI path', 'Upper CI path'), loc='upper left');
 
-    In [6]: plt.ylabel(r'Estimates of $\gamma$');
+    In [7]: plt.ylabel(r'Estimates of $\gamma$');
 
-    In [7]: plt.xlabel(r'Estimates of $\beta$');
+    In [8]: plt.xlabel(r'Estimates of $\beta$');
 
-    In [8]: plt.title('Integration path of the geometric confidence intervals on the likelihood surface');
+    In [9]: plt.title('Integration path of the geometric confidence intervals on the likelihood surface');
 
-    In [9]: plt.tight_layout();
+    In [10]: plt.tight_layout();
 
-    @savefig geometricTrace.png 
-    In [10]: plt.show()
+    In [11]: plt.show()
 
-    In [11]: plt.close()
+    In [12]: plt.close()
 
 
 Profile Likelihood Surface
 ==========================
 
-To investigate why it was hard to find the profile likelihood confidence interval, we can simply look at the surface (which is simply a line as we are profiling).  We find solution of :eq:`nuisanceOptim` for each :math:`\boldsymbol{\theta}_{-j}` at various points of :math:`\theta`.  Equivalently, we can minize the original loss function as defined previously, and this is the approach below.  We focus out attention to the parameter :math:`\beta`, and the existence of a solution to :eq:`obj` is evident by simply *eyeballing* the plots.
+To investigate why it was hard to find the profile likelihood confidence interval, we can simply look at the surface (which is simply a line as we are profiling).  We find solution of :eq:`nuisanceOptim` for each :math:`\boldsymbol{\theta}_{-j}` at various points of :math:`\boldsymbol{\theta}`.  Equivalently, we can minimize the original loss function as defined previously, and this is the approach below.  We focus out attention to the parameter :math:`\beta` of our SIR model. The results are not shown here but the existence of a solution to :eq:`obj` is evident by simply *eyeballing* the plots.
 
 .. ipython::
+    :verbatim:
 
     In [1]: numIter = 100
 
     In [2]: x2 = numpy.linspace(0.0, 2.0, numIter)
 
-    In [4]: funcOut = numpy.linspace(0.0, 2.0, numIter)
+    In [3]: funcOut = numpy.linspace(0.0, 2.0, numIter)
 
-    In [6]: ode.setParameters([('beta',0.5), ('gamma',1.0/3.0)])
+    In [4]: ode = ode.setParameters([('beta',0.5), ('gamma',1.0/3.0)])
 
-    In [6]: for i in range(numIter):
+    In [5]: for i in range(numIter):
        ...:     paramEval = [('beta',x2[i]), ('gamma',x2[i])]
        ...:     ode2 = copy.deepcopy(ode).setParameters(paramEval).setInitialValue(x0, t[0])
        ...:     objSIR2 = NormalLoss(x2[i], ode2, x0, t[0], t[1::], yObv.copy(), targetState, targetParam='gamma')
@@ -382,14 +376,14 @@ To investigate why it was hard to find the profile likelihood confidence interva
 
     In [16]: plt.legend((l1,), (r'$-0.5\mathcal{X}_{1 - \alpha}^{2}(1)$',), loc='lower right');
 
-    @savefig profileLLMaximizerGivenBeta.png
-    In [17]: plt.show()
+    In [17]: plt.show() #    @savefig profileLLMaximizerGivenBeta.png
 
     In [18]: plt.close()
 
-Evidently, the lower confidence interval can be found, but the part between of :math:`\beta \in \left[0,\hat{\beta}\right]` is not convex, with :math:`\hat{\beta}` being the MLE.  This non--quadratic profile likelihood is due to the non-identifiability of the model given data [Raue2009].  For this particular case, we can fix it simply by introducing additional observation for the **I** state.
+Both the upper and lower confidence interval can be found in the profiling procedure, but the part between of :math:`\beta \in \left[0,\hat{\beta}\right]` is not convex, with :math:`\hat{\beta}` being the MLE.  This non--quadratic profile likelihood is due to the non-identifiability of the model given data [Raue2009]_.  For this particular case, we can fix it simply by introducing additional observations in the form of the :math:`I` state.  We encourage the users to try it out for themselves to confirm.
 
 .. ipython::
+    :verbatim:
 
     In [1]: targetState = ['I', 'R']
 
@@ -428,7 +422,6 @@ Evidently, the lower confidence interval can be found, but the part between of :
 
     In [16]: plt.legend((l1,), (r'$-0.5\mathcal{X}_{1 - \alpha}^{2}(1)$',), loc='lower right');
 
-    @savefig profileLLMaximizerGivenBetaMoreObs.png
-    In [17]: plt.show()
+    In [17]: plt.show() #     @savefig profileLLMaximizerGivenBetaMoreObs.png
 
     In [18]: plt.close()

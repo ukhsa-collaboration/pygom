@@ -35,9 +35,9 @@ Then we generate the graph at `Wolfram Alpha <http://www.wolframalpha.com/input/
 
 .. ipython::
 
-    In [1]: x1List = numpy.linspace(0.2, 2.0, 9)
+    In [1]: x1List = numpy.linspace(0.2, 2.0, 5)
 
-    In [1]: x2List = numpy.linspace(0.6, 6.0, 9)
+    In [1]: x2List = numpy.linspace(0.6, 6.0, 5)
 
     In [1]: fig = plt.figure()
 
@@ -58,15 +58,13 @@ We also know that the system has the critical points at :math:`x = \delta / \gam
 
 .. ipython::
 
-    In [1]: cList = numpy.linspace(0.1, 2.0, 20)
+    In [1]: cList = numpy.linspace(0.1, 2.0, 5)
 
-    In [1]: gammaList = numpy.linspace(0.6, 6.0, 20)
+    In [1]: gammaList = numpy.linspace(0.6, 6.0, 5)
 
     In [1]: fig = plt.figure()
 
-    In [1]: solutionList = list()
-
-    In [1]: solutionList = [common_models.Lotka_Volterra({'alpha':1, 'delta':3, 'c':cList[i], 'gamma':gammaList[i]}).setInitialValue(x0,0).integrate(t) for i in range(len(cList))]
+    In [1]: solutionList = [common_models.Lotka_Volterra({'alpha':1, 'delta':3, 'c':cList[i], 'gamma':gammaList[i]}).setInitialValue(x0, 0).integrate(t) for i in range(len(cList))]
     
     In [1]: for i in range(len(cList)): plt.plot(solutionList[i][100::,0], solutionList[i][100::,1])
     
