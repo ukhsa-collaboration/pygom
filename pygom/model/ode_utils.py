@@ -755,17 +755,17 @@ class compileCode(object):
         compiledFunc = None
         compileTypeChosen = None
         try:
-            if self._backend == 'f2py':
+            if backend == 'f2py':
                 compiledFunc = autowrap(expr=inputExpr,
                                         args=inputSymb,
                                         backend='f2py')
                 compileTypeChosen = 'numpy'
-            elif self._backend == 'lambda':
+            elif backend == 'lambda':
                 compiledFunc = lambdify(expr=inputExpr,
                                         args=inputSymb,
                                         modules='numpy')
                 compileTypeChosen = 'numpy'
-            elif self._backend == 'Cython':
+            elif backend.lower() in ('cython', 'numpy'):
                 # note that we have another test layer because of the
                 # bug previously mentioned in __init__ of this class
                 try:

@@ -62,6 +62,11 @@ class SimulateOdeModel(OperateOdeModel):
                                                birthDeathList,
                                                odeList)
 
+        # need a manual override because it is possible that we
+        # want to perform simulation in a parallel/distributed manner
+        # and there are issues with pickling fortran objects
+        self._SC = ode_utils.compileCode(backend='cython')
+
         self._birthDeathRate = None
         self._birthDeathRateCompile = None
 
@@ -82,7 +87,7 @@ class SimulateOdeModel(OperateOdeModel):
         self._tauDict = None
 
     def __repr__(self):
-        return "SimulateOdeModel"+self._getModelStr()
+        return "SimulateOdeModel" + self._getModelStr()
 
     def simulateParam(self, t, iteration, full_output=False):
         '''
