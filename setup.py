@@ -11,7 +11,7 @@ def readme():
 cmdclass = {}
 ext_modules =[]
 install_requires = [
-    'ipyparallel>=4.0.0',
+    'dask>=0.13.0',
     'matplotlib>=1.0.0',
     'pandas>=0.15.0',
     'python-dateutil>=2.0.0',

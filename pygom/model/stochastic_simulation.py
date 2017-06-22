@@ -68,7 +68,7 @@ def exact(x0, t0, t1, stateChangeMat, transitionFunc,
         return(x)
 
 def cle(x0, t0, t1, stateChangeMat, transitionFunc,
-        h=None, n=500, output_time=False, seed=None):
+        h=None, n=500, positive=True, output_time=False, seed=None):
     '''
     Stochastic simulation using the CLE approximation starting from time
     t0 to t1 with the starting state values of x0.  The CLE approximation
@@ -98,6 +98,9 @@ def cle(x0, t0, t1, stateChangeMat, transitionFunc,
         step size h, defaults to None which then h = (t1 - t0)/n
     n: int, optional
         number of steps to take for the whole simulation, defaults to 500
+    positive: bool or array of bool, optional
+        whether the states :math:`x >= 0`.  If input is an array then the
+        length should be the same as len(x)
     output_time: bool, optional
         defaults to False, if True then a tuple of two elements will be
         returned, else only the state vector
@@ -119,6 +122,16 @@ def cle(x0, t0, t1, stateChangeMat, transitionFunc,
     
     assert isinstance(stateChangeMat, np.ndarray), \
             "stateChangeMat should be a numpy array"
+    
+    if hasattr(positive, '__iter__'):
+        assert len(positive) == len(x0), \
+        "an array for the input positive should have same length as x"
+        assert all(isinstance(p, bool) for p in positive), \
+        "elements in positive should be a bool"
+        positive = np.array(positive)
+    else:
+        assert isinstance(positive, bool), "positive should be a bool"
+        positive = np.array([positive]*len(x0))
 
     if seed:
         rvs = np.random.RandomState().normal
@@ -136,6 +149,7 @@ def cle(x0, t0, t1, stateChangeMat, transitionFunc,
         mu = transitionFunc(x, t)
         sigma = np.sqrt(mu)*rvs(0, np.sqrt(h), size=p)
         x_new = x + stateChangeMat.dot(h*mu + sigma)
+        x_new[x_new[positive]<0] = 0
         ## We might like to put a defensive line below to stop the states
         ## going below zero.  This applies only to models where each state
         ## represent a physical count
@@ -271,7 +285,7 @@ def nextReaction(x, t, stateChangeMat, dependencyGraph,
 
 def tauLeap(x, t, stateChangeMat, reactantMat,
             transitionFunc, transitionMeanFunc, transitionVarFunc,
-            epsilon=0.1):
+            epsilon=0.1, seed=None):
     '''
     The Poisson :math:`\\tau`-Leap
     
@@ -312,6 +326,8 @@ def tauLeap(x, t, stateChangeMat, reactantMat,
         if the leap was successful.  A change in both x and t if it is
         successful, no change otherwise
     '''
+    
+    if seed: seed = np.random.RandomState()
     # go through the list of transitions
     rates = transitionFunc(x,t)
     totalRate = sum(rates)
@@ -354,6 +370,8 @@ def tauLeap(x, t, stateChangeMat, reactantMat,
             tauScale /= 2.0
         else:
             safeToJump = True
+        if tauScale*totalRate <= 1.0:
+            return x, t, False
     ## end while safeToJump==False
 
     # print tauScale
@@ -364,7 +382,7 @@ def tauLeap(x, t, stateChangeMat, reactantMat,
     for i, r in enumerate(rates):
         # realization
         try:
-            jumpQuantity = rpois(1, tauScale*r)
+            jumpQuantity = rpois(1, tauScale*r, seed=seed)
         except Exception as e:
 #             print tauScale, r
 #             print "l = %s " % l
