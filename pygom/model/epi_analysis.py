@@ -1,3 +1,11 @@
+"""
+    .. moduleauthor:: Edwin Tye <Edwin.Tye@phe.gov.uk>
+
+    Module containing functions that performs epidemiology based analysis
+    via algebraic manipulation, such as the basic reproduction number
+
+"""
+
 import sympy
 
 from .stochastic import SimulateOdeModel

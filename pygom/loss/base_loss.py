@@ -15,7 +15,6 @@ import scipy.sparse
 from scipy.interpolate import LSQUnivariateSpline
 from scipy.optimize import minimize
 
-import numpy
 import numpy as np
 # import gc
 

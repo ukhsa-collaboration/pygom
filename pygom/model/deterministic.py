@@ -127,8 +127,7 @@ class OperateOdeModel(BaseOdeModel):
             return False
 
     def __repr__(self):
-        return "OperateOdeModel"+self._getModelStr()
-        
+        return "OperateOdeModel" + self._getModelStr() 
 
     ########################################################################
     #

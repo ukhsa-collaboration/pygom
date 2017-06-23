@@ -884,7 +884,7 @@ def checkArrayType(x):
     elif isNumeric(x):
         x = numpy.array([x])
     else:
-        raise ArrayError("Expecting an array like object")
+        raise ArrayError("Expecting an array like object, got %s" % type(x))
 
     return x
 

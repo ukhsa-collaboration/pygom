@@ -6,6 +6,7 @@ import scipy.stats
 import numpy
 
 class TestSIRStochasticModel(TestCase):
+
     def test_simulateParam1(self):
         '''
         Stochastic ode under the interpretation that the parameters follow
@@ -130,5 +131,5 @@ class TestSIRStochasticModel(TestCase):
         odeS.transitionMean(solution[10,:], t[10])
         odeS.transitionVar(solution[10,:], t[10])
 
-        simX,simT = odeS.simulateJump(250, 3, full_output=True)
+        simX, simT = odeS.simulateJump(250, 3, full_output=True)
         

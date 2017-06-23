@@ -1093,7 +1093,7 @@ class BaseOdeModel(object):
         if inputStr in self._paramDict:
             return self._paramList.index(self._paramDict[inputStr])
         else:
-            raise InputError("Input parameter: "+inputStr+ " does not exist")
+            raise InputError("Input parameter: " +inputStr+ " does not exist")
 
     def _extractParamSymbol(self, inputStr):
         if isinstance(inputStr, ODEVariable):
@@ -1146,7 +1146,7 @@ class BaseOdeModel(object):
                     raise InputError("Cannot find input state, input %s " + 
                                      "likely to be a vector" % symName)
             else:
-                raise InputError("Input state: "+inputStr+ " does not exist")
+                raise InputError("Input state: " + inputStr + " does not exist")
 
     def _extractUpperTriangle(self, A, nrow=None, ncol=None):
         '''

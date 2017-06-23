@@ -1,5 +1,5 @@
 '''
-.. moduleauthor:: Edwin Tye <Edwin.Tye@phe.gov.uk>
+    .. moduleauthor:: Edwin Tye <Edwin.Tye@phe.gov.uk>
 
 '''
 from __future__ import division, print_function, absolute_import

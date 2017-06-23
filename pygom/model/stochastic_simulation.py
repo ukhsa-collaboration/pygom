@@ -1,3 +1,10 @@
+"""
+    .. moduleauthor:: Edwin Tye <Edwin.Tye@phe.gov.uk>
+
+    Module with functions to perform stochastic simulation
+
+"""
+
 from ._model_errors import InputError, SimulationError
 from pygom.utilR.distn import rexp, ppois, rpois, runif
 

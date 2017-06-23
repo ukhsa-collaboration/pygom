@@ -2,7 +2,7 @@
     .. moduleauthor:: Edwin Tye <Edwin.Tye@phe.gov.uk>
 
     Module that is used to calculate the confidence interval
-    given the estiamted parameters
+    given the estimated parameters
 
 """
 

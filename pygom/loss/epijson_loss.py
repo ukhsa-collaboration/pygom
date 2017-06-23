@@ -6,13 +6,13 @@
     of tuple (y,t)
 
 """
-all = ['EpijsonLoss']
+__all__ = ['EpijsonLoss']
 
 from .ode_loss import PoissonLoss
 from .read_epijson import epijsonToDataFrame
-from pygom.model._model_errors import InputError
 
 import pandas as pd
+import numpy as np
 import datetime
 from dateutil import parser, tz
 
@@ -56,7 +56,7 @@ class EpijsonLoss(PoissonLoss):
         # we just take the positives.  This also defines the starting
         # time point at zero
         tau = df.index - t0
-        tau = tau.total_seconds()/secondsInDay
+        tau = np.array(tau.total_seconds()/secondsInDay)
 
         X = df.loc[:,colName].values[tau > 0]
         T = tau[tau>0]

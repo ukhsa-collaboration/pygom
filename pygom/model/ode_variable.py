@@ -1,3 +1,10 @@
+"""
+    .. moduleauthor:: Edwin Tye <Edwin.Tye@phe.gov.uk>
+
+    Module/class that contains a variable object for the ode
+
+"""
+
 import sympy
 
 class ODEVariable(object):

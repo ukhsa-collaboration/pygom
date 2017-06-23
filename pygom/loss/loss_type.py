@@ -1,8 +1,8 @@
 """
-.. moduleauthor:: Edwin Tye <Edwin.Tye@phe.gov.uk>
+    .. moduleauthor:: Edwin Tye <Edwin.Tye@phe.gov.uk>
 
-The different loss types.  Such as thought based on
-parametric distributions.
+    The different loss types.  Such as thought based on
+    parametric distributions.
 
 """
 
@@ -15,7 +15,7 @@ __all__ = [
 import numpy
 
 from pygom.model._model_errors import InitializeError
-from pygom.model.ode_utils import checkArrayType, isNumeric, isListLike
+from pygom.model.ode_utils import checkArrayType
 from pygom.utilR.distn import dnorm, dpois
 
 class InputError(Exception):
@@ -45,7 +45,7 @@ class Square(object):
             self._w = checkArrayType(weights)              
 
         if len(self._w.shape) > 1:
-            if 1 == self._w.shape[1]:
+            if self._w.shape[1] == 1:
                 self._w = self._w.flatten()
 
         assert self._y.shape == self._w.shape, \
@@ -211,7 +211,7 @@ class Normal(object):
 
         '''
         r = self.residual(yhat)
-        return -r / self._sigma2
+        return -r/self._sigma2
 
     def diff2Loss(self, yhat):
         '''
@@ -322,7 +322,7 @@ class Poisson(object):
         s: array like
             :math:`\\frac{y}{\\hat{y}^{2}}` with shape = yhat.shape
         '''
-        return self.y / (yhat**2)
+        return self.y/(yhat**2)
     
     def residual(self, yhat):
         '''
