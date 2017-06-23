@@ -14,10 +14,13 @@ aiming to solve compartmental type problems.
 
 This package depends on::
 
-    enum34
-    graphviz
-    numpy
+    dask
     matplotlib
+    enum34
+    pandas
+    python-dateutil
+    python-libsbml
+    numpy
     scipy
     sympy
 
@@ -45,4 +48,4 @@ Edwin Tye (Edwin.Tye@phe.gov.uk)
 
 Version
 =======
-0.1.0 First exposure
+0.1.1 Improved parallel computation
