@@ -9,9 +9,9 @@ Now we turn to a harder problem that does not have a one to one mapping between 
     \frac{dS}{dt} &= -S \beta (I + \delta A) \\    
     \frac{dL}{dt} &= S \beta (I + \delta A) - \kappa L \\  
     \frac{dI}{dt} &= p \kappa L - \alpha I \\
-    \frac{dA}{dt} &= (1-p) \kappa L - \eta A \\
+    \frac{dA}{dt} &= (1 - p) \kappa L - \eta A \\
     \frac{dR}{dt} &= f \alpha I + \eta A \\
-    \frac{dN}{dt} &= -(1-f) \alpha I. 
+    \frac{dN}{dt} &= -(1 - f) \alpha I. 
 
 The outflow of state **L**, :math:`\kappa L`, is composed of two transitions, one to **I** and the other to **A** but the ode of **L** only reflects the total flow going out of the state.  Same can be said for state **I**, where the flow :math:`\alpha I` goes to both **R** and **N**.  Graphically, it is a rather simple process as shown below. 
 
@@ -39,15 +39,15 @@ We slightly change the model by introducing a new state **D** to convert it into
 
     In [1]: stateList = ['S', 'L', 'I', 'A', 'R', 'D']
 
-    In [2]: paramList = ['beta','p','kappa','alpha','f','delta','epsilon', 'N']
+    In [2]: paramList = ['beta', 'p', 'kappa', 'alpha', 'f', 'delta', 'epsilon', 'N']
 
     In [3]: odeList = [
-       ...:            Transition(origState='S', equation='- beta * S/N * ( I + delta * A)', transitionType=TransitionType.ODE),
-       ...:            Transition(origState='L', equation='beta * S/N * (I + delta * A) - kappa * L', transitionType=TransitionType.ODE),
-       ...:            Transition(origState='I', equation='p * kappa * L - alpha * I', transitionType=TransitionType.ODE),
-       ...:            Transition(origState='A', equation='(1-p) * kappa * L - epsilon * A', transitionType=TransitionType.ODE),
-       ...:            Transition(origState='R', equation='f * alpha * I + epsilon * A', transitionType=TransitionType.ODE),
-       ...:            Transition(origState='D', equation='(1-f) * alpha * I', transitionType=TransitionType.ODE) ]
+       ...:            Transition(origState='S', equation='- beta*S/N*(I + delta*A)', transitionType=TransitionType.ODE),
+       ...:            Transition(origState='L', equation='beta*S/N*(I + delta*A) - kappa*L', transitionType=TransitionType.ODE),
+       ...:            Transition(origState='I', equation='p*kappa*L - alpha*I', transitionType=TransitionType.ODE),
+       ...:            Transition(origState='A', equation='(1 - p)*kappa * L - epsilon*A', transitionType=TransitionType.ODE),
+       ...:            Transition(origState='R', equation='f*alpha*I + epsilon*A', transitionType=TransitionType.ODE),
+       ...:            Transition(origState='D', equation='(1 - f)*alpha*I', transitionType=TransitionType.ODE) ]
 
     In [4]: ode = SimulateOdeModel(stateList, paramList, odeList=odeList)
 

@@ -23,15 +23,19 @@ class TestModelMultipleOrigin(TestCase):
         stateList = ['A', 'B', 'C', 'D']
         paramList = ['k1', 'k2', 'k3', 'k4']
         transitionList = [
-                          Transition(origState=('A','A'), destState='C', equation='A * (A - 1) * k1',
+                          Transition(origState=('A','A'), destState='C',
+                                     equation='A * (A - 1) * k1',
                                      transitionType=TransitionType.T),
-                          Transition(origState=('A','B'), destState='D', equation='A * B * k2',
+                          Transition(origState=('A','B'), destState='D',
+                                     equation='A * B * k2',
                                      transitionType=TransitionType.T)
                           ]
         # our birth and deaths
         birthDeathList = [
-                          Transition(origState='A', equation='k3', transitionType=TransitionType.B),
-                          Transition(origState='B', equation='k4', transitionType=TransitionType.B)
+                          Transition(origState='A', equation='k3',
+                                     transitionType=TransitionType.B),
+                          Transition(origState='B', equation='k4',
+                                     transitionType=TransitionType.B)
                           ]
 
         ode = OperateOdeModel(stateList,
@@ -54,21 +58,25 @@ class TestModelMultipleOrigin(TestCase):
         stateList = ['A', 'B', 'C', 'D']
         paramList = ['k1', 'k2', 'k3', 'k4']
         transitionList = [
-                          Transition(origState=('A','A'), destState='C', equation='A * (A - 1) * k1',
+                          Transition(origState=('A','A'), destState='C',
+                                     equation='A * (A - 1) * k1',
                                      transitionType=TransitionType.T),
-                          Transition(origState=('A','B'), destState='D', equation='A * B * k2',
+                          Transition(origState=('A','B'), destState='D',
+                                     equation='A * B * k2',
                                      transitionType=TransitionType.T)
                           ]
         # our birth and deaths
         birthDeathList = [
-                          Transition(origState='A', equation='k3', transitionType=TransitionType.B),
-                          Transition(origState='B', equation='k4', transitionType=TransitionType.B)
+                          Transition(origState='A', equation='k3',
+                                     transitionType=TransitionType.B),
+                          Transition(origState='B', equation='k4',
+                                     transitionType=TransitionType.B)
                           ]
 
         ode = SimulateOdeModel(stateList,
-                              paramList,
-                              birthDeathList=birthDeathList,
-                              transitionList=transitionList)
+                               paramList,
+                               birthDeathList=birthDeathList,
+                               transitionList=transitionList)
 
         x0 = [0,0,0,0]
         t = numpy.linspace(0, 100, 100)

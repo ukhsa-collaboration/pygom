@@ -2,7 +2,7 @@
     .. moduleauthor:: Edwin Tye <Edwin.Tye@phe.gov.uk>
 
     Module that is used to calculate the confidence interval
-    given the estiamted parameters
+    given the estimated parameters
 
 """
 
@@ -27,7 +27,7 @@ from pygom.utilR.distn import qchisq, qnorm
 def asymptotic(obj, alpha=0.05, theta=None, lb=None, ub=None):
     '''
     Finds the confidence interval at the :math:`\\alpha` level
-    under the :math:`\\mathcal{X}^{2}` assumption for the
+    under the :math:`\mathcal{X}^{2}` assumption for the
     likelihood
 
     Parameters
@@ -37,8 +37,8 @@ def asymptotic(obj, alpha=0.05, theta=None, lb=None, ub=None):
     alpha: numeric, optional
         confidence level, :math:`0 < \\alpha < 1`.  Defaults to 0.05.
     theta: array like, optional
-        the MLE parameters.  Defaults to None which then theta will be inferred
-        from the input obj
+        the MLE parameters.  Defaults to None which then theta will be
+        inferred from the input obj
     lb: array like, optional
         expected lower bound
     ub: array like, optional
@@ -87,7 +87,7 @@ def bootstrap(obj, alpha=0.05, theta=None, lb=None, ub=None,
         lower bound for the parameters
     iteration: int, optional
         number of bootstrap samples, defaults to 0 which is interpreted as
-        2*n where n is the number of data points.
+        :math:`2n` where :math:`n` is the number of data points.
     full_output: bool
         if the full set of estimates is required.
 
@@ -109,7 +109,7 @@ def bootstrap(obj, alpha=0.05, theta=None, lb=None, ub=None,
     if len(r) == r.size:
         n, m = len(r), 1
     else:
-        n, m = r.shape    
+        n, m = r.shape
 
     if iteration == 0:
         iteration = 2*n
@@ -172,13 +172,13 @@ def geometric(obj, alpha=0.05, theta=None,
         optimal using methods provided by obj
     method: string
         construction of the covariance matrix.  jtj is the :math:`J^{\\top}`
-        where :math:`J` is the Jacobian of the ode.  hessian is the hessian
-        of the ode.  fisher is the fisher information found by
-        :math:`cov(\partial_{\\theta}\\mathcal{L})`.
+        where :math:`J` is the Jacobian of the ode.  'hessian' is the hessian
+        of the ode while 'fisher' is the fisher information found by
+        :math:`cov(\\nabla_{\\theta}\mathcal{L})`.
     geometry: string
-        the two types of geometry defined in [1]. c geometry uses the covariance
-        at the maximum likelihood estimate :math:`\\hat{\\theta}`.  'o' geometry
-        is the covariance defined at point :math:`\\theta`.
+        the two types of geometry defined in [Moolgavkar1987]_. c geometry uses the
+        covariance at the maximum likelihood estimate :math:`\hat{\\theta}`. 
+        The 'o' geometry is the covariance defined at point :math:`\\theta`.
     full_output: bool, optional
         If True then both the l_path and u_path will be outputted, else only the
         point estimates of l and u
@@ -190,16 +190,11 @@ def geometric(obj, alpha=0.05, theta=None,
     u: array like
         upper confidence interval
     l_path: list
-        path from :math:`\\hat{\\theta}` to the lower :math:`1-\\alpha/2` point
+        path from :math:`\hat{\\theta}` to the lower :math:`1 - \\alpha/2` point
         for all parameters
     u_path: list
         same as l_path but for the upper confidence interval
         
-    References
-    ----------
-    .. [1] Confidence Regions for Parameters of the Proportional Hazard
-           Model: A Simulation Study, Moolgavkar S.H. and Venzon, D.J.,
-           Scandianvian Journal of Statistics, Vol. 14, No. 1, 1987, 43-56
     '''
     alpha, theta, lb, ub = _checkInput(obj, alpha, theta, None, None)
 
@@ -309,15 +304,6 @@ def profile(obj, alpha, theta=None, lb=None, ub=None, full_output=False):
         lbT = np.ones(p)*-np.Inf if lb is None else lb.copy()
         ubT = np.ones(p)*np.Inf if ub is None else ub.copy()
 
-        # if lb is None:
-        #     lbT = np.ones(p)*-np.Inf
-        # else:
-        #     lbT = lb.copy()
-
-        # if ub is None:
-        #     ubT = np.ones(p)*np.Inf
-        # else:
-        #     ubT = ub.copy()
         ubT[i] = theta[i]
 
         try:
@@ -335,15 +321,6 @@ def profile(obj, alpha, theta=None, lb=None, ub=None, full_output=False):
         lbT = np.ones(p)*-np.Inf if lb is None else lb.copy()
         ubT = np.ones(p)*np.Inf if ub is None else ub.copy()
 
-        # if lb is None:
-        #     lbT = np.ones(p)*-np.Inf
-        # else:
-        #     lbT = lb.copy()
-
-        # if ub is None:
-        #     ubT = np.ones(p)*np.Inf
-        # else:
-        #     ubT = ub.copy()
         lbT[i] = theta[i]
 
         try:
@@ -369,11 +346,11 @@ def profile(obj, alpha, theta=None, lb=None, ub=None, full_output=False):
     else:
         return xL, xU
 
-def _profileGetInitialValues(theta, i, alpha, obj, approx=True, lb=None, ub=None):
+def _profileGetInitialValues(theta, i, alpha, obj, approx=True,
+                             lb=None, ub=None):
     '''
-    We would not use an approximation in general because if theta
-    is an optimal value, then we would expect the Hessian to be
-    a PSD matrix.
+    We would not use an approximation in general because if the input theta
+    is an optimal value, then we would expect the Hessian to be a PSD matrix.
     '''
     p = len(theta)
     setIndex = set(range(p))
@@ -565,7 +542,7 @@ def _profileObtainAndVerifyBounds(f, df, ddf, x0, lb, ub, full_output=False):
                    x0=x0,
                    bounds=np.reshape(np.append(lb, ub), (len(lb),2), 'F'),
                    method='l-bfgs-b',
-                   options={'maxiter':2000})
+                   options={'maxiter':1000})
 
     if res["success"] == False:
         raise EstimateError("Failure in estimation of the profile " + 
@@ -629,10 +606,10 @@ def _profileG(xhat, i, alpha, obj):
 def _profileGSecondOrderCorrection(xhat, i, alpha, obj, approx=True):
     '''
     Finds the correction term when approximating the gradient to
-    second order, i.e. :math:`\\delta^{\top} D(\\theta) \\delta`
-    in [1].  If the system
+    second order [Venzon1988]_, i.e. :math:`\\delta^{\\top} D(\\theta) \\delta`
+    in [Venzon1988]_.  If the system
     of non-linear equations is a, then we return :math:`a + s`
-    instead of G^{-1}a, i.e. we have incorporated the correction
+    instead of :math:`G^{-1}a`, i.e. we have incorporated the correction
     into the gradient
     
     Parameters
@@ -644,7 +621,7 @@ def _profileGSecondOrderCorrection(xhat, i, alpha, obj, approx=True):
     i: int
         our target variable
     alpha: numeric
-        confidence level, between (0,1)
+        confidence level, between :math:`(0,1)`
     obj:
         ode object
     approx: bool, optional
@@ -655,12 +632,6 @@ def _profileGSecondOrderCorrection(xhat, i, alpha, obj, approx=True):
     g: array like
         corrected set of non-linear equations
         
-    References
-    ----------
-    .. [1] Venzon and Moolgavkar, A Method for Computing
-           Profile-Likelihood-Based Confidence Intervals,
-           Journal of the Royal Statistical Society, Series
-           C, Vol 37, No. 1, 1988, 87-94.
     '''
     s = sympy.symbols('s')
     c = obj.cost(xhat) + 0.5*qchisq(1 - alpha, df=1)
@@ -755,17 +726,23 @@ def _profileFhessian(xhat, i, alpha, obj, approx=True):
         G[i] = g.copy()
         lvector = g.copy()
         lvector[i] = obj.cost(x) - c
-        if approx:
-            return 2*G.T.dot(G)
-        else:
-            A = 2*G.T.dot(G)
-            ## here we assume that only the second derivative is
-            ## significant.
+        A = 2*G.T.dot(G)
+        if not approx:
             for s in lvector:
                 A += s*H
-            ## return np.diag(lvector).dot(H) + 2 * G.T.dot(G)
-            ## return 2 * G.T.dot(G)
-            return A
+        return A
+
+#         if approx:
+#             return 2*G.T.dot(G)
+#         else:
+#             A = 2*G.T.dot(G)
+#             ## here we assume that only the second derivative is
+#             ## significant.
+#             for s in lvector:
+#                 A += s*H
+#             ## return np.diag(lvector).dot(H) + 2 * G.T.dot(G)
+#             ## return 2 * G.T.dot(G)
+#             return A
 
     return func
 

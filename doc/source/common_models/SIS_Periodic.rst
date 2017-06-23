@@ -19,11 +19,11 @@ where :math:`\beta(t) = 2 - 1.8 \cos(5t)`.  As the name suggests, it achieves a 
 
     In [1]: ode = common_models.SIS_Periodic({'alpha':1.0})
     
-    In [1]: t = numpy.linspace(0,10,101)
+    In [1]: t = numpy.linspace(0, 10, 101)
     
     In [1]: x0 = [0.1,0.]
     
-    In [1]: solution = ode.setInitialValue(x0,t[0]).integrate(t[1::])
+    In [1]: solution = ode.setInitialValue(x0, t[0]).integrate(t[1::])
     
     @savefig common_models_sis_periodic.png 
     In [1]: ode.plot()

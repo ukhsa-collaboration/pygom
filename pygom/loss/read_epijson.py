@@ -1,14 +1,21 @@
-import dateutil.parser
+"""
+    .. moduleauthor:: Edwin Tye <Edwin.Tye@phe.gov.uk>
+
+    Module with functions that deals with epijson and the extraction of data
+
+"""
+
 import json, functools
 import pandas as pd
 import numpy as np
 
+from dateutil import parser, tz
 
 def epijsonToDataFrame(inData, full_output=False):
     '''
-    Obtain a :class:`pandas.DataFrame' given EpiJSON input. The
-    data is aggregated (through time).  The original can be
-    obtained by setting full_output to True
+    Obtain a :class:`pandas.DataFrame' given EpiJSON input. The data is
+    aggregated (through time).  The original can be obtained by setting
+    full_output to True
 
     Parameters
     ----------
@@ -65,22 +72,9 @@ def epijsonToDataFrame(inData, full_output=False):
     colName = list(colName)
     rowName = sorted(dataDict.keys())
 
-    # dataList = list()
-    # for date in rowName:
-    #     v = np.zeros(len(colName))
-    #     for name in dataDict[date]:
-    #         v[colName.index(name)] += 1
-    #     dataList.append(v)
-
-    # dataList = list()
-    # for date in rowName:
-    #     dataList.append(_eventNameToVector(dataDict[date], colName))
-
-    # dataList = map(lambda x: _eventNameToVector(dataDict[x], colName), rowName)
-    
     dataList = [_eventNameToVector(dataDict[date], colName) for date in rowName]
-
     df = pd.DataFrame(dataList, index=rowName, columns=colName)
+
     if full_output:
         return df, epijson
     else:
@@ -93,9 +87,9 @@ def _eventNameToVector(x, nameList):
     return y
 
 def _parseDate(x):
-    y = dateutil.parser.parse(x)
+    y = parser.parse(x)
     if y.tzinfo is None:
-        y = dateutil.parser.parse(x, tzinfos=dateutil.tz.tzutc)
+        y = parser.parse(x, tzinfos=tz.tzutc)
     return y
 
 def checkEpijsonFormat(epijson, returnRecord=True):

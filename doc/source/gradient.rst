@@ -51,13 +51,13 @@ Again, we demonstrate the functionalities of our classes using an SIR model.
     
     In [7]: # the initial state, normalized to zero one
     
-    In [8]: x0 = [1.,1.27e-6,0.]
+    In [8]: x0 = [1., 1.27e-6, 0.]
 
     In [5]: # initial time
 
     In [6]: t0 = 0
 
-    In [4]: ode.setParameters(paramEval).setInitialValue(x0,t0)
+    In [4]: ode = ode.setParameters(paramEval).setInitialValue(x0,t0)
     
     In [9]: # set the time sequence that we would like to observe
      
@@ -69,19 +69,19 @@ Again, we demonstrate the functionalities of our classes using an SIR model.
 
     In [12]: y = solution[1::,2].copy()
 
-    In [13]: y += numpy.random.normal(0,0.1,y.shape)
+    In [13]: y += numpy.random.normal(0, 0.1, y.shape)
 
 Now we have set up the model along with some observations, obtaining the gradient only requires the end user to put the appropriate information it into the class :class:`SquareLoss`.  Given the initial guess :math:`\theta`
 
 .. ipython::
  
-    In [210]: theta = [0.2,0.2]
+    In [210]: theta = [0.2, 0.2]
 
 We initialize the :class:`SquareLoss` simply as
 
 .. ipython::
 
-    In [20]: objSIR = SquareLoss(theta,ode,x0,t0,t,y,'R')
+    In [20]: objSIR = SquareLoss(theta, ode, x0, t0, t, y, 'R')
 
 where the we also have to specify the state our observations are from.  Now, we demonstrate the different methods in obtaining the gradient and mathematics behind it.
 
@@ -96,7 +96,7 @@ The forward sensitivity equations are derived by differentiating the states impl
 
 So finding the sensitivies :math:`\frac{dx}{d\theta}` simply require another integration of a :math:`p` coupled ode of :math:`d` dimension, each with the same Jacobian as the original ode.  This integration is performed along with the original ode because of possible non-linearity.
 
-A direct call to the method :func:`sensitivity <pygom.SquareLoss.sensitivity>` computed the gradient 
+A direct call to the method :meth:`sensitivity <pygom.SquareLoss.sensitivity>` computed the gradient 
 
 .. ipython::
     
@@ -106,7 +106,7 @@ whereas :meth:`.jac` will allow the end user to obtain the Jacobian (of the obje
 
 .. ipython:: 
 
-    In [33]: objJac,output = objSIR.jac(full_output=True)
+    In [33]: objJac, output = objSIR.jac(full_output=True)
 
 
 Gradient
@@ -130,15 +130,15 @@ Obviously, the time indicies are dropped above but all the terms above are evalu
 
 .. math::
 
-    \frac{\partial l(x(j),\theta)}{\partial g} = \left\{ \begin{array}{ll} -2(y_{i} - x(j)) & , \; j = t_{i} \\ 0 & \textnormal{, \; otherwise} \end{array} \right.
+    \frac{\partial l(x(j),\theta)}{\partial g} = \left\{ \begin{array}{ll} -2(y_{i} - x(j)) & , \; j = t_{i} \\ 0 & \; \text{otherwise} \end{array} \right.
 
-When :math:`g(\cdot)` is an identity function (which is assumed to be the case in :mod:`SquareLoss`)
+When :math:`g(\cdot)` is an identity function (which is assumed to be the case in :class:`SquareLoss`)
 
 .. math::
 
     \frac{\partial g(x(t_{i}),\theta)}{\partial x} = I_{d}
                        
-then the gradient simplies even further as it is simply
+then the gradient simplifies even further as it is simply
 
 .. math::
 
@@ -165,7 +165,7 @@ with :math:`f(x,\theta)` our non-linear function and :math:`J` our Jacobian with
 
 .. math::
 
-    J_{i}=\frac{\partial f(x_{i},\boldsymbol{\theta})}{\partial \boldsymbol{\theta}}.
+    J_{i} = \frac{\partial f(x_{i},\boldsymbol{\theta})}{\partial \boldsymbol{\theta}}.
 
 This is exactly what we have seen previously, substituting in reveals that :math:`J = \mathbf{S}`.  Hence, the Jacobian is (a necessary)by product when we wish to obtain the gradient.  In fact, this is exactly how we proceed in :func:`sensitivity <pygom.SquareLoss.sensitivity>` where it makes an internal call to :func:`jac <pygom.SqaureLoss.jac>` to obtain the Jacobian first.  This allows the end user to have more options when choosing which type of algorithms to use, i.e. Gauss-Newton or Levenberg-Marquardt.
 
@@ -191,7 +191,7 @@ which is identical to the original problem but in a continuous setting.  Now wri
 
 .. math::
 
-    min_{\theta} \quad & L(\theta) + \int_{t_{0}}^{T} \lambda^{\top}(\dot{x} - f(x,\theta))
+    min_{\theta} \; L(\theta) + \int_{t_{0}}^{T} \lambda^{\top}(\dot{x} - f(x,\theta))
 
 with Lagrangian multiplier :math:`\lambda \ge 0`.  After some algebraic manipulation, it can be shown that the total derivative of the Lagrangian function is
 
@@ -215,7 +215,7 @@ The method of choice here to perform the adjoint calcuation is to run a forward 
 
 .. ipython::
 
-    In [326]: odeSIRAdjoint,outputAdjoint = objSIR.adjoint(full_output=True)
+    In [326]: odeSIRAdjoint, outputAdjoint = objSIR.adjoint(full_output=True)
 
 This is because evaluating the Jacobian may be expensive and Runge-kutta method suffers as the complexity increases.  In non-linear model such as those found in epidemiology, each element of the Jacobian may be the result of a complicated equation where linear step method will shine as it makes as little function evaluation as possible.  
 Note that derivations in the literature, the initial condition when evaluating the adjoint equation is :math:`\lambda(T)=0`.  But in our code we used :math:`\lambda(T) = -2(y(T)-x(T))`. Recall that we have observation :math:`y(T)` and simulation :math:`x(T)`, so that the adjoint equation evaluated at time :math:`T`
@@ -257,7 +257,7 @@ From before, we know that
 
 .. math::
 
-    \frac{\partial l}{\partial x} = (-2y+2x)  \quad \textnormal{ and } \quad \frac{\partial^{2} l}{\partial x^{2}} = 2I_{d}
+    \frac{\partial l}{\partial x} = (-2y+2x)  \quad and \quad \frac{\partial^{2} l}{\partial x^{2}} = 2I_{d}
 
 so our Hessian reduces to 
 
@@ -271,9 +271,9 @@ Just to demonstate how it works, lets look at the Hessian at the optimal point. 
 
 .. ipython:: 
 
-    In [212]: import scipy.linalg,scipy.optimize
+    In [211]: import scipy.linalg,scipy.optimize
 
-    In [212]: boxBounds = [(0.0,2.0), (0.0,2.0)]
+    In [212]: boxBounds = [(0.0, 2.0), (0.0, 2.0)]
 
     In [213]: res = scipy.optimize.minimize(fun=objSIR.cost,
        .....:                               jac=objSIR.sensitivity,

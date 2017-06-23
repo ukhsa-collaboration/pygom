@@ -9,7 +9,8 @@
 __all__ = ['OperateOdeModel']
 
 from .base_ode_model import BaseOdeModel
-from ._model_errors import ArrayError, InputError, IntegrationError, InitializeError
+from ._model_errors import ArrayError, InputError, \
+    IntegrationError, InitializeError
 from ._model_verification import simplifyEquation
 # import ode_utils as myUtil
 # from .ode_utils import shapeAdjust, compileCode
@@ -106,7 +107,7 @@ class OperateOdeModel(BaseOdeModel):
 
         self._intName = None
 
-        self._paramValue = [0] * len(self._paramList)
+        self._paramValue = [0]*len(self._paramList)
         # the class for shape re-adjustment. We would always like to
         # operate in the matrix form if possible as it takes up less
         # memory when operating, but the output is required to be of
@@ -126,8 +127,7 @@ class OperateOdeModel(BaseOdeModel):
             return False
 
     def __repr__(self):
-        return "OperateOdeModel"+self._getModelStr()
-        
+        return "OperateOdeModel" + self._getModelStr() 
 
     ########################################################################
     #
@@ -156,7 +156,7 @@ class OperateOdeModel(BaseOdeModel):
         # a really stupid way to determining whether it is linear.
         # have not figured out a better way yet...
         a = self._Jacobian.atoms()
-        for s in self._stateDict.keys():
+        for s in self._stateDict.values():
             if s in a:
                 isLinear = False
 #         for i in range(0, self._numState):
@@ -209,11 +209,12 @@ class OperateOdeModel(BaseOdeModel):
         A = self.getOde()
         B = sympy.zeros(A.rows,2)
         for i in range(A.shape[0]):
-            B[i,0] = sympy.symbols('d'+str(self._stateList[i])+'/dt=')
+            B[i,0] = sympy.symbols('d' + str(self._stateList[i]) + '/dt=')
             B[i,1] = A[i]
 
         if latexOutput:
-            print(sympy.latex(B, mat_str="array", mat_delim=None, inv_trig_style='full'))
+            print(sympy.latex(B, mat_str="array", mat_delim=None,
+                              inv_trig_style='full'))
         else:
             sympy.pretty_print(B)
 
@@ -230,7 +231,9 @@ class OperateOdeModel(BaseOdeModel):
             # convert the transition matrix into the set of ode
             self._ode = sympy.zeros(self._numState, 1)
             pureTransitionList = self._getAllTransition(pureTransitions=True)
-            fromList, toList, eqnList = self._unrollTransitionList(pureTransitionList)
+            fromList, \
+                toList, \
+                eqnList = self._unrollTransitionList(pureTransitionList)
             for i, eqn in enumerate(eqnList):
                 for k in fromList[i]:
                     self._ode[k] -= eqn
@@ -252,8 +255,8 @@ class OperateOdeModel(BaseOdeModel):
         # user to do this.  May consider this a feature in the future.
         for i, eqn in enumerate(self._ode):
             if self._t in eqn.atoms():
-                raise Exception("Input is a non-autonomous system. "+
-                                "We can only deal with an autonomous "+
+                raise Exception("Input is a non-autonomous system. " +
+                                "We can only deal with an autonomous " +
                                 "system at this moment in time")
 
             self. _ode[i], isDifficult = simplifyEquation(eqn)
@@ -469,20 +472,23 @@ class OperateOdeModel(BaseOdeModel):
         '''
         if self._Jacobian is None:
             self.getOde()
-            self._Jacobian = self._ode.jacobian([s for s in self._iterStateList()])
+            states = [s for s in self._iterStateList()]
+            self._Jacobian = self._ode.jacobian(states)
             for i in range(self._numState):
                 for j in range(self._numState):
-                    if self._Jacobian[i,j] != 0:
-                        self._Jacobian[i,j], isDifficult = simplifyEquation(self._Jacobian[i,j])
+                    eqn = self._Jacobian[i,j]
+                    if  eqn != 0:
+                        self._Jacobian[i,j], isDifficult = simplifyEquation(eqn)
                         self._isDifficult = self._isDifficult or isDifficult
 
+        f = self._SC.compileExprAndFormat
         if self._isDifficult:
-            self._JacobianCompile = self._SC.compileExprAndFormat(self._sp,
-                                                                  self._Jacobian,
-                                                                  modules='mpmath')
+            self._JacobianCompile = f(self._sp,
+                                      self._Jacobian,
+                                      modules='mpmath')
         else:
-            self._JacobianCompile = self._SC.compileExprAndFormat(self._sp,
-                                                                  self._Jacobian)
+            self._JacobianCompile = f(self._sp,
+                                      self._Jacobian)
 
         return(self._Jacobian)
 
@@ -529,7 +535,7 @@ class OperateOdeModel(BaseOdeModel):
         evalParam = list(state) + [time] + self._paramValue
         return(self._JacobianCompile(evalParam))
 
-    ##############################  the sum of jacobian, i.e a_{i} = \sum_{j=1}^{d} J_{i,j}
+    ######  the sum of jacobian, i.e a_{i} = \sum_{j=1}^{d} J_{i,j}
 
     def SensJacobianState(self, stateParam, t):
         '''
@@ -564,7 +570,8 @@ class OperateOdeModel(BaseOdeModel):
         '''
         return self.SensJacobianState(state, t)
 
-    def evalSensJacobianState(self, parameters=None, time=None, state=None, sens=None):
+    def evalSensJacobianState(self, parameters=None, time=None, state=None,
+                              sens=None):
         '''
         Evaluate the Jacobian of the sensitivities w.r.t the states given
         parameters, state and time. An extension of :meth:`.SensJacobianState`
@@ -600,8 +607,10 @@ class OperateOdeModel(BaseOdeModel):
 
         # dot first, then transpose, then reshape
         # basically, some magic
-        # don't ask me what is actually going on here, I did it while having my wizard hat on
-        return(numpy.reshape(self.diffJacobian(state, time).dot(self._SAUtil.vecToMatSens(sens)).transpose(),(nS*nP,nS)))
+        # don't ask me what is actually going on here, I did it
+        # while having my wizard hat on
+        return(numpy.reshape(self.diffJacobian(state, time).dot(
+            self._SAUtil.vecToMatSens(sens)).transpose(), (nS*nP, nS)))
 
     ############################## derivative of Jacobian
 
@@ -638,8 +647,9 @@ class OperateOdeModel(BaseOdeModel):
         Returns
         -------
         list
-            list of size (num of state,) each with :mod:`sympy.matrices.matrices`
-            of dimension [number of state x number of state]
+            list of size (num of state,) each with
+            :mod:`sympy.matrices.matrices` of dimension
+            [number of state x number of state]
 
         '''
         if self._diffJacobian is None:
@@ -649,10 +659,10 @@ class OperateOdeModel(BaseOdeModel):
             for eqn in self._ode:
                 J = sympy.zeros(self._numState, self._numState)
                 for i, si in enumerate(self._iterStateList()): 
-                    diffEqn, isDifficult1 = simplifyEquation(diff(eqn, si, 1))
+                    diffEqn, D1 = simplifyEquation(diff(eqn, si, 1))
                     for j, sj in enumerate(self._iterStateList()):
-                        J[i,j], isDifficult2 = simplifyEquation(diff(diffEqn, sj, 1))
-                        self._isDifficult = self._isDifficult or isDifficult1 or isDifficult2
+                        J[i,j], D2 = simplifyEquation(diff(diffEqn, sj, 1))
+                        self._isDifficult = self._isDifficult or D1 or D2
                 #binding.
                 diffJac.append(J)
 
@@ -665,13 +675,14 @@ class OperateOdeModel(BaseOdeModel):
 
             self._diffJacobian = copy.deepcopy(diffJacMatrix)
 
+        f = self._SC.compileExprAndFormat
         if self._isDifficult:
-            self._diffJacobianCompile = self._SC.compileExprAndFormat(self._sp,
-                                                                      self._diffJacobian,
-                                                                      modules='mpmath')
+            self._diffJacobianCompile = f(self._sp,
+                                          self._diffJacobian,
+                                          modules='mpmath')
         else:
-            self._diffJacobianCompile = self._SC.compileExprAndFormat(self._sp,
-                                                                      self._diffJacobian)
+            self._diffJacobianCompile = f(self._sp,
+                                          self._diffJacobian)
 
         return(self._diffJacobian)
 
@@ -729,6 +740,7 @@ class OperateOdeModel(BaseOdeModel):
 
         '''
         # finds
+        
         if self._Grad is None:
             ode = self.getOde()
             self._Grad = sympy.zeros(self._numState, self._numParam)
@@ -737,7 +749,8 @@ class OperateOdeModel(BaseOdeModel):
                 # need to adjust such that the first index is not
                 # included because it correspond to time
                 for j, p in enumerate(self._iterParamList()):
-                    self._Grad[i,j], isDifficult = simplifyEquation(diff(ode[i], p, 1))
+                    eqn, isDifficult = simplifyEquation(diff(ode[i], p, 1))
+                    self._Grad[i,j] = eqn
                     self._isDifficult = self._isDifficult or isDifficult
 
         if self._isDifficult:
@@ -834,23 +847,26 @@ class OperateOdeModel(BaseOdeModel):
 
         '''
         if self._GradJacobian is None:
-            self._GradJacobian = sympy.zeros(self._numState*self._numParam, self._numState)
+            self._GradJacobian = sympy.zeros(self._numState*self._numParam,
+                                             self._numState)
             G = self.getGrad()
             for k in range(0, self._numParam):
                 for i in range(0, self._numState):
                     for j, s in enumerate(self._iterStateList()):
-                        z = k * self._numState + i
-                        self._GradJacobian[z,j], isDifficult = simplifyEquation(diff(G[i,k], s, 1))
+                        z = k*self._numState + i
+                        eqn, isDifficult = simplifyEquation(diff(G[i,k], s, 1))
+                        self._GradJacobian[z,j] = eqn
                         self._isDifficult = self._isDifficult or isDifficult
             # end of the triple loop.  All elements are now filled
 
+        f = self._SC.compileExprAndFormat
         if self._isDifficult:
-            self._GradJacobianCompile = self._SC.compileExprAndFormat(self._sp,
-                                                                      self._GradJacobian,
-                                                                      modules='mpmath')
+            self._GradJacobianCompile = f(self._sp,
+                                          self._GradJacobian,
+                                          modules='mpmath')
         else:
-            self._GradJacobianCompile = self._SC.compileExprAndFormat(self._sp,
-                                                                      self._GradJacobian)
+            self._GradJacobianCompile = f(self._sp,
+                                         self._GradJacobian)
 
         return(self._GradJacobian)
 
@@ -1143,7 +1159,7 @@ class OperateOdeModel(BaseOdeModel):
         A = numpy.dot(J, S) + G
         
         if byState:
-            return numpy.reshape(A, self._numState * self._numParam)
+            return numpy.reshape(A, self._numState*self._numParam)
         else:
             return self._SAUtil.matToVecSens(A)
 
@@ -1179,7 +1195,7 @@ class OperateOdeModel(BaseOdeModel):
         '''
 
         if len(stateParam) == self._numState:
-            raise InputError("You have only inputed the initial condition "+
+            raise InputError("You have only inputed the initial condition " +
                              "for the states and not the sensitivity")
 
         # unrolling, assuming that we would always put the state first
@@ -1254,20 +1270,21 @@ class OperateOdeModel(BaseOdeModel):
             for j in range(0, self._numParam):
                 for i in range(0, self._numState):
                     if i == 0:
-                        arrangeVector[k] = (i * self._numState) + j
+                        arrangeVector[k] = (i*self._numState) + j
                     else:
-                        arrangeVector[k] = (i * (self._numState - 1)) + j
+                        arrangeVector[k] = (i*(self._numState - 1)) + j
                     k += 1
 
             outJ = outJ[numpy.array(arrangeVector,int),:]
-            sensJacobianOfState = sensJacobianOfState[numpy.array(arrangeVector, int),:]
-        # The Jacobian of the ode, then the sensitivities w.r.t state and the sensitivities.
-        # In block form.  Theoreticaly, only the diagonal blocks are important but we
-        # output the full matrix for completeness
+            idx = numpy.array(arrangeVector, int)
+            sensJacobianOfState = sensJacobianOfState[idx,:]
+        # The Jacobian of the ode, then the sensitivities w.r.t state and
+        # the sensitivities. In block form.  Theoreticaly, only the diagonal
+        # blocks are important but we output the full matrix for completeness
         return numpy.asarray(numpy.bmat([
-                    [J, numpy.zeros((self._numState, self._numState*self._numParam))],
-                    [sensJacobianOfState, outJ]
-                    ]))
+            [J, numpy.zeros((self._numState, self._numState*self._numParam))],
+            [sensJacobianOfState, outJ]
+        ]))
 
     def odeAndSensitivityJacobianT(self, t, stateParam, byState=False):
         '''
@@ -1351,7 +1368,7 @@ class OperateOdeModel(BaseOdeModel):
         Returns
         -------
         :class:`numpy.ndarray`
-            f(s(x,\theta)) and f(s(x_{0}))
+            :math:`f(s(x,\\theta))` and :math:`f(s(x_{0}))`
 
         Notes
         -----
@@ -1387,16 +1404,18 @@ class OperateOdeModel(BaseOdeModel):
         Parameters
         ----------
         stateParam: array like
-            The current numerical value for the states as well as the sensitivities
-            values all in one.  We assume that the state values comes first.
+            The current numerical value for the states as well as the
+            sensitivities values all in one.  We assume that the state
+            values comes first.
         t: double
             The current time
 
         Returns
         -------
         :class:`list`
-            concatenation of 3 element. First contains the ode, second the sensitivity,
-            then the sensitivity of the initial value.  All of them are of type
+            concatenation of 3 element. First contains the ode, second the
+            sensitivity, then the sensitivity of the initial value.  All
+            of them are of type
             :class:`numpy.ndarray`
 
         See Also
@@ -1406,8 +1425,8 @@ class OperateOdeModel(BaseOdeModel):
         '''
 
         if len(stateParam) == self._numState:
-            raise InputError("You have only inputed the initial condition for "+ 
-                             "the states and not the sensitivity")
+            raise InputError("You have only inputed the initial condition " +
+                             "for the states and not the sensitivity")
 
         # unrolling, assuming that we would always put the state first
         state = stateParam[0:self._numState]
@@ -1432,8 +1451,9 @@ class OperateOdeModel(BaseOdeModel):
         Parameters
         ----------
         stateParam: array like
-            The current numerical value for the states as well as the sensitivities
-            values all in one.  We assume that the state values comes first.
+            The current numerical value for the states as well as the
+            sensitivities values all in one.  We assume that the state
+            values comes first.
         t: double
             The current time
         byState: bool
@@ -1444,7 +1464,8 @@ class OperateOdeModel(BaseOdeModel):
         Returns
         -------
         :class:`numpy.ndarray`
-            output of a square matrix of size: number of ode + 1 times number of parameters
+            output of a square matrix of size: number of ode + 1 times number
+            of parameters
 
         See Also
         --------
@@ -1479,17 +1500,17 @@ class OperateOdeModel(BaseOdeModel):
             outJ = numpy.kron(numpy.eye(nP), J)
 
             # jacobian of the gradient
-            GJ = self.GradJacobian(state,t)
-            sensJacobianOfState = GJ + self.SensJacobianState(stateParam[:(nS*(nP+1))], t)
-
+            GJ = self.GradJacobian(state, t)
+            GS = self.SensJacobianState(stateParam[:(nS*(nP + 1))], t)
+            sensJacobianOfState = GJ + GS
 
             # The Jacobian of the ode, then the sensitivities w.r.t state 
             # and the sensitivities. In block form
             return numpy.asarray(numpy.bmat([
-                        [J, numpy.zeros((nS, nS * nP)), numpy.zeros((nS, nS*nS))],
-                        [sensJacobianOfState, outJ, numpy.zeros((nS*nP, nS*nS))],
-                        [A, numpy.zeros((nS*nS, nS * nP)), numpy.kron(numpy.eye(nS), J)]
-                        ]))
+                [J, numpy.zeros((nS, nS*nP)), numpy.zeros((nS, nS*nS))],
+                [sensJacobianOfState, outJ, numpy.zeros((nS*nP, nS*nS))],
+                [A, numpy.zeros((nS*nS, nS*nP)), numpy.kron(numpy.eye(nS), J)]
+            ]))
 
     def odeAndSensitivityIVJacobianT(self, t, stateParam):
         '''
@@ -1536,11 +1557,13 @@ class OperateOdeModel(BaseOdeModel):
         '''
         return self.adjointInterpolate(state, t, interpolateFuncList, objInput)
 
-    def _adjointInterpolate_NoCheck(self, state, t, interpolateFuncList, objInput=None):
+    def _adjointInterpolate_NoCheck(self, state, t,
+                                    interpolateFuncList, objInput=None):
         stateParam = [o(t) for o in interpolateFuncList]
         return self._adjoint_NoCheck(state, t, stateParam, objInput)
 
-    def _adjointInterpolateT_NoCheck(self, t, state, interpolateFuncList, objInput=None):
+    def _adjointInterpolateT_NoCheck(self, t, state, 
+                                     interpolateFuncList, objInput=None):
         return self._adjoint_NoCheck(state, t, interpolateFuncList, objInput)
 
     def adjoint(self, state, t, stateParam, objInput=None):
@@ -1647,7 +1670,8 @@ class OperateOdeModel(BaseOdeModel):
         '''
         return self.adjointJacobian(state, t, stateParam, objInput)
 
-    def adjointInterpolateJacobian(self, state, t, interpolateFuncList, objInput=None):
+    def adjointInterpolateJacobian(self, state, t,
+                                   interpolateFuncList, objInput=None):
         '''
         Compute the Jacobian of the adjoint given the adjoint vector, time,
         function of the interpolation on the state variables and the
@@ -1687,11 +1711,13 @@ class OperateOdeModel(BaseOdeModel):
         stateParam = [o(t) for o in interpolateFuncList]
         return self.adjointJacobian(state, t, stateParam, objInput)
 
-    def adjointInterpolateJacobianT(self, t, state, interpolateFuncList, objInput=None):
+    def adjointInterpolateJacobianT(self, t, state,
+                                    interpolateFuncList, objInput=None):
         '''
         Same as :meth:`adjointInterpolateJacobian` but with t as first parameter
         '''
-        return self.adjointInterpolateJacobian(state, t, interpolateFuncList, objInput)
+        return self.adjointInterpolateJacobian(state, t,
+                                               interpolateFuncList, objInput)
 
     ########################################################################
     #
@@ -1701,7 +1727,7 @@ class OperateOdeModel(BaseOdeModel):
 
     def forwardforward(self, ff, t, state, s):
         '''
-        Evaluate a single f(x) of the forward-forward sensitivities
+        Evaluate a single :math:`f(x)` of the forward-forward sensitivities
 
         Parameters
         ----------
@@ -1717,7 +1743,7 @@ class OperateOdeModel(BaseOdeModel):
         Returns
         -------
         :class:`numpy.ndarray`
-            f(x) of size [number of state *
+            :math:`f(x)` of size [number of state *
             (number of parameters * number of parameters)]
 
         '''
@@ -1765,7 +1791,7 @@ class OperateOdeModel(BaseOdeModel):
         # we have kron products into all these evaluations and the class
         # here use a sparse matrix operation
         outFF = self._SAUtil.kronParam(J).dot(FF)
-        outFF += self._SAUtil.kronState(A=S.transpose(), pre=True).dot(diffJ).dot(S)
+        outFF += self._SAUtil.kronState(A=S.T, pre=True).dot(diffJ).dot(S)
 
         # now we need to magic our list / matrix into a vector, aka append
         # each of the vectorized matrix one after another
@@ -1790,20 +1816,21 @@ class OperateOdeModel(BaseOdeModel):
         '''
         
         if len(stateParam) == self._numState:
-            raise InputError("You have only inputed the initial condition for "+
-                            "the states and not the sensitivity")
-        elif len(stateParam) == ((self._numState+1) * self._numParam):
-            raise InputError("You have only inputed the initial condition for "+
-                            "the states and the sensitivity but not the "+
-                            "forward forward condition")
+            raise InputError("You have only inputed the initial condition " +
+                             "for the states and not the sensitivity")
+        elif len(stateParam) == ((self._numState + 1)*self._numParam):
+            raise InputError("You have only inputed the initial condition " +
+                             "for the states and the sensitivity but not the " +
+                             "forward forward condition")
 
         # unrolling of parameters
         state = stateParam[0:self._numState]
         # we want the index up to numState * (numParam + 1)
-        # as in, numState * numParam + numState, number of sensitivities + number of ode
-        sens = stateParam[self._numState:(self._numState * (self._numParam + 1))]
+        # as in, (numState * numParam + numState,
+        # number of sensitivities + number of ode)
+        sens = stateParam[self._numState:(self._numState*(self._numParam + 1))]
         # the rest are then the forward forward sensitivities
-        ff = stateParam[(self._numState * (self._numParam + 1))::]
+        ff = stateParam[(self._numState*(self._numParam + 1))::]
 
         out1 = self.ode(state, t)
         out2 = self.sensitivity(sens, t, state)
@@ -1813,7 +1840,7 @@ class OperateOdeModel(BaseOdeModel):
 
     def odeAndForwardforwardT(self, t, stateParam):
         '''
-        Same as :method:`odeAndForwardForward` but with time
+        Same as :meth:`odeAndForwardForward` but with time
         as the first input
 
         '''
@@ -1849,7 +1876,7 @@ class OperateOdeModel(BaseOdeModel):
         # instead of the full one unlike some of the other methods within
         # this class
         outJS = numpy.kron(numpy.eye(self._numParam), J)
-        outJFF = numpy.kron(numpy.eye(self._numParam * self._numParam), J)
+        outJFF = numpy.kron(numpy.eye(self._numParam*self._numParam), J)
         # The Jacobian of the ode, then the sensitivities, then the
         # forward forward sensitivities
         return scipy.linalg.block_diag(J, outJS, outJFF)
@@ -1877,6 +1904,7 @@ class OperateOdeModel(BaseOdeModel):
              initial condition of x at time 0
 
         '''
+        err_str = "More than one state in the defined system"
 
         if isinstance(x0, numpy.ndarray):
             self._x0 = x0
@@ -1886,9 +1914,9 @@ class OperateOdeModel(BaseOdeModel):
             if self._numState == 1:
                 self._x0 = numpy.array([x0])
             else:
-                raise InitializeError("More than one state in the defined system")
+                raise InitializeError(err_str)
         else:
-            raise InitializeError("More than one state in the defined system")
+            raise InitializeError("err_str")
 
         if len(self._x0) != self._numState:
             raise Exception("Number of state is " +
@@ -1908,6 +1936,7 @@ class OperateOdeModel(BaseOdeModel):
 
         '''
 
+        err_str = "Initial time should be a "
         if ode_utils.isNumeric(t0):
             self._t0 = t0
         elif ode_utils.isListLike(t0):
@@ -1915,16 +1944,16 @@ class OperateOdeModel(BaseOdeModel):
                 if ode_utils.isNumeric(t0[0]):
                     self._t0 = t0[0]
                 else:
-                    raise InitializeError("Initial time should be a numeric value")
+                    raise InitializeError(err_str + "numeric value")
             else:
-                raise InitializeError("Initial time should be a single value")
+                raise InitializeError(err_str + "single value")
         elif isinstance(t0, (list, tuple)):
             if len(t0) == 1:
                 self._t0 = numpy.array(t0[0])
             else:
-                raise InitializeError("Initial time should be a single value")
+                raise InitializeError(err_str + "single value")
         else:
-            raise InitializeError("Initial time should be numeric value")
+            raise InitializeError(err_str + "numeric value")
 
         return self
 
@@ -1957,8 +1986,8 @@ class OperateOdeModel(BaseOdeModel):
         '''
         # type checking
         self._setIntegrateTime(t)
-        # if our parameters are stochastic, then we are going to generate another
-        # set of parameters to run
+        # if our parameters are stochastic, then we are going to generate
+        # another set of parameters to run
         if self._stochasticParam is not None:
             # this should always be true.  If not, then we have screwed up
             # somewhere within this class.
@@ -1989,8 +2018,8 @@ class OperateOdeModel(BaseOdeModel):
         '''
 
         self._setIntegrateTime(t)
-        # if our parameters are stochastic, then we are going to generate another
-        # set of parameters to run
+        # if our parameters are stochastic, then we are going to generate
+        # another set of parameters to run
         if self._stochasticParam is not None:
             # this should always be true
             if isinstance(self._stochasticParam, dict):
@@ -2013,7 +2042,8 @@ class OperateOdeModel(BaseOdeModel):
         elif ode_utils.isNumeric(t):
             t = numpy.append(self._t0, numpy.array(t))
         else:
-            raise ArrayError("Expecting an array like input or a single numeric value")
+            raise ArrayError("Expecting an array like input or a single " +
+                             "numeric value")
 
         self._odeTime = t
 
@@ -2023,10 +2053,11 @@ class OperateOdeModel(BaseOdeModel):
         '''
         assert self._t0 is not None, "Initial time not set"
 
-        self._odeSolution, self._odeOutput = ode_utils.integrate(self,
-                                                              self._x0,
-                                                              t,
-                                                              full_output=True)
+        f = ode_utils.integrate
+        self._odeSolution, self._odeOutput = f(self,
+                                               self._x0,
+                                               t,
+                                               full_output=True)
         if full_output:
             return self._odeSolution, self._odeOutput
         else:
@@ -2038,13 +2069,14 @@ class OperateOdeModel(BaseOdeModel):
         '''
         assert self._x0 is not None, "Initial state not set"
 
-        self._odeSolution, self._odeOutput = ode_utils.integrateFuncJac(self.odeT,
-                                                                     self.JacobianT,
-                                                                     self._x0,
-                                                                     t[0], t[1::],
-                                                                     includeOrigin=True,
-                                                                     full_output=True,
-                                                                     intName=intName)
+        f = ode_utils.integrateFuncJac
+        self._odeSolution, self._odeOutput = f(self.odeT,
+                                               self.JacobianT,
+                                               self._x0,
+                                               t[0], t[1::],
+                                               includeOrigin=True,
+                                               full_output=True,
+                                               intName=intName)
 
         if full_output:
             return self._odeSolution, self._odeOutput
@@ -2104,7 +2136,9 @@ class OperateOdeModel(BaseOdeModel):
 
         if isinstance(state, list):
             evalParam = state + [time]
-        else:
+        elif hasattr(state, '__iter__'):
             evalParam = list(state) + [time]
+        else:
+            evalParam = [state] + [time]
 
         return evalParam + self._paramValue

@@ -1,11 +1,12 @@
 enum34>=1.0.4; python_version == '2.7'
+dask>=0.13.0
 graphviz>=0.4.9
-ipyparallel>=4.0.0
 matplotlib>=1.0.0
 numpy>=1.6.0
-numpydoc>=0.6.0
 pandas>=0.15.0
 python-dateutil>=2.0.0
 python-libsbml>=5.0.0
 scipy>=0.10.0
 sympy>=1.0.0
+numpydoc>=0.6.0
+sphinx>=1.4.1

@@ -1,3 +1,10 @@
+"""
+    .. moduleauthor:: Edwin Tye <Edwin.Tye@phe.gov.uk>
+
+    Module/class that contains a variable object for the ode
+
+"""
+
 import sympy
 
 class ODEVariable(object):
@@ -40,11 +47,13 @@ class ODEVariable(object):
         if isinstance(other, str):
             return self.ID == other
         elif isinstance(other, ODEVariable):
-            return self.ID == other.ID and self.name == other.name and self.units == other.units
+            return self.ID == other.ID and \
+                self.name == other.name and \
+                self.units == other.units
         elif isinstance(other, sympy.Symbol):
             return self.ID == str(other)
         else:
-            raise NotImplementedError('Input type is %s, not an allowed type' % type(other))
+            raise NotImplementedError('Wrong input type of %s' % type(other))
         
     def __neq__(self, other):
         return not self.__eq__(other)

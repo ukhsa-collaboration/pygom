@@ -9,11 +9,11 @@ __all__ = [
     'compileCode'
     ]
 
-from ._model_errors import ArrayError, ExpressionErrror, InputError, IntegrationError
+from ._model_errors import ArrayError, ExpressionErrror, \
+    InputError, IntegrationError
 
 import numpy
 import math
-# import matplotlib.pyplot
 import scipy.sparse, scipy.integrate
 import sympy
 from sympy.utilities.lambdify import lambdify
@@ -81,7 +81,10 @@ class shapeAdjust(object):
         A: array like
             a 2d array
         pre: bool, optional
-            If True, then returns I kron A.  If False then A kron I
+            If True, then returns :math:`I \otimes A`.
+            If False then :math:`A \otimes I`, where :math:`A` is the input
+            matrix, :math:`I` is the identity matrix and :math:`\otimes` is
+            the kron operator
         '''
         if pre:
             return scipy.sparse.kron(scipy.sparse.eye(self._d), A)
@@ -98,7 +101,10 @@ class shapeAdjust(object):
         A: array like
             a 2d array
         pre: bool, optional
-            If True, then returns I kron A.  If False then A kron I
+            If True, then returns :math:`I \otimes A`.
+            If False then :math:`A \otimes I`, where :math:`A` is the input
+            matrix, :math:`I` is the identity matrix and :math:`\otimes` is
+            the kron operator
         '''
         if pre:
             return scipy.sparse.kron(scipy.sparse.eye(self._p), A)
@@ -140,16 +146,16 @@ def integrate(ode, x0, t, full_output=False):
 def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
                      full_output=False, intName=None, nsteps=10000):
     '''
-    A replacement for :mod:`scipy.integrate.odeint` which performs integration using
-    :class:`scipy.integrate.ode`, tries to pick the correct integration method at
-    the start through eigenvalue analysis
+    A replacement for :mod:`scipy.integrate.odeint` which performs integration
+    using :class:`scipy.integrate.ode`, tries to pick the correct integration
+    method at the start through eigenvalue analysis
 
     Parameters
     ----------
     func: callable
-        the ode f(x)
+        the ode :math:`f(x)`
     jac: callable
-        Jacobian of the ode, :math:`J_{i,j} = \\nabla_{x_{j} f_{i}(x)
+        Jacobian of the ode, :math:`J_{i,j} = \\nabla_{x_{j}} f_{i}(x)`
     x0: float
         initial value of the states
     t0: float
@@ -161,9 +167,10 @@ def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
     full_output: bool, optional
         if additional output is required
     intName: str, optional
-        the integration method.  All those availble in :class:`ode <scipy.integrate.ode>`
-        are allowed with 'vode' and 'ivode' representing the non-stiff and stiff version
-        respectively.  Defaults to None, which tries to choose the integration method
+        the integration method.  All those availble in
+        :class:`ode <scipy.integrate.ode>` are allowed with 'vode' and
+        'ivode' representing the non-stiff and stiff version respectively.
+        Defaults to None, which tries to choose the integration method
         via eigenvalue analysis (only one) using the initial conditions
     nstep: int, optional
         number of steps allowed between each time point of the integration
@@ -171,9 +178,9 @@ def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
     Returns
     -------
     solution: array like
-        a :class:`numpy.ndarray` of shape (len(t),len(x0)) if includeOrigin is False, else
-        an extra row with x0 being the first.
-    output : dict, only returned if full_output == True
+        a :class:`numpy.ndarray` of shape (len(t),len(x0)) if includeOrigin is
+        False, else an extra row with x0 being the first.
+    output : dict, only returned if full_output=True
         Dictionary containing additional output information
 
         =========  ===========================================
@@ -194,17 +201,6 @@ def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
             # obtain the eigenvalue
             e = numpy.linalg.eig(jac(t0, x0, *args))[0]
             intName = _determineIntegratorGivenEigenValue(e)
-
-            # the min and max of them
-            # maxE = max(e)
-            # minE = min(e)
-            # if maxE >= 0:
-            #     intName = 'lsoda'
-            # else:
-            #     if minE >= -2:
-            #         intName = 'dopri5'
-            #     else:
-            #         intName = 'vode'
         else:
             intName = 'lsoda'
 
@@ -232,7 +228,8 @@ def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
 
     for deltaT in t:
         if full_output:
-            o1, o2, o3, o4, o5 = _integrateOneStep(r, deltaT, func, jac, args, True)
+            o1, o2, o3, o4, o5 = _integrateOneStep(r, deltaT,
+                                                   func, jac, args, True)
             successInfo.append(o2)
             eigenInfo.append(o3)
             maxEigen.append(o4)
@@ -287,29 +284,38 @@ def _integrateOneStep(r, t, func, jac, args=(), full_output=False):
 
 def _setupIntegrator(func, jac, x0, t0, args=(), intName=None, nsteps=10000):
     if intName == 'dopri5':
-        # if we are going to use rk5, then one thing for sure is that we know for sure
-        # that the set of equations are not stiff.  Furthermore, the Jacobian information
-        # will never be used as it evaluate f(x) directly
+        # if we are going to use rk5, then one thing for sure is that we
+        # know for sure that the set of equations are not stiff. 
+        # Furthermore, the Jacobian information will never be used as
+        # it evaluate f(x) directly
         r = scipy.integrate.ode(func).set_integrator('dopri5', nsteps=nsteps,
                                                      atol=atol, rtol=rtol)
     elif intName == 'dop853':
         r = scipy.integrate.ode(func).set_integrator('dop853', nsteps=nsteps,
                                                      atol=atol, rtol=rtol)
     elif intName == 'vode':
-        r = scipy.integrate.ode(func, jac).set_integrator('vode', with_jacobian=True,
+        r = scipy.integrate.ode(func, jac).set_integrator('vode',
+                                                          with_jacobian=True,
                                                           lband=None, uband=None,
-                                                          nsteps=nsteps, atol=atol, rtol=rtol)
+                                                          nsteps=nsteps,
+                                                          atol=atol, rtol=rtol)
     elif intName == 'ivode':
-        r = scipy.integrate.ode(func, jac).set_integrator('vode', method='bdf', with_jacobian=True,
+        r = scipy.integrate.ode(func, jac).set_integrator('vode', method='bdf',
+                                                          with_jacobian=True,
                                                           lband=None, uband=None,
-                                                          nsteps=nsteps, atol=atol, rtol=rtol)
+                                                          nsteps=nsteps,
+                                                          atol=atol, rtol=rtol)
     elif intName == 'lsoda':
-        r = scipy.integrate.ode(func, jac).set_integrator('lsoda', with_jacobian=True,
-                                                          lband=None, uband=None, nsteps=nsteps,
+        r = scipy.integrate.ode(func, jac).set_integrator('lsoda',
+                                                          with_jacobian=True,
+                                                          lband=None, uband=None,
+                                                          nsteps=nsteps,
                                                           atol=atol, rtol=rtol)
     else:
-        r = scipy.integrate.ode(func, jac).set_integrator('lsoda', with_jacobian=True,
-                                                          lband=None, uband=None, nsteps=nsteps,
+        r = scipy.integrate.ode(func, jac).set_integrator('lsoda',
+                                                          with_jacobian=True,
+                                                          lband=None, uband=None,
+                                                          nsteps=nsteps,
                                                           atol=atol, rtol=rtol)
 
     r.set_f_params(*args).set_jac_params(*args)
@@ -367,7 +373,8 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
 
     if stateList is not None:
         if len(stateList) != numState:
-            raise InputError("Number of state (string) should be equal to number of output")
+            raise InputError("Number of state (string) should be equal " + 
+                             "to number of output")
         stateList = [str(i) for i in stateList]
 
     # tests for y
@@ -390,8 +397,8 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
         if yStateList is None:
             if numTargetState != numState:
                 if stateList is None:
-                    raise InputError("Unable to identify which observations the states"
-                                    + " belong to")
+                    raise InputError("Unable to identify which observations " + 
+                                     "the states belong to")
                 else:
                     nonAuto = False
                     for i in stateList:
@@ -442,29 +449,30 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
     # note that we can probably reduce the codes here significantly but
     # i have not thought of a good way of doing it yet.
     if numState > 9:
-        numFigure = int(math.ceil(numState / 9.0))
+        numFigure = int(math.ceil(numState/9.0))
         k = 0
         last = False
         # loop over all the figures minus 1
-        for z in range(0, numFigure - 1):
+        for z in range(numFigure - 1):
             f, axarr = matplotlib.pyplot.subplots(3, 3)
-            for i in range(0, 3):
-                for j in range(0, 3):
+            for i in range(3):
+                for j in range(3):
                     axarr[i, j].plot(t, solution[:, k])
                     if stateList is not None:
                         axarr[i, j].set_title(stateList[k])
                         if yStateList is not None:
                             if stateList[k] in yStateList:
-                                axarr[i, j].plot(t, y[:, yStateList.index(stateList[k])], 'r')
+                                idx = yStateList.index(stateList[k])
+                                axarr[i, j].plot(t, y[:, idx], 'r')
                         axarr[i, j].set_xlabel('Time')
                     k += 1
             # a single plot finished, now we move on to the next one
 
         # now we are getting to the last one
-        row = int(math.ceil((numState - (9 * (numFigure - 1))) / 3.0))
+        row = int(math.ceil((numState - (9*(numFigure - 1)))/3.0))
         f, axarr = matplotlib.pyplot.subplots(row, 3)
         if row == 1:
-            for j in range(0, 3):
+            for j in range(3):
                 if last == True:
                     break
                 axarr[j].plot(t, solution[:, k])
@@ -472,16 +480,17 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
                     axarr[j].set_title(stateList[k])
                     if yStateList is not None:
                         if stateList[k] in yStateList:
-                            axarr[j].plot(t, y[:, yStateList.index(stateList[k])], 'r')
+                            idx = yStateList.index(stateList[k])
+                            axarr[j].plot(t, y[:,idx], 'r')
                     axarr[j].set_xlabel('Time')
                 k += 1
                 if k == numState:
                     last = True
         else:
-            for i in range(0, row):
+            for i in range(row):
                 if last == True:
                     break
-                for j in range(0, 3):
+                for j in range(3):
                     if last == True:
                         break
                     axarr[i, j].plot(t, solution[:, k])
@@ -489,7 +498,8 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
                         axarr[i, j].set_title(stateList[k])
                         if yStateList is not None:
                             if stateList[k] in yStateList:
-                                axarr[i, j].plot(t, y[:, yStateList.index(stateList[k])], 'r')
+                                idx = yStateList.index(stateList[k])
+                                axarr[i, j].plot(t, y[:,idx], 'r')
                         axarr[i, j].set_xlabel('Time')
                     k += 1
                     if k == numState:
@@ -505,48 +515,50 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
         else:
             # we can deal with it in a single plot, in the format of 1x3
             f, axarr = matplotlib.pyplot.subplots(1, numState)
-            for i in range(0, numState):
+            for i in range(numState):
                 axarr[i].plot(t, solution[:, i])
                 if stateList is not None:
                     axarr[i].set_title(stateList[i])
                     if yStateList is not None:
                         if stateList[i] in yStateList:
-                            yStateList.index(stateList[i])
-                            axarr[i].plot(t, y[:, yStateList.index(stateList[i])], 'r')
+                            idx = yStateList.index(stateList[i])
+                            axarr[i].plot(t, y[:,idx], 'r')
                     # label :)
                     axarr[i].set_xlabel('Time')
 
     elif numState == 4:
-        # we have a total of 4 plots, nice and easy display of a 2x2.  Going across
-        # first before going down
+        # we have a total of 4 plots, nice and easy display of a 2x2. 
+        # Going across first before going down
         f, axarr = matplotlib.pyplot.subplots(2, 2)
         k = 0
-        for i in range(0, 2):
-            for j in range(0, 2):
+        for i in range(2):
+            for j in range(2):
                 axarr[i, j].plot(t, solution[:, k])
                 if stateList is not None:
                     axarr[i, j].set_title(stateList[k])
                     if yStateList is not None:
                         if stateList[k] in yStateList:
-                            axarr[i, j].plot(t, y[:, yStateList.index(stateList[k])], 'r')
+                            idx = yStateList.index(stateList[k])
+                            axarr[i, j].plot(t, y[:,idx], 'r')
                     # label :)
                     axarr[i, j].set_xlabel('Time')
                 k += 1
                 if numState == k:
                     break
     else:
-        row = int(math.ceil(numState / 3.0))
+        row = int(math.ceil(numState/3.0))
         # print(row)
         f, axarr = matplotlib.pyplot.subplots(row, 3)
         k = 0
-        for i in range(0, row):
-            for j in range(0, 3):
+        for i in range(row):
+            for j in range(3):
                 axarr[i, j].plot(t, solution[:, k])
                 if stateList is not None:
                     axarr[i, j].set_title(stateList[k])
                     if yStateList is not None:
                         if stateList[k] in yStateList:
-                            axarr[i, j].plot(t, y[:, yStateList.index(stateList[k])], 'r')
+                            idx = yStateList.index(stateList[k])
+                            axarr[i, j].plot(t, y[:,idx], 'r')
                     axarr[i, j].set_xlabel('Time')
                 k += 1
                 if numState == k:
@@ -605,7 +617,7 @@ def vecToMatFF(ff, numState, numParam):
     :func:`matToVecFF`
 
     '''
-    return numpy.reshape(ff, (numState * numParam, numParam))
+    return numpy.reshape(ff, (numState*numParam, numParam))
 
 def matToVecSens(S, numState, numParam):
     '''
@@ -675,7 +687,7 @@ class compileCode(object):
         if backend is None:
             self._backend = None
             x = sympy.Symbol('x')
-            expr = sympy.sin(x) / x
+            expr = sympy.sin(x)/x
 
             # lets assume that we can't do theano.... (for now)
             # now lets explore the other options
@@ -743,35 +755,49 @@ class compileCode(object):
         compiledFunc = None
         compileTypeChosen = None
         try:
-            if self._backend == 'f2py':
-                compiledFunc = autowrap(expr=inputExpr, args=inputSymb, backend='f2py')
+            if backend == 'f2py':
+                compiledFunc = autowrap(expr=inputExpr,
+                                        args=inputSymb,
+                                        backend='f2py')
                 compileTypeChosen = 'numpy'
-            elif self._backend == 'lambda':
-                compiledFunc = lambdify(expr=inputExpr, args=inputSymb, modules='numpy')
+            elif backend == 'lambda':
+                compiledFunc = lambdify(expr=inputExpr,
+                                        args=inputSymb,
+                                        modules='numpy')
                 compileTypeChosen = 'numpy'
-            elif self._backend == 'Cython':
-                # note that we have another test layer because of the bug previously
-                # mentioned in __init__ of this class
+            elif backend.lower() in ('cython', 'numpy'):
+                # note that we have another test layer because of the
+                # bug previously mentioned in __init__ of this class
                 try:
-                    compiledFunc = autowrap(expr=inputExpr, args=inputSymb, backend='Cython')
+                    compiledFunc = autowrap(expr=inputExpr,
+                                            args=inputSymb,
+                                            backend='Cython')
                     compileTypeChosen = 'numpy'
                 except:
                     # although we don't think it is possible given the checks
                     # previously performed, we should still try it
                     try:
-                        compiledFunc = autowrap(expr=inputExpr, args=inputSymb, backend='f2py')
+                        compiledFunc = autowrap(expr=inputExpr,
+                                                args=inputSymb,
+                                                backend='f2py')
                         compileTypeChosen = 'numpy'
                     except:
-                        compiledFunc = lambdify(expr=inputExpr, args=inputSymb, modules='numpy')
+                        compiledFunc = lambdify(expr=inputExpr,
+                                                args=inputSymb,
+                                                modules='numpy')
                         compileTypeChosen = 'numpy'
             else:
                 raise ExpressionErrror("The problem is too tough")
         except:
             try:
-                compiledFunc = lambdify(expr=inputExpr, args=inputSymb, modules='mpmath')
+                compiledFunc = lambdify(expr=inputExpr,
+                                        args=inputSymb,
+                                        modules='mpmath')
                 compileTypeChosen = 'mpmath'
             except:
-                compiledFunc = lambdify(expr=inputExpr, args=inputSymb, modules='sympy')
+                compiledFunc = lambdify(expr=inputExpr,
+                                        args=inputSymb,
+                                        modules='sympy')
                 compileTypeChosen = 'sympy'
         
         if compileType:
@@ -779,7 +805,8 @@ class compileCode(object):
         else:
             return compiledFunc
 
-    def compileExprAndFormat(self, inputSymb, inputExpr, backend=None, modules=None, outType=None):
+    def compileExprAndFormat(self, inputSymb, inputExpr,
+                             backend=None, modules=None, outType=None):
         '''
         Compiles the expression given the symbols and determine which
         type of output is it.  Transforms the output appropriately into
@@ -857,7 +884,7 @@ def checkArrayType(x):
     elif isNumeric(x):
         x = numpy.array([x])
     else:
-        raise ArrayError("Expecting an array like object")
+        raise ArrayError("Expecting an array like object, got %s" % type(x))
 
     return x
 
@@ -885,7 +912,8 @@ def checkDimension(x, y):
     x = checkArrayType(x)
 
     if len(y) != len(x):
-        raise InputError("The number of observations and time points should have the same length")
+        raise InputError("The number of observations and time points " + 
+                         "should have the same length")
 
     return (x, y)
 

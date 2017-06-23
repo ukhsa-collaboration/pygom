@@ -21,17 +21,17 @@ We are going to investigate another classic model here, the FitzHugh-Nagumo, or 
 
     In [5]: import matplotlib.pyplot as plt
 
-    In [1]: x0 = [-1.0,1.0]
+    In [1]: x0 = [-1.0, 1.0]
 
     In [2]: t0 = 0
 
     In [3]: # params
 
-    In [4]: paramEval = [('a',0.2), ('b',0.2),('c',3.0)]
+    In [4]: paramEval = [('a',0.2), ('b',0.2), ('c',3.0)]
 
-    In [5]: ode = common_models.FitzHugh().setParameters(paramEval).setInitialValue(x0,t0)
+    In [5]: ode = common_models.FitzHugh().setParameters(paramEval).setInitialValue(x0, t0)
 
-Define a set of time points and lets see how the two states **V** and **R** are suppose to behave.
+Define a set of time points and lets see how the two states :math:`V` and :math:`R` are suppose to behave.
 
 .. ipython:: 
 
@@ -49,23 +49,21 @@ Obtaining the correct parameters for the FitzHugh model is well known to be diff
 
 .. ipython::
 
-    In [26]: theta = [0.5,0.5,0.5]
+    In [26]: theta = [0.5, 0.5, 0.5]
 
-    In [27]: objFH = SquareLoss(theta,ode,x0,t0,t,solution[1::,1],'R')
+    In [27]: objFH = SquareLoss(theta, ode, x0, t0, t, solution[1::,1], 'R')
 
     In [28]: boxBounds = [
-       ....:     (0.0,5.0),
-       ....:     (0.0,5.0),
-       ....:     (0.0,5.0)
-       ....:     ]
+       ....:              (0.0,5.0),
+       ....:              (0.0,5.0),
+       ....:              (0.0,5.0)
+       ....:             ]
 
-    In [29]: res = scipy.optimize.minimize(fun = objFH.cost,
-       ....:                               jac = objFH.sensitivity,
-       ....:                               x0 = theta,
-       ....:                               bounds = boxBounds,
-       ....:                               method = 'L-BFGS-B',
-       ....:                               options = {'disp':True},
-       ....:                               callback=objFH.thetaCallBack)
+    In [29]: res = scipy.optimize.minimize(fun=objFH.cost,
+       ....:                               jac=objFH.sensitivity,
+       ....:                               x0=theta,
+       ....:                               bounds=boxBounds,
+       ....:                               method='L-BFGS-B')
 
     In [30]: print(res)
        
@@ -73,13 +71,13 @@ Then we try the same again but with both state as our target.  Now we won't look
 
 .. ipython::
 
-    In [30]: objFH = SquareLoss(theta,ode,x0,t0,t,solution[1::,:],['V','R'])
+    In [30]: objFH = SquareLoss(theta, ode, x0, t0, t, solution[1::,:], ['V','R'])
 
-    In [31]: res = scipy.optimize.minimize(fun = objFH.cost,
-       ....:                               jac = objFH.sensitivity,
-       ....:                               x0 = theta,
-       ....:                               bounds = boxBounds,
-       ....:                               method = 'L-BFGS-B')
+    In [31]: res = scipy.optimize.minimize(fun=objFH.cost,
+       ....:                               jac=objFH.sensitivity,
+       ....:                               x0=theta,
+       ....:                               bounds=boxBounds,
+       ....:                               method='L-BFGS-B')
 
     In [32]: print(res)
 
@@ -88,27 +86,27 @@ Note how the estimates are the same, unlike other models.
 Estimate initial value
 ======================
 
-We can further assume that we have no idea about the initial values for **V** and **R** as well.  We also provide guesstimate to set off the optimization.  The input vector :math:`\theta` must have the parameters first, then the initial values, along with the corresponding bounds.
+We can further assume that we have no idea about the initial values for :math:`V` and :math:`R` as well.  We also provide guesstimate to set off the optimization.  The input vector :math:`\theta` must have the parameters first, then the initial values, along with the corresponding bounds.
 
-First, only a single target state
+First, only a single target state, i.e. we only have observations for one of states which is :math:`R` in this case
 
 .. ipython::
 
-    In [35]: objFH = SquareLoss(theta,ode,x0,t0,t,solution[1::,1],'R')
+    In [35]: objFH = SquareLoss(theta, ode, x0, t0, t, solution[1::,1], 'R')
 
     In [35]: boxBounds = [
-       ....:     (0.0,5.0),
-       ....:     (0.0,5.0),
-       ....:     (0.0,5.0),
-       ....:     (None,None),
-       ....:     (None,None)
-       ....:     ]
+       ....:              (0.0,5.0),
+       ....:              (0.0,5.0),
+       ....:              (0.0,5.0),
+       ....:              (None,None),
+       ....:              (None,None)
+       ....:             ]
 
-    In [36]: res = scipy.optimize.minimize(fun = objFH.costIV,
-       ....:                               jac = objFH.sensitivityIV,
-       ....:                               x0 = theta + [-0.5,0.5],
-       ....:                               bounds = boxBounds,
-       ....:                               method = 'L-BFGS-B')
+    In [36]: res = scipy.optimize.minimize(fun=objFH.costIV,
+       ....:                               jac=objFH.sensitivityIV,
+       ....:                               x0=theta + [-0.5,0.5],
+       ....:                               bounds=boxBounds,
+       ....:                               method='L-BFGS-B')
 
     In [37]: print(res)
 
@@ -116,13 +114,13 @@ then both state as target at the same time
 
 .. ipython::
 
-    In [38]: objFH = SquareLoss(theta,ode,x0,t0,t,solution[1::,:],['V','R'])
+    In [38]: objFH = SquareLoss(theta, ode, x0, t0, t, solution[1::,:], ['V','R'])
 
-    In [38]: res = scipy.optimize.minimize(fun = objFH.costIV,
-       ....:                               jac = objFH.sensitivityIV,
-       ....:                               x0 = theta + [-0.5,0.5],
-       ....:                               bounds = boxBounds,
-       ....:                               method = 'L-BFGS-B')
+    In [38]: res = scipy.optimize.minimize(fun=objFH.costIV,
+       ....:                               jac=objFH.sensitivityIV,
+       ....:                               x0=theta + [-0.5, 0.5],
+       ....:                               bounds=boxBounds,
+       ....:                               method='L-BFGS-B')
 
     In [39]: print(res)
 
