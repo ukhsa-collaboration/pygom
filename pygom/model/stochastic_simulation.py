@@ -7,6 +7,7 @@
 
 from ._model_errors import InputError, SimulationError
 from pygom.utilR.distn import rexp, ppois, rpois, runif
+from pygom.model.ode_utils import checkArrayType
 
 import numpy as np
 import scipy.stats
@@ -41,8 +42,8 @@ def exact(x0, t0, t1, stateChangeMat, transitionFunc,
         default seed.  When seed is an integer number, it will reset the seed
         via numpy.random.seed.  When seed=True, then a
         :class:`numpy.random.RandomState` object will be used for the
-        underlying random number generating process. If seed is an
-    object of :class:`numpy.random.RandomState` then it will be used directly
+        underlying random number generating process. If seed is an object
+        of :class:`numpy.random.RandomState` then it will be used directly
 
 
     Returns
@@ -53,7 +54,7 @@ def exact(x0, t0, t1, stateChangeMat, transitionFunc,
         time
     '''
 
-    x = x0
+    x = checkArrayType(x0)
     t = t0
     if seed: seed = np.random.RandomState()
     
@@ -62,10 +63,7 @@ def exact(x0, t0, t1, stateChangeMat, transitionFunc,
                                         stateChangeMat, transitionFunc,
                                         seed=seed)
         if s:
-            if t_new > t1:
-                break
-            else:
-                x, t = x_new, t_new
+            x, t = x_new, t_new
         else:
             break
         
@@ -73,6 +71,86 @@ def exact(x0, t0, t1, stateChangeMat, transitionFunc,
         return(x, t)
     else:
         return(x)
+
+def hybrid(x0, t0, t1, stateChangeMat, reactantMat,
+           transitionFunc, transitionMeanFunc, transitionVarFunc,
+           output_time=False, seed=None):
+    '''
+    Stochastic simulation using an hybrid method that uses either the
+    first reaction method or the :math:`\\tau`-leap depending on the
+    size of the states and transition rates.  Starting from time
+    t0 to t1 with the starting state values of x0.
+    
+    Parameters
+    ----------
+    x: array like
+        state vector
+    t0: double
+        start time
+    t1: double
+        final time
+    stateChangeMat: array like
+        State change matrix :math:`V_{i,j}` where :math:`i,j` represent the
+        state and transition respectively.  :math:`V_{i,j}` is some
+        non-zero integer such that transition :math:`j` happens means
+        that state :math:`i` changes by :math:`V_{i,j}` amount
+    transitionFunc: callable
+        a function that takes the input argument (x,t) and returns the vector
+        of transition rates
+    transitionMeanFunc: callable
+        a function that takes the input argument (x,t) and returns the
+        expected transitions
+    transitionVarFunc: callable
+        a function that takes the input argument (x,t) and returns the
+        variance of the transitions
+    output_time: bool, optional
+        defaults to False, if True then a tuple of two elements will be
+        returned, else only the state vector
+    seed: optional
+        represent which type of seed to use.  None or False uses the
+        default seed.  When seed is an integer number, it will reset the seed
+        via numpy.random.seed.  When seed=True, then a
+        :class:`numpy.random.RandomState` object will be used for the
+        underlying random number generating process. If seed is an object
+        of :class:`numpy.random.RandomState` then it will be used directly
+
+    Returns
+    -------
+    x: array like
+        state vector
+    t: double
+        time
+    '''
+
+    x = checkArrayType(x0)
+    t = t0
+    if seed: seed = np.random.RandomState()
+    
+    f = firstReaction
+    while t < t1:
+        if np.min(x) > 10:
+            x_new, t_new, s = tauLeap(x, t,
+                                      stateChangeMat, reactantMat,
+                                      transitionFunc,
+                                      transitionMeanFunc,
+                                      transitionVarFunc,
+                                      seed=seed)
+            if s is False:
+                x_new, t_new, s = f(x, t, stateChangeMat,
+                                    transitionFunc, seed=seed)                            
+        else:
+            x_new, t_new, s = f(x, t, stateChangeMat,
+                                transitionFunc, seed=seed) 
+        if s:
+            x, t = x_new, t_new
+        else:
+            break
+
+    if output_time:
+        return(x, t)
+    else:
+        return(x)
+
 
 def cle(x0, t0, t1, stateChangeMat, transitionFunc,
         h=None, n=500, positive=True, output_time=False, seed=None):
@@ -116,8 +194,8 @@ def cle(x0, t0, t1, stateChangeMat, transitionFunc,
         default seed.  When seed is an integer number, it will reset the seed
         via numpy.random.seed.  When seed=True, then a
         :class:`numpy.random.RandomState` object will be used for the
-        underlying random number generating process. If seed is an
-    object of :class:`numpy.random.RandomState` then it will be used directly
+        underlying random number generating process. If seed is an object
+        of :class:`numpy.random.RandomState` then it will be used directly
 
     Returns
     -------
@@ -148,25 +226,123 @@ def cle(x0, t0, t1, stateChangeMat, transitionFunc,
     if h is None:
         h = (t1 - t0)/n
         
-    x = x0
+    x = checkArrayType(x0)
     t = t0
     p = stateChangeMat.shape[1]
 
     while t < t1:
         mu = transitionFunc(x, t)
         sigma = np.sqrt(mu)*rvs(0, np.sqrt(h), size=p)
-        x_new = x + stateChangeMat.dot(h*mu + sigma)
-        x_new[x_new[positive]<0] = 0
+        x = np.add(x, stateChangeMat.dot(h*mu + sigma))
         ## We might like to put a defensive line below to stop the states
         ## going below zero.  This applies only to models where each state
         ## represent a physical count
-        # x_new[x_new<0] = 0
-        t_new = t + h
-        if t_new > t1:
-            break
-        else:
-            x, t = x_new, t_new
+        x[x[positive]<0] = 0
+        t += h
         
+    if output_time:
+        return(x, t)
+    else:
+        return(x)
+
+def sde(x0, t0, t1, drift, diffusion, stateChangeMat=None,
+        h=None, n=500, positive=True, output_time=False, seed=None):
+    '''
+    Stochastic simulation using a SDE approximation starting from time
+    t0 to t1 with the starting state values of x0.  The SDE approximation
+    is performed using a simple Euler-Maruyama method with step size h.
+    We assume that the input parameter drift and diffusion each gives
+    a function that takes in two arguments :math:`(x,t)` and computes
+    the drift and diffusion.  If stateChangeMat is a
+    :class:`numpy.ndarray` then we assume that a pre-multiplication
+    against the drift and diffusion is required.
+    
+    Parameters
+    ----------
+    x: array like
+        state vector
+    t0: double
+        start time
+    t1: double
+        final time
+    drift: callable
+        a function that takes the input argument (x,t) and returns the vector
+        that contains the drift
+    diffusion: callable
+        a function that takes the input argument (x,t) and returns the vector
+        that contains the diffusion
+    stateChangeMat: array like
+        State change matrix :math:`V_{i,j}` where :math:`i,j` represent the
+        state and transition respectively.  :math:`V_{i,j}` is some
+        non-zero integer such that transition :math:`j` happens means
+        that state :math:`i` changes by :math:`V_{i,j}` amount
+    h: double, optional
+        step size h, defaults to None which then h = (t1 - t0)/n
+    n: int, optional
+        number of steps to take for the whole simulation, defaults to 500
+    positive: bool or array of bool, optional
+        whether the states :math:`x >= 0`.  If input is an array then the
+        length should be the same as len(x)
+    output_time: bool, optional
+        defaults to False, if True then a tuple of two elements will be
+        returned, else only the state vector
+    seed: optional
+        represent which type of seed to use.  None or False uses the
+        default seed.  When seed is an integer number, it will reset the seed
+        via numpy.random.seed.  When seed=True, then a
+        :class:`numpy.random.RandomState` object will be used for the
+        underlying random number generating process. If seed is an object
+        of :class:`numpy.random.RandomState` then it will be used directly
+
+    Returns
+    -------
+    x: array like
+        state vector
+    t: double
+        time
+    '''
+    
+    if stateChangeMat is not None:
+        assert isinstance(stateChangeMat, np.ndarray), \
+            "stateChangeMat should be a numpy array"
+        p = stateChangeMat.shape[1]
+    else:
+        p = len(drift(x0, t0))
+    
+    if hasattr(positive, '__iter__'):
+        assert len(positive) == len(x0), \
+        "an array for the input positive should have same length as x"
+        assert all(isinstance(p, bool) for p in positive), \
+        "elements in positive should be a bool"
+        positive = np.array(positive)
+    else:
+        assert isinstance(positive, bool), "positive should be a bool"
+        positive = np.array([positive]*len(x0))
+
+    if seed:
+        rvs = np.random.RandomState().normal
+    else:
+        rvs = scipy.stats.norm.rvs
+    
+    if h is None:
+        h = (t1 - t0)/n
+
+    x = checkArrayType(x0)
+    t = t0
+
+    while t < t1:
+        mu = h*drift(x, t)
+        sigma = diffusion(x, t)*rvs(0, np.sqrt(h), size=p)
+        if stateChangeMat is None:
+            x += mu + sigma
+        else:
+            x += stateChangeMat.dot(mu + sigma)
+        ## We might like to put a defensive line below to stop the states
+        ## going below zero.  This applies only to models where each state
+        ## represent a physical count
+        x[x[positive]<0] = 0
+        t += h
+
     if output_time:
         return(x, t)
     else:
@@ -348,7 +524,14 @@ def tauLeap(x, t, stateChangeMat, reactantMat,
     # where l = \gamma / \abs(\mu_{j}(x)) ,
     # and r = \gamma^{2} / \sigma_{j}^{2}(x)
     top = epsilon*totalRate
-    l = top/abs(mu)
+    try:
+        l = top/abs(mu)
+    except Warning:
+        print("Warning as an exception")
+        print(mu)
+        print(x)
+        print(t)
+        print(rates)
     r = (top**2)/sigma2
     tauScale = min(min(l), min(r))
     # note that the above calculation is actually very slow, because
