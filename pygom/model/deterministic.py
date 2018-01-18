@@ -55,8 +55,7 @@ class OperateOdeModel(BaseOdeModel):
                  derivedParamList=None,
                  transitionList=None,
                  birthDeathList=None,
-                 odeList=None,
-                 compileModule=None):
+                 odeList=None):
         '''
         Constructor that is built on top of a BaseOdeModel
         '''

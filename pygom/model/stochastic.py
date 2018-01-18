@@ -9,14 +9,14 @@
 __all__ = ['SimulateOdeModel']
 
 from .deterministic import OperateOdeModel
-from .stochastic_simulation import firstReaction, tauLeap
+from .stochastic_simulation import cle, exact, firstReaction, tauLeap, hybrid
 from .transition import TransitionType, Transition
 from ._model_errors import InputError, SimulationError
 from ._model_verification import checkEquation, simplifyEquation
 from . import _ode_composition
 from . import ode_utils
 
-import numpy
+import numpy as np
 import sympy
 import scipy.stats
 import copy
@@ -88,6 +88,67 @@ class SimulateOdeModel(OperateOdeModel):
     def __repr__(self):
         return "SimulateOdeModel" + self._getModelStr()
 
+    def exact(self, x0, t0, t1, output_time=False):
+        '''
+        Stochastic simulation using an exact method starting from time
+        t0 to t1 with the starting state values of x0
+    
+        Parameters
+        ----------
+        x: array like
+            state vector
+        t0: double
+            start time
+        t1: double
+            final time
+        '''
+        return(exact(x0, t0, t1, self._vMat, self.transitionVector,
+                     output_time=output_time, seed=True))
+    
+    def cle(self, x0, t0, t1, output_time=False):
+        '''
+        Stochastic simulation using the CLE approximation starting from time
+        t0 to t1 with the starting state values of x0.  The CLE approximation
+        is performed using a simple Euler-Maruyama method with step size h.
+        We assume that the input parameter transitionFunc provides
+        :math:`f(x,t)` while the CLE is defined as
+        :math:`dx = x + V*h*f(x,t) + \\sqrt(f(x,t))*Z*\\sqrt(h)`
+        with :math:`Z` being standard normal random variables.
+    
+        Parameters
+        ----------
+        x: array like
+            state vector
+        t0: double
+            start time
+        t1: double
+            final time
+        '''
+        return(cle(x0, t0, t1, self._vMat, self.transitionVector,
+                   output_time=output_time, seed=True))
+
+    def hybrid(self, x0, t0, t1, output_time=False):
+        '''
+        Stochastic simulation using an hybrid method that uses either the
+        first reaction method or the :math:`\\tau`-leap depending on the
+        size of the states and transition rates.  Starting from time
+        t0 to t1 with the starting state values of x0.
+    
+        Parameters
+        ----------
+        x: array like
+            state vector
+        t0: double
+            start time
+        t1: double
+            final time
+        '''
+        return(hybrid(x0, t0, t1, self._vMat, self._lambdaMat,
+                   self.transitionVector,
+                   self.transitionMean,
+                   self.transitionVar,
+                   output_time=output_time, seed=True))
+
     def simulateParam(self, t, iteration, full_output=False):
         '''
         Simulate the ode by generating new realization of the stochastic
@@ -155,7 +216,7 @@ class SimulateOdeModel(OperateOdeModel):
 
         # now make our 3D array
         # the first dimension is the number of iteration
-        Y = numpy.dstack(solutionList).mean(axis=2)
+        Y = np.dstack(solutionList).mean(axis=2)
 
         if full_output:
             return Y, solutionList
@@ -194,7 +255,7 @@ class SimulateOdeModel(OperateOdeModel):
 
         assert len(self._odeList) == 0, \
             "Currently only able to simulate when only transitions are present"
-        assert numpy.all(numpy.mod(self._x0, 1) == 0), \
+        assert np.all(np.mod(self._x0, 1) == 0), \
             "Can only simulate a jump process with integer initial values"
         
         # this determines what type of output we want
@@ -203,13 +264,13 @@ class SimulateOdeModel(OperateOdeModel):
         if ode_utils.isNumeric(t):#, (int, float, numpy.int64, numpy.float64)):
             finalT = t
         elif isinstance(t, (list, tuple)):
-            t = numpy.array(t)
+            t = np.array(t)
             if len(t) == 1:
                 finalT = t
             else:
                 finalT = t[-1:]
                 timePoint = True
-        elif isinstance(t, numpy.ndarray):
+        elif isinstance(t, np.ndarray):
             finalT = t[-1:]
             timePoint = True
         else:
@@ -225,7 +286,7 @@ class SimulateOdeModel(OperateOdeModel):
                                                          full_output=True,
                                                          seed=True))
 
-            xtmp = dask.bag.from_sequence(numpy.ones(iteration)*finalT)
+            xtmp = dask.bag.from_sequence(np.ones(iteration)*finalT)
             xtmp = xtmp.map(jump_partial).compute()
         except Exception:# as e:
             # print(e)
@@ -261,24 +322,6 @@ class SimulateOdeModel(OperateOdeModel):
         else:
             return simXList
 
-    def _extractObservationAtTime(self, X, t, targetTime):
-        '''
-        Given simulation and a set of time points which we would like to
-        observe, we extract the observations :math:`x_{t}` with
-        :math:`\\min\\{ \\abs( t - targetTime) \\}`
-        '''
-        y = list()
-        # maxTime = max(t)
-        index = 0
-        for i in targetTime:
-            if numpy.any(t == i):
-                index = numpy.where(t == i)[0][0]
-            else:
-                index = numpy.searchsorted(t, i) - 1
-            y.append(X[index])
-
-        return numpy.array(y)
-
     def _jump(self, finalT, exact=False, full_output=True, seed=None):
         '''
         Jumps from the initial time self._t0 to the input time finalT
@@ -287,7 +330,7 @@ class SimulateOdeModel(OperateOdeModel):
         assert self._t0 is not None, "No initial time"
         assert self._x0 is not None, "No initial state"
 
-        if seed: seed = numpy.random.RandomState()
+        if seed: seed = np.random.RandomState()
         t = self._t0.tolist()
         x = copy.deepcopy(self._x0)
 
@@ -311,7 +354,7 @@ class SimulateOdeModel(OperateOdeModel):
                     x, t, success = f(x, t, self._vMat,
                                       self.transitionVector, seed=seed)
                 else:
-                    if numpy.min(x) > 10:
+                    if np.min(x) > 10:
                         x_tmp, t_tmp, success = tauLeap(x, t,
                                                 self._vMat, self._lambdaMat,
                                                 self.transitionVector,
@@ -325,8 +368,7 @@ class SimulateOdeModel(OperateOdeModel):
                                               self.transitionVector, seed=seed)                            
                     else:
                         x, t, success = f(x, t, self._vMat,
-                                          self.transitionVector, seed=seed)
-## print("Directly into the firstReaction method and is it good? %s" % success) 
+                                          self.transitionVector, seed=seed) 
                 if success:
                     xList.append(x.copy())
                     tList.append(t)
@@ -336,7 +378,26 @@ class SimulateOdeModel(OperateOdeModel):
                     ## raise Exception('WTF')
             except SimulationError:
                 break
-        return numpy.array(xList), numpy.array(tList)
+
+        return np.array(xList), np.array(tList)
+
+    def _extractObservationAtTime(self, X, t, targetTime):
+        '''
+        Given simulation and a set of time points which we would like to
+        observe, we extract the observations :math:`x_{t}` with
+        :math:`\\min\\{ \\abs( t - targetTime) \\}`
+        '''
+        y = list()
+        # maxTime = max(t)
+        index = 0
+        for i in targetTime:
+            if np.any(t == i):
+                index = np.where(t == i)[0][0]
+            else:
+                index = np.searchsorted(t, i) - 1
+            y.append(X[index])
+
+        return np.array(y)
 
     ########################################################################
     #
