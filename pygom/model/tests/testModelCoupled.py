@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from pygom import OperateOdeModel, Transition, TransitionType
+from pygom import DeterministicOde, Transition, TransitionType
 import numpy
 import sympy
 from collections import OrderedDict
@@ -8,18 +8,18 @@ from collections import OrderedDict
 
 ## define parameters
 paramEval = {'beta_00':0.0010107,'beta_01':0.0010107,'beta_10':0.0010107,'beta_11':0.0010107,
-                 'd':0.02,'epsilon':45.6,'gamma':73.0,'N_0':10**6,'N_1':10**6,'p':0.01}
+             'd':0.02,'epsilon':45.6,'gamma':73.0,'N_0':10**6,'N_1':10**6,'p':0.01}
 
 class TestModelCoupled(TestCase):
-    
+
     def test_compareAll(self):
         '''
         Compare the solution of a coupled ode using different ways of defining it
         '''
-        
+
         n = 2
 
-        solution1 = self.naive(n)        
+        solution1 = self.naive(n)
         solution2 = self.shorter(n)
         solution3 = self.even_shorter(n)
         solution4 = self.very_short(n)
@@ -30,13 +30,13 @@ class TestModelCoupled(TestCase):
 
         if numpy.any((solution3-solution2) >= 0.001):
             raise Exception("Solution not match")
-            
+
         if numpy.any((solution4-solution3) >= 0.001):
             raise Exception("Solution not match")
-        
+
         if numpy.any((solution5-solution4) >= 0.001):
             raise Exception("Solution not match")
-        
+
     def naive(self, n):
         # n = 2
         s = [str(i) for i in range(n)]
@@ -53,7 +53,7 @@ class TestModelCoupled(TestCase):
             I += ['I_'+i]
             R += ['R_'+i]
             lambdaTemp = '0 '
-            for j in s: 
+            for j in s:
                 beta += ['beta_'+i+j]
                 if i==j:
                     lambdaTemp += '+ I_'+j+'* beta_'+i+j
@@ -70,29 +70,29 @@ class TestModelCoupled(TestCase):
         bdList = []
         derivedParamList = []
         for i in range(n):
-            derivedParamList += [(lambdaName[i],lambdaStr[i])]
-            transitionList += [Transition(origState=S[i],destState=E[i],equation=lambdaName[i]+ '*' +S[i] ,transitionType=TransitionType.T)]
-            transitionList += [Transition(origState=E[i],destState=I[i],equation=' epsilon * ' +E[i] ,transitionType=TransitionType.T)]
-            transitionList += [Transition(origState=I[i],destState=R[i],equation=' gamma * ' +I[i] ,transitionType=TransitionType.T)]
-            bdList += [Transition(origState=S[i], equation='d * '+S[i], transitionType=TransitionType.D)]
-            bdList += [Transition(origState=E[i], equation='d * '+E[i], transitionType=TransitionType.D)]
-            bdList += [Transition(origState=I[i], equation='d * '+I[i], transitionType=TransitionType.D)]
-            bdList += [Transition(origState=R[i], equation='d * '+R[i], transitionType=TransitionType.D)]
-            bdList += [Transition(origState=S[i], equation='d * '+N[i], transitionType=TransitionType.B)]
-            
-        ode = OperateOdeModel(stateList,
-                              paramList,
-                              derivedParamList=derivedParamList,
-                              transitionList=transitionList,
-                              birthDeathList=bdList)
+            derivedParamList += [(lambdaName[i], lambdaStr[i])]
+            transitionList += [Transition(origin=S[i], destination=E[i], equation=lambdaName[i]+ '*' +S[i] ,transition_type=TransitionType.T)]
+            transitionList += [Transition(origin=E[i], destination=I[i], equation=' epsilon * ' +E[i] ,transition_type=TransitionType.T)]
+            transitionList += [Transition(origin=I[i], destination=R[i], equation=' gamma * ' +I[i] ,transition_type=TransitionType.T)]
+            bdList += [Transition(origin=S[i], equation='d * '+S[i], transition_type=TransitionType.D)]
+            bdList += [Transition(origin=E[i], equation='d * '+E[i], transition_type=TransitionType.D)]
+            bdList += [Transition(origin=I[i], equation='d * '+I[i], transition_type=TransitionType.D)]
+            bdList += [Transition(origin=R[i], equation='d * '+R[i], transition_type=TransitionType.D)]
+            bdList += [Transition(origin=S[i], equation='d * '+N[i], transition_type=TransitionType.B)]
+
+        ode = DeterministicOde(stateList,
+                               paramList,
+                               derived_param=derivedParamList,
+                               transition=transitionList,
+                               birth_death=bdList)
 
         t = numpy.linspace(0, 40, 100)
         x01 = self.getInitialValue(paramList, n)
-        
+
         ode.setParameters(paramEval).setInitialValue(numpy.array(x01,float),t[0])
         solution1 = ode.integrate(t[1::])
-        return(solution1)
-    
+        return solution1
+
     def shorter(self, n):
         # n = 2
         s = [str(i) for i in range(n)]
@@ -110,7 +110,7 @@ class TestModelCoupled(TestCase):
                 states[v] = states[v]+[str(v)+"_"+i]
             N += ['N_'+i]
             lambdaTemp = '0'
-            for j in s: 
+            for j in s:
                 beta += ['beta_'+i+j]
                 if i==j:
                     lambdaTemp += '+ I_'+j+'*beta_'+i+j
@@ -129,20 +129,20 @@ class TestModelCoupled(TestCase):
         derivedParamList = []
         for i in range(n):
             derivedParamList += [(lambdaName[i],lambdaStr[i])]
-            transitionList += [Transition(origState=states['S'][i],destState=states['E'][i],equation=lambdaName[i]+ '*' +states['S'][i] ,transitionType=TransitionType.T)]
-            transitionList += [Transition(origState=states['E'][i],destState=states['I'][i],equation=' epsilon * ' +states['E'][i] ,transitionType=TransitionType.T)]
-            transitionList += [Transition(origState=states['I'][i],destState=states['R'][i],equation=' gamma * ' +states['I'][i] ,transitionType=TransitionType.T)]
-            bdList += [Transition(origState=states['S'][i], equation='d * '+states['S'][i], transitionType=TransitionType.D)]
-            bdList += [Transition(origState=states['E'][i], equation='d * '+states['E'][i], transitionType=TransitionType.D)]
-            bdList += [Transition(origState=states['I'][i], equation='d * '+states['I'][i], transitionType=TransitionType.D)]
-            bdList += [Transition(origState=states['R'][i], equation='d * '+states['R'][i], transitionType=TransitionType.D)]
-            bdList += [Transition(origState=states['S'][i], equation='d * '+N[i], transitionType=TransitionType.B)]
+            transitionList += [Transition(origin=states['S'][i], destination=states['E'][i], equation=lambdaName[i]+ '*' +states['S'][i] ,transition_type=TransitionType.T)]
+            transitionList += [Transition(origin=states['E'][i], destination=states['I'][i], equation=' epsilon * ' +states['E'][i] ,transition_type=TransitionType.T)]
+            transitionList += [Transition(origin=states['I'][i], destination=states['R'][i], equation=' gamma * ' +states['I'][i] ,transition_type=TransitionType.T)]
+            bdList += [Transition(origin=states['S'][i], equation='d * '+states['S'][i], transition_type=TransitionType.D)]
+            bdList += [Transition(origin=states['E'][i], equation='d * '+states['E'][i], transition_type=TransitionType.D)]
+            bdList += [Transition(origin=states['I'][i], equation='d * '+states['I'][i], transition_type=TransitionType.D)]
+            bdList += [Transition(origin=states['R'][i], equation='d * '+states['R'][i], transition_type=TransitionType.D)]
+            bdList += [Transition(origin=states['S'][i], equation='d * '+N[i], transition_type=TransitionType.B)]
 
-        ode = OperateOdeModel(stateList,
-                              paramList,
-                              derivedParamList=derivedParamList,
-                              transitionList=transitionList,
-                              birthDeathList=bdList)
+        ode = DeterministicOde(stateList,
+                               paramList,
+                               derived_param=derivedParamList,
+                               transition=transitionList,
+                               birth_death=bdList)
  
         t = numpy.linspace(0, 40, 100)
         x01 = self.getInitialValue(paramList, n)
@@ -150,11 +150,11 @@ class TestModelCoupled(TestCase):
         ode.setParameters(paramEval).setInitialValue(numpy.array(x01,float),t[0])
         solution2 = ode.integrate(t[1::])
 
-        return(solution2)
-    
+        return solution2
+
     def even_shorter(self, n):
         s = [str(i) for i in range(n)]
-        
+
         beta = []
         lambdaStr = []
         lambdaName = []
@@ -168,7 +168,7 @@ class TestModelCoupled(TestCase):
                 states[v] = states[v]+[str(v)+"_"+i]
             N += ['N_'+i]
             lambdaTemp = '0'
-            for j in s: 
+            for j in s:
                 beta += ['beta_'+i+j]
                 if i==j:
                     lambdaTemp += '+ I_'+j+'*beta_'+i+j
@@ -187,26 +187,26 @@ class TestModelCoupled(TestCase):
         derivedParamList = []
         for i in range(n):
             derivedParamList += [(lambdaName[i],lambdaStr[i])]
-            transitionList += [Transition(origState=states['S'][i],destState=states['E'][i],equation=lambdaName[i]+ '*' +states['S'][i] ,transitionType=TransitionType.T)]
-            transitionList += [Transition(origState=states['E'][i],destState=states['I'][i],equation=' epsilon * ' +states['E'][i] ,transitionType=TransitionType.T)]
-            transitionList += [Transition(origState=states['I'][i],destState=states['R'][i],equation=' gamma * ' +states['I'][i] ,transitionType=TransitionType.T)]
+            transitionList += [Transition(origin=states['S'][i], destination=states['E'][i], equation=lambdaName[i]+ '*' +states['S'][i] ,transition_type=TransitionType.T)]
+            transitionList += [Transition(origin=states['E'][i], destination=states['I'][i], equation=' epsilon * ' +states['E'][i] ,transition_type=TransitionType.T)]
+            transitionList += [Transition(origin=states['I'][i], destination=states['R'][i], equation=' gamma * ' +states['I'][i] ,transition_type=TransitionType.T)]
             for v in states:
-                bdList += [Transition(origState=states[v][i], equation='d * '+states[v][i], transitionType=TransitionType.D)]
-            bdList += [Transition(origState=states['S'][i], equation='d * '+N[i], transitionType=TransitionType.B)]
-            
-        ode = OperateOdeModel(stateList,
-                              paramList,
-                              derivedParamList=derivedParamList,
-                              transitionList=transitionList,
-                              birthDeathList=bdList)
+                bdList += [Transition(origin=states[v][i], equation='d * '+states[v][i], transition_type=TransitionType.D)]
+            bdList += [Transition(origin=states['S'][i], equation='d * '+N[i], transition_type=TransitionType.B)]
+
+        ode = DeterministicOde(stateList,
+                               paramList,
+                               derived_param=derivedParamList,
+                               transition=transitionList,
+                               birth_death=bdList)
 
         t = numpy.linspace(0, 40, 100)
         x01 = self.getInitialValue(paramList, n)
 
         ode.setParameters(paramEval).setInitialValue(numpy.array(x01,float),t[0])
         solution3 = ode.integrate(t[1::])
-        
-        return(solution3)
+
+        return solution3
 
     def very_short(self, n):
         beta = []
@@ -221,7 +221,7 @@ class TestModelCoupled(TestCase):
             var_dict[s] = [s+'_'+str(i) for i in range(n)]
         # print(glb.keys())
         # print(lcl.keys())
-        
+
         for i in range(n):
             lambdaTemp = '0 '
             for j in range(n):
@@ -235,34 +235,34 @@ class TestModelCoupled(TestCase):
         paramList = beta + ['d', 'epsilon', 'gamma', 'p'] + N
 
         stateList = S + E + I + R
-        
+
         transitionList = []
         bdList = []
         derivedParamList = []
         for i in range(n):
             derivedParamList += [(lambdaName[i],lambdaStr[i])]
-            transitionList += [Transition(origState=S[i],destState=E[i],equation=lambdaName[i]+ '*' +S[i] ,transitionType=TransitionType.T)]
-            transitionList += [Transition(origState=E[i],destState=I[i],equation=' epsilon * ' +E[i] ,transitionType=TransitionType.T)]
-            transitionList += [Transition(origState=I[i],destState=R[i],equation=' gamma * ' +I[i] ,transitionType=TransitionType.T)]
-    
-            bdList += [Transition(origState=S[i], equation='d * '+N[i], transitionType=TransitionType.B)]
-        for s in stateList:
-            bdList += [Transition(origState=s, equation='d * '+s, transitionType=TransitionType.D)]
+            transitionList += [Transition(origin=S[i], destination=E[i], equation=lambdaName[i]+ '*' +S[i], transition_type=TransitionType.T)]
+            transitionList += [Transition(origin=E[i], destination=I[i], equation=' epsilon * ' +E[i], transition_type=TransitionType.T)]
+            transitionList += [Transition(origin=I[i], destination=R[i], equation=' gamma * ' +I[i], transition_type=TransitionType.T)]
 
-        ode = OperateOdeModel(stateList,
-                              paramList,
-                              derivedParamList=derivedParamList,
-                              transitionList=transitionList,
-                              birthDeathList=bdList)
-        
-        t = numpy.linspace(0,40,100)
+            bdList += [Transition(origin=S[i], equation='d * '+N[i], transition_type=TransitionType.B)]
+        for s in stateList:
+            bdList += [Transition(origin=s, equation='d * '+s, transition_type=TransitionType.D)]
+
+        ode = DeterministicOde(stateList,
+                               paramList,
+                               derived_param=derivedParamList,
+                               transition=transitionList,
+                               birth_death=bdList)
+
+        t = numpy.linspace(0, 40, 100)
         x01 = self.getInitialValue(paramList, n)
 
         ode.setParameters(paramEval).setInitialValue(numpy.array(x01,float),t[0])
         solution4 = ode.integrate(t[1::])
-        
-        return(solution4)
-    
+
+        return solution4
+
     def confused(self, n):
         # stateName = ['N', 'S', 'E', 'I', 'R']
 #         for s in stateName:
@@ -288,31 +288,31 @@ class TestModelCoupled(TestCase):
                     lambdaStr += ' * p'
             derivedParamList += [('lambda_'+str(i), lambdaStr)]
 
-            transitionList += [Transition(origState=S[i],destState=E[i],equation='lambda_'+str(i)+ '*' +S[i] ,transitionType=TransitionType.T)]
-            transitionList += [Transition(origState=E[i],destState=I[i],equation=' epsilon * ' +E[i] ,transitionType=TransitionType.T)]
-            transitionList += [Transition(origState=I[i],destState=R[i],equation=' gamma * ' +I[i] ,transitionType=TransitionType.T)]
-            bdList += [Transition(origState=S[i], equation='d * '+N[i], transitionType=TransitionType.B)]
+            transitionList += [Transition(origin=S[i], destination=E[i],equation='lambda_'+str(i)+ '*' +S[i] ,transition_type=TransitionType.T)]
+            transitionList += [Transition(origin=E[i], destination=I[i],equation=' epsilon * ' +E[i] ,transition_type=TransitionType.T)]
+            transitionList += [Transition(origin=I[i], destination=R[i],equation=' gamma * ' +I[i] ,transition_type=TransitionType.T)]
+            bdList += [Transition(origin=S[i], equation='d * '+N[i], transition_type=TransitionType.B)]
 
         stateList = S + E + I + R
         for s in stateList:
-            bdList += [Transition(origState=s, equation='d * '+s, transitionType=TransitionType.D)]
+            bdList += [Transition(origin=s, equation='d * '+s, transition_type=TransitionType.D)]
 
         paramList = beta + ['d', 'epsilon', 'gamma', 'p'] + N
-            
-        ode = OperateOdeModel(stateList,
-                              paramList,
-                              derivedParamList=derivedParamList,
-                              transitionList=transitionList,
-                              birthDeathList=bdList)
+
+        ode = DeterministicOde(stateList,
+                               paramList,
+                               derived_param=derivedParamList,
+                               transition=transitionList,
+                               birth_death=bdList)
 
         t = numpy.linspace(0, 40, 100)
         x01 = self.getInitialValue(paramList, n)
 
         ode.setParameters(paramEval).setInitialValue(numpy.array(x01,float),t[0])
         solution5 = ode.integrate(t[1::])
-        
-        return(solution5)
-        
+
+        return solution5
+
     def getInitialValue(self, paramList, n=2):
         '''
         Finds the initial values where the stationary condition is achieved
@@ -338,4 +338,4 @@ class TestModelCoupled(TestCase):
         for s in x0:
             x01 += [s] * n
 
-        return(x01)
+        return x01

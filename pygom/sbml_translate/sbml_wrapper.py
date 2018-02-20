@@ -1,7 +1,7 @@
 import re
 
 from libsbml import SBMLReader
-from pygom import Transition, OperateOdeModel
+from pygom import Transition, DeterministicOde
 from ._compartments import getCompartmentsInfo
 from ._species import getSpeciesInfo
 from ._reactions import getReactionsInfo
@@ -27,7 +27,7 @@ def getOdeObject(model):
     # origList = list()
     # destList = list()
     # eqnList = list()
-    transitionList = list()
+    transition = list()
     for r in getReactionsInfo(a['reacts']):
         orig = [reactant['specie'] for reactant in r['reactant']]
         dest = [product['specie'] for product in r['product']]
@@ -43,7 +43,7 @@ def getOdeObject(model):
         for term in map(lambda x: x[0], paramLocal):
             eqn = re.sub(r'\b%s\b' % term, ' %s_%s ' % (r['id'], term), eqn)
         
-        transitionList.append(Transition(orig, eqn, 'T', dest, r['id']))
+        transition.append(Transition(orig, eqn, 'T', dest, r['id']))
 
         paramEval += map(lambda x: (r['id'] + '_' + x[0], x[1]), paramLocal)
 #         print "\n"
@@ -54,8 +54,8 @@ def getOdeObject(model):
 
 #     print "\nfinal paramEval"+str(paramEval)
 #     print paramList
-#     print transitionList 
+#     print transition 
 
-    ode = OperateOdeModel(stateList, paramList, transitionList=transitionList)
+    ode = DeterministicOde(stateList, paramList, transition=transition)
     ode = ode.setInitialState(x0).setParameters(paramEval)
     return(ode)

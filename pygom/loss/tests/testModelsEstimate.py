@@ -5,7 +5,7 @@ import scipy.integrate, scipy.optimize
 import copy
 
 from pygom import common_models, SquareLoss, NormalLoss, PoissonLoss
-from pygom import Transition, TransitionType, OperateOdeModel
+from pygom import Transition, TransitionType, DeterministicOde
 
 class TestModelEstimate(TestCase):
 
@@ -38,13 +38,13 @@ class TestModelEstimate(TestCase):
         # constraints
         EPSILON = numpy.sqrt(numpy.finfo(numpy.float).eps)
 
-        boxBounds = [(EPSILON, 5), (EPSILON, 5)]
+        box_bounds = [(EPSILON, 5), (EPSILON, 5)]
 
         resQP = scipy.optimize.minimize(fun=objSIR.cost,
                                         jac=objSIR.sensitivity,
                                         x0=theta,
                                         method='SLSQP',
-                                        bounds=boxBounds)
+                                        bounds=box_bounds)
 
         target = numpy.array([0.5, 1.0/3.0])
         if numpy.any(abs(resQP['x']-target) >= 1e-2):
@@ -70,16 +70,16 @@ class TestModelEstimate(TestCase):
         # constraints
         EPSILON = numpy.sqrt(numpy.finfo(numpy.float).eps)
 
-        boxBounds = [(EPSILON, 5),(EPSILON, 5)]
+        box_bounds = [(EPSILON, 5),(EPSILON, 5)]
 
         resQP = scipy.optimize.minimize(fun=objSIR.cost,
                                         jac=objSIR.adjoint,
                                         x0=theta,
                                         method='SLSQP',
-                                        bounds=boxBounds)
+                                        bounds=box_bounds)
         
         target = numpy.array([0.5, 1.0/3.0])
-        if numpy.any(abs(resQP['x']-target) >= 1e-2):
+        if numpy.any(abs(resQP['x'] - target) >= 1e-2):
             raise Exception("Failed!")
 
     def test_SIR_Estimate_NormalLoss(self):
@@ -101,17 +101,17 @@ class TestModelEstimate(TestCase):
 
         # constraints
         EPSILON = numpy.sqrt(numpy.finfo(numpy.float).eps)
-        
-        boxBounds = [(EPSILON, 5), (EPSILON, 5)]
+
+        box_bounds = [(EPSILON, 5), (EPSILON, 5)]
 
         resQP = scipy.optimize.minimize(fun=objSIR.cost,
                                         jac=objSIR.sensitivity,
                                         x0=theta,
                                         method='SLSQP',
-                                        bounds=boxBounds)
+                                        bounds=box_bounds)
 
         target = numpy.array([0.5, 1.0/3.0])
-        if numpy.any(abs(resQP['x']-target) >= 1e-2):
+        if numpy.any(abs(resQP['x'] - target) >= 1e-2):
             raise Exception("Failed!")
 
     def test_SIR_Estimate_PoissonLoss_1TargetState(self):
@@ -125,15 +125,15 @@ class TestModelEstimate(TestCase):
         stateList = ['S','I','R']
         paramList = ['beta','gamma','N']
         transitionList = [
-                          Transition(origState='S', destState='I',
+                          Transition(origin='S', destination='I',
                                      equation='beta * S * I/N',
-                                     transitionType=TransitionType.T),
-                          Transition(origState='I', destState='R',
+                                     transition_type=TransitionType.T),
+                          Transition(origin='I', destination='R',
                                      equation='gamma * I',
-                                     transitionType=TransitionType.T)
+                                     transition_type=TransitionType.T)
                           ]
         # initialize the model
-        ode = OperateOdeModel(stateList, paramList, transitionList=transitionList)
+        ode = DeterministicOde(stateList, paramList, transition=transitionList)
         ode = ode.setParameters(paramEval).setInitialValue(x0,t[0])
 
         # Standard.  Find the solution.
@@ -148,13 +148,13 @@ class TestModelEstimate(TestCase):
         # constraints
         EPSILON = numpy.sqrt(numpy.finfo(numpy.float).eps)
         
-        boxBounds = [(EPSILON,2),(EPSILON,2)]
+        box_bounds = [(EPSILON,2),(EPSILON,2)]
 
         res = scipy.optimize.minimize(fun=objSIR.cost,
                                       jac=objSIR.sensitivity,
                                       x0=theta,
                                       method='L-BFGS-B',
-                                      bounds=boxBounds)
+                                      bounds=box_bounds)
         
         target = numpy.array([0.5, 1.0/3.0])
         if numpy.any(abs(res['x']-target) >= 1e-2):
@@ -171,22 +171,22 @@ class TestModelEstimate(TestCase):
         stateList = ['S','I','R']
         paramList = ['beta','gamma','N']
         transitionList = [
-                          Transition(origState='S', destState='I',
+                          Transition(origin='S', destination='I',
                                      equation='beta * S * I/N',
-                                     transitionType=TransitionType.T),
-                          Transition(origState='I', destState='R',
+                                     transition_type=TransitionType.T),
+                          Transition(origin='I', destination='R',
                                      equation='gamma * I',
-                                     transitionType=TransitionType.T)
+                                     transition_type=TransitionType.T)
                           ]
         # initialize the model
-        ode = OperateOdeModel(stateList, paramList, transitionList=transitionList)
+        ode = DeterministicOde(stateList, paramList, transition=transitionList)
         ode = ode.setParameters(paramEval).setInitialValue(x0,t[0])
 
         # Standard.  Find the solution.
         solution = ode.integrate(t[1::])
         # initial value
         theta = [0.4,0.3]
-        
+
         # note that we need to round the observations to integer for it to make sense
         objSIR = PoissonLoss(theta, ode, x0, t[0], t[1::],
                              numpy.round(solution[1::,1:3]),
@@ -195,17 +195,17 @@ class TestModelEstimate(TestCase):
         # constraints
         EPSILON = numpy.sqrt(numpy.finfo(numpy.float).eps)
 
-        boxBounds = [(EPSILON, 2), (EPSILON, 2)]
+        box_bounds = [(EPSILON, 2), (EPSILON, 2)]
 
         res = scipy.optimize.minimize(fun=objSIR.cost,
                                       jac=objSIR.sensitivity,
                                       x0=theta,
                                       method='L-BFGS-B',
-                                      bounds=boxBounds)
-        
+                                      bounds=box_bounds)
+
         target = numpy.array([0.5, 1.0/3.0])
-        if numpy.any(abs(res['x']-target) >= 1e-2):
-            raise Exception("Failed!")   
+        if numpy.any(abs(res['x'] - target) >= 1e-2):
+            raise Exception("Failed!")
 
 
     def test_FH_Obj(self):
@@ -219,13 +219,13 @@ class TestModelEstimate(TestCase):
         # the time points for our observations
         t = numpy.linspace(1, 20, 30).astype('float64')
         # Standard.  Find the solution which we will be used as "observations later"
-        solution,output = ode.integrate(t, full_output=True)
+        solution, _output = ode.integrate(t, full_output=True)
         # initial guess
         theta = [0.5,0.5,0.5]
 
         #objFH = squareLoss(theta,ode,x0,t0,t,solution[1::,1],'R')
         objFH = SquareLoss(theta, ode, x0, t0, t, solution[1::,:], ['V','R'])
-        
+
         g1 = objFH.adjoint(theta)
         #g2 = objFH.adjointInterpolate1(theta)
         #g3 = objFH.adjointInterpolate2(theta)
@@ -233,7 +233,7 @@ class TestModelEstimate(TestCase):
 
         EPSILON = numpy.sqrt(numpy.finfo(numpy.float).eps)
 
-        boxBounds = [
+        box_bounds = [
             (EPSILON, 5.0),
             (EPSILON, 5.0),
             (EPSILON, 5.0)
@@ -242,20 +242,20 @@ class TestModelEstimate(TestCase):
         res = scipy.optimize.minimize(fun=objFH.cost,
                                       jac=objFH.sensitivity,
                                       x0=theta,
-                                      bounds=boxBounds,
+                                      bounds=box_bounds,
                                       method='L-BFGS-B')
 
         res2 = scipy.optimize.minimize(fun=objFH.cost,
-                                      jac=objFH.adjoint,
-                                      x0=theta,
-                                      bounds=boxBounds,
-                                      method='L-BFGS-B')
+                                       jac=objFH.adjoint,
+                                       x0=theta,
+                                       bounds=box_bounds,
+                                       method='L-BFGS-B')
 
         target = numpy.array([0.2, 0.2, 3.0])
-        if numpy.any(abs(target-res['x']) >= 1e-2):
+        if numpy.any(abs(target - res['x']) >= 1e-2):
             raise Exception("Failed!")
 
-        if numpy.any(abs(target-res2['x']) >= 1e-2):
+        if numpy.any(abs(target - res2['x']) >= 1e-2):
             raise Exception("Failed!")
 
 
@@ -270,28 +270,28 @@ class TestModelEstimate(TestCase):
         # the time points for our observations
         t = numpy.linspace(1, 20, 30).astype('float64')
         # Standard.  Find the solution.
-        solution,output = ode.integrate(t, full_output=True)
+        solution, output = ode.integrate(t, full_output=True)
         # initial guess
         theta = [0.5, 0.5, 0.5]
 
         objFH = SquareLoss(theta, ode, x0, t0, t, solution[1::,:], ['V','R'])
-        
+
         EPSILON = numpy.sqrt(numpy.finfo(numpy.float).eps)
 
-        boxBounds = [
+        box_bounds = [
             (EPSILON, 5.0),
             (EPSILON, 5.0),
             (EPSILON, 5.0),
             (None, None),
             (None, None)
             ]
-        
+
         res = scipy.optimize.minimize(fun=objFH.costIV,
                                       jac=objFH.sensitivityIV,
                                       x0=theta + [-0.5,0.5],
-                                      bounds=boxBounds,
+                                      bounds=box_bounds,
                                       method='L-BFGS-B')
-        
+
         target = numpy.array([0.2, 0.2, 3.0, -1.0, 1.0])
         if numpy.any(abs(target-res['x']) >= 1e-2):
             raise Exception("Failed!")

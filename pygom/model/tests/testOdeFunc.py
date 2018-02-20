@@ -19,17 +19,17 @@ class TestJacobians(TestCase):
         # params
         paramEval = [('beta',0.5), ('gamma',1.0/3.0)]
         ode = common_models.SIR(paramEval).setInitialValue(x0,t0)
-        
+
         d = ode.getNumState()
         p = ode.getNumParam()
-        
+
         x0 = numpy.array(x0)
-      
+
         t = numpy.linspace(0, 150, 100)
         # integrate without using the analytical Jacobian
-        solution,output = scipy.integrate.odeint(ode.ode,
-                                                 x0,t,
-                                                 full_output=True)
+        solution, output = scipy.integrate.odeint(ode.ode,
+                                                  x0,t,
+                                                  full_output=True)
 
         # the Jacobian of the ode itself
         h = numpy.sqrt(numpy.finfo(numpy.float).eps)
@@ -43,12 +43,12 @@ class TestJacobians(TestCase):
                 ffTemp = copy.deepcopy(ff0)
                 ffTemp[j] += h
                 J[i,j] = (ode.ode(ffTemp,t[index])[i] - J0[i]) / h
-            
+
         JAnalytic = ode.Jacobian(ff0,t[index])
-        if numpy.any(abs(J - JAnalytic)>=1e-4):
+        if numpy.any(abs(J - JAnalytic) >= 1e-4):
             raise Exception("Test Failed")
 
-        
+
     def test_SensJacobian(self):
         '''
         Analytic Jacobian for the forward sensitivity equations against
@@ -61,19 +61,19 @@ class TestJacobians(TestCase):
         # params
         paramEval = [('beta',0.5), ('gamma',1.0/3.0)]
         ode = common_models.SIR(paramEval).setInitialValue(x0,t0)
-        
+
         d = ode.getNumState()
         p = ode.getNumParam()
-        
+
         s0 = numpy.zeros(d*p)
         x0 = numpy.array(x0)
         ffParam = numpy.append(x0,s0)
-        
+
         t = numpy.linspace(0, 150, 100)
         # integrate without using the analytical Jacobian
         solutionSens,outputSens = scipy.integrate.odeint(ode.odeAndSensitivity,
-                                                       ffParam,t,
-                                                       full_output=True)
+                                                         ffParam,t,
+                                                         full_output=True)
 
 
         # the Jacobian of the ode itself
@@ -92,10 +92,10 @@ class TestJacobians(TestCase):
         JAnalytic = ode.odeAndSensitivityJacobian(ff0,t[index])
         if numpy.any(abs(J - JAnalytic)>=1e-4):
             raise Exception("Test Failed")
-        
+
     def test_HessianJacobian(self):
         '''
-        Analytic Jacobian for the forward foward sensitivity equations 
+        Analytic Jacobian for the forward forward sensitivity equations 
         i.e. the Hessian of the objective function against
         the forward differencing numeric Jacobian
         '''
@@ -108,7 +108,7 @@ class TestJacobians(TestCase):
         ode = common_models.SIR(paramEval).setInitialValue(x0,t0)
         d = ode.getNumState()
         p = ode.getNumParam()
-        
+
         ff0 = numpy.zeros(d*p*p)
         s0 = numpy.zeros(d*p)
         x0 = numpy.array(x0)
@@ -118,20 +118,20 @@ class TestJacobians(TestCase):
         # time frame
         t = numpy.linspace(0, 150, 100)
         # our integration
-        solutionHessian,outputHessian = scipy.integrate.odeint(ode.odeAndForwardforward,
-                                                       ffParam,t,full_output=True)
-        
+        solutionHessian, _o = scipy.integrate.odeint(ode.odeAndForwardforward,
+                                                     ffParam,t,full_output=True)
+
         numFF = len(ffParam)
-        J = numpy.zeros((numFF,numFF))
+        J = numpy.zeros((numFF, numFF))
         # define our target
         index = 50
         # random.randomint(0,150)
         # get the info
         ff0 = solutionHessian[index,:]
         # evaluate at target point
-        J0 = ode.odeAndForwardforward(ff0,t[index])
-        # the Analytical solution is 
-        JAnalytic = ode.odeAndForwardforwardJacobian(ff0,t[index])
+        J0 = ode.odeAndForwardforward(ff0, t[index])
+        # the Analytical solution is
+        JAnalytic = ode.odeAndForwardforwardJacobian(ff0, t[index])
         # now we go and find the finite difference Jacobian
         for i in range(0,numFF):
             for j in range(0,numFF):

@@ -6,9 +6,9 @@
 
 """
 
-__all__ = ['SimulateOdeModel']
+__all__ = ['SimulateOde']
 
-from .deterministic import OperateOdeModel
+from .deterministic import DeterministicOde
 from .stochastic_simulation import cle, exact, firstReaction, tauLeap, hybrid
 from .transition import TransitionType, Transition
 from ._model_errors import InputError, SimulationError
@@ -21,9 +21,9 @@ import sympy
 import scipy.stats
 import copy
 
-class SimulateOdeModel(OperateOdeModel):
+class SimulateOde(DeterministicOde):
     '''
-    This builds on top of :class:`OperateOdeModel` which we
+    This builds on top of :class:`DeterministicOde` which we
     simulate the outcome instead of solving it deterministically
 
     Parameters
@@ -32,34 +32,34 @@ class SimulateOdeModel(OperateOdeModel):
         A list of states (string)
     paramList: list
         A list of the parameters (string)
-    derivedParamList: list
+    derived_param: list
         A list of the derived parameters (tuple of (string,string))
-    transitionList: list
+    transition: list
         A list of transition (:class:`Transition`)
-    birthDeathList: list
+    birth_death: list
         A list of birth or death process (:class:`Transition`)
-    odeList: list
+    ode: list
         A list of ode (:class:`Transition`)
 
     '''
 
     def __init__(self,
-                 stateList=None,
-                 paramList=None,
-                 derivedParamList=None,
-                 transitionList=None,
-                 birthDeathList=None,
-                 odeList=None):
+                 state=None,
+                 param=None,
+                 derived_param=None,
+                 transition=None,
+                 birth_death=None,
+                 ode=None):
         '''
-        Constructor that is built on top of OperateOdeModel
+        Constructor that is built on top of DeterministicOde
         '''
 
-        super(SimulateOdeModel, self).__init__(stateList,
-                                               paramList,
-                                               derivedParamList,
-                                               transitionList,
-                                               birthDeathList,
-                                               odeList)
+        super(SimulateOde, self).__init__(state,
+                                          param,
+                                          derived_param,
+                                          transition,
+                                          birth_death,
+                                          ode)
 
         # need a manual override because it is possible that we
         # want to perform simulation in a parallel/distributed manner
@@ -86,7 +86,7 @@ class SimulateOdeModel(OperateOdeModel):
         self._tauDict = None
 
     def __repr__(self):
-        return "SimulateOdeModel" + self._getModelStr()
+        return "SimulateOde" + self._getModelStr()
 
     def exact(self, x0, t0, t1, output_time=False):
         '''
@@ -197,12 +197,12 @@ class SimulateOdeModel(OperateOdeModel):
                 y_i = list()
                 for key, rv in self._stochasticParam.items():
                     y_i += [{key:rv.rvs(1)[0]}]
-                y += [y_i]  
+                y += [y_i]
             # y = [rv.rvs(iteration) for rv in self._stochasticParam.values()]
             # y = numpy.array(list(zip(*y)))
             def sim(x):
                 self.setParameters(x)
-                return(self.integrate(t))
+                return self.integrate(t)
 
             # def sim(t1): return(self.integrate(t1))
 
@@ -257,7 +257,7 @@ class SimulateOdeModel(OperateOdeModel):
             "Currently only able to simulate when only transitions are present"
         assert np.all(np.mod(self._x0, 1) == 0), \
             "Can only simulate a jump process with integer initial values"
-        
+
         # this determines what type of output we want
         timePoint = False
 
@@ -291,7 +291,7 @@ class SimulateOdeModel(OperateOdeModel):
         except Exception:# as e:
             # print(e)
             xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
-        
+
         xmat = list(zip(*xtmp))
         simXList, simTList = list(xmat[0]), list(xmat[1])
         print("Finish computation")
@@ -419,7 +419,7 @@ class SimulateOdeModel(OperateOdeModel):
            or self._hasNewTransition == False:
             return self._transitionMatrix
         else:
-            return super(SimulateOdeModel, self)._computeTransitionMatrix()
+            return super(SimulateOde, self)._computeTransitionMatrix()
     
     def getTransitionVector(self):
         '''
@@ -435,7 +435,7 @@ class SimulateOdeModel(OperateOdeModel):
         if self._transitionVectorCompile is not None or self._hasNewTransition:
             return self._transitionVector
         else:
-            return super(SimulateOdeModel, self)._computeTransitionVector()
+            return super(SimulateOde, self)._computeTransitionVector()
 
     def transitionMatrix(self, state, t):
         '''
@@ -491,7 +491,7 @@ class SimulateOdeModel(OperateOdeModel):
         it can be evaluated faster.
         '''
         if self._transitionMatrix is None or self._hasNewTransition:
-            super(SimulateOdeModel, self)._computeTransitionMatrix()
+            super(SimulateOde, self)._computeTransitionMatrix()
 
         f = self._SC.compileExprAndFormat
         if self._isDifficult:
@@ -558,7 +558,7 @@ class SimulateOdeModel(OperateOdeModel):
         it can be evaluated faster.
         '''
         if self._transitionVector is None or self._hasNewTransition:
-            super(SimulateOdeModel, self)._computeTransitionVector()
+            super(SimulateOde, self)._computeTransitionVector()
 
         f = self._SC.compileExprAndFormat
         if self._isDifficult:
@@ -848,20 +848,20 @@ class SimulateOdeModel(OperateOdeModel):
 
     def returnObjWithTransitionsAndBD(self):
         '''
-        Returns a :class:`SimulateOdeModel` with the same state and parameters
+        Returns a :class:`SimulateOde` with the same state and parameters
         as the current object but with the equations defined by a set of
         transitions and birth death process instead of say, odes
         '''
-        transitionList = self.getTransitionsFromOde()
+        transition = self.getTransitionsFromOde()
         bdList = self.getBDFromOde()
 
-        return SimulateOdeModel(
-                                [str(s) for s in self._stateList],
-                                [str(p) for p in self._paramList],
-                                derivedParamList=self._derivedParamEqn,
-                                transitionList=transitionList,
-                                birthDeathList=bdList
-                                )
+        return SimulateOde(
+                           [str(s) for s in self._stateList],
+                           [str(p) for p in self._paramList],
+                           derived_param=self._derivedParamEqn,
+                           transition=transition,
+                           birth_death=bdList
+                           )
 
     def getTransitionsFromOde(self):
         '''
@@ -870,18 +870,18 @@ class SimulateOdeModel(OperateOdeModel):
         '''
         M = self._generateTransitionMatrix()
 
-        transitionList = list()
+        transition = list()
         for i, s1 in enumerate(self._stateList):
             for j, s2 in enumerate(self._stateList):
                 if M[i,j] != 0:
-                    t = Transition(origState=str(s1),
-                                   destState=str(s2),
+                    t = Transition(origin=str(s1),
+                                   destination=str(s2),
                                    equation=str(M[i,j]),
-                                   transitionType=TransitionType.T)
-                    transitionList.append(t)
+                                   transition_type=TransitionType.T)
+                    transition.append(t)
 
-        return(transitionList)
-    
+        return transition
+
     def getBDFromOde(self, A=None):
         '''
         Returns a list of:class:`Transition` from this object by unrolling
@@ -896,7 +896,7 @@ class SimulateOdeModel(OperateOdeModel):
                                                subsDerived=False))
             else:
                 raise Exception("Object was not initialized using a set of ode")
-            # A = super(SimulateOdeModel, self).getOde()
+            # A = super(SimulateOde, self).getOde()
 
         bdList, _term = _ode_composition.getUnmatchedExpressionVector(A, True)
 
@@ -914,32 +914,32 @@ class SimulateOdeModel(OperateOdeModel):
                 for b in bdList:
                     if _ode_composition._hasExpression(a, b):
                         if sympy.Integer(-1) in _ode_composition.getLeafs(b):
-                            bdUnroll.append(Transition(origState=states[i],
+                            bdUnroll.append(Transition(origin=states[i],
                                             equation=str(b*-1),
-                                            transitionType=TransitionType.D))
+                                            transition_type=TransitionType.D))
                         else:
-                            bdUnroll.append(Transition(origState=states[i],
+                            bdUnroll.append(Transition(origin=states[i],
                                             equation=str(b),
-                                            transitionType=TransitionType.B))
+                                            transition_type=TransitionType.B))
                         a -= b
-            
+
             return bdUnroll
         else:
             return []
 
     def _generateTransitionMatrix(self, A=None):#, transitionExpressionList=None):
         '''
-        Finds the transition matrix from the set of ode.  It is 
+        Finds the transition matrix from the set of ode.  It is
         important to note that although some of the functions used
         in this method appear to be the same as _getReactantMatrix
         and _getStateChangeMatrix, they are different in the sense
-        that the functions called here is focused on the terms of 
+        that the functions called here is focused on the terms of
         the equation rather than the states.
         '''
         if A is None:
             if not ode_utils._noneOrEmptyList(self._odeList):
-                eqnList = [t.getEquation() for t in self._odeList]
-                A = sympy.Matrix(checkEquation(eqnList,
+                eqn_list = [t.getEquation() for t in self._odeList]
+                A = sympy.Matrix(checkEquation(eqn_list,
                                                *self._getListOfVariablesDict(),
                                                subsDerived=False))
             else:

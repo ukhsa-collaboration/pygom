@@ -42,7 +42,7 @@ class TestLossTypes(TestCase):
 
         if abs(objFH1.cost() - s1) >= 1e-2:
             raise Exception("Failed!")
-        
+
         if abs(objFH2.cost() - s2) >= 1e-2:
             raise Exception("Failed!")
 
@@ -67,7 +67,7 @@ class TestLossTypes(TestCase):
         w = [2.0,3.0]
         objFH1 = NormalLoss(theta, ode, x0, t[0], t[1::], solution[1::,:],
                    ['V','R'], w)
-       
+
         # now the weight is a vector
         w = numpy.random.rand(29, 2)
         objFH2 = NormalLoss(theta, ode, x0, t[0], t[1::], solution[1::,:],
@@ -100,17 +100,17 @@ class TestLossTypes(TestCase):
         wList.append([0])
         wList.append([2.0, 3.0])
         wList.append(numpy.random.rand(30))
-        
+
         for w in wList:
             try:
                 objFH = SquareLoss(theta, ode, x0, t[0], t[1::], solution[1::,:],
                                    'R', w)    
             except:
                 totalFail += 1
-            
+
         if totalFail != expectedFail:
             raise Exception("We passed some of the illegal input...")
-        
+
     def test_FH_Square_2State_Fail(self):
         totalFail = 0
         expectedFail = 8
@@ -142,10 +142,10 @@ class TestLossTypes(TestCase):
         for i, w in enumerate(wList):
             try:
                 objFH = SquareLoss(theta, ode, x0, t[0], t[1::], solution[1::,:],
-                                   ['V','R'], w)    
+                                   ['V','R'], w)
             except:
                 print(i)
                 totalFail += 1
-            
+
         if totalFail != expectedFail:
             raise Exception("We passed some of the illegal input...")

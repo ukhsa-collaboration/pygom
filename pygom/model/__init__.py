@@ -11,7 +11,7 @@ from .deterministic import *
 from .epi_analysis import *
 from .ode_utils import *
 from .ode_variable import *
-from .stochastic import *
+from .simulate import *
 from .transition import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]

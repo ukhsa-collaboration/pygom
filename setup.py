@@ -26,7 +26,7 @@ tests_require = [
 ]
 
 setup(name='pygom',
-      version='0.1.1',
+      version='0.1.2a',
       description='ODE modeling in Python',
       long_description=readme(),      
       url='https://github.com/PublicHealthEngland/pygom',

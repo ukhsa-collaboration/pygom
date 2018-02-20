@@ -16,10 +16,10 @@ class TestEpiAnalysis(TestCase):
         ode = common_models.SIR_Birth_Death()
         diseaseState = ['I']
         R0 = epi_analysis.getR0(ode, ['I'])
-        
+
         F, V = epi_analysis.getDiseaseProgressionMatrices(ode, diseaseState)
         e = epi_analysis.getR0GivenMatrix(F, V)
         dfe = epi_analysis.getDFE(ode, ['I'])
-        if (sympy.simplify(R0 - e[0].subs(dfe)) != 0):
+        if sympy.simplify(R0 - e[0].subs(dfe)) != 0:
             raise Exception("Simple: Epi Analysis failed")
         

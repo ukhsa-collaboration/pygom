@@ -8,16 +8,10 @@
 """
 # string evaluation
 import re
-reMath = re.compile(r'[-+*\\]')
-reUnderscore = re.compile('^_')
-reSymbolName = re.compile('[A-Za-z_]+')
-reSymbolIndex = re.compile('.*\[([0-9]+)\]$')
-reSplitString = re.compile(',|\s')
 
 import sympy
-from sympy import symbols
-# numerical computation
 import numpy
+from sympy import symbols
 from scipy.stats._distn_infrastructure import rv_frozen
 
 from .transition import Transition, TransitionType
@@ -25,6 +19,12 @@ from ._model_errors import InputError, OutputError
 from ._model_verification import checkEquation
 from .ode_variable import ODEVariable
 from . import ode_utils
+
+reMath = re.compile(r'[-+*\\]')
+reUnderscore = re.compile('^_')
+reSymbolName = re.compile('[A-Za-z_]+')
+reSymbolIndex = re.compile(r'.*\[([0-9]+)\]$')
+reSplitString = re.compile(r',|\s')
 
 class BaseOdeModel(object):
     '''
@@ -36,24 +36,24 @@ class BaseOdeModel(object):
         A list of states (string)
     paramList: list
         A list of the parameters (string)
-    derivedParamList: list
+    derived_param: list
         A list of the derived parameters (tuple of (string,string))
-    transitionList: list
+    transition: list
         A list of transition (:class:`.Transition`)
-    birthDeathList: list
+    birth_death: list
         A list of birth or death process (:class:`.Transition`)
-    odeList: list
+    ode: list
         A list of ode (:class:`.Transition`)
 
     '''
 
     def __init__(self,
-                 stateList=None,
-                 paramList=None,
-                 derivedParamList=None,
-                 transitionList=None,
-                 birthDeathList=None,
-                 odeList=None):
+                 state=None,
+                 param=None,
+                 derived_param=None,
+                 transition=None,
+                 birth_death=None,
+                 ode=None):
         '''
         Constructor
         '''
@@ -105,77 +105,77 @@ class BaseOdeModel(object):
         self._transitionMatrix = None
         self._birthDeathList = list()
         self._birthDeathVector = list()
-        
+
         # information about the ode in general
         # reactant, state change and the dependency graph matrix
         self._lambdaMat = None
         self._vMat = None
         self._GMat = None
 
-        if stateList is not None:
-            if isinstance(stateList, str):
-                stateList = reSplitString.split(stateList)
-                stateList = filter(lambda x: not len(x.strip()) == 0, stateList)
-            self.setStateList(list(stateList))
+        if state is not None:
+            if isinstance(state, str):
+                state = reSplitString.split(state)
+                state = filter(lambda x: not len(x.strip()) == 0, state)
+            self.setStateList(list(state))
 
-        if paramList is not None:
-            if isinstance(paramList, str):
-                paramList = reSplitString.split(paramList)
-                paramList = filter(lambda x: not len(x.strip()) == 0, paramList)
-            self.setParamList(list(paramList))
+        if param is not None:
+            if isinstance(param, str):
+                param = reSplitString.split(param)
+                param = filter(lambda x: not len(x.strip()) == 0, param)
+            self.setParamList(list(param))
 
         # this has to go after adding the parameters
         # because it is suppose to be based on the current
         # base parameters.
         # Making the distinction here because it makes a
         # difference when inferring the parameters of the variables
-        if not ode_utils._noneOrEmptyList(derivedParamList):
-            self.setDerivedParamList(derivedParamList)
-        # if derivedParamList is not None:
+        if not ode_utils._noneOrEmptyList(derived_param):
+            self.setDerivedParamList(derived_param)
+        # if derived_param is not None:
 
-        # if transitionList is not None:
-        if not ode_utils._noneOrEmptyList(transitionList):
-            self.setTransitionList(transitionList)
+        # if transition is not None:
+        if not ode_utils._noneOrEmptyList(transition):
+            self.setTransitionList(transition)
 
-        # if birthDeathList is not None:
-        if not ode_utils._noneOrEmptyList(birthDeathList):
-            self.setBirthDeathList(birthDeathList)
+        # if birth_death is not None:
+        if not ode_utils._noneOrEmptyList(birth_death):
+            self.setBirthDeathList(birth_death)
 
-        # if odeList is not None:
-        if not ode_utils._noneOrEmptyList(odeList):
+        # if ode is not None:
+        if not ode_utils._noneOrEmptyList(ode):
             # we have a set of ode explicitly defined!
-            if len(odeList) > 0:
-                # tests on validity of using odeList
-                # if transitionList is not None:
-                if not ode_utils._noneOrEmptyList(transitionList):
+            if len(ode) > 0:
+                # tests on validity of using ode
+                # if transition is not None:
+                if not ode_utils._noneOrEmptyList(transition):
                     raise InputError("Transition equations detected even " +
-                                     "though the set of ode is explicitly " + 
+                                     "though the set of ode is explicitly " +
                                      "defined")
-                # if birthDeathList is not None:
-                if not ode_utils._noneOrEmptyList(birthDeathList):
-                    raise InputError("Birth Death equations detected even " + 
-                                     "though the set of ode is explicitly " + 
+                # if birth_death is not None:
+                if not ode_utils._noneOrEmptyList(birth_death):
+                    raise InputError("Birth Death equations detected even " +
+                                     "though the set of ode is explicitly " +
                                      "defined")
 
                 # set equations
-                self.setOdeEquationList(odeList)
+                self.setOdeEquationList(ode)
             else:
                 pass
-            
+
         self.getNumTransitions()
         self._transitionVector = self._computeTransitionVector()
 
     def _getModelStr(self):
-        modelStr = "(%s, %s, %s, %s, %s, %s)" % (self._stateList, 
-                                                 self._paramList,
-                                                 self._derivedParamEqn,
-                                                 self._transitionList, 
-                                                 self._birthDeathList,
-                                                 self._odeList)
+        model_str = "(%s, %s, %s, %s, %s, %s)" % (self._stateList,
+                                                  self._paramList,
+                                                  self._derivedParamEqn,
+                                                  self._transitionList,
+                                                  self._birthDeathList,
+                                                  self._odeList)
         if self._parameters is not None:
-            modelStr += ".setParameters(%s)" % \
+            model_str += ".setParameters(%s)" % \
                         {str(k): v for k, v in self._parameters.items()}
-        return(modelStr)
+        return model_str
 
     ########################################################################
     #
@@ -196,7 +196,7 @@ class BaseOdeModel(object):
             just a single array like object
 
         '''
-        
+
         err_string = "The number of input parameters is %s but %s expected"
         # setting up a shorthand for the most used function within this method
         f = self._extractParamSymbol
@@ -285,7 +285,7 @@ class BaseOdeModel(object):
                         else:
                             raise InputError("First element should be a " +
                                              "callable when using multi " +
-                                             "argument distribution " + 
+                                             "argument distribution " +
                                              "definition.  Type of input " +
                                              "was " + str(type(value)))
                     else:
@@ -325,7 +325,7 @@ class BaseOdeModel(object):
             index = self.getParamIndex(k)
             self._paramValue[index] = v
 
-        return(self)
+        return self
 
     def getParameters(self):
         '''
@@ -336,7 +336,7 @@ class BaseOdeModel(object):
             (:mod:`sympy.core.symbol`, numeric)
 
         '''
-        return(self._parameters)
+        return self._parameters
 
     def setStateValue(self, state):
         '''
@@ -369,14 +369,14 @@ class BaseOdeModel(object):
         else:
             raise InputError(err_str)
 
-        return(self)
+        return self
 
     def getState(self):
         '''
         Returns
         -------
         list
-            state in symbol with current value, 
+            state in symbol with current value,
             (:mod:`sympy.core.symbol`,numeric)
 
         '''
@@ -397,7 +397,7 @@ class BaseOdeModel(object):
         '''
         if time is not None:
             self._time = time
-        return(self)
+        return self
 
     def getTime(self):
         '''
@@ -408,7 +408,7 @@ class BaseOdeModel(object):
         numeric
 
         '''
-        return(self._time)
+        return self._time
 
     def setStateList(self, stateList):
         '''
@@ -427,9 +427,9 @@ class BaseOdeModel(object):
             self._addStateSymbol(stateList)
         else:
             raise InputError("Expecting a list")
-        
+
         self._hasNewTransition = True
-        return(self)
+        return self
 
     def getStateList(self):
         '''
@@ -441,7 +441,7 @@ class BaseOdeModel(object):
             with elements as :mod:`sympy.core.symbol`
 
         '''
-        return(self._stateList)
+        return self._stateList
 
     def getParamList(self):
         '''
@@ -453,7 +453,7 @@ class BaseOdeModel(object):
             with elements as :mod:`sympy.core.symbol`
 
         '''
-        return(self._paramList)
+        return self._paramList
 
     def setParamList(self, paramList):
         '''
@@ -474,7 +474,7 @@ class BaseOdeModel(object):
             raise InputError("Expecting a list")
         
         self._hasNewTransition = True
-        return(self)
+        return self
 
     def getDerivedParamList(self):
         '''
@@ -486,7 +486,7 @@ class BaseOdeModel(object):
             with elements as :mod:`sympy.core.symbol`
 
         '''
-        return(self._derivedParamList)
+        return self._derivedParamList
 
     def setDerivedParamList(self, derivedParamList):
         '''
@@ -494,14 +494,14 @@ class BaseOdeModel(object):
 
         Parameters
         ----------
-        derivedParamList: list
+        derived_param: list
             list of string, each string is the name of the derived parameter
             which uses the original parameter
         '''
         for param in derivedParamList:
             self._addDerivedParam(param[0], param[1])
 
-        return(self)
+        return self
 
     # also need to make it transitionScript class
     def setTransitionList(self, transitionList):
@@ -510,7 +510,7 @@ class BaseOdeModel(object):
 
         Parameters
         ----------
-        transitionList: list
+        transition: list
             list of :class:`.Transition` of type transition in
             :class:`.getTransitionType`
         '''
@@ -537,14 +537,14 @@ class BaseOdeModel(object):
         else:
             raise OutputError("ode was defined explicitly, no " +
                               "transition available")
-        
+
     def setBirthDeathList(self, birthDeathList):
         '''
         Set the set of transitions for the ode system
 
         Parameters
         ----------
-        birthDeathList: list
+        birth_death: list
             list of :class:`.Transition` of type birth or death in
             :class:`.getTransitionType`
 
@@ -582,7 +582,7 @@ class BaseOdeModel(object):
 
         Parameters
         ----------
-        odeList: list
+        ode: list
             list of :class:`.Transition` of type birth or death in
             :class:`.getTransitionType`
 
@@ -599,7 +599,7 @@ class BaseOdeModel(object):
                              "or a Transition")
 
         return self
-    
+
     def getOdeList(self):
         '''
         Returns a list of the ode
@@ -672,14 +672,14 @@ class BaseOdeModel(object):
         elif isinstance(inputStr, ODEVariable):
             return self._extractParamIndex(inputStr.ID)
         elif isinstance(inputStr, (list, tuple)):
-            outStr = [self._extractParamIndex(p) for p in inputStr]
-            return outStr
+            out_str = [self._extractParamIndex(p) for p in inputStr]
+            return out_str
 
     def getNumTransitions(self):
         '''
         Returns the total number of transition objects that belongs to
         either a pure transition or a birth/death process
-        
+
         Returns
         -------
         int
@@ -688,7 +688,7 @@ class BaseOdeModel(object):
         self._numPureTransition = len(self._transitionList)
         self._numBD = len(self._birthDeathList)
         self._numTransition = self._numPureTransition + self._numBD
-        return(self._numTransition)
+        return self._numTransition
 
     ########################################################################
     #
@@ -703,7 +703,7 @@ class BaseOdeModel(object):
     # on after the ode object has been initialized
     #
     ####
-    
+
     def _addSymbol(self, inputStr):
         assert reMath.search(inputStr) is None, \
             "Mathematical operators not allowed in symbol definition"
@@ -714,7 +714,7 @@ class BaseOdeModel(object):
             if len(inputStr) == 2:
                 if str(inputStr[1]).lower() in ("complex", "false"):
                     isReal = 'False'
-                elif str(inputStr[1]).lower() in ("real","true"):
+                elif str(inputStr[1]).lower() in ("real", "true"):
                     isReal = 'True'
                 else:
                     raise InputError("Unexpected second argument for symbol")
@@ -725,7 +725,7 @@ class BaseOdeModel(object):
         else:
             raise InputError("Unexpected input type for symbol")
 
-        assert inputStr!='lambda', "lambda is a reserved keyword"
+        assert inputStr != 'lambda', "lambda is a reserved keyword"
         tempSym = eval("symbols('%s', real=%s)" % (inputStr, isReal))
         
         if isinstance(tempSym, sympy.Symbol):
@@ -742,39 +742,42 @@ class BaseOdeModel(object):
 
     def _addStateSymbol(self, inputStr):
         if isinstance(inputStr, str):
-            varObj = ODEVariable(inputStr, inputStr)
+            var_obj = ODEVariable(inputStr, inputStr)
         elif isinstance(inputStr, ODEVariable):
-            varObj = inputStr
+            var_obj = inputStr
 
-        symbolName = self._addSymbol(varObj.ID)
-  
-        if isinstance(symbolName, sympy.Symbol):
-            if symbolName not in self._paramList:
-                self._numState = self._addVariable(symbolName, varObj, 
-                                self._stateList, self._stateDict, 
-                                self._numState)
+        symbol_name = self._addSymbol(var_obj.ID)
+
+        if isinstance(symbol_name, sympy.Symbol):
+            if symbol_name not in self._paramList:
+                self._numState = self._addVariable(symbol_name, var_obj,
+                                                   self._stateList,
+                                                   self._stateDict,
+                                                   self._numState)
         else:
-            for sym in symbolName:
+            for sym in symbol_name:
                 self._addStateSymbol(str(sym))
 
         return None
 
     def _addParamSymbol(self, inputStr):
         if isinstance(inputStr, str):
-            varObj = ODEVariable(inputStr, inputStr)
+            var_obj = ODEVariable(inputStr, inputStr)
         elif isinstance(inputStr, ODEVariable):
-            varObj = inputStr
- 
-        symbolName = self._addSymbol(varObj.ID)
-  
-        if isinstance(symbolName, sympy.Symbol):
-            if symbolName not in self._paramList:
-                self._numParam = self._addVariable(symbolName, varObj, 
-                                self._paramList, self._paramDict, 
-                                self._numParam)
+            var_obj = inputStr
+
+        symbol_name = self._addSymbol(var_obj.ID)
+
+        if isinstance(symbol_name, sympy.Symbol):
+            if symbol_name not in self._paramList:
+                self._numParam = self._addVariable(symbol_name, var_obj,
+                                                   self._paramList,
+                                                   self._paramDict,
+                                                   self._numParam)
         else:
-            for sym in symbolName:
+            for sym in symbol_name:
                 self._addParamSymbol(str(sym))
+
         return None
 
     def _addDerivedParam(self, name, eqn):
@@ -787,10 +790,10 @@ class BaseOdeModel(object):
         self._derivedParamEqn += [(name, eqn)]
         return None
 
-    def _addVariable(self, symbol, varObj, objList, objDict, objCounter):
-        assert isinstance(varObj, ODEVariable), "Expecting type odeVariable"
-        objList.append(varObj)
-        objDict[varObj.ID] = symbol
+    def _addVariable(self, symbol, var_obj, objList, objDict, objCounter):
+        assert isinstance(var_obj, ODEVariable), "Expecting type odeVariable"
+        objList.append(var_obj)
+        objDict[var_obj.ID] = symbol
         return objCounter + 1
 
     def addTransition(self, transition):
@@ -829,7 +832,7 @@ class BaseOdeModel(object):
                     self._transitionMatrix[i,j] += eqn
 
         return self._transitionMatrix
-    
+
     def addBirthDeath(self, birthDeath):
         '''
         Add a single birth or death process
@@ -861,7 +864,7 @@ class BaseOdeModel(object):
             fromIndex, _toIndex, eqn = self._unrollTransition(bdObj)
             for i in fromIndex:
                 if bdObj.getTransitionType() is TransitionType.B:
-                    self._birthDeathVector[i] += eqn                
+                    self._birthDeathVector[i] += eqn
                 elif bdObj.getTransitionType() is TransitionType.D:
                     self._birthDeathVector[i] -= eqn
 
@@ -901,7 +904,7 @@ class BaseOdeModel(object):
             fromList, _t, eqnList = self._unrollTransitionList(self._odeList)
             for i, eqn in enumerate(eqnList):
                 if len(fromList[i]) > 1:
-                    raise InputError("An explicit ode cannot describe more " + 
+                    raise InputError("An explicit ode cannot describe more " +
                                      "than a single state")
                 else:
                     self._ode[fromList[i][0]] = eqn
@@ -910,9 +913,8 @@ class BaseOdeModel(object):
                              "where the number of state is %s" % \
                              (len(self._odeList), self._numState))
 
+        return None
 
-        return(None)
-    
     def _computeTransitionVector(self):
         '''
         Get all the transitions into a vector, arranged by state to
@@ -923,8 +925,8 @@ class BaseOdeModel(object):
         for i, eqn in enumerate(eqnList):
             self._transitionVector[i] = eqn
 
-        return(self._transitionVector)
-    
+        return self._transitionVector
+
     ########################################################################
     #
     # Other type of matrices
@@ -936,8 +938,8 @@ class BaseOdeModel(object):
         The reactant matrix, where
 
         .. math::
-            \lambda_{i,j} = \left\{ 1, &if state i is involved in transition j, \\
-                                    0, &otherwise \right.
+            \\lambda_{i,j} = \\left\\{ 1, &if state i is involved in transition j, \\\\
+                                    0, &otherwise \\right.
         '''
         # declare holder
         self._lambdaMat = numpy.zeros((self._numState, self._numTransition), int)
@@ -948,15 +950,15 @@ class BaseOdeModel(object):
                 if self._stateDict[state.ID] in eqn.atoms():
                     self._lambdaMat[i,j] = 1
 
-        return(self._lambdaMat)
+        return self._lambdaMat
 
     def _computeStateChangeMatrix(self):
         '''
         The state change matrix, where
         .. math::
-            v_{i,j} = \left\{ 1, &if transition j cause state i to lose a particle, \\
-                             -1, &if transition j cause state i to gain a particle, \\
-                              0, &otherwise \right.
+            v_{i,j} = \\left\\{ 1, &if transition j cause state i to lose a particle, \\\\
+                             -1, &if transition j cause state i to gain a particle, \\\\
+                              0, &otherwise \\right.
         '''
         self._vMat = numpy.zeros((self._numState, self._numTransition), int)
 
@@ -976,7 +978,7 @@ class BaseOdeModel(object):
                     for k2 in fromList[j]:
                         self._vMat[k2,j] += -1
 
-        return(self._vMat)
+        return self._vMat
 
     def _computeDependencyMatrix(self):
         '''
@@ -997,7 +999,7 @@ class BaseOdeModel(object):
                     d = d or (self._lambdaMat[k,i] and self._vMat[k,j])
                 self._GMat[i,j] = d
 
-        return(self._GMat)
+        return self._GMat
 
 
     ########################################################################
@@ -1009,21 +1011,21 @@ class BaseOdeModel(object):
         '''
         Information unrolling from vector to sympy in state
         '''
-        stateOut = list()
+        state_out = list()
         if len(self._stateList) == 1:
             if ode_utils.isNumeric(state):
-                stateOut.append((self._stateList[0], state))
+                state_out.append((self._stateList[0], state))
             else:
                 raise InputError("Number of input state not as expected")
         else:
             if len(state) == len(self._stateList):
                 for i in range(self._numState):
-                    stateOut.append((self._stateList[i], state[i]))
+                    state_out.append((self._stateList[i], state[i]))
             else:
                 raise InputError("Number of input state not as expected")
 
-        return(stateOut)
-    
+        return state_out
+
     def _unrollTransition(self, transitionObj):
         '''
         Given a transition object, get the information from it in a usable
@@ -1031,40 +1033,40 @@ class BaseOdeModel(object):
         '''
         origState = transitionObj.getOrigState()
         fromIndex = self._extractStateIndex(origState)
-       
+
         destState = transitionObj.getDestState()
         toIndex = self._extractStateIndex(destState)
 
         eqn = checkEquation(transitionObj.getEquation(),
                             *self._getListOfVariablesDict())
         return fromIndex, toIndex, eqn
-    
+
     def _unrollTransitionList(self, transitionList):
-        fromList = list()
-        toList = list()
-        eqnList = list()
+        from_list = list()
+        to_list = list()
+        eqn_list = list()
         for t in transitionList:
-            fromList.append(self._extractStateIndex(t.getOrigState()))
-            toList.append(self._extractStateIndex(t.getDestState()))
-            eqnList.append(t.getEquation())
-        
-        eqnList = checkEquation(eqnList, *self._getListOfVariablesDict())
-        eqnList = eqnList if hasattr(eqnList, '__iter__') else [eqnList]
-        return fromList, toList, eqnList
-    
+            from_list.append(self._extractStateIndex(t.getOrigState()))
+            to_list.append(self._extractStateIndex(t.getDestState()))
+            eqn_list.append(t.getEquation())
+
+        eqn_list = checkEquation(eqn_list, *self._getListOfVariablesDict())
+        eqn_list = eqn_list if hasattr(eqn_list, '__iter__') else [eqn_list]
+        return from_list, to_list, eqn_list
+
     def _getAllTransition(self, pureTransitions=False):
-        
+
         n = self._numPureTransition if pureTransitions else self._numTransition
-        
-        allTransitionList = list() 
+
+        all_transition = list() 
         for j in range(n):
             if j < self._numPureTransition:
-                allTransitionList.append(self._transitionList[j])
+                all_transition.append(self._transitionList[j])
             else:
                 _i = j - self._numPureTransition
-                allTransitionList.append(self._birthDeathList[_i])
-        return allTransitionList
-    
+                all_transition.append(self._birthDeathList[_i])
+        return all_transition
+
     def _iterStateList(self):
         '''
         Iterator through the states in symbolic form
@@ -1078,10 +1080,10 @@ class BaseOdeModel(object):
         '''
         for p in self._paramList:
             yield self._paramDict[p.ID]
-    
+
     def _getListOfVariablesDict(self):
-        paramDict = [self._paramDict, self._stateDict, self._vectorStateDict] 
-        return paramDict, self._derivedParamDict
+        param_dict = [self._paramDict, self._stateDict, self._vectorStateDict]
+        return param_dict, self._derivedParamDict
 
     ########################################################################
     #
@@ -1110,40 +1112,40 @@ class BaseOdeModel(object):
         else:
             if isinstance(inputStr, (str, sympy.Symbol)):
                 inputStr = [inputStr] # make this an iterable
-        
+
             if hasattr(inputStr, '__iter__'):
                 return [self._extractStateIndexSingle(i) for i in inputStr]
             else:
-                raise Exception("Input must be a string or an iterable " + 
+                raise Exception("Input must be a string or an iterable " +
                                 "object of string")
-            
+
     def _extractStateIndexSingle(self, inputStr):
         if isinstance(inputStr, ODEVariable):
-            return(self._stateList.index(inputStr)) 
+            return self._stateList.index(inputStr)
         else:
-            symName = self._extractStateSymbol(inputStr)
-            return(self._stateList.index(symName))
+            sym_name = self._extractStateSymbol(inputStr)
+            return self._stateList.index(sym_name)
 
     def _extractStateSymbol(self, inputStr):
         if isinstance(inputStr, ODEVariable):
             inputStr = inputStr.ID
 
         if inputStr in self._stateDict:
-            return(self._stateDict[inputStr])
+            return self._stateDict[inputStr]
         else:
             symName = reSymbolName.search(inputStr)
             if symName is not None:
                 if symName.group() in self._vectorStateDict:
-                    index = reSymbolIndex.findall(inputStr) 
+                    index = reSymbolIndex.findall(inputStr)
                     if index is not None and len(index) == 1:
                         _i = int(index[0])
                         return self._vectorStateDict[symName.group()][_i]
                     else:
-                        raise InputError("Cannot find input state, input %s " + 
-                                         "appears to be a vector that was " + 
+                        raise InputError("Cannot find input state, input %s " +
+                                         "appears to be a vector that was " +
                                          "not initialized" % symName)
                 else:
-                    raise InputError("Cannot find input state, input %s " + 
+                    raise InputError("Cannot find input state, input %s " +
                                      "likely to be a vector" % symName)
             else:
                 raise InputError("Input state: " + inputStr + " does not exist")

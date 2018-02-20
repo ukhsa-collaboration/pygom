@@ -34,22 +34,22 @@ class Transition(object):
 
     Parameters
     ----------
-    origState: str
+    orig: str
         Origin state.
     equation: str
         Equation defining the transition
-    transitionType: enum or str, optional
+    transition_type: enum or str, optional
         of type :class:`TransitionType` or one of ('ODE', 'T', 'B', 'D')
         defaults to 'ODE'
-    destState: str, optional
+    dest: str, optional
         Destination State.  If the transition is not between state,
         such as a birth or death process, then this is is not
         required.  If it is stated as a birth, death or an ode then
         it throws an error
     '''
 
-    def __init__(self, origState, equation, transitionType='ODE',
-                 destState=None, ID=None, name=None):
+    def __init__(self, origin, equation, transition_type='ODE',
+                 destination=None, ID=None, name=None):
         '''
         Constructor for the class.
 
@@ -62,20 +62,20 @@ class Transition(object):
         self._betweenStateTransition = False
 
         # we also need the transition type
-        if isinstance(transitionType, TransitionType):
-            self.transitionType = transitionType
-        elif isinstance(transitionType, str):
-            if transitionType.lower() in ('t', 'between states'):
+        if isinstance(transition_type, TransitionType):
+            self.transitionType = transition_type
+        elif isinstance(transition_type, str):
+            if transition_type.lower() in ('t', 'between states'):
                 self.transitionType = TransitionType.T
-            elif transitionType.lower() in ('ode', 'ode equation'):
+            elif transition_type.lower() in ('ode', 'ode equation'):
                 self.transitionType = TransitionType.ODE
-            elif transitionType.lower() in ('b', 'birth process'):
+            elif transition_type.lower() in ('b', 'birth process'):
                 self.transitionType = TransitionType.B
-            elif transitionType.lower() in ('d', 'death process'):
+            elif transition_type.lower() in ('d', 'death process'):
                 self.transitionType = TransitionType.D
             else:
-                raise TransitionTypeError("Unknown input string, require one " + 
-                                          "of (T, ODE, D, B)")
+                raise TransitionTypeError("Unknown input string, require one" + 
+                                          " of (T, ODE, D, B)")
         else:
             raise TransitionTypeError("Input transitionType requires a " + 
                                       "TransitionType object or str")
@@ -85,10 +85,10 @@ class Transition(object):
         self.destState = None
         self.equation = None
 
-        if destState is not None:
-            if origState == destState:
+        if destination is not None:
+            if origin == destination:
                 if self.transitionType != TransitionType.T:
-                    self.__setOrigState(origState)
+                    self.__setOrigState(origin)
                     self.__setEquation(equation)
                 else:
                     raise InputStateError("Input have the same state for the " +
@@ -97,8 +97,8 @@ class Transition(object):
                                           self.transitionType.name)
             else:
                 if self.transitionType == TransitionType.T:
-                    self.__setOrigState(origState)
-                    self.__setDestState(destState)
+                    self.__setOrigState(origin)
+                    self.__setDestState(destination)
                     self.__setEquation(equation)
                 else:
                     raise InputStateError("Input have both origin and " +
@@ -106,13 +106,13 @@ class Transition(object):
                                           "type is " + self.transitionType.name)
         else: # no destination
             if self.transitionType != TransitionType.T:
-                self.__setOrigState(origState)
+                self.__setOrigState(origin)
                 self.__setEquation(equation)
             else:
                 raise InputStateError("Input only have origin, but " + 
                                       "transition type is " + 
                                       self.transitionType.name)
-                
+
     def __str__(self):
         if self.transitionType == TransitionType.T:
             return 'Transition from %s to %s, %s' % \
@@ -123,9 +123,9 @@ class Transition(object):
             return 'Birth process to %s, %s' % (self.origState, self.equation)
         elif self.transitionType == TransitionType.D:
             return 'Death process from %s, %s' % (self.origState, self.equation)
-        
+
     def __repr__(self):
-        
+
         if self.transitionType == TransitionType.T:
             reprStr = """Transition('%s', '%s', 'T', '%s'""" % \
                       (self.origState, self.equation, self.destState)
@@ -138,7 +138,7 @@ class Transition(object):
         elif self.transitionType == TransitionType.D:
             reprStr = """Transition('%s', '%s', 'D'""" % \
                       (self.origState, self.equation)
-        
+
         return reprStr + ", %s, %s)" % (self.ID, self.name)
 
     def __eq__(self, other):
@@ -149,11 +149,11 @@ class Transition(object):
             self.transitionType == other.transitionType
         else:
             raise NotImplementedError("Can only compare against a " + 
-                                      "Transition object") 
+                                      "Transition object")
 
     def __neq__(self, other):
         return not self.__eq__(other)
-    
+
     def __lt__(self, other):
         raise NotImplementedError("Only equality comparison allowed")
 
@@ -165,7 +165,7 @@ class Transition(object):
 
     def __ge__(self, other):
         raise NotImplementedError("Only equality comparison allowed")
-    
+
     def getOrigState(self):
         '''
         Return the origin state
@@ -225,10 +225,7 @@ class Transition(object):
             False if it is only related to the origin state
 
         """
-        if self.transitionType == TransitionType.T:
-            return True
-        else:
-            return False
+        return self.transitionType == TransitionType.T
 
     #
     # Here, we try to put another layer of protection into our code
@@ -244,7 +241,7 @@ class Transition(object):
         :type getOrigState: String
         """
         self.origState = origState
-        return None
+        return self
 
     def __setDestState(self, destState):
         """
@@ -253,7 +250,7 @@ class Transition(object):
         :type getDestState: String
         """
         self.destState = destState
-        return None
+        return self
 
     def __setEquation(self, equation):
         '''
@@ -262,7 +259,7 @@ class Transition(object):
         :type equation: String
         '''
         self.equation = equation
-        return None
+        return self
 
 class TransitionType(Enum):
     '''

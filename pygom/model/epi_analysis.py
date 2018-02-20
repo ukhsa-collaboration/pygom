@@ -8,7 +8,7 @@
 
 import sympy
 
-from .stochastic import SimulateOdeModel
+from pygom.model.simulate import SimulateOde
 
 __all__ = [
            'getDFE',
@@ -156,9 +156,9 @@ def getDiseaseProgressionMatrices(ode, diseaseState, diff=True):
             if orig not in diseaseState and dest in diseaseState:
                 FList.append(t)
 
-    ode2 = SimulateOdeModel(ode.getStateList(), 
+    ode2 = SimulateOde(ode.getStateList(), 
                             ode.getParamList(), 
-                            transitionList=FList)
+                            transition=FList)
 
     F = ode2.getOde().row(diseaseIndex)
     V = F - ode.getOde().row(diseaseIndex)

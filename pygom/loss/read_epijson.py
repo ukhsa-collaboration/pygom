@@ -5,11 +5,13 @@
 
 """
 
-import json, functools
-import pandas as pd
-import numpy as np
+import functools
+import json
 
 from dateutil import parser, tz
+
+import pandas as pd
+import numpy as np
 
 def epijsonToDataFrame(inData, full_output=False):
     '''
@@ -23,11 +25,11 @@ def epijsonToDataFrame(inData, full_output=False):
         dict that conforms to the EpiJSON format or a str
         which will be read as JSON
     full_output: bool, optional
-        defaults to False, if True, returns 
+        defaults to False, if True, returns
         (:class:`pandas.DataFrame`, dict) where the first is element is not in
-        the aggregated form and the second is the JSON data.  Invoke 
+        the aggregated form and the second is the JSON data.  Invoke
         df.cumsum() to get the same output when full_output=False
-    
+
     Returns:
     df: :class:`pandas.DataFrame`
         data in as cumulative sum where the row represent the
@@ -45,7 +47,7 @@ def epijsonToDataFrame(inData, full_output=False):
         epijson = inData
 
     allRecords = checkEpijsonFormat(epijson)
-    
+
     # obtain the data into (event, date)
     f = lambda x: list(map(lambda x1: (x1['name'], x1['date']), x))
     dataTuple = map(f, allRecords)
@@ -119,12 +121,11 @@ def checkEpijsonFormat(epijson, returnRecord=True):
         "Events id not unique in records"
 
     return y1 if returnRecord else True
-    
+
 def _checkUniqueID(y):
     '''
     Check if the input y is a set or a bag.  Returns
     True if it is a set, False otherwise
     '''
-    ids = list(map(lambda x: x['id'], y))    
+    ids = list(map(lambda x: x['id'], y))
     return len(ids) == len(set(ids))
-

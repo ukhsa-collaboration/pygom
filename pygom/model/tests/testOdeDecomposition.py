@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from pygom import SimulateOdeModel, Transition, TransitionType, common_models
+from pygom import SimulateOde, Transition, TransitionType, common_models
 import numpy
 import sympy
 
@@ -12,7 +12,7 @@ class TestOdeDecomposition(TestCase):
         ode3 = Transition('R', 'gamma*I', 'ode')
         stateList = ['S', 'I', 'R']
         paramList = ['beta', 'gamma']
-        ode = SimulateOdeModel(stateList, paramList, odeList=[ode1, ode2, ode3])
+        ode = SimulateOde(stateList, paramList, ode=[ode1, ode2, ode3])
 
         ode2 = ode.returnObjWithTransitionsAndBD()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.getOde() - ode2.getOde()))
@@ -32,10 +32,10 @@ class TestOdeDecomposition(TestCase):
             Transition('I', 'p * kappa * L - alpha * I', 'ODE'),
             Transition('A', '(1-p) * kappa * L - epsilon * A', 'ODE'),
             Transition('R', 'f * alpha * I + epsilon * A', 'ODE'),
-            Transition('D', '(1-f) * alpha * I', 'ODE') 
+            Transition('D', '(1-f) * alpha * I', 'ODE')
             ]
 
-        ode = SimulateOdeModel(stateList, paramList, odeList=odeList)
+        ode = SimulateOde(stateList, paramList, ode=odeList)
 
         ode2 = ode.returnObjWithTransitionsAndBD()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.getOde() - ode2.getOde()))
@@ -48,26 +48,25 @@ class TestOdeDecomposition(TestCase):
         stateList = ['S', 'I', 'R']
         paramList = ['beta', 'gamma', 'B', 'mu']
         odeList = [
-            Transition(origState='S', 
+            Transition(origin='S',
                        equation='-beta * S * I + B - mu * S',
-                       transitionType=TransitionType.ODE),
-            Transition(origState='I', 
+                       transition_type=TransitionType.ODE),
+            Transition(origin='I',
                        equation='beta * S * I - gamma * I - mu * I',
-                       transitionType=TransitionType.ODE),
-            Transition(origState='R', 
-                       destState='R', 
+                       transition_type=TransitionType.ODE),
+            Transition(origin='R',
+                       destination='R',
                        equation='gamma * I',
-                       transitionType=TransitionType.ODE)
+                       transition_type=TransitionType.ODE)
             ]
 
-        ode = SimulateOdeModel(stateList, paramList, odeList=odeList)
+        ode = SimulateOde(stateList, paramList, ode=odeList)
 
         ode2 = ode.returnObjWithTransitionsAndBD()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.getOde() - ode2.getOde()))
 
         if numpy.any(numpy.array(list(diffEqZero)) == False):
             raise Exception("Birth Death: SIR+BD Decomposition failed")
-    
 
     def test_derived_param(self):
         # the derived parameters are treated separately when compared to the
@@ -84,7 +83,7 @@ class TestOdeDecomposition(TestCase):
             Transition('tau', '1')
         ]
 
-        ode1 = SimulateOdeModel(ode._stateList, ode._paramList, ode._derivedParamEqn, odeList=odeList)
+        ode1 = SimulateOde(ode._stateList, ode._paramList, ode._derivedParamEqn, ode=odeList)
 
         ode2 = ode1.returnObjWithTransitionsAndBD()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.getOde() - ode2.getOde()))
