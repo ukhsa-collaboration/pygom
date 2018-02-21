@@ -190,9 +190,9 @@ class BaseLoss(object):
 
     def _get_model_str(self):
         modelStr = "(%s, %s, %s, %s, %s, %s, %s" % (self._theta.tolist(),
-                                                    self._ode, 
+                                                    self._ode,
                                                     self._x0.tolist(),
-                                                    self._t0, 
+                                                    self._t0,
                                                     self._observeT.tolist(),
                                                     self._y.tolist(),
                                                     self._stateName)
@@ -273,8 +273,8 @@ class BaseLoss(object):
 
         # integrate forward using the extra time points
         f = ode_utils.integrateFuncJac
-        sAndOutInterpolate = f(self._ode.odeT,
-                               self._ode.JacobianT,
+        sAndOutInterpolate = f(self._ode.ode_T,
+                               self._ode.jacobian_T,
                                self._x0,
                                self._interpolateTime[0],
                                self._interpolateTime[1::],
@@ -347,7 +347,7 @@ class BaseLoss(object):
         ga = gradList.append
         # the last gradient value.
         lambdaTemp[self._stateIndex] += diffLoss[-1]
-        ga(np.dot(self._ode.Grad(solution[-1], self._t[-1]).T,
+        ga(np.dot(self._ode.grad(solution[-1], self._t[-1]).T,
                      -lambdaTemp)*-diffT[-1])
 
         # holders if we want extra shit
@@ -362,8 +362,8 @@ class BaseLoss(object):
             # start and the end points in time
             tTemp = [self._t[-i-1], self._t[-i]]
 
-            lambdaTemp[:] = f(self._ode.adjointInterpolateT,
-                              self._ode.adjointInterpolateJacobianT,
+            lambdaTemp[:] = f(self._ode.adjoint_interpolate_T,
+                              self._ode.adjoint_interpolate_jacobian_T,
                               lambdaTemp, tTemp[1], tTemp[0],
                               args=(interpolateList,),
                               intName=intName).ravel()
@@ -371,7 +371,7 @@ class BaseLoss(object):
             # and correction due to the "event" i.e. observed value
             lambdaTemp[self._stateIndex] += diffLoss[-i-1]
             # evaluate the gradient at the observed point after the correction
-            ga(np.dot(self._ode.Grad(solution[-i-1], tTemp[0]).T,
+            ga(np.dot(self._ode.grad(solution[-i-1], tTemp[0]).T,
                          -lambdaTemp)*-diffT[-i-1])
 
             if full_output:
@@ -481,8 +481,8 @@ class BaseLoss(object):
         initialStateSens = np.append(self._x0, np.zeros(numSens))
 
         f = ode_utils.integrateFuncJac
-        sAndOutSens = f(self._ode.odeAndSensitivityT,
-                        self._ode.odeAndSensitivityJacobianT,
+        sAndOutSens = f(self._ode.ode_and_sensitivity_T,
+                        self._ode.ode_and_sensitivity_jacobian_T,
                         initialStateSens,
                         self._t[0], self._t[1::],
                         full_output=full_output,
@@ -619,8 +619,8 @@ class BaseLoss(object):
                                         np.eye(self._numState).flatten())
 
         f = ode_utils.integrateFuncJac
-        sAndOutSensIV = f(self._ode.odeAndSensitivityIVT,
-                          self._ode.odeAndSensitivityIVJacobianT,
+        sAndOutSensIV = f(self._ode.ode_and_sensitivityIV_T,
+                          self._ode.ode_and_sensitivityIV_jacobian_T,
                           initialStateSens,
                           self._t[0], self._t[1::],
                           full_output=full_output,
@@ -714,8 +714,8 @@ class BaseLoss(object):
         initialStateSens = np.append(self._x0, np.zeros(numSens + numFF))
 
         f = ode_utils.integrateFuncJac
-        sAndOutAll = f(self._ode.odeAndForwardforwardT,
-                       self._ode.odeAndForwardforwardJacobianT,
+        sAndOutAll = f(self._ode.ode_and_forwardforward_T,
+                       self._ode.ode_and_forwardforward_jacobian_T,
                        initialStateSens,
                        self._t[0], self._t[1::],
                        full_output=full_output,
@@ -1268,13 +1268,13 @@ class BaseLoss(object):
 
         self._ode.parameters = self._theta
         # TODO: is this the correct approach
-        # to JacobianT what should be the return if we fail an integration
+        # to jacobian_T what should be the return if we fail an integration
 
         # Note that the solution does not include the origin.  This is
         # because they do not contribute when the initial conditions are
         # given and we assume that they are accurate
-        solution = ode_utils.integrateFuncJac(self._ode.odeT,
-                                              self._ode.JacobianT,
+        solution = ode_utils.integrateFuncJac(self._ode.ode_T,
+                                              self._ode.jacobian_T,
                                               self._x0, self._t0,
                                               self._observeT,
                                               full_output=False,

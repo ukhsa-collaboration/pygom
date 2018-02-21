@@ -29,8 +29,8 @@ class TestJacobians(TestCase):
         t = numpy.linspace(0, 150, 100)
         # integrate without using the analytical Jacobian
         solution, _output = scipy.integrate.odeint(ode.ode,
-                                                  x0,t,
-                                                  full_output=True)
+                                                   x0,t,
+                                                   full_output=True)
 
         # the Jacobian of the ode itself
         h = numpy.sqrt(numpy.finfo(numpy.float).eps)
@@ -45,7 +45,7 @@ class TestJacobians(TestCase):
                 ffTemp[j] += h
                 J[i,j] = (ode.ode(ffTemp,t[index])[i] - J0[i]) / h
 
-        JAnalytic = ode.Jacobian(ff0,t[index])
+        JAnalytic = ode.jacobian(ff0, t[index])
         if numpy.any(abs(J - JAnalytic) >= 1e-4):
             raise Exception("Test Failed")
 
@@ -73,25 +73,26 @@ class TestJacobians(TestCase):
 
         t = numpy.linspace(0, 150, 100)
         # integrate without using the analytical Jacobian
-        solutionSens,outputSens = scipy.integrate.odeint(ode.odeAndSensitivity,
-                                                         ffParam,t,
-                                                         full_output=True)
+        solution_sens, _out = scipy.integrate.odeint(ode.ode_and_sensitivity,
+                                            ffParam,t,
+                                            full_output=True)
 
 
         # the Jacobian of the ode itself
         h = numpy.sqrt(numpy.finfo(numpy.float).eps)
         index = 50
         # random.randomint(0,150)
-        ff0 = solutionSens[index,:]
-        J0 = ode.odeAndSensitivity(ff0,t[index])
+        ff0 = solution_sens[index,:]
+        J0 = ode.ode_and_sensitivity(ff0,t[index])
         J = numpy.zeros((d*(p+1),d*(p+1)))
         for i in range(0,d*(p+1)):
             for j in range(0,d*(p+1)):
                 ffTemp = copy.deepcopy(ff0)
                 ffTemp[j] += h
-                J[i,j] = (ode.odeAndSensitivity(ffTemp,t[index])[i] - J0[i]) / h
+                J[i,j] = (ode.ode_and_sensitivity(ffTemp,t[index])[i] - J0[i]) / h
 
-        JAnalytic = ode.odeAndSensitivityJacobian(ff0,t[index])
+        JAnalytic = ode.ode_and_sensitivity_jacobian(ff0,t[index])
+        # JAnalytic = ode.odeAndSensitivityJacobian(ff0,t[index])
         if numpy.any(abs(J - JAnalytic) >= 1e-4):
             raise Exception("Test Failed")
 
@@ -121,9 +122,8 @@ class TestJacobians(TestCase):
         # time frame
         t = numpy.linspace(0, 150, 100)
         # our integration
-        solutionHessian, _o = scipy.integrate.odeint(ode.odeAndForwardforward,
-                                                     ffParam, t,
-                                                     full_output=True)
+        sol_hess, _o = scipy.integrate.odeint(ode.ode_and_forwardforward,
+                                              ffParam, t, full_output=True)
 
         numFF = len(ffParam)
         J = numpy.zeros((numFF, numFF))
@@ -131,18 +131,20 @@ class TestJacobians(TestCase):
         index = 50
         # random.randomint(0,150)
         # get the info
-        ff0 = solutionHessian[index,:]
+        ff0 = sol_hess[index,:]
         # evaluate at target point
-        J0 = ode.odeAndForwardforward(ff0, t[index])
+        J0 = ode.ode_and_forwardforward(ff0, t[index])
+        # J0 = ode.odeAndForwardforward(ff0, t[index])
         # the Analytical solution is
-        JAnalytic = ode.odeAndForwardforwardJacobian(ff0, t[index])
+        JAnalytic = ode.ode_and_forwardforward_jacobian(ff0, t[index])
+        # JAnalytic = ode.odeAndForwardforwardJacobian(ff0, t[index])
         # now we go and find the finite difference Jacobian
         for i in range(0,numFF):
             for j in range(0,numFF):
                 ffTemp = copy.deepcopy(ff0)
                 #ffTemp[i] += h
                 ffTemp[j] += h
-                J[i,j] = (ode.odeAndForwardforward(ffTemp,t[index])[i] - J0[i]) / h
+                J[i,j] = (ode.ode_and_forwardforward(ffTemp, t[index])[i] - J0[i]) / h
 
         print(J - JAnalytic)
         # Note that the two Jacobian above are not equivalent.  Only block diagonal

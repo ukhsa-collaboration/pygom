@@ -18,7 +18,7 @@ class TestModelVector(TestCase):
                           ]
         # initialize the model
         ode = DeterministicOde(stateList, paramList, transition=transitionList)
-        ode.getOde()
+        ode.get_ode_eqn()
 
         t = numpy.append(0, 4*numpy.logspace(-6, 6, 1000))
         ode.initial_values = ([1.0, 0.0, 0.0], t[0])
@@ -37,7 +37,7 @@ class TestModelVector(TestCase):
                           ]
 
         ode = DeterministicOde(stateList, paramList, transition=transitionList)
-        ode.getOde()
+        ode.get_ode_eqn()
 
         t = numpy.append(0, 4*numpy.logspace(-6, 6, 1000))
         ode.initial_values = ([1.0, 0.0, 0.0], t[0])
@@ -58,7 +58,7 @@ class TestModelVector(TestCase):
                           ]
 
         ode = DeterministicOde(stateList, paramList, transition=transitionList)
-        ode.getOde()
+        ode.get_ode_eqn()
 
         t = numpy.append(0, 4*numpy.logspace(-6, 6, 1000))
         ode.initial_values = ([1.0, 0.0, 0.0], t[0])

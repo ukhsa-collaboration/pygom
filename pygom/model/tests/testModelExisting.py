@@ -25,12 +25,12 @@ class TestModelExisting(TestCase):
 
         # evaluating the ode
         ode.ode(initial_state, 1)
-        ode.Jacobian(initial_state, 1)
-        ode.Grad(initial_state, 1)
+        ode.jacobian(initial_state, 1)
+        ode.grad(initial_state, 1)
         # b.sensitivity(sensitivity, t, state)
         ode.sensitivity(numpy.zeros(6), 1, initial_state)
 
-        ode.isOdeLinear()
+        ode.linear_ode()
         # set the time sequence that we would like to observe
         t = numpy.linspace(1, 150, 100)
         # now find the solution

@@ -84,7 +84,7 @@ class DeterministicOde(BaseOdeModel):
         self._GradJacobian = None
         self._GradJacobianCompile = None
         # More information!! ROAR! I think this is useless though
-        # because this is the Hessian of the ode which most of the
+        # because this is the hessian of the ode which most of the
         # time we don't really care
         self._Hessian = None
         self._HessianWithParam = None
@@ -119,7 +119,7 @@ class DeterministicOde(BaseOdeModel):
 
     def __eq__(self, other):
         if isinstance(other, DeterministicOde):
-            if self.getOde() == other.getOde():
+            if self.get_ode_eqn() == other.get_ode_eqn():
                 return True
             else:
                 return False
@@ -127,7 +127,7 @@ class DeterministicOde(BaseOdeModel):
             return False
 
     def __repr__(self):
-        return "DeterministicOde" + self._get_model_str() 
+        return "DeterministicOde" + self._get_model_str()
 
     ########################################################################
     #
@@ -136,7 +136,7 @@ class DeterministicOde(BaseOdeModel):
     ########################################################################
 
     # TODO: check and see whether it is linear correctly!
-    def isOdeLinear(self):
+    def linear_ode(self):
         '''
         To check whether the input ode is linear
 
@@ -149,9 +149,9 @@ class DeterministicOde(BaseOdeModel):
         # if the ode is linear, then a numerical integration
         # scheme is a waste of time
         is_linear = True
-        # if we do not current possess the Jacobian, we find it! ROAR!
+        # if we do not current possess the jacobian, we find it! ROAR!
         if self._Jacobian is None:
-            self.getJacobian()
+            self.get_jacobian_eqn()
 
         # a really stupid way to determining whether it is linear.
         # have not figured out a better way yet...
@@ -181,7 +181,7 @@ class DeterministicOde(BaseOdeModel):
     #
     ########################################################################
 
-    def getOde(self, paramSub=False):
+    def get_ode_eqn(self, param_sub=False):
         '''
         Find the algebraic equations of the ode system.
 
@@ -199,20 +199,20 @@ class DeterministicOde(BaseOdeModel):
         else:
             pass
 
-        if paramSub:
+        if param_sub:
             return self._ode.subs(self._parameters)
         else:
             return self._ode
 
-    def printOde(self,latexOutput=False):
+    def print_ode(self, latex_output=False):
 
-        A = self.getOde()
+        A = self.get_ode_eqn()
         B = sympy.zeros(A.rows,2)
         for i in range(A.shape[0]):
             B[i,0] = sympy.symbols('d' + str(self._stateList[i]) + '/dt=')
             B[i,1] = A[i]
 
-        if latexOutput:
+        if latex_output:
             print(sympy.latex(B, mat_str="array", mat_delim=None,
                               inv_trig_style='full'))
         else:
@@ -278,13 +278,13 @@ class DeterministicOde(BaseOdeModel):
 
         return self._ode
 
-    def getTransitionGraph(self, fileName=None, show=True):
+    def get_transition_graph(self, file_name=None, show=True):
         '''
         Returns the transition graph using graphviz
 
         Parameters
         ----------
-        fileName: str, optional
+        file_name: str, optional
             name of the output file, defaults to None
         show: bool, optional
             If the graph should be plotted, defaults to True
@@ -294,7 +294,7 @@ class DeterministicOde(BaseOdeModel):
         dot:
             :class:`graphviz.Digraph`
         '''
-        dot = _ode_composition.generateTransitionGraph(self, fileName)
+        dot = _ode_composition.generateTransitionGraph(self, file_name)
         if show:
             img = mpimg.imread(io.BytesIO(dot.pipe("png")))
             plt.imshow(img)
@@ -324,15 +324,15 @@ class DeterministicOde(BaseOdeModel):
             output of the same length as the ode
 
         '''
-        return self.evalOde(time=t, state=state)
+        return self.eval_ode(time=t, state=state)
 
-    def odeT(self, t, state):
+    def ode_T(self, t, state):
         '''
         Same as :meth:`ode` but with t as the first parameter
         '''
         return self.ode(state, t)
 
-    def evalOde(self, parameters=None, time=None, state=None):
+    def eval_ode(self, parameters=None, time=None, state=None):
         """
         Evaluate the ode given time, state and parameters.  An extension
         of :meth:`ode` but now also include the parameters.
@@ -364,7 +364,7 @@ class DeterministicOde(BaseOdeModel):
 
         """
         if self._ode is None or self._hasNewTransition:
-            self.getOde()
+            self.get_ode_eqn()
 
         eval_param = self._getEvalParam(state, time, parameters)
         return self._odeCompile(eval_param)
@@ -372,13 +372,13 @@ class DeterministicOde(BaseOdeModel):
 
     ########################################################################
     #
-    # Jacobian related operations
+    # jacobian related operations
     #
     ########################################################################
 
-    def isStiff(self, state=None, t=None):
+    def is_stiff(self, state=None, t=None):
         '''
-        Test on the eigenvalues of the Jacobian.  We classify the
+        Test on the eigenvalues of the jacobian.  We classify the
         problem as stiff if any of the eigenvalues are positive
 
         Parameters
@@ -395,12 +395,12 @@ class DeterministicOde(BaseOdeModel):
             eigenvalues of the system given input
 
         '''
-        e = self.jacobianEigenvalue(state, t)
+        e = self.jacobian_eigenvalue(state, t)
         return numpy.any(e > 0)
 
-    def jacobianEigenvalue(self, state=None, t=None):
+    def jacobian_eigenvalue(self, state=None, t=None):
         '''
-        Find out the eigenvalues of the Jacobian given state and time. If
+        Find out the eigenvalues of the jacobian given state and time. If
         None is given, the initial values are used.
 
         Parameters
@@ -420,15 +420,15 @@ class DeterministicOde(BaseOdeModel):
 
         if state is None or t is None:
             if self._x0 is not None and self._t0 is not None:
-                J = self.Jacobian(self._x0, self._t0)
+                J = self.jacobian(self._x0, self._t0)
         else:
-            J = self.Jacobian(state, t)
+            J = self.jacobian(state, t)
 
         return scipy.linalg.eig(J)[0]
 
-    def Jacobian(self, state, t):
+    def jacobian(self, state, t):
         '''
-        Evaluate the Jacobian given state and time
+        Evaluate the jacobian given state and time
 
         Parameters
         ----------
@@ -444,13 +444,13 @@ class DeterministicOde(BaseOdeModel):
             Matrix of dimension [number of state x number of state]
 
         '''
-        return self.evalJacobian(time=t, state=state)
+        return self.eval_jacobian(time=t, state=state)
 
-    def JacobianT(self, t, state):
+    def jacobian_T(self, t, state):
         '''
-        Same as :meth:`Jacobian` but with t as first parameter
+        Same as :meth:`jacobian` but with t as first parameter
         '''
-        return self.Jacobian(state, t)
+        return self.jacobian(state, t)
 
     def _Jacobian_NoCheck(self, state, t):
         return self._evalJacobian_NoCheck(time=t, state=state)
@@ -458,9 +458,9 @@ class DeterministicOde(BaseOdeModel):
     def _JacobianT_NoCheck(self, t, state):
         return self._Jacobian_NoCheck(state, t)
 
-    def getJacobian(self):
+    def get_jacobian_eqn(self):
         '''
-        Returns the Jacobian in algebraic form
+        Returns the jacobian in algebraic form
 
         Returns
         -------
@@ -469,7 +469,7 @@ class DeterministicOde(BaseOdeModel):
 
         '''
         if self._Jacobian is None:
-            self.getOde()
+            self.get_ode_eqn()
             states = [s for s in self._iterStateList()]
             self._Jacobian = self._ode.jacobian(states)
             for i in range(self.num_state):
@@ -490,10 +490,10 @@ class DeterministicOde(BaseOdeModel):
 
         return self._Jacobian
 
-    def evalJacobian(self, parameters=None, time=None, state=None):
+    def eval_jacobian(self, parameters=None, time=None, state=None):
         '''
-        Evaluate the Jacobian given parameters, state and time. An extension
-        of :meth:`.Jacobian` but now also include the parameters.
+        Evaluate the jacobian given parameters, state and time. An extension
+        of :meth:`.jacobian` but now also include the parameters.
 
         Parameters
         ----------
@@ -516,33 +516,33 @@ class DeterministicOde(BaseOdeModel):
 
         See Also
         --------
-        :meth:`.Jacobian`
+        :meth:`.jacobian`
 
         '''
         if self._Jacobian is None or self._hasNewTransition:
-            self.getOde()
-            self.getJacobian()
+            self.get_ode_eqn()
+            self.get_jacobian_eqn()
 
         eval_param = self._getEvalParam(state, time, parameters)
         return self._JacobianCompile(eval_param)
 
     def _evalJacobian_NoCheck(self, time, state):
         '''
-        Same as :meth:`evalJacobian` but without the checks
+        Same as :meth:`eval_jacobian` but without the checks
         '''
         eval_param = list(state) + [time] + self._paramValue
         return self._JacobianCompile(eval_param)
 
     ######  the sum of jacobian, i.e a_{i} = \sum_{j=1}^{d} J_{i,j}
 
-    def SensJacobianState(self, stateParam, t):
+    def sens_jacobian_state(self, state_param, t):
         '''
-        Evaluate the Jacobian of the sensitivity w.r.t. the
+        Evaluate the jacobian of the sensitivity w.r.t. the
         state given state and time
 
         Parameters
         ----------
-        stateParam: array like
+        state_param: array like
             The current numerical value for the states as
             well as the sensitivities, which can be
             :class:`numpy.ndarray` or :class:`list`
@@ -557,21 +557,21 @@ class DeterministicOde(BaseOdeModel):
 
         '''
 
-        state = stateParam[0:self.num_state]
-        sens = stateParam[self.num_state::]
+        state = state_param[0:self.num_state]
+        sens = state_param[self.num_state::]
 
-        return self.evalSensJacobianState(time=t, state=state, sens=sens)
+        return self.eval_sens_jacobian_state(time=t, state=state, sens=sens)
 
-    def SensJacobianStateT(self, t, state):
+    def sens_jacobian_state_T(self, t, state):
         '''
-        Same as :meth:`SensJacobianStateT` but with t as first parameter
+        Same as :meth:`sens_jacobian_state_T` but with t as first parameter
         '''
-        return self.SensJacobianState(state, t)
+        return self.sens_jacobian_state(state, t)
 
-    def evalSensJacobianState(self, time=None, state=None, sens=None):
+    def eval_sens_jacobian_state(self, time=None, state=None, sens=None):
         '''
-        Evaluate the Jacobian of the sensitivities w.r.t the states given
-        parameters, state and time. An extension of :meth:`.SensJacobianState`
+        Evaluate the jacobian of the sensitivities w.r.t the states given
+        parameters, state and time. An extension of :meth:`.sens_jacobian_state`
         but now also include the parameters.
 
         Parameters
@@ -595,7 +595,7 @@ class DeterministicOde(BaseOdeModel):
 
         See Also
         --------
-        :meth:`.SensJacobianState`
+        :meth:`.sens_jacobian_state`
 
         '''
 
@@ -606,14 +606,14 @@ class DeterministicOde(BaseOdeModel):
         # basically, some magic
         # don't ask me what is actually going on here, I did it
         # while having my wizard hat on
-        return(numpy.reshape(self.diffJacobian(state, time).dot(
+        return(numpy.reshape(self.diff_jacobian(state, time).dot(
             self._SAUtil.vecToMatSens(sens)).transpose(), (nS*nP, nS)))
 
-    ############################## derivative of Jacobian
+    ############################## derivative of jacobian
 
-    def diffJacobian(self, state, t):
+    def diff_jacobian(self, state, t):
         '''
-        Evaluate the differential of Jacobian given state and time
+        Evaluate the differential of jacobian given state and time
 
         Parameters
         ----------
@@ -629,17 +629,17 @@ class DeterministicOde(BaseOdeModel):
             Matrix of dimension [number of state x number of state]
 
         '''
-        return self.evalDiffJacobian(time=t, state=state)
+        return self.eval_diff_jacobian(time=t, state=state)
 
-    def diffJacobianT(self, t, state):
+    def diff_jacobian_T(self, t, state):
         '''
-        Same as :meth:`diffJacobian` but with t as first parameter
+        Same as :meth:`diff_jacobian` but with t as first parameter
         '''
-        return self.diffJacobian(state, t)
+        return self.diff_jacobian(state, t)
 
-    def getDiffJacobian(self):
+    def get_diff_jacobian_eqn(self):
         '''
-        Returns the Jacobian differentiate w.r.t. states in algebraic form
+        Returns the jacobian differentiate w.r.t. states in algebraic form
 
         Returns
         -------
@@ -650,7 +650,7 @@ class DeterministicOde(BaseOdeModel):
 
         '''
         if self._diffJacobian is None:
-            self.getOde()
+            self.get_ode_eqn()
             diffJac = list()
 
             for eqn in self._ode:
@@ -683,10 +683,10 @@ class DeterministicOde(BaseOdeModel):
 
         return self._diffJacobian
 
-    def evalDiffJacobian(self, parameters=None, time=None, state=None):
+    def eval_diff_jacobian(self, parameters=None, time=None, state=None):
         '''
-        Evaluate the differential of the Jacobian given parameters,
-        state and time. An extension of :meth:`.diffJacobian` but now
+        Evaluate the differential of the jacobian given parameters,
+        state and time. An extension of :meth:`.diff_jacobian` but now
         also include the parameters.
 
         Parameters
@@ -710,12 +710,12 @@ class DeterministicOde(BaseOdeModel):
 
         See Also
         --------
-        :meth:`.Jacobian`
+        :meth:`.jacobian`
 
         '''
         if self._diffJacobian is None or self._hasNewTransition:
-            self.getOde()
-            self.getDiffJacobian()
+            self.get_ode_eqn()
+            self.get_diff_jacobian_eqn()
 
         eval_param = self._getEvalParam(state, time, parameters)
         return self._diffJacobianCompile(eval_param)
@@ -726,7 +726,7 @@ class DeterministicOde(BaseOdeModel):
     #
     ########################################################################
 
-    def getGrad(self):
+    def get_grad_eqn(self):
         '''
         Return the gradient of the ode in algebraic form
 
@@ -739,7 +739,7 @@ class DeterministicOde(BaseOdeModel):
         # finds
 
         if self._Grad is None:
-            ode = self.getOde()
+            ode = self.get_ode_eqn()
             self._Grad = sympy.zeros(self.num_state, self.num_param)
 
             for i in range(self.num_state):
@@ -762,7 +762,7 @@ class DeterministicOde(BaseOdeModel):
 
         return self._Grad
 
-    def Grad(self, state, time):
+    def grad(self, state, time):
         """
         Evaluate the gradient given state and time
 
@@ -780,18 +780,18 @@ class DeterministicOde(BaseOdeModel):
             Matrix of dimension [number of state x number of parameters]
 
         """
-        return self.evalGrad(state=state, time=time)
+        return self.eval_grad(state=state, time=time)
 
-    def GradT(self, t, state):
+    def grad_T(self, t, state):
         '''
-        Same as :meth:`GradT` but with t as first parameter
+        Same as :meth:`grad_T` but with t as first parameter
         '''
-        return self.Grad(state, t)
+        return self.grad(state, t)
 
-    def evalGrad(self, parameters=None, time=None, state=None):
+    def eval_grad(self, parameters=None, time=None, state=None):
         '''
         Evaluate the gradient given parameters, state and time. An extension
-        of :meth:`Grad` but now also include the parameters.
+        of :meth:`grad` but now also include the parameters.
 
         Parameters
         ----------
@@ -814,23 +814,23 @@ class DeterministicOde(BaseOdeModel):
 
         See Also
         --------
-        :meth:`.Grad`
+        :meth:`.grad`
 
         '''
         if self._Grad is None or self._hasNewTransition:
-            self.getOde()
-            self.getGrad()
+            self.get_ode_eqn()
+            self.get_grad_eqn()
 
-        evalParam = self._getEvalParam(state, time, parameters)
-        return self._GradCompile(evalParam)
+        eval_param = self._getEvalParam(state, time, parameters)
+        return self._GradCompile(eval_param)
 
     #
-    # Jacobian of the Gradiant
+    # jacobian of the Gradiant
     #
 
-    def getGradJacobian(self):
+    def get_grad_jacobian_eqn(self):
         '''
-        Return the Jacobian of the gradient in algebraic form
+        Return the jacobian of the gradient in algebraic form
 
         Returns
         -------
@@ -840,13 +840,13 @@ class DeterministicOde(BaseOdeModel):
 
         See also
         --------
-        :meth:`.getGrad`
+        :meth:`.get_grad_eqn`
 
         '''
         if self._GradJacobian is None:
             self._GradJacobian = sympy.zeros(self.num_state*self.num_param,
                                              self.num_state)
-            G = self.getGrad()
+            G = self.get_grad_eqn()
             for k in range(0, self.num_param):
                 for i in range(0, self.num_state):
                     for j, s in enumerate(self._iterStateList()):
@@ -867,7 +867,7 @@ class DeterministicOde(BaseOdeModel):
 
         return self._GradJacobian
 
-    def GradJacobian(self, state, time):
+    def grad_jacobian(self, state, time):
         """
         Evaluate the Jacobian of the gradient given state and time
 
@@ -886,21 +886,21 @@ class DeterministicOde(BaseOdeModel):
 
         See also
         --------
-        :meth:`.Grad`
+        :meth:`.grad`
 
         """
-        return self.evalGradJacobian(state=state, time=time)
+        return self.eval_grad_jacobian(state=state, time=time)
 
-    def GradJacobianT(self, t, state):
+    def grad_jacobianT(self, t, state):
         '''
-        Same as :meth:`GradJacobian` but with t as first parameter
+        Same as :meth:`grad_jacobian` but with t as first parameter
         '''
-        return self.GradJacobian(state, t)
+        return self.grad_jacobian(state, t)
 
-    def evalGradJacobian(self, parameters=None, time=None, state=None):
+    def eval_grad_jacobian(self, parameters=None, time=None, state=None):
         '''
-        Evaluate the Jacobian of the gradient given parameters,
-        state and time. An extension of :meth:`.GradJacobian`
+        Evaluate the jacobian of the gradient given parameters,
+        state and time. An extension of :meth:`.grad_jacobian`
         but now also include the parameters.
 
         Parameters
@@ -924,23 +924,23 @@ class DeterministicOde(BaseOdeModel):
 
         See Also
         --------
-        :meth:`.GradJacobian`, :meth:`.getGradJacobian`
+        :meth:`.grad_jacobian`, :meth:`.get_grad_jacobian_eqn`
 
         '''
         if self._GradJacobian is None or self._hasNewTransition:
-            self.getOde()
-            self.getGradJacobian()
+            self.get_ode_eqn()
+            self.get_grad_jacobian_eqn()
 
         eval_param = self._getEvalParam(state, time, parameters)
         return self._GradJacobianCompile(eval_param)
 
     ########################################################################
     #
-    # Hessian related operations
+    # hessian related operations
     #
     ########################################################################
 
-    def getHessian(self):
+    def get_hessian_eqn(self):
         '''
         Return the Hessian of the ode in algebraic form
 
@@ -959,7 +959,7 @@ class DeterministicOde(BaseOdeModel):
         '''
 
         if self._Hessian is None:
-            ode = self.getOde()
+            ode = self.get_ode_eqn()
             self._Hessian = list()
             # roll out the equation one by one.  Each H below is a the
             # second derivative of f_{j}(x), the j^{th} ode.  Each ode
@@ -978,9 +978,9 @@ class DeterministicOde(BaseOdeModel):
 
         return self._Hessian
 
-    def Hessian(self, state, time):
+    def hessian(self, state, time):
         """
-        Evaluate the Hessian given state and time
+        Evaluate the hessian given state and time
 
         Parameters
         ----------
@@ -998,13 +998,13 @@ class DeterministicOde(BaseOdeModel):
             :mod:`sympy.matricies.matricies`
 
         """
-        A = self.evalHessian(state=state, time=time)
+        A = self.eval_hessian(state=state, time=time)
         return [numpy.array(H, float) for H in A]
 
-    def evalHessian(self, parameters=None, time=None, state=None):
+    def eval_hessian(self, parameters=None, time=None, state=None):
         '''
-        Evaluate the Hessian given parameters, state and time. An extension
-        of :meth:`Hessian` but now also include the parameters.
+        Evaluate the hessian given parameters, state and time. An extension
+        of :meth:`hessian` but now also include the parameters.
 
         Parameters
         ----------
@@ -1025,11 +1025,11 @@ class DeterministicOde(BaseOdeModel):
 
         See Also
         --------
-        :meth:`.Grad`, :meth:`.evalGrad`
+        :meth:`.grad`, :meth:`.eval_grad`
 
         '''
         if self._hasNewTransition:
-            self.getOde()
+            self.get_ode_eqn()
 
         eval_param = list()
         eval_param = self._addTimeEvalParam(eval_param, time)
@@ -1053,7 +1053,7 @@ class DeterministicOde(BaseOdeModel):
             return H
 
     def _computeHessianParam(self):
-        self._Hessian = self.getHessian()
+        self._Hessian = self.get_hessian_eqn()
 
         self._HessianWithParam = copy.deepcopy(self._Hessian)
         for H in self._HessianWithParam:
@@ -1067,13 +1067,13 @@ class DeterministicOde(BaseOdeModel):
     #
     ########################################################################
 
-    def sensitivity(self, sens, t, state, byState=False):
+    def sensitivity(self, sens, t, state, by_state=False):
         """
         Evaluate the sensitivity given state and time.  The default is to
         output the values by parameters, i.e. :math:`s_{i},\\ldots,s_{i+n}` are
         partial derivatives w.r.t. the states for :math:`i \\in {1,1+p,1+2p,1+3p
         \\ldots, 1+(n-1)p}`.  This is to take advantage of the fact that
-        we have a block diagonal Jacobian that was already evaluated
+        we have a block diagonal jacobian that was already evaluated
 
         Parameters
         ----------
@@ -1086,7 +1086,7 @@ class DeterministicOde(BaseOdeModel):
         state: array like
             The current numerical value for the states which can be
             :class:`numpy.ndarray` or :class:`list`
-        byState: bool
+        by_state: bool
             how we want the output to be arranged.  Default is True so
             that we have a block diagonal structure
 
@@ -1100,20 +1100,20 @@ class DeterministicOde(BaseOdeModel):
 
         # S = \nabla_{time} \frac{\partial State}{\partial Parameters}
         # rearrange the input if required
-        if byState:
+        if by_state:
             S = numpy.reshape(sens, (self.num_state, self.num_param))
         else:
             S = self._SAUtil.vecToMatSens(sens)
 
-        return self.evalSensitivity(S=S, t=t, state=state, byState=byState)
+        return self.eval_sensitivity(S=S, t=t, state=state, by_state=by_state)
 
-    def sensitivityT(self, t, sens, state, byState=False):
+    def sensitivity_T(self, t, sens, state, by_state=False):
         '''
         Same as :meth:`sensitivity` but with t as first parameter
         '''
-        return self.sensitivity(sens, t, state, byState)
+        return self.sensitivity(sens, t, state, by_state)
 
-    def evalSensitivity(self, S, t, state, byState=False):
+    def eval_sensitivity(self, S, t, state, by_state=False):
         """
         Evaluate the sensitivity given state and time
 
@@ -1129,7 +1129,7 @@ class DeterministicOde(BaseOdeModel):
         state: array like
             The current numerical value for the states which can be
             :class:`numpy.ndarray` or :class:`list`
-        byState: bool
+        by_state: bool
             how we want the output to be arranged.  Default is True so
             that we have a block diagonal structure
 
@@ -1140,7 +1140,7 @@ class DeterministicOde(BaseOdeModel):
 
         Notes
         -----
-        It is different to :meth:`.evalOde` and :meth:`.evalJacobian` in that
+        It is different to :meth:`.eval_ode` and :meth:`.eval_jacobian` in that
         the extra input argument is not a parameter
 
         See Also
@@ -1149,30 +1149,30 @@ class DeterministicOde(BaseOdeModel):
 
         """
 
-        # Jacobian * sensitivities + G
+        # jacobian * sensitivities + G
         # where G is the gradient
-        J = self.Jacobian(state, t)
-        G = self.Grad(state, t)
+        J = self.jacobian(state, t)
+        G = self.grad(state, t)
         A = numpy.dot(J, S) + G
 
-        if byState:
+        if by_state:
             return numpy.reshape(A, self.num_state*self.num_param)
         else:
             return self._SAUtil.matToVecSens(A)
 
-    def odeAndSensitivity(self, stateParam, t, byState=False):
+    def ode_and_sensitivity(self, state_param, t, by_state=False):
         '''
         Evaluate the sensitivity given state and time
 
         Parameters
         ----------
-        stateParam: array like
+        state_param: array like
             The current numerical value for the states as well as the
             sensitivities values all in one.  We assume that the state
             values comes first.
         t: double
             The current time
-        byState: bool
+        by_state: bool
             Whether the output vector should be arranged by state or by
             parameters. If False, then it means that the vector of output is
             arranged according to looping i,j from Sensitivity_{i,j} with i the
@@ -1191,7 +1191,7 @@ class DeterministicOde(BaseOdeModel):
 
         '''
 
-        if len(stateParam) == self.num_state:
+        if len(state_param) == self.num_state:
             raise InputError("You have only inputed the initial condition " +
                              "for the states and not the sensitivity")
 
@@ -1199,36 +1199,36 @@ class DeterministicOde(BaseOdeModel):
         # there is no safety checks on this because it is impossible to
         # distinguish what is state and what is sensitivity as they are
         # all numeric value that can take the full range (-\infty,\infty)
-        state = stateParam[0:self.num_state]
-        sens = stateParam[self.num_state::]
+        state = state_param[0:self.num_state]
+        sens = state_param[self.num_state::]
 
         out1 = self.ode(state, t)
-        out2 = self.sensitivity(sens, t, state, byState)
+        out2 = self.sensitivity(sens, t, state, by_state)
         return numpy.append(out1, out2)
 
-    def odeAndSensitivityT(self, t, stateParam, byState=False):
+    def ode_and_sensitivity_T(self, t, state_param, by_state=False):
         '''
-        Same as :meth:`odeAndSensitivity` but with t as first parameter
+        Same as :meth:`ode_and_sensitivity` but with t as first parameter
         '''
-        return self.odeAndSensitivity(stateParam, t, byState)
+        return self.ode_and_sensitivity(state_param, t, by_state)
 
-    def odeAndSensitivityJacobian(self, stateParam, t, byState=False):
+    def ode_and_sensitivity_jacobian(self, state_param, t, by_state=False):
         '''
         Evaluate the sensitivity given state and time.  Output a block
         diagonal sparse matrix as default.
 
         Parameters
         ----------
-        stateParam: array like
+        state_param: array like
             The current numerical value for the states as well as the
             sensitivities values all in one.  We assume that the state
             values comes first.
         t: double
             The current time
-        byState: bool
+        by_state: bool
             How the output is arranged, according to the vector of output.
             It can be in terms of state or parameters, where by state means
-            that the Jacobian is a block diagonal matrix.
+            that the jacobian is a block diagonal matrix.
 
         Returns
         -------
@@ -1238,17 +1238,17 @@ class DeterministicOde(BaseOdeModel):
 
         See Also
         --------
-        :meth:`.odeAndSensitivity`
+        :meth:`.ode_and_sensitivity`
 
         '''
 
-        if len(stateParam) == self.num_state:
+        if len(state_param) == self.num_state:
             raise InputError("Expecting both the state and the sensitivities")
         else:
-            state = stateParam[0:self.num_state]
+            state = state_param[0:self.num_state]
 
         # now we start the computation
-        J = self.Jacobian(state, t)
+        J = self.jacobian(state, t)
         # create the block diagonal Jacobian, assuming that whoever is
         # calling this function wants it arranges by state-parameters
 
@@ -1256,12 +1256,12 @@ class DeterministicOde(BaseOdeModel):
         # matrix.  All of them accept a banded matrix in packed format but not
         # an actual sparse, or specifying the number of bands.
         outJ = numpy.kron(numpy.eye(self.num_param), J)
-        # jacobian of the gradient
-        GJ = self.GradJacobian(state, t)
+        # Jacobian of the gradient
+        GJ = self.grad_jacobian(state, t)
         # and now we add the gradient
-        sensJacobianOfState = GJ + self.SensJacobianState(stateParam, t)
+        sensJacobianOfState = GJ + self.sens_jacobian_state(state_param, t)
 
-        if byState:
+        if by_state:
             arrangeVector = numpy.zeros(self.num_state * self.num_param)
             k = 0
             for j in range(0, self.num_param):
@@ -1283,11 +1283,11 @@ class DeterministicOde(BaseOdeModel):
             [sensJacobianOfState, outJ]
         ]))
 
-    def odeAndSensitivityJacobianT(self, t, stateParam, byState=False):
+    def ode_and_sensitivity_jacobian_T(self, t, state_param, by_state=False):
         '''
-        Same as :meth:`odeAndSensitivityJacobian` but with t as first parameter
+        Same as :meth:`ode_and_sensitivity_jacobian` but with t as first parameter
         '''
-        return self.odeAndSensitivityJacobian(stateParam, t, byState)
+        return self.ode_and_sensitivity_jacobian(state_param, t, by_state)
 
     ########################################################################
     #
@@ -1334,15 +1334,15 @@ class DeterministicOde(BaseOdeModel):
 
         IV = numpy.reshape(sensIV[-(nS*nS):], (nS, nS), 'F')
 
-        return self.evalSensitivityIV(S=S, IV=IV, t=t, state=state)
+        return self.eval_sensitivityIV(S=S, IV=IV, t=t, state=state)
 
-    def sensitivityIVT(self, t, sensIV, state):
+    def sensitivityIV_T(self, t, sensIV, state):
         '''
         Same as :meth:`sensitivityIV` but with t as first parameter
         '''
         return self.sensitivityIV(sensIV, t, state)
 
-    def evalSensitivityIV(self, S, IV, t, state):
+    def eval_sensitivityIV(self, S, IV, t, state):
         """
         Evaluate the sensitivity with initial values given
         state and time
@@ -1369,7 +1369,7 @@ class DeterministicOde(BaseOdeModel):
 
         Notes
         -----
-        It is different to :meth:`.evalOde` and :meth:`.evalJacobian` in that
+        It is different to :meth:`.eval_ode` and :meth:`.eval_jacobian` in that
         the extra input argument is not a parameter
 
         See Also
@@ -1377,30 +1377,30 @@ class DeterministicOde(BaseOdeModel):
         :meth:`.sensitivityIV`
 
         """
-        # Jacobian * sensitivities + G
+        # jacobian * sensitivities + G
         # where G is the gradient
         # Evidently, A below uses the same operations as
-        # A = self.evalSensitivity(S,t,state)
+        # A = self.eval_sensitivity(S,t,state)
         # but we are evaluating them explicitly here because
         # we will be using J as well when computing B
 
-        J = self.Jacobian(state, t)
-        G = self.Grad(state, t)
+        J = self.jacobian(state, t)
+        G = self.grad(state, t)
         A = numpy.dot(J, S) + G
 
-        # and Jacobian * sensitivities of the initial condition
+        # and jacobian * sensitivities of the initial condition
         B = numpy.dot(J, IV)
 
         # we want to output by parameters
         return self._SAUtil.matToVecSens(A), B.flatten('F')
 
-    def odeAndSensitivityIV(self, stateParam, t):
+    def ode_and_sensitivityIV(self, state_param, t):
         '''
         Evaluate the sensitivity given state and time
 
         Parameters
         ----------
-        stateParam: array like
+        state_param: array like
             The current numerical value for the states as well as the
             sensitivities values all in one.  We assume that the state
             values comes first.
@@ -1421,33 +1421,33 @@ class DeterministicOde(BaseOdeModel):
 
         '''
 
-        if len(stateParam) == self.num_state:
+        if len(state_param) == self.num_state:
             raise InputError("You have only inputed the initial condition " +
                              "for the states and not the sensitivity")
 
         # unrolling, assuming that we would always put the state first
-        state = stateParam[0:self.num_state]
+        state = state_param[0:self.num_state]
         # the remainings
-        sensIV = stateParam[self.num_state::]
+        sensIV = state_param[self.num_state::]
         # separate evaluation
         out1 = self.ode(state,t)
         out2,out3 = self.sensitivityIV(sensIV, t, state)
         return numpy.append(numpy.append(out1, out2), out3)
 
-    def odeAndSensitivityIVT(self, t, stateParam):
+    def ode_and_sensitivityIV_T(self, t, state_param):
         '''
-        Same as :meth:`odeAndSensitivityIV` but with t as first parameter
+        Same as :meth:`ode_and_sensitivityIV` but with t as first parameter
         '''
-        return self.odeAndSensitivityIV(stateParam, t)
+        return self.ode_and_sensitivityIV(state_param, t)
 
-    def odeAndSensitivityIVJacobian(self, stateParam, t):
+    def ode_and_sensitivityIV_jacobian(self, state_param, t):
         '''
         Evaluate the sensitivity given state and time.  Output a block
         diagonal sparse matrix as default.
 
         Parameters
         ----------
-        stateParam: array like
+        state_param: array like
             The current numerical value for the states as well as the
             sensitivities values all in one.  We assume that the state
             values comes first.
@@ -1456,7 +1456,7 @@ class DeterministicOde(BaseOdeModel):
         byState: bool
             How the output is arranged, according to the vector of output.
             It can be in terms of state or parameters, where by state means
-            that the Jacobian is a block diagonal matrix.
+            that the jacobian is a block diagonal matrix.
 
         Returns
         -------
@@ -1466,23 +1466,23 @@ class DeterministicOde(BaseOdeModel):
 
         See Also
         --------
-        :meth:`.odeAndSensitivity`
+        :meth:`.ode_and_sensitivity`
 
         '''
 
-        if len(stateParam) == self.num_state:
+        if len(state_param) == self.num_state:
             raise InputError("Expecting both the state and the sensitivities")
         else:
-            state = stateParam[0:self.num_state]
+            state = state_param[0:self.num_state]
 
         nS = self.num_state
         nP = self.num_param
         # now we start the computation, the simply one :)
-        J = self.Jacobian(state, t)
+        J = self.jacobian(state, t)
 
-        # now the Jacobian of the state vs initial value
-        DJ = self.diffJacobian(state, t)
-        A = DJ.dot(numpy.reshape(stateParam[(nS*(nP+1))::], (nS, nS), 'F'))
+        # now the jacobian of the state vs initial value
+        DJ = self.diff_jacobian(state, t)
+        A = DJ.dot(numpy.reshape(state_param[(nS*(nP+1))::], (nS, nS), 'F'))
         A = numpy.reshape(A.transpose(), (nS*nS, nS))
 
         if nP == 0:
@@ -1491,16 +1491,16 @@ class DeterministicOde(BaseOdeModel):
                         [A, numpy.kron(numpy.eye(nS), J)]
                         ]))
         else:
-            # create the block diagonal Jacobian, assuming that whoever is
+            # create the block diagonal jacobian, assuming that whoever is
             # calling this function wants it arranges by state-parameters
             outJ = numpy.kron(numpy.eye(nP), J)
 
             # jacobian of the gradient
-            GJ = self.GradJacobian(state, t)
-            GS = self.SensJacobianState(stateParam[:(nS*(nP + 1))], t)
+            GJ = self.grad_jacobian(state, t)
+            GS = self.sens_jacobian_state(state_param[:(nS*(nP + 1))], t)
             sensJacobianOfState = GJ + GS
 
-            # The Jacobian of the ode, then the sensitivities w.r.t state
+            # The jacobian of the ode, then the sensitivities w.r.t state
             # and the sensitivities. In block form
             return numpy.asarray(numpy.bmat([
                 [J, numpy.zeros((nS, nS*nP)), numpy.zeros((nS, nS*nS))],
@@ -1508,11 +1508,11 @@ class DeterministicOde(BaseOdeModel):
                 [A, numpy.zeros((nS*nS, nS*nP)), numpy.kron(numpy.eye(nS), J)]
             ]))
 
-    def odeAndSensitivityIVJacobianT(self, t, stateParam):
+    def ode_and_sensitivityIV_jacobian_T(self, t, state_param):
         '''
-        Same as :meth:`odeAndSensitivityIVJacobian` but with t as first parameter
+        Same as :meth:`ode_and_sensitivityIV_jacobian` but with t as first parameter
         '''
-        return self.odeAndSensitivityIVJacobian(stateParam, t)
+        return self.ode_and_sensitivityIV_jacobian(state_param, t)
 
     ############################################################################
     #
@@ -1520,7 +1520,7 @@ class DeterministicOde(BaseOdeModel):
     #
     ############################################################################
 
-    def adjointInterpolate(self, state, t, interpolateFuncList, objInput=None):
+    def adjoint_interpolate(self, state, t, interpolant, func=None):
         '''
         Compute the adjoint given the adjoint vector, time, the functions
         which was used to interpolate the state variable
@@ -1532,11 +1532,11 @@ class DeterministicOde(BaseOdeModel):
             multipliers of the differential equation.
         t: double
             The current time.
-        interpolateFuncList: list
+        interpolant: list
             list of interpolating functions of the state
-        objInput: callable
+        func: callable
             This should take inputs similar to an ode, i.e. of the form
-            func(y,t).  If j(y,t) is the cost function, then objInput
+            func(y,t).  If j(y,t) is the cost function, then func
             is a function that calculates :math:`\\partial j \\over \\partial x`.
 
         Returns
@@ -1544,25 +1544,25 @@ class DeterministicOde(BaseOdeModel):
         :class:`numpy.ndarray`
             output of the same length as the ode
         '''
-        state_param = [o(t) for o in interpolateFuncList]
-        return self.adjoint(state, t, state_param, objInput)
+        state_param = [o(t) for o in interpolant]
+        return self.adjoint(state, t, state_param, func)
 
-    def adjointInterpolateT(self, t, state, interpolateFuncList, objInput=None):
+    def adjoint_interpolate_T(self, t, state, interpolant, objInput=None):
         '''
-        Same as :meth:`adjointInterpolate` but with t as first parameter
+        Same as :meth:`adjoint_interpolate` but with t as first parameter
         '''
-        return self.adjointInterpolate(state, t, interpolateFuncList, objInput)
+        return self.adjoint_interpolate(state, t, interpolant, objInput)
 
     def _adjointInterpolate_NoCheck(self, state, t,
-                                    interpolateFuncList, objInput=None):
-        stateParam = [o(t) for o in interpolateFuncList]
-        return self._adjoint_NoCheck(state, t, stateParam, objInput)
+                                    interpolant, func=None):
+        state_param = [o(t) for o in interpolant]
+        return self._adjoint_NoCheck(state, t, state_param, func)
 
     def _adjointInterpolateT_NoCheck(self, t, state,
-                                     interpolateFuncList, objInput=None):
-        return self._adjoint_NoCheck(state, t, interpolateFuncList, objInput)
+                                     interpolant, func=None):
+        return self._adjoint_NoCheck(state, t, interpolant, func)
 
-    def adjoint(self, state, t, stateParam, objInput=None):
+    def adjoint(self, state, t, state_param, func=None):
         '''
         Compute the adjoint given the adjoint vector, time, state variable
         and the objective function.  Note that this function is very
@@ -1577,12 +1577,12 @@ class DeterministicOde(BaseOdeModel):
             multipliers of the differential equation.
         t: double
             The current time.
-        stateParam: array like
+        state_param: array like
             The state vector that is (or maybe) required to evaluate the
-            Jacobian of the original system
-        objInput: callable
+            jacobian of the original system
+        func: callable
             This should take inputs similar to an ode, i.e. of the form
-            func(y,t).  If j(y,t) is the cost function, then objInput
+            func(y,t).  If j(y,t) is the cost function, then func
             is a function that calculates :math:`\\partial j \\over \\partial x`.
 
         Returns
@@ -1597,34 +1597,34 @@ class DeterministicOde(BaseOdeModel):
         and is integrated backwards (for stability).
 
         '''
-        J = self.Jacobian(stateParam, t)
+        J = self.jacobian(state_param, t)
 
-        if objInput is None:
+        if func is None:
             return numpy.dot(state, -J)
         else:
-            return objInput(stateParam, t) - J.transpose().dot(state)
+            return func(state_param, t) - J.transpose().dot(state)
 
-    def _adjoint_NoCheck(self, state, t, stateParam, objInput=None):
-        J = self._Jacobian_NoCheck(stateParam, t)
-        if objInput is None:
+    def _adjoint_NoCheck(self, state, t, state_param, func=None):
+        J = self._Jacobian_NoCheck(state_param, t)
+        if func is None:
             return numpy.dot(state, -J)
         else:
-            return objInput(stateParam, t) - J.transpose().dot(state)
+            return func(state_param, t) - J.transpose().dot(state)
 
-    def _adjoinT_NoCheck(self, t, state, stateParam, objInput=None):
-        return self._adjoint_NoCheck(state, t, stateParam, objInput)
+    def _adjoinT_NoCheck(self, t, state, state_param, func=None):
+        return self._adjoint_NoCheck(state, t, state_param, func)
 
-    def adjointT(self, t, state, stateParam, objInput=None):
+    def adjoint_T(self, t, state, state_param, func=None):
         '''
         Same as :meth:`adjoint` but with t as first parameter
         '''
-        return self.adjoint(state, t, stateParam, objInput)
+        return self.adjoint(state, t, state_param, func)
 
-    def adjointJacobian(self, state, t, stateParam, objInput=None):
+    def adjoint_jacobian(self, state, t, state_param, func=None):
         '''
-        Compute the Jacobian of the adjoint given the adjoint vector, time,
+        Compute the jacobian of the adjoint given the adjoint vector, time,
         state variable and the objective function.  This is simply the same
-        as the negative Jacobian of the ode transposed.
+        as the negative jacobian of the ode transposed.
 
         Parameters
         ----------
@@ -1633,12 +1633,12 @@ class DeterministicOde(BaseOdeModel):
             multipliers of the differential equation.
         t: double
             The current time.
-        stateParam: array like
+        state_param: array like
             The state vector that is (or maybe) required to evaluate the
-            Jacobian of the original system
-        objInput: callable
+            jacobian of the original system
+        func: callable
             This should take inputs similar to an ode, i.e. of the form
-            func(y,t).  If j(y,t) is the cost function, then objInput
+            func(y,t).  If j(y,t) is the cost function, then func
             is a function that calculates :math:`\\partial j \\over \\partial x`.
 
         Returns
@@ -1657,17 +1657,17 @@ class DeterministicOde(BaseOdeModel):
         :meth:`.adjoint`
 
         '''
-        return -self.Jacobian(stateParam, t).transpose()
+        return -self.jacobian(state_param, t).transpose()
 
-    def adjointJacobianT(self, t, state, stateParam, objInput=None):
+    def adjoint_jacobian_T(self, t, state, state_param, func=None):
         '''
-        Same as :meth:`adjointJacobianT` but with t being the
+        Same as :meth:`adjoint_jacobian_T` but with t being the
         first parameter
         '''
-        return self.adjointJacobian(state, t, stateParam, objInput)
+        return self.adjoint_jacobian(state, t, state_param, func)
 
-    def adjointInterpolateJacobian(self, state, t,
-                                   interpolateFuncList, objInput=None):
+    def adjoint_interpolate_jacobian(self, state, t,
+                                     interpolant, func=None):
         '''
         Compute the Jacobian of the adjoint given the adjoint vector, time,
         function of the interpolation on the state variables and the
@@ -1681,12 +1681,12 @@ class DeterministicOde(BaseOdeModel):
             multipliers of the differential equation.
         t: double
             The current time.
-        interpolateFuncList: list
+        interpolant: list
             list of interpolating functions of the state
-        objInput: callable
+        func: callable
             This should take inputs similar to an ode, i.e. of the form
-            func(y,t).  If j(y,t) is the cost function, then objInput
-            is a function that calculates :math:`\\partial j \\over \\partial x`.
+            func(y,t).  If j(y,t) is the cost function, then func is
+            a function that calculates :math:`\\partial j \\over \\partial x`.
 
         Returns
         -------
@@ -1696,24 +1696,24 @@ class DeterministicOde(BaseOdeModel):
 
         Notes
         -----
-        Same as :meth:`.adjointJacobian` but takes a list of interpolating
+        Same as :meth:`.adjoint_jacobian` but takes a list of interpolating
         function instead of a single (vector) value
 
         See Also
         --------
-        :meth:`.adjointJacobian`
+        :meth:`.adjoint_jacobian`
 
         '''
-        state_param = [o(t) for o in interpolateFuncList]
-        return self.adjointJacobian(state, t, state_param, objInput)
+        state_param = [o(t) for o in interpolant]
+        return self.adjoint_jacobian(state, t, state_param, func)
 
-    def adjointInterpolateJacobianT(self, t, state,
-                                    interpolateFuncList, objInput=None):
+    def adjoint_interpolate_jacobian_T(self, t, state, interpolant, func=None):
         '''
-        Same as :meth:`adjointInterpolateJacobian` but with t as first parameter
+        Same as :meth:`adjoint_interpolate_jacobian` but with t as
+        first parameter
         '''
-        return self.adjointInterpolateJacobian(state, t,
-                                               interpolateFuncList, objInput)
+        return self.adjoint_interpolate_jacobian(state, t,
+                                               interpolant, func)
 
     ########################################################################
     #
@@ -1748,16 +1748,16 @@ class DeterministicOde(BaseOdeModel):
         # the state point of view
         S = self._SAUtil.vecToMatSens(s)
         FF = self._SAUtil.vecToMatFF(ff)
-        return self.evalForwardforward(FF=FF, S=S, state=state, t=t)
+        return self.eval_forwardforward(FF=FF, S=S, state=state, t=t)
 
-    def forwardforwardT(self, t, ff, s, state):
+    def forwardforward_T(self, t, ff, s, state):
         '''
         Same as :meth:`forwardforward` but with t as the first
         parameter
         '''
         return self.forwardforward(ff, t, state, s)
 
-    def evalForwardforward(self, FF, S, state, t):
+    def eval_forwardforward(self, FF, S, state, t):
         '''
         Evaluate a single f(x) of the forward-forward sensitivities
 
@@ -1780,8 +1780,8 @@ class DeterministicOde(BaseOdeModel):
 
         '''
 
-        J = self.Jacobian(state, t)
-        diffJ = self.diffJacobian(state, t)
+        J = self.jacobian(state, t)
+        diffJ = self.diff_jacobian(state, t)
 
         # evaluating by state/ode, the matrix of second derivative
         # we have kron products into all these evaluations and the class
@@ -1793,14 +1793,14 @@ class DeterministicOde(BaseOdeModel):
         # each of the vectorized matrix one after another
         return self._SAUtil.matToVecFF(outFF)
 
-    def odeAndForwardforward(self, stateParam, t):
+    def ode_and_forwardforward(self, state_param, t):
         '''
         Evaluate a single f(x) of the ode and the
         forward-forward sensitivities
 
         Parameters
         ----------
-        stateParam: array like
+        state_param: array like
             state and forward-forward sensitivities in vector form
         t: numeric
             time
@@ -1808,25 +1808,25 @@ class DeterministicOde(BaseOdeModel):
         Returns
         -------
         :class:`numpy.ndarray`
-            same size as the stateParam input
+            same size as the state_param input
         '''
 
-        if len(stateParam) == self.num_state:
+        if len(state_param) == self.num_state:
             raise InputError("You have only inputed the initial condition " +
                              "for the states and not the sensitivity")
-        elif len(stateParam) == ((self.num_state + 1)*self.num_param):
+        elif len(state_param) == ((self.num_state + 1)*self.num_param):
             raise InputError("You have only inputed the initial condition " +
-                             "for the states and the sensitivity but not the " +
-                             "forward forward condition")
+                             "for the states and the sensitivity but not " +
+                             "the forward forward condition")
 
         # unrolling of parameters
-        state = stateParam[0:self.num_state]
+        state = state_param[0:self.num_state]
         # we want the index up to numState * (numParam + 1)
         # as in, (numState * numParam + numState,
         # number of sensitivities + number of ode)
-        sens = stateParam[self.num_state:(self.num_state*(self.num_param + 1))]
+        sens = state_param[self.num_state:(self.num_state*(self.num_param + 1))]
         # the rest are then the forward forward sensitivities
-        ff = stateParam[(self.num_state*(self.num_param + 1))::]
+        ff = state_param[(self.num_state*(self.num_param + 1))::]
 
         out1 = self.ode(state, t)
         out2 = self.sensitivity(sens, t, state)
@@ -1834,22 +1834,22 @@ class DeterministicOde(BaseOdeModel):
 
         return numpy.append(numpy.append(out1, out2), out3)
 
-    def odeAndForwardforwardT(self, t, stateParam):
+    def ode_and_forwardforward_T(self, t, state_param):
         '''
         Same as :meth:`odeAndForwardForward` but with time
         as the first input
 
         '''
-        return self.odeAndForwardforward(stateParam, t)
+        return self.ode_and_forwardforward(state_param, t)
 
-    def odeAndForwardforwardJacobian(self, stateParam, t):
+    def ode_and_forwardforward_jacobian(self, state_param, t):
         '''
-        Return the Jacobian after evaluation given the input
+        Return the jacobian after evaluation given the input
         of the state and the forward forward sensitivities
 
         Parameters
         ----------
-        stateParam: array like
+        state_param: array like
             state and forward-forward sensitivities in vector form
         t: numeric
             time
@@ -1858,31 +1858,31 @@ class DeterministicOde(BaseOdeModel):
         -------
         :class:`numpy.ndarray`
             size of (a,a) where a is the length of the
-            stateParam input
+            state_param input
         '''
-        if len(stateParam) == self.num_state:
-            state = stateParam
+        if len(state_param) == self.num_state:
+            state = state_param
         else:
-            state = stateParam[0:self.num_state]
+            state = state_param[0:self.num_state]
 
-        J = self.Jacobian(state, t)
-        # create the block diagonal Jacobian, assuming that whoever is
+        J = self.jacobian(state, t)
+        # create the block diagonal jacobian, assuming that whoever is
         # calling this function wants it arranges by state-parameters
-        # We are only construct the block diagonal Jacobian here
+        # We are only construct the block diagonal jacobian here
         # instead of the full one unlike some of the other methods within
         # this class
         outJS = numpy.kron(numpy.eye(self.num_param), J)
         outJFF = numpy.kron(numpy.eye(self.num_param*self.num_param), J)
-        # The Jacobian of the ode, then the sensitivities, then the
+        # The jacobian of the ode, then the sensitivities, then the
         # forward forward sensitivities
         return scipy.linalg.block_diag(J, outJS, outJFF)
 
-    def odeAndForwardforwardJacobianT(self, t, stateParam):
+    def ode_and_forwardforward_jacobian_T(self, t, state_param):
         '''
-        Same as :meth:`odeAndForwardforwardJacobian` but
+        Same as :meth:`ode_and_forwardforward_jacobian` but
         with t being the first parameters
         '''
-        return self.odeAndForwardforwardJacobian(stateParam, t)
+        return self.ode_and_forwardforward_jacobian(state_param, t)
 
     ########################################################################
     #
@@ -2010,11 +2010,11 @@ class DeterministicOde(BaseOdeModel):
 
         return self._integrate(self._odeTime, full_output)
 
-    def integrate2(self, t, full_output=False, intName=None):
+    def integrate2(self, t, full_output=False, method=None):
         '''
         Integrate over a range of t when t is an array and a output
         at time t.  Select a suitable method to integrate when
-        intName is None.
+        method is None.
 
         Parameters
         ----------
@@ -2022,7 +2022,7 @@ class DeterministicOde(BaseOdeModel):
             the range of time points which we want to see the result of
         full_output: bool
             if we want additional information
-        intName: str, optional
+        method: str, optional
             the integration method.  All those available in
             :class:`ode <scipy.integrate.ode>` are allowed with 'vode'
             and 'ivode' representing the non-stiff and stiff version
@@ -2039,7 +2039,7 @@ class DeterministicOde(BaseOdeModel):
             if isinstance(self._stochasticParam, dict):
                 self.parameters = self._stochasticParam
 
-        return self._integrate2(self._odeTime, full_output, intName)
+        return self._integrate2(self._odeTime, full_output, method)
 
     def _setIntegrateTime(self, t):
         '''
@@ -2084,8 +2084,8 @@ class DeterministicOde(BaseOdeModel):
         assert self._x0 is not None, "Initial state not set"
 
         f = ode_utils.integrateFuncJac
-        self._odeSolution, self._odeOutput = f(self.odeT,
-                                               self.JacobianT,
+        self._odeSolution, self._odeOutput = f(self.ode_T,
+                                               self.jacobian_T,
                                                self._x0,
                                                t[0], t[1::],
                                                includeOrigin=True,

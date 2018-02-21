@@ -35,7 +35,7 @@ def DFE(ode, disease_state):
 
     '''
 
-    eqn = ode.getOde()
+    eqn = ode.get_ode_eqn()
     index = ode.get_state_index(disease_state)
     states = [s for s in ode._iterStateList()]
     states_subs = {states[i]: 0 for i in index}
@@ -158,8 +158,8 @@ def disease_progression_matrices(ode, disease_state, diff=True):
 
     ode2 = SimulateOde(ode.state_list, ode.param_list, transition=FList)
 
-    F = ode2.getOde().row(diseaseIndex)
-    V = F - ode.getOde().row(diseaseIndex)
+    F = ode2.get_ode_eqn().row(diseaseIndex)
+    V = F - ode.get_ode_eqn().row(diseaseIndex)
 
     if diff:
         dF = F.jacobian(state_list)

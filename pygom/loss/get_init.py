@@ -331,7 +331,7 @@ def jacSample(ode, fxApprox, xApprox, t, theta, vec=True):
     p = ode.getNumParam()
     g = numpy.zeros((n, d, p))
     for i, x in enumerate(xApprox):
-        g[i] = -2*ode.Grad(x, t[i])
+        g[i] = -2*ode.grad(x, t[i])
 
     if vec:
         return numpy.reshape(g.transpose(1,0,2), (n*d, p))
@@ -378,7 +378,7 @@ def gradSample(ode, fxApprox, xApprox, t, theta,
 
     g = numpy.zeros((len(fxApprox), ode.getNumParam()))
     for i, x in enumerate(xApprox):
-        g[i] = -2*ode.Grad(x, t[i]).T.dot(r[i])
+        g[i] = -2*ode.grad(x, t[i]).T.dot(r[i])
 
     if outputResidual:
         return g.sum(0), r

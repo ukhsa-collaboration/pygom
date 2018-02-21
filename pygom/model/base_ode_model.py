@@ -528,7 +528,7 @@ class BaseOdeModel(object):
         '''
         if isinstance(transition_list, (list, tuple)):
             for t in transition_list:
-                self.addTransition(t)
+                self.add_transition(t)
         else:
             raise InputError("Expecting a list")
 
@@ -563,9 +563,9 @@ class BaseOdeModel(object):
         '''
         if isinstance(birth_death_list, (list, tuple)):
             for bd in birth_death_list:
-                self.addBirthDeath(bd)
+                self.add_birth_death(bd)
         elif isinstance(birth_death_list, Transition):
-            self.addBirthDeath(birth_death_list)
+            self.add_birth_death(birth_death_list)
         else:
             raise InputError("Input not as expected.  It is not a list " +
                              "or a Transition")
@@ -600,11 +600,11 @@ class BaseOdeModel(object):
         '''
         if isinstance(ode_list, list):
             for o in ode_list:
-                self.addOdeEquation(o)
+                self.add_ode(o)
         elif isinstance(ode_list, Transition):
             # if it is not a list, then at least it should be an object
             # of the correct type
-            self.addOdeEquation(ode_list)
+            self.add_ode(ode_list)
         else:
             raise InputError("Input not as expected.  It is not a list " +
                              "or a Transition")
@@ -826,7 +826,7 @@ class BaseOdeModel(object):
         objList.append(var_obj)
         objDict[var_obj.ID] = symbol
 
-    def addTransition(self, transition):
+    def add_transition(self, transition):
         '''
         Add a single transition between two states
 
@@ -863,7 +863,7 @@ class BaseOdeModel(object):
 
         return self._transitionMatrix
 
-    def addBirthDeath(self, birthDeath):
+    def add_birth_death(self, birth_death):
         '''
         Add a single birth or death process
 
@@ -874,10 +874,10 @@ class BaseOdeModel(object):
             regarding the process
 
         '''
-        if isinstance(birthDeath, Transition):
-            t = birthDeath.getTransitionType()
+        if isinstance(birth_death, Transition):
+            t = birth_death.getTransitionType()
             if t is TransitionType.B or t is TransitionType.D:
-                self._birthDeathList.append(birthDeath)
+                self._birthDeathList.append(birth_death)
                 self._hasNewTransition = True
             else:
                 raise InputError("Input is not a birth death process")
@@ -900,7 +900,7 @@ class BaseOdeModel(object):
 
         return self._birthDeathVector
 
-    def addOdeEquation(self, eqn):
+    def add_ode(self, eqn):
         '''
         Add an ode
 

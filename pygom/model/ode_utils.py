@@ -132,7 +132,7 @@ def integrate(ode, x0, t, full_output=False):
     # determine the number of output we want
     solution, output = scipy.integrate.odeint(ode.ode,
                                               x0, t,
-                                              Dfun=ode.Jacobian,
+                                              Dfun=ode.jacobian,
                                               mu=None, ml=None,
                                               col_deriv=False,
                                               mxstep=10000,
@@ -156,7 +156,7 @@ def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
     func: callable
         the ode :math:`f(x)`
     jac: callable
-        Jacobian of the ode, :math:`J_{i,j} = \\nabla_{x_{j}} f_{i}(x)`
+        jacobian of the ode, :math:`J_{i,j} = \\nabla_{x_{j}} f_{i}(x)`
     x0: float
         initial value of the states
     t0: float
@@ -280,14 +280,14 @@ def _integrateOneStep(r, t, func, jac, args=(), full_output=False):
         else:
             a = numpy.linalg.eig(jac(r.t, r.y, *args))[0]
             raise IntegrationError("Failed integration with x =  " + str(r.y) +
-                                   " and max/min eigenvalues of the Jacobian is "
+                                   " and max/min eigenvalues of the jacobian is "
                                    + str(max(a)) + " and " + str(min(a)))
 
 def _setupIntegrator(func, jac, x0, t0, args=(), intName=None, nsteps=10000):
     if intName == 'dopri5':
         # if we are going to use rk5, then one thing for sure is that we
         # know for sure that the set of equations are not stiff.
-        # Furthermore, the Jacobian information will never be used as
+        # Furthermore, the jacobian information will never be used as
         # it evaluate f(x) directly
         r = scipy.integrate.ode(func).set_integrator('dopri5', nsteps=nsteps,
                                                      atol=atol, rtol=rtol)

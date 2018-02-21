@@ -40,4 +40,4 @@ class TestInputSymbols(TestCase):
 
         ode = DeterministicOde(state_list, param_list, ode=odeList)
         # this should not throw an error if the model is initialized correctly
-        A = ode.getOde()
+        A = ode.get_ode_eqn()

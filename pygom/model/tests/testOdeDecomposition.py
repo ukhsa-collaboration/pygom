@@ -15,7 +15,7 @@ class TestOdeDecomposition(TestCase):
         ode = SimulateOde(stateList, paramList, ode=[ode1, ode2, ode3])
 
         ode2 = ode.returnObjWithTransitionsAndBD()
-        diffEqZero = map(lambda x: x==0, sympy.simplify(ode.getOde() - ode2.getOde()))
+        diffEqZero = map(lambda x: x==0, sympy.simplify(ode.get_ode_eqn() - ode2.get_ode_eqn()))
 
         if numpy.any(numpy.array(list(diffEqZero)) == False):
             raise Exception("Simple: SIR Decomposition failed")
@@ -38,7 +38,7 @@ class TestOdeDecomposition(TestCase):
         ode = SimulateOde(stateList, paramList, ode=odeList)
 
         ode2 = ode.returnObjWithTransitionsAndBD()
-        diffEqZero = map(lambda x: x==0, sympy.simplify(ode.getOde() - ode2.getOde()))
+        diffEqZero = map(lambda x: x==0, sympy.simplify(ode.get_ode_eqn() - ode2.get_ode_eqn()))
 
         if numpy.any(numpy.array(list(diffEqZero)) == False):
             raise Exception("Hard: SLIARD Decomposition failed")
@@ -63,7 +63,7 @@ class TestOdeDecomposition(TestCase):
         ode = SimulateOde(stateList, paramList, ode=odeList)
 
         ode2 = ode.returnObjWithTransitionsAndBD()
-        diffEqZero = map(lambda x: x==0, sympy.simplify(ode.getOde() - ode2.getOde()))
+        diffEqZero = map(lambda x: x==0, sympy.simplify(ode.get_ode_eqn() - ode2.get_ode_eqn()))
 
         if numpy.any(numpy.array(list(diffEqZero)) == False):
             raise Exception("Birth Death: SIR+BD Decomposition failed")
@@ -86,7 +86,7 @@ class TestOdeDecomposition(TestCase):
         ode1 = SimulateOde(ode._stateList, ode._paramList, ode._derivedParamEqn, ode=odeList)
 
         ode2 = ode1.returnObjWithTransitionsAndBD()
-        diffEqZero = map(lambda x: x==0, sympy.simplify(ode.getOde() - ode2.getOde()))
+        diffEqZero = map(lambda x: x==0, sympy.simplify(ode.get_ode_eqn() - ode2.get_ode_eqn()))
         
         if numpy.any(numpy.array(list(diffEqZero)) == False):
             raise Exception("FAILED!")
