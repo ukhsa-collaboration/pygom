@@ -20,7 +20,7 @@ def getOdeObject(model):
     a = getModelComponents(model)
     #paramList = map(lambda x: x['id'], getCompartmentsInfo(a['comps']))
     
-    paramEval = map(lambda x: (x['id'], x['size']), getCompartmentsInfo(a['comps']))
+    param_eval = map(lambda x: (x['id'], x['size']), getCompartmentsInfo(a['comps']))
     stateList = map(lambda x: x['id'], getSpeciesInfo(a['species']))
     x0 = map(lambda x: x['x0'], getSpeciesInfo(a['species']))
 
@@ -45,17 +45,17 @@ def getOdeObject(model):
         
         transition.append(Transition(orig, eqn, 'T', dest, r['id']))
 
-        paramEval += map(lambda x: (r['id'] + '_' + x[0], x[1]), paramLocal)
+        param_eval += map(lambda x: (r['id'] + '_' + x[0], x[1]), paramLocal)
 #         print "\n"
 #         print eqn
 #         print paramLocal
 
-    paramList = map(lambda x: x[0], paramEval)
+    paramList = map(lambda x: x[0], param_eval)
 
-#     print "\nfinal paramEval"+str(paramEval)
+#     print "\nfinal param_eval"+str(param_eval)
 #     print paramList
 #     print transition 
 
     ode = DeterministicOde(stateList, paramList, transition=transition)
-    ode = ode.setInitialState(x0).setParameters(paramEval)
+    ode = ode.initial_values(x0).setParameters(param_eval)
     return(ode)

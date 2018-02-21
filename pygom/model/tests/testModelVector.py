@@ -21,7 +21,7 @@ class TestModelVector(TestCase):
         ode.getOde()
 
         t = numpy.append(0, 4*numpy.logspace(-6, 6, 1000))
-        ode = ode.setInitialValue([1.0, 0.0, 0.0], t[0])
+        ode.initial_values = ([1.0, 0.0, 0.0], t[0])
         # try to integrate to see if there is any problem
         solution, output = ode.integrate(t[1::], full_output=True)
 
@@ -40,7 +40,7 @@ class TestModelVector(TestCase):
         ode.getOde()
 
         t = numpy.append(0, 4*numpy.logspace(-6, 6, 1000))
-        ode = ode.setInitialValue([1.0, 0.0, 0.0], t[0])
+        ode.initial_values = ([1.0, 0.0, 0.0], t[0])
         # try to integrate to see if there is any problem
         solution, output = ode.integrate(t[1::], full_output=True)
 
@@ -61,6 +61,6 @@ class TestModelVector(TestCase):
         ode.getOde()
 
         t = numpy.append(0, 4*numpy.logspace(-6, 6, 1000))
-        ode = ode.setInitialValue([1.0, 0.0, 0.0], t[0])
+        ode.initial_values = ([1.0, 0.0, 0.0], t[0])
         # try to integrate to see if there is any problem
         solution, output = ode.integrate(t[1::], full_output=True)

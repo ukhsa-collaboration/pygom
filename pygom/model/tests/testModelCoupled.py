@@ -1,13 +1,14 @@
 from unittest import TestCase
 
+from collections import OrderedDict
+
 from pygom import DeterministicOde, Transition, TransitionType
 import numpy
 import sympy
-from collections import OrderedDict
 # import six
 
 ## define parameters
-paramEval = {'beta_00':0.0010107,'beta_01':0.0010107,'beta_10':0.0010107,'beta_11':0.0010107,
+param_eval = {'beta_00':0.0010107,'beta_01':0.0010107,'beta_10':0.0010107,'beta_11':0.0010107,
              'd':0.02,'epsilon':45.6,'gamma':73.0,'N_0':10**6,'N_1':10**6,'p':0.01}
 
 class TestModelCoupled(TestCase):
@@ -25,16 +26,16 @@ class TestModelCoupled(TestCase):
         solution4 = self.very_short(n)
         solution5 = self.confused(n)
 
-        if numpy.any((solution1-solution2) >= 0.001):
+        if numpy.any((solution1 - solution2) >= 0.001):
             raise Exception("Solution not match")
 
-        if numpy.any((solution3-solution2) >= 0.001):
+        if numpy.any((solution3 - solution2) >= 0.001):
             raise Exception("Solution not match")
 
-        if numpy.any((solution4-solution3) >= 0.001):
+        if numpy.any((solution4 - solution3) >= 0.001):
             raise Exception("Solution not match")
 
-        if numpy.any((solution5-solution4) >= 0.001):
+        if numpy.any((solution5 - solution4) >= 0.001):
             raise Exception("Solution not match")
 
     def naive(self, n):
@@ -89,7 +90,8 @@ class TestModelCoupled(TestCase):
         t = numpy.linspace(0, 40, 100)
         x01 = self.getInitialValue(paramList, n)
 
-        ode.setParameters(paramEval).setInitialValue(numpy.array(x01,float),t[0])
+        ode.parameters = param_eval
+        ode.initial_values = (numpy.array(x01,float),t[0])
         solution1 = ode.integrate(t[1::])
         return solution1
 
@@ -143,11 +145,12 @@ class TestModelCoupled(TestCase):
                                derived_param=derivedParamList,
                                transition=transitionList,
                                birth_death=bdList)
- 
+
         t = numpy.linspace(0, 40, 100)
         x01 = self.getInitialValue(paramList, n)
 
-        ode.setParameters(paramEval).setInitialValue(numpy.array(x01,float),t[0])
+        ode.parameters = param_eval
+        ode.initial_values = (numpy.array(x01,float),t[0])
         solution2 = ode.integrate(t[1::])
 
         return solution2
@@ -203,7 +206,8 @@ class TestModelCoupled(TestCase):
         t = numpy.linspace(0, 40, 100)
         x01 = self.getInitialValue(paramList, n)
 
-        ode.setParameters(paramEval).setInitialValue(numpy.array(x01,float),t[0])
+        ode.parameters = param_eval
+        ode.initial_values = (numpy.array(x01,float),t[0])
         solution3 = ode.integrate(t[1::])
 
         return solution3
@@ -258,7 +262,8 @@ class TestModelCoupled(TestCase):
         t = numpy.linspace(0, 40, 100)
         x01 = self.getInitialValue(paramList, n)
 
-        ode.setParameters(paramEval).setInitialValue(numpy.array(x01,float),t[0])
+        ode.parameters = param_eval
+        ode.initial_values = (numpy.array(x01,float),t[0])
         solution4 = ode.integrate(t[1::])
 
         return solution4
@@ -308,18 +313,19 @@ class TestModelCoupled(TestCase):
         t = numpy.linspace(0, 40, 100)
         x01 = self.getInitialValue(paramList, n)
 
-        ode.setParameters(paramEval).setInitialValue(numpy.array(x01,float),t[0])
+        ode.parameters = param_eval
+        ode.initial_values = (numpy.array(x01,float),t[0])
         solution5 = ode.integrate(t[1::])
 
         return solution5
 
-    def getInitialValue(self, paramList, n=2):
+    def getInitialValue(self, param_list, n=2):
         '''
         Finds the initial values where the stationary condition is achieved
         '''
         var_dict = globals()
         ## to find the stationary starting conditions
-        for param in paramList:
+        for param in param_list:
             var_dict[param] = sympy.symbols(param)
 
         N = sympy.symbols("N")

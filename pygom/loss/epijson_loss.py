@@ -68,7 +68,7 @@ class EpijsonLoss(PoissonLoss):
                                           stateName, targetParam, targetState)
 
     def __repr__(self):
-        return "EpijsonLoss"+self._getModelStr()
+        return "EpijsonLoss"+self._get_model_str()
 
     def getDataFrame(self):
         return self._df

@@ -15,7 +15,7 @@ __all__ = [
 
 from pygom.loss.base_loss import BaseLoss
 from pygom.loss.loss_type import Normal, Square, Poisson
-from pygom.model.ode_utils import checkArrayType
+from pygom.model.ode_utils import check_array_type
 
 class SquareLoss(BaseLoss):
     '''
@@ -27,8 +27,8 @@ class SquareLoss(BaseLoss):
                                          stateWeight, targetParam, targetState)
 
     def __repr__(self):
-        return "SquareLoss" + self._getModelStr()
-    
+        return "SquareLoss" + self._get_model_str()
+
     def _setLossType(self):
         self._lossObj = Square(self._y, self._stateWeight)
         return self._lossObj
@@ -43,12 +43,12 @@ class NormalLoss(BaseLoss):
             super(NormalLoss, self).__init__(theta, ode, x0, t0, t, y, stateName,
                                              sigma, targetParam, targetState)
         else:
-            sigma = checkArrayType(sigma)
+            sigma = check_array_type(sigma)
             super(NormalLoss, self).__init__(theta, ode, x0, t0, t, y, stateName,
                                              1.0/sigma, targetParam, targetState)
 
     def __repr__(self):
-        return "NormalLoss" + self._getModelStr()
+        return "NormalLoss" + self._get_model_str()
 
     def _setLossType(self):
         if self._stateWeight is None:
@@ -71,8 +71,8 @@ class PoissonLoss(BaseLoss):
         super(PoissonLoss, self).__init__(theta, ode, x0, t0, t, y, stateName,
                                           None, targetParam, targetState)
     def __repr__(self):
-        return "PoissonLoss" + self._getModelStr()
-    
+        return "PoissonLoss" + self._get_model_str()
+
     def _setLossType(self):
         return Poisson(self._y)
 

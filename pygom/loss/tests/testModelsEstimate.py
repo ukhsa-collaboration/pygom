@@ -25,23 +25,23 @@ class TestModelEstimate(TestCase):
         theta = [0.2, 0.2]
 
         # test out whether the single state function 'ok'
-        objSIR = SquareLoss(theta, ode, x0, t[0], t[1::],
-                            solution[1::,2], 'R')
-        objSIR.cost()
-        objSIR.gradient()
-        objSIR.hessian()
+        sir_obj = SquareLoss(theta, ode, x0, t[0], t[1::],
+                             solution[1::,2], 'R')
+        sir_obj.cost()
+        sir_obj.gradient()
+        sir_obj.hessian()
 
         # now we go on the real shit
-        objSIR = SquareLoss(theta, ode, x0, t[0], t[1::],
-                            solution[1::,1:3], ['I','R'])
+        sir_obj = SquareLoss(theta, ode, x0, t[0], t[1::],
+                             solution[1::,1:3], ['I','R'])
 
         # constraints
         EPSILON = numpy.sqrt(numpy.finfo(numpy.float).eps)
 
         box_bounds = [(EPSILON, 5), (EPSILON, 5)]
 
-        resQP = scipy.optimize.minimize(fun=objSIR.cost,
-                                        jac=objSIR.sensitivity,
+        resQP = scipy.optimize.minimize(fun=sir_obj.cost,
+                                        jac=sir_obj.sensitivity,
                                         x0=theta,
                                         method='SLSQP',
                                         bounds=box_bounds)
@@ -53,7 +53,7 @@ class TestModelEstimate(TestCase):
     def test_SIR_Estimate_SquareLoss_Adjoint(self):
         # define the model and parameters
         ode = common_models.SIR({'beta':0.5,'gamma':1.0/3.0})
-        
+
         # the initial state, normalized to zero one
         x0 = [1, 1.27e-6, 0]
         # set the time sequence that we would like to observe
@@ -65,19 +65,19 @@ class TestModelEstimate(TestCase):
         # initial value
         theta = [0.2, 0.2]
 
-        objSIR = SquareLoss(theta, ode, x0, t[0], t[1::], y[1::,:], ['I','R'])
+        sir_obj = SquareLoss(theta, ode, x0, t[0], t[1::], y[1::,:], ['I','R'])
 
         # constraints
         EPSILON = numpy.sqrt(numpy.finfo(numpy.float).eps)
 
         box_bounds = [(EPSILON, 5),(EPSILON, 5)]
 
-        resQP = scipy.optimize.minimize(fun=objSIR.cost,
-                                        jac=objSIR.adjoint,
+        resQP = scipy.optimize.minimize(fun=sir_obj.cost,
+                                        jac=sir_obj.adjoint,
                                         x0=theta,
                                         method='SLSQP',
                                         bounds=box_bounds)
-        
+
         target = numpy.array([0.5, 1.0/3.0])
         if numpy.any(abs(resQP['x'] - target) >= 1e-2):
             raise Exception("Failed!")
@@ -97,15 +97,15 @@ class TestModelEstimate(TestCase):
         # initial value
         theta = [0.2, 0.2]
 
-        objSIR = NormalLoss(theta, ode, x0, t[0], t[1::], y[1::,:], ['I','R'])
+        sir_obj = NormalLoss(theta, ode, x0, t[0], t[1::], y[1::,:], ['I','R'])
 
         # constraints
         EPSILON = numpy.sqrt(numpy.finfo(numpy.float).eps)
 
         box_bounds = [(EPSILON, 5), (EPSILON, 5)]
 
-        resQP = scipy.optimize.minimize(fun=objSIR.cost,
-                                        jac=objSIR.sensitivity,
+        resQP = scipy.optimize.minimize(fun=sir_obj.cost,
+                                        jac=sir_obj.sensitivity,
                                         x0=theta,
                                         method='SLSQP',
                                         bounds=box_bounds)
@@ -120,11 +120,11 @@ class TestModelEstimate(TestCase):
         x0 = [N, 3.0, 0.0]
         t = numpy.linspace(0, 150, 100).astype('float64')
         # params
-        paramEval = [('beta', 0.5), ('gamma', 1.0/3.0),('N', N)]
+        param_eval = [('beta', 0.5), ('gamma', 1.0/3.0),('N', N)]
 
-        stateList = ['S','I','R']
-        paramList = ['beta','gamma','N']
-        transitionList = [
+        state_list = ['S', 'I', 'R']
+        param_list = ['beta', 'gamma', 'N']
+        transition_list = [
                           Transition(origin='S', destination='I',
                                      equation='beta * S * I/N',
                                      transition_type=TransitionType.T),
@@ -133,32 +133,33 @@ class TestModelEstimate(TestCase):
                                      transition_type=TransitionType.T)
                           ]
         # initialize the model
-        ode = DeterministicOde(stateList, paramList, transition=transitionList)
-        ode = ode.setParameters(paramEval).setInitialValue(x0,t[0])
+        ode = DeterministicOde(state_list, param_list, transition=transition_list)
+        ode.parameters = param_eval
+        ode.initial_values = (x0, t[0])
 
         # Standard.  Find the solution.
         solution = ode.integrate(t[1::])
         # initial value
         theta = [0.4,0.3]
-        
-        objSIR = PoissonLoss(theta, ode, x0, t[0], t[1::],
+
+        sir_obj = PoissonLoss(theta, ode, x0, t[0], t[1::],
                              numpy.round(solution[1::,2]),
                              'R', targetParam=['beta','gamma'])
 
         # constraints
         EPSILON = numpy.sqrt(numpy.finfo(numpy.float).eps)
-        
+
         box_bounds = [(EPSILON,2),(EPSILON,2)]
 
-        res = scipy.optimize.minimize(fun=objSIR.cost,
-                                      jac=objSIR.sensitivity,
+        res = scipy.optimize.minimize(fun=sir_obj.cost,
+                                      jac=sir_obj.sensitivity,
                                       x0=theta,
                                       method='L-BFGS-B',
                                       bounds=box_bounds)
-        
+
         target = numpy.array([0.5, 1.0/3.0])
-        if numpy.any(abs(res['x']-target) >= 1e-2):
-            raise Exception("Failed!")   
+        if numpy.any(abs(res['x'] - target) >= 1e-2):
+            raise Exception("Failed!")
 
     def test_SIR_Estimate_PoissonLoss_2TargetState(self):
         # initial values
@@ -166,11 +167,11 @@ class TestModelEstimate(TestCase):
         x0 = [N, 3.0, 0.0]
         t = numpy.linspace(0, 150, 100).astype('float64')
         # params
-        paramEval = [('beta', 0.5), ('gamma', 1.0/3.0),('N', N)]
+        param_eval = [('beta', 0.5), ('gamma', 1.0/3.0),('N', N)]
 
-        stateList = ['S','I','R']
-        paramList = ['beta','gamma','N']
-        transitionList = [
+        state_list = ['S', 'I', 'R']
+        param_list = ['beta', 'gamma', 'N']
+        transition_list = [
                           Transition(origin='S', destination='I',
                                      equation='beta * S * I/N',
                                      transition_type=TransitionType.T),
@@ -179,8 +180,9 @@ class TestModelEstimate(TestCase):
                                      transition_type=TransitionType.T)
                           ]
         # initialize the model
-        ode = DeterministicOde(stateList, paramList, transition=transitionList)
-        ode = ode.setParameters(paramEval).setInitialValue(x0,t[0])
+        ode = DeterministicOde(state_list, param_list, transition=transition_list)
+        ode.parameters = param_eval
+        ode.initial_values = (x0,t[0])
 
         # Standard.  Find the solution.
         solution = ode.integrate(t[1::])
@@ -213,9 +215,10 @@ class TestModelEstimate(TestCase):
         x0 = [-1.0, 1.0]
         t0 = 0
         # params
-        paramEval = [('a', 0.2), ('b', 0.2),('c', 3.0)]
+        param_eval = [('a', 0.2), ('b', 0.2),('c', 3.0)]
 
-        ode = common_models.FitzHugh().setParameters(paramEval).setInitialValue(x0, t0)
+        ode = common_models.FitzHugh(param_eval)
+        ode.initial_values = (x0, t0)
         # the time points for our observations
         t = numpy.linspace(1, 20, 30).astype('float64')
         # Standard.  Find the solution which we will be used as "observations later"
@@ -223,13 +226,13 @@ class TestModelEstimate(TestCase):
         # initial guess
         theta = [0.5,0.5,0.5]
 
-        #objFH = squareLoss(theta,ode,x0,t0,t,solution[1::,1],'R')
-        objFH = SquareLoss(theta, ode, x0, t0, t, solution[1::,:], ['V','R'])
+        #fh_obj = squareLoss(theta,ode,x0,t0,t,solution[1::,1],'R')
+        fh_obj = SquareLoss(theta, ode, x0, t0, t, solution[1::,:], ['V','R'])
 
-        g1 = objFH.adjoint(theta)
-        #g2 = objFH.adjointInterpolate1(theta)
-        #g3 = objFH.adjointInterpolate2(theta)
-        g4 = objFH.sensitivity(theta)
+        g1 = fh_obj.adjoint(theta)
+        #g2 = fh_obj.adjointInterpolate1(theta)
+        #g3 = fh_obj.adjointInterpolate2(theta)
+        g4 = fh_obj.sensitivity(theta)
 
         EPSILON = numpy.sqrt(numpy.finfo(numpy.float).eps)
 
@@ -239,14 +242,14 @@ class TestModelEstimate(TestCase):
             (EPSILON, 5.0)
             ]
 
-        res = scipy.optimize.minimize(fun=objFH.cost,
-                                      jac=objFH.sensitivity,
+        res = scipy.optimize.minimize(fun=fh_obj.cost,
+                                      jac=fh_obj.sensitivity,
                                       x0=theta,
                                       bounds=box_bounds,
                                       method='L-BFGS-B')
 
-        res2 = scipy.optimize.minimize(fun=objFH.cost,
-                                       jac=objFH.adjoint,
+        res2 = scipy.optimize.minimize(fun=fh_obj.cost,
+                                       jac=fh_obj.adjoint,
                                        x0=theta,
                                        bounds=box_bounds,
                                        method='L-BFGS-B')
@@ -264,17 +267,19 @@ class TestModelEstimate(TestCase):
         x0 = [-1.0, 1.0]
         t0 = 0
         # params
-        paramEval = [('a', 0.2), ('b', 0.2),('c', 3.0)]
+        param_eval = [('a', 0.2), ('b', 0.2),('c', 3.0)]
 
-        ode = common_models.FitzHugh().setParameters(paramEval).setInitialValue(x0, t0)
+        ode = common_models.FitzHugh()
+        ode.parameters =  param_eval
+        ode.initial_values = (x0, t0)
         # the time points for our observations
         t = numpy.linspace(1, 20, 30).astype('float64')
         # Standard.  Find the solution.
-        solution, output = ode.integrate(t, full_output=True)
+        solution, _output = ode.integrate(t, full_output=True)
         # initial guess
         theta = [0.5, 0.5, 0.5]
 
-        objFH = SquareLoss(theta, ode, x0, t0, t, solution[1::,:], ['V','R'])
+        fh_obj = SquareLoss(theta, ode, x0, t0, t, solution[1::,:], ['V','R'])
 
         EPSILON = numpy.sqrt(numpy.finfo(numpy.float).eps)
 
@@ -286,8 +291,8 @@ class TestModelEstimate(TestCase):
             (None, None)
             ]
 
-        res = scipy.optimize.minimize(fun=objFH.costIV,
-                                      jac=objFH.sensitivityIV,
+        res = scipy.optimize.minimize(fun=fh_obj.costIV,
+                                      jac=fh_obj.sensitivityIV,
                                       x0=theta + [-0.5,0.5],
                                       bounds=box_bounds,
                                       method='L-BFGS-B')

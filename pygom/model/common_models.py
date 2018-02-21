@@ -44,7 +44,8 @@ def SIS(param=None):
     if param is None:
         return ode
     else:
-        return ode.setParameters(param)
+        ode.parameters = param
+        return ode
 
 
 def SIS_Periodic(param=None):
@@ -92,7 +93,8 @@ def SIS_Periodic(param=None):
     if param is None:
         return ode_obj
     else:
-        return ode_obj.setParameters(param)
+        ode_obj.parameters = param
+        return ode_obj
 
 def SIR(param=None):
     '''
@@ -137,13 +139,14 @@ def SIR(param=None):
                    transition_type=TransitionType.T)
         ]
     # initialize the model
-    ode = DeterministicOde(state, param_list, transition=transition)
+    ode_obj = DeterministicOde(state, param_list, transition=transition)
 
     # set return, depending on whether we have input the parameters
     if param is None:
-        return ode
+        return ode_obj
     else:
-        return ode.setParameters(param)
+        ode_obj.parameters = param
+        return ode_obj
 
 def SIR_N(param=None):
     '''
@@ -188,14 +191,14 @@ def SIR_N(param=None):
                    transition_type=TransitionType.T)
         ]
     # initialize the model
-    ode = DeterministicOde(state, param_list, transition=transition)
+    ode_obj = DeterministicOde(state, param_list, transition=transition)
 
     # set return, depending on whether we have input the parameters
     if param is None:
-        return ode
+        return ode_obj
     else:
-        ode.setParameters(param)
-        return ode
+        ode_obj.parameters = param
+        return ode_obj
 
 def SIR_Birth_Death(param=None):
     '''
@@ -244,16 +247,17 @@ def SIR_Birth_Death(param=None):
         ]
 
     # initialize the model
-    ode = DeterministicOde(state, param_list,
+    ode_obj = DeterministicOde(state, param_list,
                            birth_death=birth_death,
                            transition=transition)
 
     # set return, depending on whether we have input the parameters
     if param is None:
-        return ode
+        return ode_obj
     else:
-        ode.setParameters(param)
-        return ode
+        ode_obj.parameters = param
+        return ode_obj
+
 
 def SEIR(param=None):
     '''
@@ -292,12 +296,13 @@ def SEIR(param=None):
                    transition_type=TransitionType.T)
         ]
 
-    ode = DeterministicOde(state, param_list, transition=transition)
+    ode_obj = DeterministicOde(state, param_list, transition=transition)
 
     if param is None:
-        return ode
+        return ode_obj
     else:
-        return ode.setParameters(param)
+        ode_obj.parameters = param
+        return ode_obj
 
 def SEIR_Birth_Death(param=None):
     '''
@@ -350,14 +355,15 @@ def SEIR_Birth_Death(param=None):
                    transition_type=TransitionType.B)
         ]
 
-    ode = DeterministicOde(state, param_list,
+    ode_obj = DeterministicOde(state, param_list,
                            transition=transition,
                            birth_death=bdList)
 
     if param is None:
-        return ode
+        return ode_obj
     else:
-        return ode.setParameters(param)
+        ode_obj.parameters = param
+        return ode_obj
 
 def SEIR_Birth_Death_Periodic(param=None):
     '''
@@ -421,7 +427,8 @@ def SEIR_Birth_Death_Periodic(param=None):
     if param is None:
         return ode_obj
     else:
-        return ode_obj.setParameters(param)
+        ode_obj.parameters = param
+        return ode_obj
 
 def SEIR_Multiple(n=2, param=None):
     '''
@@ -515,17 +522,16 @@ def SEIR_Multiple(n=2, param=None):
             bdList += [Transition(origin=states[v][i], equation='d*' + states[v][i], transition_type=TransitionType.D)]
         bdList += [Transition(origin=states['S'][i], equation='d*' + N[i], transition_type=TransitionType.B)]
 
-    ode = DeterministicOde(stateList,
+    ode_obj = DeterministicOde(stateList,
                            paramList,
                            derived_param=derived_param,
                            transition=transition,
                            birth_death=bdList)
     if param is None:
-        return ode
+        return ode_obj
     else:
-        ode.setParameters(param)
-        return ode
-
+        ode_obj.parameters = param
+        return ode_obj
 
 def Influenza_SLIARN(param=None):
     '''
@@ -562,7 +568,7 @@ def Influenza_SLIARN(param=None):
     if param is None:
         return ode_obj
     else:
-        ode_obj.setParameters(param)
+        ode_obj.parameters = param
         return ode_obj
 
 def Legrand_Ebola_SEIHFR(param=None):
@@ -618,9 +624,9 @@ def Legrand_Ebola_SEIHFR(param=None):
         ]
 
     # alternatively, we can do it on the operate ode model
-    ode = DeterministicOde(state, params)
+    ode_obj = DeterministicOde(state, params)
     # add the derived parameter
-    ode.setDerivedParamList(derived_param)
+    ode_obj.derived_param_list = derived_param
 
     # define the set of transitions
     # name of origin state
@@ -660,14 +666,14 @@ def Legrand_Ebola_SEIHFR(param=None):
 
     # see how we can insert the transitions later, after initializing the ode object
     # this is not the preferred choice though
-    ode.setTransitionList(transition)
-    ode.setBirthDeathList(bdList)
+    ode_obj.transition_list = transition
+    ode_obj.birth_death_list = bdList
     # set return, depending on whether we have input the parameters
     if param is None:
-        return ode
+        return ode_obj
     else:
-        ode.setParameters(param)
-        return ode
+        ode_obj.parameters = param
+        return ode_obj
 
 def Lotka_Volterra(param=None):
     '''
@@ -706,7 +712,8 @@ def Lotka_Volterra(param=None):
     if param is None:
         return ode_obj
     else:
-        return ode_obj.setParameters(param)
+        ode_obj.parameters = param
+        return ode_obj
 
 def Lotka_Volterra_4State(param=None):
     '''
@@ -750,13 +757,14 @@ def Lotka_Volterra_4State(param=None):
                    transition_type=TransitionType.T)
         ]
 
-    ode = DeterministicOde(state, param_list, transition=transition)
+    ode_obj = DeterministicOde(state, param_list, transition=transition)
 
     # set return, depending on whether we have input the parameters
     if param is None:
-        return ode
+        return ode_obj
     else:
-        return ode.setParameters(param)
+        ode_obj.parameters = param
+        return ode_obj
 
 def FitzHugh(param=None):
     '''
@@ -799,7 +807,8 @@ def FitzHugh(param=None):
     if param is None:
         return ode_obj
     else:
-        return ode_obj.setParameters(param)
+        ode_obj.parameters = param
+        return ode_obj
 
 def Lorenz(param=None):
     '''
@@ -839,7 +848,8 @@ def Lorenz(param=None):
     if param is None:
         return ode_obj
     else:
-        return ode_obj.setParameters(param)
+        ode_obj.parameters = param
+        return ode_obj
 
 def vanDelPol(param=None):
     '''
@@ -887,7 +897,8 @@ def vanDelPol(param=None):
     if param is None:
         return ode_obj
     else:
-        return ode_obj.setParameters(param)
+        ode_obj.parameters = param
+        return ode_obj
 
 def Robertson(param=None):
     '''
@@ -927,11 +938,11 @@ def Robertson(param=None):
                    transition_type=TransitionType.T)
         ]
     # initialize the model
-    ode = DeterministicOde(state, param_list, transition=transition)
+    ode_obj = DeterministicOde(state, param_list, transition=transition)
 
     if param is None:
-        return ode
+        return ode_obj
     else:
         raise Warning("Input parameters not used")
-        return ode
-
+        ode_obj.parameters = param
+        return ode_obj

@@ -15,7 +15,7 @@ __all__ = [
 import numpy
 
 from pygom.model._model_errors import InitializeError
-from pygom.model.ode_utils import checkArrayType
+from pygom.model.ode_utils import check_array_type
 from pygom.utilR.distn import dnorm, dpois
 
 class InputError(Exception):
@@ -35,14 +35,14 @@ class Square(object):
     '''
 
     def __init__(self, y, weights=None):
-        self._y = checkArrayType(y)
+        self._y = check_array_type(y)
         self._numObv = len(self._y)
 
         if weights is None:
             self._numVar = 0
             self._w = numpy.ones(self._y.shape)
         else:
-            self._w = checkArrayType(weights)              
+            self._w = check_array_type(weights)
 
         if len(self._w.shape) > 1:
             if self._w.shape[1] == 1:
@@ -81,19 +81,19 @@ class Square(object):
 
         Returns
         -------
-        :math:`-2(y_{i} - \hat{y}_{i})`
+        :math:`-2(y_{i} - \\hat{y}_{i})`
         '''
         return -2*self.residual(yhat)
 
     def diff2Loss(self, yhat):
         '''
         Twice derivative of the square loss.  Which is simply 2.
-        
+
         Parameters
         ----------
         yhat: array like
             observations
-    
+
         Returns
         -------
         array with values of 2:
@@ -114,7 +114,7 @@ class Square(object):
 
         Returns
         -------
-        :math:`y_{i} - \hat{y}_{i}`
+        :math:`y_{i} - \\hat{y}_{i}`
 
         '''
         return self._weightedResidual(yhat)
@@ -132,7 +132,7 @@ class Square(object):
             else:
                 resid = self._y - yhat
         else:
-            resid = self._y - yhat 
+            resid = self._y - yhat
 
         return resid * self._w
 
@@ -150,12 +150,12 @@ class Normal(object):
 
     def __init__(self, y, sigma=1.0):
         err_str = "Standard deviation not of the correct "
-        self._y = checkArrayType(y)
+        self._y = check_array_type(y)
         if isinstance(sigma, numpy.ndarray):
             if len(sigma.shape) > 1:
                 if 1 in sigma.shape:
                     sigma = sigma.flatten()
-                
+
                 if y.shape == sigma.shape:
                     self._sigma = sigma
                 else:
@@ -172,7 +172,7 @@ class Normal(object):
 
         self._sigma2 = self._sigma**2
         self.loss(self._y)
-        
+
     def loss(self, yhat):
         '''
         The loss under a normal distribution.  Defined as the
@@ -215,13 +215,13 @@ class Normal(object):
 
     def diff2Loss(self, yhat):
         '''
-        Twice derivative of the normal loss.  
-        
+        Twice derivative of the normal loss.
+
         Parameters
         ----------
         yhat: array like
             observations
-        
+
         Returns
         -------
         s: array like
@@ -250,8 +250,8 @@ class Normal(object):
             else:
                 resid = self._y - yhat
         else:
-            resid = self._y - yhat 
-        
+            resid = self._y - yhat
+
         return resid
 
 class Poisson(object):
@@ -265,7 +265,7 @@ class Poisson(object):
     '''
 
     def __init__(self, y):
-        self._y = checkArrayType(y)
+        self._y = check_array_type(y)
         self.loss(self._y)
 
     def loss(self, yhat):
@@ -310,20 +310,20 @@ class Poisson(object):
 
     def diff2Loss(self, yhat):
         '''
-        Twice derivative of the Poisson loss.  
-        
+        Twice derivative of the Poisson loss.
+
         Parameters
         ----------
         yhat: array like
             observations
-        
+
         Returns
         -------
         s: array like
             :math:`\\frac{y}{\\hat{y}^{2}}` with shape = yhat.shape
         '''
         return self.y/(yhat**2)
-    
+
     def residual(self, yhat):
         '''
         Raw residuals

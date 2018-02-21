@@ -19,7 +19,7 @@ class TestModelExisting(TestCase):
                       ('gamma',1.0/3.0)
                      ]
 
-        ode.setParameters(param_eval)
+        ode.parameters = param_eval
         # the initial state, normalized to zero one
         initial_state = [1, 1.27e-6, 0]
 
@@ -35,9 +35,9 @@ class TestModelExisting(TestCase):
         t = numpy.linspace(1, 150, 100)
         # now find the solution
         _solution, output = scipy.integrate.odeint(ode.ode,
-                                                 initial_state,
-                                                 t,
-                                                 full_output=True)
+                                                   initial_state,
+                                                   t,
+                                                   full_output=True)
         if output['message']!='Integration successful.':
             raise Exception("Failed integration")
 
@@ -50,6 +50,7 @@ class TestModelExisting(TestCase):
         ode = common_models.SEIR_Birth_Death_Periodic()
         t = numpy.linspace(0, 100, 1001)
         x0 = [0.0658, 0.0007, 0.0002, 0.]
-        ode.setInitialValue(x0,0).setParameters([0.02,35.84,100,1800,0.27])
+        ode.initial_values = (x0,0)
+        ode.parameters = [0.02,35.84,100,1800,0.27]
         # try to integrate to see if there is any problem
-        solution, output=ode.integrate(t[1::],True)
+        _solution, _output=ode.integrate(t[1::],True)

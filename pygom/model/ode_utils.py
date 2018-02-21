@@ -9,15 +9,16 @@ __all__ = [
     'compileCode'
     ]
 
-from ._model_errors import ArrayError, ExpressionErrror, \
-    InputError, IntegrationError
-
 import numpy
 import math
-import scipy.sparse, scipy.integrate
+import scipy.integrate
+import scipy.sparse
 import sympy
 from sympy.utilities.lambdify import lambdify
 from sympy.utilities.autowrap import autowrap
+
+from ._model_errors import ArrayError, ExpressionErrror, \
+    InputError, IntegrationError
 
 atol = 1e-10
 rtol = 1e-10
@@ -81,9 +82,9 @@ class shapeAdjust(object):
         A: array like
             a 2d array
         pre: bool, optional
-            If True, then returns :math:`I \otimes A`.
-            If False then :math:`A \otimes I`, where :math:`A` is the input
-            matrix, :math:`I` is the identity matrix and :math:`\otimes` is
+            If True, then returns :math:`I \\otimes A`.
+            If False then :math:`A \\otimes I`, where :math:`A` is the input
+            matrix, :math:`I` is the identity matrix and :math:`\\otimes` is
             the kron operator
         '''
         if pre:
@@ -101,9 +102,9 @@ class shapeAdjust(object):
         A: array like
             a 2d array
         pre: bool, optional
-            If True, then returns :math:`I \otimes A`.
-            If False then :math:`A \otimes I`, where :math:`A` is the input
-            matrix, :math:`I` is the identity matrix and :math:`\otimes` is
+            If True, then returns :math:`I \\otimes A`.
+            If False then :math:`A \\otimes I`, where :math:`A` is the input
+            matrix, :math:`I` is the identity matrix and :math:`\\otimes` is
             the kron operator
         '''
         if pre:
@@ -221,7 +222,7 @@ def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
     if isNumeric(t):
         # force it to something iterable
         t = [t]
-    elif isListLike(t): #, (numpy.ndarray, list, tuple)):
+    elif is_list_like(t): #, (numpy.ndarray, list, tuple)):
         pass
     else:  #
         raise InputError("Type of input time is not of a recognized type")
@@ -244,7 +245,7 @@ def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
     # finish integration
 
     solution = numpy.array(solution)
-    
+
     if full_output == True:
         # have both
         output = dict()
@@ -285,7 +286,7 @@ def _integrateOneStep(r, t, func, jac, args=(), full_output=False):
 def _setupIntegrator(func, jac, x0, t0, args=(), intName=None, nsteps=10000):
     if intName == 'dopri5':
         # if we are going to use rk5, then one thing for sure is that we
-        # know for sure that the set of equations are not stiff. 
+        # know for sure that the set of equations are not stiff.
         # Furthermore, the Jacobian information will never be used as
         # it evaluate f(x) directly
         r = scipy.integrate.ode(func).set_integrator('dopri5', nsteps=nsteps,
@@ -373,13 +374,13 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
 
     if stateList is not None:
         if len(stateList) != numState:
-            raise InputError("Number of state (string) should be equal " + 
-                             "to number of output")
+            raise InputError("Number of state (string) should be equal" +
+                             " to number of output")
         stateList = [str(i) for i in stateList]
 
     # tests for y
     if y is not None:
-        y = checkArrayType(y)
+        y = check_array_type(y)
         # if type(y) != numpy.ndarray:
         #     y = numpy.array(y)
 
@@ -397,8 +398,8 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
         if yStateList is None:
             if numTargetState != numState:
                 if stateList is None:
-                    raise InputError("Unable to identify which observations " + 
-                                     "the states belong to")
+                    raise InputError("Unable to identify which observations" +
+                                     " the states belong to")
                 else:
                     nonAuto = False
                     for i in stateList:
@@ -527,7 +528,7 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
                     axarr[i].set_xlabel('Time')
 
     elif numState == 4:
-        # we have a total of 4 plots, nice and easy display of a 2x2. 
+        # we have a total of 4 plots, nice and easy display of a 2x2.
         # Going across first before going down
         f, axarr = matplotlib.pyplot.subplots(2, 2)
         k = 0
@@ -573,7 +574,7 @@ def vecToMatSens(s, numState, numParam):
     '''
     Convert the vector of :class:`numpy.ndarray` of forward
     sensitivities into a matrix.
-    
+
     Parameters
     ----------
     s:
@@ -586,7 +587,7 @@ def vecToMatSens(s, numState, numParam):
     Returns
     -------
     S in matrix form
-    
+
     See also
     --------
     :func:`matToVecSens`
@@ -598,7 +599,7 @@ def vecToMatFF(ff, numState, numParam):
     '''
     Convert the vector of :class:`numpy.ndarray` of forward
     forward sensitivities into a matrix.
-    
+
     Parameters
     ----------
     ff:
@@ -611,7 +612,7 @@ def vecToMatFF(ff, numState, numParam):
     Returns
     -------
     FF in matrix form
-    
+
     See also
     --------
     :func:`matToVecFF`
@@ -623,7 +624,7 @@ def matToVecSens(S, numState, numParam):
     '''
     Convert the matrix of :class:`numpy.ndarray` of forward
     sensitivities into a vector.
-    
+
     Parameters
     ----------
     S:
@@ -636,7 +637,7 @@ def matToVecSens(S, numState, numParam):
     Returns
     -------
     s in vector form
-    
+
     See also
     --------
     :func:`vecToMatSens`
@@ -714,7 +715,7 @@ class compileCode(object):
 
                     a = autowrap(exprMatrix, args=[x], backend='Cython')
                     a(1)
-                
+
                     self._backend = 'Cython'
                 except:
                     # we have truely failed in life.  A standard lambda function!
@@ -799,7 +800,7 @@ class compileCode(object):
                                         args=inputSymb,
                                         modules='sympy')
                 compileTypeChosen = 'sympy'
-        
+
         if compileType:
             return compiledFunc, compileTypeChosen
         else:
@@ -853,7 +854,7 @@ class compileCode(object):
         else:
             raise RuntimeError("Specified type of output not recognized")
 
-def checkArrayType(x):
+def check_array_type(x):
     '''
     Check to see if the type of input is suitable.  Only operate on one
     or two dimension arrays
@@ -888,7 +889,7 @@ def checkArrayType(x):
 
     return x
 
-def checkDimension(x, y):
+def check_dimension(x, y):
     '''
     Compare the length of two array like objects.  Converting both to a numpy
     array in the process if they are not already one.
@@ -908,11 +909,11 @@ def checkDimension(x, y):
         checked and converted second array
     '''
 
-    y = checkArrayType(y)
-    x = checkArrayType(x)
+    y = check_array_type(y)
+    x = check_array_type(x)
 
     if len(y) != len(x):
-        raise InputError("The number of observations and time points " + 
+        raise InputError("The number of observations and time points " +
                          "should have the same length")
 
     return (x, y)
@@ -924,7 +925,7 @@ def isNumeric(x):
 
     Parameters
     ----------
-    x: 
+    x:
         anything
 
     Returns
@@ -938,14 +939,14 @@ def isNumeric(x):
                       (int, numpy.int16, numpy.int32, numpy.int64,
                       float, numpy.float16, numpy.float32, numpy.float64))
 
-def isListLike(x):
+def is_list_like(x):
     '''
     Test whether the input is a type that behaves like a list, such
     as (list,tuple,numpy.ndarray)
 
     Parameters
     ----------
-    x: 
+    x:
         anything
 
     Returns
@@ -956,16 +957,16 @@ def isListLike(x):
     '''
     return isinstance(x, (list, tuple, numpy.ndarray))
 
-def strOrList(x):
+def str_or_list(x):
     '''
     Test to see whether input is a string or a list.  If it
     is a string, then we convert it to a list.
-    
+
     Parameters
     ----------
     x:
         str or list
-    
+
     Returns
     -------
     x:
@@ -982,7 +983,7 @@ def strOrList(x):
         raise InputError("Expecting a string or list")
 
 
-def _noneOrEmptyList(x):
+def none_or_empty_list(x):
     y = False
     if x is not None:
         if hasattr(x, '__iter__'):
@@ -990,5 +991,5 @@ def _noneOrEmptyList(x):
                 y = True
     else:
         y = True
-            
+
     return y

@@ -19,7 +19,8 @@ class TestSIRStochasticModel(TestCase):
         t = numpy.linspace(0, 150, 100)
         # Standard.  Find the solution.
         ode = common_models.SIR()
-        ode = ode.setParameters([0.5, 1.0/3.0]).setInitialValue(x0, t0)
+        ode.parameters = [0.5, 1.0/3.0]
+        ode.initial_values = (x0, t0)
         solutionReference = ode.integrate(t[1::], full_output=False)
 
         # now we need to define our ode explicitly
@@ -42,7 +43,8 @@ class TestSIRStochasticModel(TestCase):
         d = dict()
         d['beta'] = scipy.stats.gamma(100.0, 0.0, 1.0/200.0)
         d['gamma'] = scipy.stats.gamma(100.0, 0.0, 1.0/300.0)
-        odeS.setParameters(d).setInitialValue(x0, t0)
+        odeS.parameters = d
+        odeS.initial_values = (x0, t0)
 
         # now we generate the solutions
         solutionDiff = odeS.simulateParam(t[1::], 1000) - solutionReference
@@ -64,8 +66,8 @@ class TestSIRStochasticModel(TestCase):
         t = numpy.linspace(0, 150, 100)
         # Standard.  Find the solution.
         ode = common_models.SIR()
-        ode.setParameters([0.5, 1.0/3.0])
-        ode.setInitialValue(x0,t0)
+        ode.parameters = [0.5, 1.0/3.0]
+        ode.initial_values = (x0,t0)
         solutionReference = ode.integrate(t[1::], full_output=False)
 
         # now we need to define our ode explicitly
@@ -89,7 +91,8 @@ class TestSIRStochasticModel(TestCase):
         d['beta'] = (rgamma,{'shape':100.0, 'rate':200.0})
         d['gamma'] = (rgamma,(100.0, 300.0))
 
-        odeS.setParameters(d).setInitialValue(x0, t0)
+        odeS.parameters = d
+        odeS.initial_values = (x0, t0)
 
         # now we generate the solutions
         solutionDiff = odeS.simulateParam(t[1::], 1000) - solutionReference
@@ -120,7 +123,8 @@ class TestSIRStochasticModel(TestCase):
         odeS = SimulateOde(state_list, param_list,
                            transition=transition_list)
 
-        odeS.setParameters([0.5, 1.0/3.0, x0[0]]).setInitialValue(x0, t[0])
+        odeS.parameters = [0.5, 1.0/3.0, x0[0]]
+        odeS.initial_values = (x0, t[0])
         solution = odeS.integrate(t[1::])
         odeS.transitionMean(x0, t[0])
         odeS.transitionVar(x0, t[0])

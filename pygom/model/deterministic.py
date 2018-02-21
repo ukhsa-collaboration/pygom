@@ -112,7 +112,7 @@ class DeterministicOde(BaseOdeModel):
         # operate in the matrix form if possible as it takes up less
         # memory when operating, but the output is required to be of
         # the vector form
-        self._SAUtil = ode_utils.shapeAdjust(self._numState, self._numParam)
+        self._SAUtil = ode_utils.shapeAdjust(self.num_state, self.num_param)
         # compile the code.  Note that we need the class because we
         # compile both the formatted and unformatted version.
         self._SC = ode_utils.compileCode()
@@ -127,7 +127,7 @@ class DeterministicOde(BaseOdeModel):
             return False
 
     def __repr__(self):
-        return "DeterministicOde" + self._getModelStr() 
+        return "DeterministicOde" + self._get_model_str() 
 
     ########################################################################
     #
@@ -219,7 +219,6 @@ class DeterministicOde(BaseOdeModel):
             sympy.pretty_print(B)
 
     def _findOde(self):
-        self.getNumTransitions()
         # lets see how we have defined our ode
         # if it is explicit, then we go straight to the easy case
         if self._explicitOde:
@@ -229,7 +228,7 @@ class DeterministicOde(BaseOdeModel):
             # super(DeterministicOde, self)._computeTransitionMatrix()
             # super(DeterministicOde, self)._computeTransitionVector()
             # convert the transition matrix into the set of ode
-            self._ode = sympy.zeros(self._numState, 1)
+            self._ode = sympy.zeros(self.num_state, 1)
             pureTransitionList = self._getAllTransition(pureTransitions=True)
             fromList, \
                 toList, \
@@ -243,7 +242,7 @@ class DeterministicOde(BaseOdeModel):
         # now we just need to add in the birth death processes
         super(DeterministicOde, self)._computeBirthDeathVector()
         self._ode += self._birthDeathVector
-        
+
         self._s = [s for s in self._iterStateList()] + [self._t]
         self._sp = self._s + [p for p in self._iterParamList()]
         # happy!
@@ -260,7 +259,7 @@ class DeterministicOde(BaseOdeModel):
                                 "system at this moment in time")
 
             self. _ode[i], isDifficult = simplifyEquation(eqn)
-            self._isDifficult = self._isDifficult or isDifficult 
+            self._isDifficult = self._isDifficult or isDifficult
 
         if self._isDifficult:
             self._odeCompile = self._SC.compileExprAndFormat(self._sp,
@@ -473,8 +472,8 @@ class DeterministicOde(BaseOdeModel):
             self.getOde()
             states = [s for s in self._iterStateList()]
             self._Jacobian = self._ode.jacobian(states)
-            for i in range(self._numState):
-                for j in range(self._numState):
+            for i in range(self.num_state):
+                for j in range(self.num_state):
                     eqn = self._Jacobian[i,j]
                     if  eqn != 0:
                         self._Jacobian[i,j], isDifficult = simplifyEquation(eqn)
@@ -558,8 +557,8 @@ class DeterministicOde(BaseOdeModel):
 
         '''
 
-        state = stateParam[0:self._numState]
-        sens = stateParam[self._numState::]
+        state = stateParam[0:self.num_state]
+        sens = stateParam[self.num_state::]
 
         return self.evalSensJacobianState(time=t, state=state, sens=sens)
 
@@ -600,8 +599,8 @@ class DeterministicOde(BaseOdeModel):
 
         '''
 
-        nS = self._numState
-        nP = self._numParam
+        nS = self.num_state
+        nP = self.num_param
 
         # dot first, then transpose, then reshape
         # basically, some magic
@@ -655,7 +654,7 @@ class DeterministicOde(BaseOdeModel):
             diffJac = list()
 
             for eqn in self._ode:
-                J = sympy.zeros(self._numState, self._numState)
+                J = sympy.zeros(self.num_state, self.num_state)
                 for i, si in enumerate(self._iterStateList()):
                     diffEqn, D1 = simplifyEquation(diff(eqn, si, 1))
                     for j, sj in enumerate(self._iterStateList()):
@@ -741,9 +740,9 @@ class DeterministicOde(BaseOdeModel):
 
         if self._Grad is None:
             ode = self.getOde()
-            self._Grad = sympy.zeros(self._numState, self._numParam)
+            self._Grad = sympy.zeros(self.num_state, self.num_param)
 
-            for i in range(self._numState):
+            for i in range(self.num_state):
                 # need to adjust such that the first index is not
                 # included because it correspond to time
                 for j, p in enumerate(self._iterParamList()):
@@ -845,13 +844,13 @@ class DeterministicOde(BaseOdeModel):
 
         '''
         if self._GradJacobian is None:
-            self._GradJacobian = sympy.zeros(self._numState*self._numParam,
-                                             self._numState)
+            self._GradJacobian = sympy.zeros(self.num_state*self.num_param,
+                                             self.num_state)
             G = self.getGrad()
-            for k in range(0, self._numParam):
-                for i in range(0, self._numState):
+            for k in range(0, self.num_param):
+                for i in range(0, self.num_state):
                     for j, s in enumerate(self._iterStateList()):
-                        z = k*self._numState + i
+                        z = k*self.num_state + i
                         eqn, isDifficult = simplifyEquation(diff(G[i,k], s, 1))
                         self._GradJacobian[z,j] = eqn
                         self._isDifficult = self._isDifficult or isDifficult
@@ -966,7 +965,7 @@ class DeterministicOde(BaseOdeModel):
             # second derivative of f_{j}(x), the j^{th} ode.  Each ode
             # correspond to a state
             for eqn in ode:
-                H = sympy.zeros(self._numParam, self._numParam)
+                H = sympy.zeros(self.num_param, self.num_param)
                 # although this can be simplified by first finding the gradient
                 # it is not required so we will be slow here
                 for i, pi in enumerate(self._iterParamList()):
@@ -1032,25 +1031,25 @@ class DeterministicOde(BaseOdeModel):
         if self._hasNewTransition:
             self.getOde()
 
-        evalParam = list()
-        evalParam = self._addTimeEvalParam(evalParam, time)
-        evalParam = self._addStateEvalParam(evalParam, state)
+        eval_param = list()
+        eval_param = self._addTimeEvalParam(eval_param, time)
+        eval_param = self._addStateEvalParam(eval_param, state)
 
         if parameters is None:
             if self._HessianWithParam is None:
                 self._computeHessianParam()
         else:
-            self.setParameters(parameters)
+            self.parameters = parameters
 
         if self._Hessian is None:
             self._computeHessianParam()
 
-        if len(evalParam) == 0:
+        if len(eval_param) == 0:
             return self._Hessian
         else:
             H = list()
-            for i in range(0, self._numState):
-                H = self._HessianWithParam[i].subs(evalParam)
+            for i in range(0, self.num_state):
+                H = self._HessianWithParam[i].subs(eval_param)
             return H
 
     def _computeHessianParam(self):
@@ -1102,7 +1101,7 @@ class DeterministicOde(BaseOdeModel):
         # S = \nabla_{time} \frac{\partial State}{\partial Parameters}
         # rearrange the input if required
         if byState:
-            S = numpy.reshape(sens, (self._numState, self._numParam))
+            S = numpy.reshape(sens, (self.num_state, self.num_param))
         else:
             S = self._SAUtil.vecToMatSens(sens)
 
@@ -1157,7 +1156,7 @@ class DeterministicOde(BaseOdeModel):
         A = numpy.dot(J, S) + G
 
         if byState:
-            return numpy.reshape(A, self._numState*self._numParam)
+            return numpy.reshape(A, self.num_state*self.num_param)
         else:
             return self._SAUtil.matToVecSens(A)
 
@@ -1192,7 +1191,7 @@ class DeterministicOde(BaseOdeModel):
 
         '''
 
-        if len(stateParam) == self._numState:
+        if len(stateParam) == self.num_state:
             raise InputError("You have only inputed the initial condition " +
                              "for the states and not the sensitivity")
 
@@ -1200,8 +1199,8 @@ class DeterministicOde(BaseOdeModel):
         # there is no safety checks on this because it is impossible to
         # distinguish what is state and what is sensitivity as they are
         # all numeric value that can take the full range (-\infty,\infty)
-        state = stateParam[0:self._numState]
-        sens = stateParam[self._numState::]
+        state = stateParam[0:self.num_state]
+        sens = stateParam[self.num_state::]
 
         out1 = self.ode(state, t)
         out2 = self.sensitivity(sens, t, state, byState)
@@ -1243,10 +1242,10 @@ class DeterministicOde(BaseOdeModel):
 
         '''
 
-        if len(stateParam) == self._numState:
+        if len(stateParam) == self.num_state:
             raise InputError("Expecting both the state and the sensitivities")
         else:
-            state = stateParam[0:self._numState]
+            state = stateParam[0:self.num_state]
 
         # now we start the computation
         J = self.Jacobian(state, t)
@@ -1256,21 +1255,21 @@ class DeterministicOde(BaseOdeModel):
         # Note that none of the ode integrator in scipy allow a sparse Jacobian
         # matrix.  All of them accept a banded matrix in packed format but not
         # an actual sparse, or specifying the number of bands.
-        outJ = numpy.kron(numpy.eye(self._numParam), J)
+        outJ = numpy.kron(numpy.eye(self.num_param), J)
         # jacobian of the gradient
         GJ = self.GradJacobian(state, t)
         # and now we add the gradient
         sensJacobianOfState = GJ + self.SensJacobianState(stateParam, t)
 
         if byState:
-            arrangeVector = numpy.zeros(self._numState * self._numParam)
+            arrangeVector = numpy.zeros(self.num_state * self.num_param)
             k = 0
-            for j in range(0, self._numParam):
-                for i in range(0, self._numState):
+            for j in range(0, self.num_param):
+                for i in range(0, self.num_state):
                     if i == 0:
-                        arrangeVector[k] = (i*self._numState) + j
+                        arrangeVector[k] = (i*self.num_state) + j
                     else:
-                        arrangeVector[k] = (i*(self._numState - 1)) + j
+                        arrangeVector[k] = (i*(self.num_state - 1)) + j
                     k += 1
 
             outJ = outJ[numpy.array(arrangeVector,int),:]
@@ -1280,7 +1279,7 @@ class DeterministicOde(BaseOdeModel):
         # the sensitivities. In block form.  Theoretically, only the diagonal
         # blocks are important but we output the full matrix for completeness
         return numpy.asarray(numpy.bmat([
-            [J, numpy.zeros((self._numState, self._numState*self._numParam))],
+            [J, numpy.zeros((self.num_state, self.num_state*self.num_param))],
             [sensJacobianOfState, outJ]
         ]))
 
@@ -1326,8 +1325,8 @@ class DeterministicOde(BaseOdeModel):
 
         """
 
-        nS = self._numState
-        nP = self._numParam
+        nS = self.num_state
+        nP = self.num_param
         # separate information out.  Again, we do have not have checks here
         # as it will be impossible to distinguish what is correct
         sens = sensIV[:(nS*nP)]
@@ -1422,14 +1421,14 @@ class DeterministicOde(BaseOdeModel):
 
         '''
 
-        if len(stateParam) == self._numState:
+        if len(stateParam) == self.num_state:
             raise InputError("You have only inputed the initial condition " +
                              "for the states and not the sensitivity")
 
         # unrolling, assuming that we would always put the state first
-        state = stateParam[0:self._numState]
+        state = stateParam[0:self.num_state]
         # the remainings
-        sensIV = stateParam[self._numState::]
+        sensIV = stateParam[self.num_state::]
         # separate evaluation
         out1 = self.ode(state,t)
         out2,out3 = self.sensitivityIV(sensIV, t, state)
@@ -1471,13 +1470,13 @@ class DeterministicOde(BaseOdeModel):
 
         '''
 
-        if len(stateParam) == self._numState:
+        if len(stateParam) == self.num_state:
             raise InputError("Expecting both the state and the sensitivities")
         else:
-            state = stateParam[0:self._numState]
+            state = stateParam[0:self.num_state]
 
-        nS = self._numState
-        nP = self._numParam
+        nS = self.num_state
+        nP = self.num_param
         # now we start the computation, the simply one :)
         J = self.Jacobian(state, t)
 
@@ -1812,22 +1811,22 @@ class DeterministicOde(BaseOdeModel):
             same size as the stateParam input
         '''
 
-        if len(stateParam) == self._numState:
+        if len(stateParam) == self.num_state:
             raise InputError("You have only inputed the initial condition " +
                              "for the states and not the sensitivity")
-        elif len(stateParam) == ((self._numState + 1)*self._numParam):
+        elif len(stateParam) == ((self.num_state + 1)*self.num_param):
             raise InputError("You have only inputed the initial condition " +
                              "for the states and the sensitivity but not the " +
                              "forward forward condition")
 
         # unrolling of parameters
-        state = stateParam[0:self._numState]
+        state = stateParam[0:self.num_state]
         # we want the index up to numState * (numParam + 1)
         # as in, (numState * numParam + numState,
         # number of sensitivities + number of ode)
-        sens = stateParam[self._numState:(self._numState*(self._numParam + 1))]
+        sens = stateParam[self.num_state:(self.num_state*(self.num_param + 1))]
         # the rest are then the forward forward sensitivities
-        ff = stateParam[(self._numState*(self._numParam + 1))::]
+        ff = stateParam[(self.num_state*(self.num_param + 1))::]
 
         out1 = self.ode(state, t)
         out2 = self.sensitivity(sens, t, state)
@@ -1861,10 +1860,10 @@ class DeterministicOde(BaseOdeModel):
             size of (a,a) where a is the length of the
             stateParam input
         '''
-        if len(stateParam) == self._numState:
+        if len(stateParam) == self.num_state:
             state = stateParam
         else:
-            state = stateParam[0:self._numState]
+            state = stateParam[0:self.num_state]
 
         J = self.Jacobian(state, t)
         # create the block diagonal Jacobian, assuming that whoever is
@@ -1872,8 +1871,8 @@ class DeterministicOde(BaseOdeModel):
         # We are only construct the block diagonal Jacobian here
         # instead of the full one unlike some of the other methods within
         # this class
-        outJS = numpy.kron(numpy.eye(self._numParam), J)
-        outJFF = numpy.kron(numpy.eye(self._numParam*self._numParam), J)
+        outJS = numpy.kron(numpy.eye(self.num_param), J)
+        outJFF = numpy.kron(numpy.eye(self.num_param*self.num_param), J)
         # The Jacobian of the ode, then the sensitivities, then the
         # forward forward sensitivities
         return scipy.linalg.block_diag(J, outJS, outJFF)
@@ -1891,7 +1890,15 @@ class DeterministicOde(BaseOdeModel):
     #
     ########################################################################
 
-    def setInitialState(self, x0):
+    @property
+    def initial_state(self):
+        '''
+        Return the initial state values
+        '''
+        return self._x0
+
+    @initial_state.setter
+    def initial_state(self, x0):
         '''
         Set the initial state values
 
@@ -1908,21 +1915,27 @@ class DeterministicOde(BaseOdeModel):
         elif isinstance(x0, (list, tuple)):
             self._x0 = numpy.array(x0)
         elif isinstance(x0, (int, float)):
-            if self._numState == 1:
+            if self.num_state == 1:
                 self._x0 = numpy.array([x0])
             else:
                 raise InitializeError(err_str)
         else:
             raise InitializeError("err_str")
 
-        if len(self._x0) != self._numState:
+        if len(self._x0) != self.num_state:
             raise Exception("Number of state is " +
-                            str(self._numState)+ " but " +
+                            str(self.num_state)+ " but " +
                             str(len(self._x0))+ " detected")
 
-        return self
+    @property
+    def initial_time(self):
+        '''
+        Return the initial time
+        '''
+        return self._t0
 
-    def setInitialTime(self, t0):
+    @initial_time.setter
+    def initial_time(self, t0):
         '''
         Set the initial time
 
@@ -1936,7 +1949,7 @@ class DeterministicOde(BaseOdeModel):
         err_str = "Initial time should be a "
         if ode_utils.isNumeric(t0):
             self._t0 = t0
-        elif ode_utils.isListLike(t0):
+        elif ode_utils.is_list_like(t0):
             if len(t0) == 1:
                 if ode_utils.isNumeric(t0[0]):
                     self._t0 = t0[0]
@@ -1952,23 +1965,27 @@ class DeterministicOde(BaseOdeModel):
         else:
             raise InitializeError(err_str + "numeric value")
 
-        return self
-
-    def setInitialValue(self, x0, t0):
+    @property
+    def initial_values(self):
+        '''
+        Returns the initial values, both time and state as a tuple (x0, t0)
+        '''
+        return (self.initial_state, self.initial_time) 
+        
+    @initial_values.setter
+    def initial_values(self, x0t0):
         '''
         Set the initial values, both time and state
 
         Parameters
         ----------
-        x0: array like
-            initial condition of x at time 0
-        t0: numeric
-            initial time where x0 is observed
-
+        x0t0: array like
+            initial condition of x at time t and the initial time t where x
+            is observed
         '''
-        self.setInitialState(x0)
-        self.setInitialTime(t0)
-        return self
+        assert len(x0t0) == 2, "Initial values require (x0, t0)"
+        self.initial_state = x0t0[0]
+        self.initial_time = x0t0[1]
 
     def integrate(self, t, full_output=False):
         '''
@@ -1989,7 +2006,7 @@ class DeterministicOde(BaseOdeModel):
             # this should always be true.  If not, then we have screwed up
             # somewhere within this class.
             if isinstance(self._stochasticParam, dict):
-                self.setParameters(self._stochasticParam)
+                self.parameters = self._stochasticParam
 
         return self._integrate(self._odeTime, full_output)
 
@@ -2020,7 +2037,7 @@ class DeterministicOde(BaseOdeModel):
         if self._stochasticParam is not None:
             # this should always be true
             if isinstance(self._stochasticParam, dict):
-                self.setParameters(self._stochasticParam)
+                self.parameters = self._stochasticParam
 
         return self._integrate2(self._odeTime, full_output, intName)
 
@@ -2031,7 +2048,7 @@ class DeterministicOde(BaseOdeModel):
 
         assert self._t0 is not None, "Initial time not set"
 
-        if ode_utils.isListLike(t):
+        if ode_utils.is_list_like(t):
             if ode_utils.isNumeric(t[0]):
                 t = numpy.append(self._t0, t)
             else:
@@ -2113,7 +2130,7 @@ class DeterministicOde(BaseOdeModel):
         return eval_param
 
     def _addStateEvalParam(self, eval_param, state):
-        super(DeterministicOde, self).setState(state)
+        super(DeterministicOde, self).state = state
         if self._state is not None:
             eval_param += self._state
 
@@ -2124,9 +2141,9 @@ class DeterministicOde(BaseOdeModel):
             raise InputError("Have to input both state and time")
 
         if parameters is not None:
-            self.setParameters(parameters)
+            self.parameters = parameters
         elif self._parameters is None:
-            if len(self._paramList) == 0:
+            if self.num_param == 0:
                 pass
             else:
                 raise InputError("Have not set the parameters yet")

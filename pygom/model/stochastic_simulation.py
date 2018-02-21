@@ -7,7 +7,7 @@
 
 from ._model_errors import InputError, SimulationError
 from pygom.utilR.distn import rexp, ppois, rpois, runif
-from pygom.model.ode_utils import checkArrayType
+from pygom.model.ode_utils import check_array_type
 
 import numpy as np
 import scipy.stats
@@ -54,7 +54,7 @@ def exact(x0, t0, t1, stateChangeMat, transitionFunc,
         time
     '''
 
-    x = checkArrayType(x0)
+    x = check_array_type(x0)
     t = t0
     if seed: seed = np.random.RandomState()
     
@@ -122,7 +122,7 @@ def hybrid(x0, t0, t1, stateChangeMat, reactantMat,
         time
     '''
 
-    x = checkArrayType(x0)
+    x = check_array_type(x0)
     t = t0
     if seed: seed = np.random.RandomState()
     
@@ -226,7 +226,7 @@ def cle(x0, t0, t1, stateChangeMat, transitionFunc,
     if h is None:
         h = (t1 - t0)/n
         
-    x = checkArrayType(x0)
+    x = check_array_type(x0)
     t = t0
     p = stateChangeMat.shape[1]
 
@@ -327,7 +327,7 @@ def sde(x0, t0, t1, drift, diffusion, stateChangeMat=None,
     if h is None:
         h = (t1 - t0)/n
 
-    x = checkArrayType(x0)
+    x = check_array_type(x0)
     t = t0
 
     while t < t1:

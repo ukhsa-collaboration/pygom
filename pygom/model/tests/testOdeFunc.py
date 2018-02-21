@@ -6,7 +6,7 @@ import scipy.integrate
 import copy
 
 class TestJacobians(TestCase):
-    
+
     def test_odeJacobian(self):
         '''
         Analytic Jacobian for the ode against the forward
@@ -18,16 +18,17 @@ class TestJacobians(TestCase):
         x0 = [1,1.27e-6,0]
         # params
         paramEval = [('beta',0.5), ('gamma',1.0/3.0)]
-        ode = common_models.SIR(paramEval).setInitialValue(x0,t0)
+        ode = common_models.SIR(paramEval)
+        ode.initial_values = (x0,t0)
 
-        d = ode.getNumState()
-        p = ode.getNumParam()
+        d = ode.num_state
+        p = ode.num_param
 
         x0 = numpy.array(x0)
 
         t = numpy.linspace(0, 150, 100)
         # integrate without using the analytical Jacobian
-        solution, output = scipy.integrate.odeint(ode.ode,
+        solution, _output = scipy.integrate.odeint(ode.ode,
                                                   x0,t,
                                                   full_output=True)
 
@@ -59,11 +60,12 @@ class TestJacobians(TestCase):
         # the initial state, normalized to zero one
         x0 = [1,1.27e-6,0]
         # params
-        paramEval = [('beta',0.5), ('gamma',1.0/3.0)]
-        ode = common_models.SIR(paramEval).setInitialValue(x0,t0)
+        param_eval = [('beta',0.5), ('gamma',1.0/3.0)]
+        ode = common_models.SIR(param_eval)
+        ode.initial_values = (x0,t0)
 
-        d = ode.getNumState()
-        p = ode.getNumParam()
+        d = ode.num_state
+        p = ode.num_param
 
         s0 = numpy.zeros(d*p)
         x0 = numpy.array(x0)
@@ -88,14 +90,14 @@ class TestJacobians(TestCase):
                 ffTemp = copy.deepcopy(ff0)
                 ffTemp[j] += h
                 J[i,j] = (ode.odeAndSensitivity(ffTemp,t[index])[i] - J0[i]) / h
-            
+
         JAnalytic = ode.odeAndSensitivityJacobian(ff0,t[index])
-        if numpy.any(abs(J - JAnalytic)>=1e-4):
+        if numpy.any(abs(J - JAnalytic) >= 1e-4):
             raise Exception("Test Failed")
 
     def test_HessianJacobian(self):
         '''
-        Analytic Jacobian for the forward forward sensitivity equations 
+        Analytic Jacobian for the forward forward sensitivity equations
         i.e. the Hessian of the objective function against
         the forward differencing numeric Jacobian
         '''
@@ -104,10 +106,11 @@ class TestJacobians(TestCase):
         # the initial state, normalized to zero one
         x0 = [1,1.27e-6,0]
         # params
-        paramEval = [('beta',0.5), ('gamma',1.0/3.0)]
-        ode = common_models.SIR(paramEval).setInitialValue(x0,t0)
-        d = ode.getNumState()
-        p = ode.getNumParam()
+        param_eval = [('beta',0.5), ('gamma',1.0/3.0)]
+        ode = common_models.SIR(param_eval)
+        ode.initial_values = (x0,t0)
+        d = ode.num_state
+        p = ode.num_param
 
         ff0 = numpy.zeros(d*p*p)
         s0 = numpy.zeros(d*p)
@@ -119,7 +122,8 @@ class TestJacobians(TestCase):
         t = numpy.linspace(0, 150, 100)
         # our integration
         solutionHessian, _o = scipy.integrate.odeint(ode.odeAndForwardforward,
-                                                     ffParam,t,full_output=True)
+                                                     ffParam, t,
+                                                     full_output=True)
 
         numFF = len(ffParam)
         J = numpy.zeros((numFF, numFF))

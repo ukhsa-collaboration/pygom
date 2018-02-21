@@ -86,7 +86,7 @@ class SimulateOde(DeterministicOde):
         self._tauDict = None
 
     def __repr__(self):
-        return "SimulateOde" + self._getModelStr()
+        return "SimulateOde" + self._get_model_str()
 
     def exact(self, x0, t0, t1, output_time=False):
         '''
@@ -201,7 +201,7 @@ class SimulateOde(DeterministicOde):
             # y = [rv.rvs(iteration) for rv in self._stochasticParam.values()]
             # y = numpy.array(list(zip(*y)))
             def sim(x):
-                self.setParameters(x)
+                self.parameters = x
                 return self.integrate(t)
 
             # def sim(t1): return(self.integrate(t1))
@@ -551,7 +551,7 @@ class SimulateOde(DeterministicOde):
 
         evalParam = self._getEvalParam(state, time, parameters)
         return self._transitionVectorCompile(evalParam)
-    
+
     def _compileTransitionVector(self):
         '''
         We would also need to compile the function so that
@@ -639,16 +639,13 @@ class SimulateOde(DeterministicOde):
         _birthDeathVector in baseOdeModel has the same length as
         the number of states
         '''
-        self._numBD = len(self._birthDeathList)
-        # holder
-
-        if self._numBD == 0:
+        if self.num_birth_deaths == 0:
             A = sympy.zeros(1, 1)
         else:
-            A = sympy.zeros(self._numBD, 1)
+            A = sympy.zeros(self.num_birth_deaths, 1)
 
             # go through all the transition objects
-            for i, bd in enumerate(self._birthDeathList):
+            for i, bd in enumerate(self.birth_death_list):
                 A[i] += eval(self._checkEquation(bd.getEquation()))
 
         # assign back
@@ -693,9 +690,9 @@ class SimulateOde(DeterministicOde):
         m transitions and n states, we have
 
         .. math::
-            f_{j,k} &= \sum_{i=1}^{n} \\frac{\partial a_{j}(x)}{\partial x_{i}} v_{i,k} \\\\
-            \\mu_{j} &= \sum_{k=1}^{m} f_{j,k}(x)a_{k}(x) \\\\
-            \\sigma^{2}_{j}(x) &= \sum_{k=1}^{m} f_{j,k}^{2}(x) a_{k}(x)
+            f_{j,k} &= \\sum_{i=1}^{n} \\frac{\\partial a_{j}(x)}{\\partial x_{i}} v_{i,k} \\\\
+            \\mu_{j} &= \\sum_{k=1}^{m} f_{j,k}(x)a_{k}(x) \\\\
+            \\sigma^{2}_{j}(x) &= \\sum_{k=1}^{m} f_{j,k}^{2}(x) a_{k}(x)
 
         where :math:`v_{i,k}` is the state change matrix.
 
@@ -791,33 +788,33 @@ class SimulateOde(DeterministicOde):
         if self._GMat is None:
             self._computeDependencyMatrix()
 
-        F = sympy.zeros(self._numTransition, self._numTransition)
-        for i in range(self._numTransition):
+        F = sympy.zeros(self.num_transitions, self.num_transitions)
+        for i in range(self.num_transitions):
             for j, eqn in enumerate(self._transitionVector):
                 for k, state in enumerate(self._iterStateList()):
                     diffEqn = sympy.diff(eqn, state, 1) 
                     tempEqn, isDifficult = simplifyEquation(diffEqn)
                     F[i,j] += tempEqn*self._vMat[k,i]
                     self._isDifficult = self._isDifficult or isDifficult
-        
+
         self._transitionJacobian = F
-        return(F)
+        return F
 
     def _computeTransitionMeanVar(self):
         '''
         This is the mean and variance information that we need
         for the :math:`\tau`-Leap
         '''
-    
+
         if self._transitionJacobian is None or self._hasNewTransition:
             self._computeTransitionJacobian()
 
         F = self._transitionJacobian
         # holders
-        mu = sympy.zeros(self._numTransition, 1)
-        sigma2 = sympy.zeros(self._numTransition, 1)
+        mu = sympy.zeros(self.num_transitions, 1)
+        sigma2 = sympy.zeros(self.num_transitions, 1)
         # we calculate the mean and variance
-        for i in range(self._numTransition):
+        for i in range(self.num_transitions):
             for j, eqn in enumerate(self._transitionVector):
                 mu[i] += F[i,j] * eqn
                 sigma2[i] += F[i,j] * F[i,j] * eqn
@@ -889,7 +886,7 @@ class SimulateOde(DeterministicOde):
         TransitionType.D
         '''
         if A is None:
-            if not ode_utils._noneOrEmptyList(self._odeList):
+            if not ode_utils.none_or_empty_list(self._odeList):
                 eqnList = [t.getEquation() for t in self._odeList]
                 A = sympy.Matrix(checkEquation(eqnList,
                                                *self._getListOfVariablesDict(),
@@ -908,7 +905,7 @@ class SimulateOde(DeterministicOde):
 
             # get our birth and death process
             bdUnroll = list()
-            states = [str(i) for i in self.getStateList()]
+            states = [str(i) for i in self.state_list]
 
             for i, a in enumerate(diffA):
                 for b in bdList:
@@ -937,7 +934,7 @@ class SimulateOde(DeterministicOde):
         the equation rather than the states.
         '''
         if A is None:
-            if not ode_utils._noneOrEmptyList(self._odeList):
+            if not ode_utils.none_or_empty_list(self._odeList):
                 eqn_list = [t.getEquation() for t in self._odeList]
                 A = sympy.Matrix(checkEquation(eqn_list,
                                                *self._getListOfVariablesDict(),
