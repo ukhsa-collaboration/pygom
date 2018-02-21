@@ -102,7 +102,7 @@ class SimulateOde(DeterministicOde):
         t1: double
             final time
         '''
-        return(exact(x0, t0, t1, self._vMat, self.transitionVector,
+        return(exact(x0, t0, t1, self._vMat, self.transition_vector,
                      output_time=output_time, seed=True))
     
     def cle(self, x0, t0, t1, output_time=False):
@@ -110,7 +110,7 @@ class SimulateOde(DeterministicOde):
         Stochastic simulation using the CLE approximation starting from time
         t0 to t1 with the starting state values of x0.  The CLE approximation
         is performed using a simple Euler-Maruyama method with step size h.
-        We assume that the input parameter transitionFunc provides
+        We assume that the input parameter transition_func provides
         :math:`f(x,t)` while the CLE is defined as
         :math:`dx = x + V*h*f(x,t) + \\sqrt(f(x,t))*Z*\\sqrt(h)`
         with :math:`Z` being standard normal random variables.
@@ -124,7 +124,7 @@ class SimulateOde(DeterministicOde):
         t1: double
             final time
         '''
-        return(cle(x0, t0, t1, self._vMat, self.transitionVector,
+        return(cle(x0, t0, t1, self._vMat, self.transition_vector,
                    output_time=output_time, seed=True))
 
     def hybrid(self, x0, t0, t1, output_time=False):
@@ -133,7 +133,7 @@ class SimulateOde(DeterministicOde):
         first reaction method or the :math:`\\tau`-leap depending on the
         size of the states and transition rates.  Starting from time
         t0 to t1 with the starting state values of x0.
-    
+
         Parameters
         ----------
         x: array like
@@ -144,12 +144,12 @@ class SimulateOde(DeterministicOde):
             final time
         '''
         return(hybrid(x0, t0, t1, self._vMat, self._lambdaMat,
-                   self.transitionVector,
-                   self.transitionMean,
-                   self.transitionVar,
+                   self.transition_vector,
+                   self.transition_mean,
+                   self.transition_var,
                    output_time=output_time, seed=True))
 
-    def simulateParam(self, t, iteration, full_output=False):
+    def simulate_param(self, t, iteration, full_output=False):
         '''
         Simulate the ode by generating new realization of the stochastic
         parameters and integrate the system deterministically.
@@ -223,7 +223,7 @@ class SimulateOde(DeterministicOde):
         else:
             return Y
 
-    def simulateJump(self, t, iteration, exact=False, full_output=False):
+    def simulate_jump(self, t, iteration, exact=False, full_output=False):
         '''
         Simulate the ode using stochastic simulation.  It switches
         between a first reaction method and a :math:`\\tau`-leap
@@ -342,7 +342,7 @@ class SimulateOde(DeterministicOde):
         if self._GMat is None:
             self._computeDependencyMatrix()
 
-#         rates = self.transitionVector(x,t)
+#         rates = self.transition_vector(x,t)
 #         jumpTimes = numpy.array([self._t0 + rexp(1, r) for r in rates])
 #         print rates
 #         print jumpTimes 
@@ -352,23 +352,23 @@ class SimulateOde(DeterministicOde):
             try:
                 if exact:
                     x, t, success = f(x, t, self._vMat,
-                                      self.transitionVector, seed=seed)
+                                      self.transition_vector, seed=seed)
                 else:
                     if np.min(x) > 10:
                         x_tmp, t_tmp, success = tauLeap(x, t,
                                                 self._vMat, self._lambdaMat,
-                                                self.transitionVector,
-                                                self.transitionMean,
-                                                self.transitionVar,
+                                                self.transition_vector,
+                                                self.transition_mean,
+                                                self.transition_var,
                                                 seed=seed)
                         if success:
                             x, t = x_tmp, t_tmp
                         else:
                             x, t, success = f(x, t, self._vMat,
-                                              self.transitionVector, seed=seed)                            
+                                              self.transition_vector, seed=seed)                            
                     else:
                         x, t, success = f(x, t, self._vMat,
-                                          self.transitionVector, seed=seed) 
+                                          self.transition_vector, seed=seed) 
                 if success:
                     xList.append(x.copy())
                     tList.append(t)
@@ -405,7 +405,7 @@ class SimulateOde(DeterministicOde):
     #
     ########################################################################
 
-    def getTransitionMatrix(self):
+    def get_transition_matrix(self):
         '''
         Returns the transition matrix in algebraic form.
 
@@ -421,7 +421,7 @@ class SimulateOde(DeterministicOde):
         else:
             return super(SimulateOde, self)._computeTransitionMatrix()
     
-    def getTransitionVector(self):
+    def get_transition_vector(self):
         '''
         Returns the set of transitions in a single vector, transitions
         between state to state first then the birth and death process
@@ -437,7 +437,7 @@ class SimulateOde(DeterministicOde):
         else:
             return super(SimulateOde, self)._computeTransitionVector()
 
-    def transitionMatrix(self, state, t):
+    def transition_matrix(self, state, t):
         '''
         Evaluate the transition matrix given state and time
 
@@ -456,9 +456,9 @@ class SimulateOde(DeterministicOde):
             of transitions
 
         '''
-        return self.evalTransitionMatrix(time=t, state=state)
+        return self.eval_transition_matrix(time=t, state=state)
 
-    def evalTransitionMatrix(self, parameters=None, time=None, state=None):
+    def eval_transition_matrix(self, parameters=None, time=None, state=None):
         '''
         Evaluate the transition matrix given parameters, state and time. Note
         that the output is not in sparse format
@@ -482,8 +482,8 @@ class SimulateOde(DeterministicOde):
         if self._transitionMatrixCompile is None or self._hasNewTransition:
             self._compileTransitionMatrix()
 
-        evalParam = self._getEvalParam(state, time, parameters)
-        return self._transitionMatrixCompile(evalParam)
+        eval_param = self._getEvalParam(state, time, parameters)
+        return self._transitionMatrixCompile(eval_param)
 
     def _compileTransitionMatrix(self):
         '''
@@ -504,7 +504,7 @@ class SimulateOde(DeterministicOde):
 
         return None
     
-    def transitionVector(self, state, t):
+    def transition_vector(self, state, t):
         '''
         Evaluate the transition vector given state and time
 
@@ -523,9 +523,9 @@ class SimulateOde(DeterministicOde):
             states transitions and the number of birth death
             processes
         '''
-        return self.evalTransitionVector(time=t, state=state)
+        return self.eval_transition_vector(time=t, state=state)
 
-    def evalTransitionVector(self, parameters=None, time=None, state=None):
+    def eval_transition_vector(self, parameters=None, time=None, state=None):
         '''
         Evaluate the transition vector given parameters, state and time. Note
         that the output is not in sparse format
@@ -549,8 +549,8 @@ class SimulateOde(DeterministicOde):
         if self._transitionVectorCompile is None or self._hasNewTransition:
             self._compileTransitionVector()
 
-        evalParam = self._getEvalParam(state, time, parameters)
-        return self._transitionVectorCompile(evalParam)
+        eval_param = self._getEvalParam(state, time, parameters)
+        return self._transitionVectorCompile(eval_param)
 
     def _compileTransitionVector(self):
         '''
@@ -571,7 +571,7 @@ class SimulateOde(DeterministicOde):
 
         return None
 
-    def getBirthDeathRate(self):
+    def get_birth_death_rate(self):
         '''
         Find the algebraic equations of birth and death processes
 
@@ -585,7 +585,7 @@ class SimulateOde(DeterministicOde):
 
         return self._birthDeathRate
 
-    def birthDeathRate(self, state, t):
+    def birth_death_rate(self, state, t):
         '''
         Evaluate the birth death rates given state and time
 
@@ -604,9 +604,9 @@ class SimulateOde(DeterministicOde):
             of birth and death actions
 
         '''
-        return self.evalBirthDeathRate(time=t, state=state)
+        return self.eval_birth_death_rate(time=t, state=state)
 
-    def evalBirthDeathRate(self, parameters=None, time=None, state=None):
+    def eval_birth_death_rate(self, parameters=None, time=None, state=None):
         '''
         Evaluate the birth and death rates given parameters, state and time.
 
@@ -629,8 +629,8 @@ class SimulateOde(DeterministicOde):
         if self._birthDeathRateCompile is None or self._hasNewTransition:
             self._computeBirthDeathRate()
 
-        evalParam = self._getEvalParam(state, time, parameters)
-        return self._birthDeathRateCompile(evalParam)
+        eval_param = self._getEvalParam(state, time, parameters)
+        return self._birthDeathRateCompile(eval_param)
 
     def _computeBirthDeathRate(self):
         '''
@@ -646,7 +646,7 @@ class SimulateOde(DeterministicOde):
 
             # go through all the transition objects
             for i, bd in enumerate(self.birth_death_list):
-                A[i] += eval(self._checkEquation(bd.getEquation()))
+                A[i] += eval(self._checkEquation(bd.equation()))
 
         # assign back
         self._birthDeathRate = A
@@ -664,7 +664,7 @@ class SimulateOde(DeterministicOde):
 
         return None
 
-    def totalTransition(self, state, t):
+    def total_transition(self, state, t):
         '''
         Evaluate the total transition rate given state and time
 
@@ -682,9 +682,9 @@ class SimulateOde(DeterministicOde):
             total rate
 
         '''
-        return sum(self.transitionVector(time=t, state=state))
+        return sum(self.transition_vector(time=t, state=state))
 
-    def transitionMean(self, state, t):
+    def transition_mean(self, state, t):
         '''
         Evaluate the mean of the transitions given state and time.  For
         m transitions and n states, we have
@@ -710,9 +710,9 @@ class SimulateOde(DeterministicOde):
             an array of size m where m is the number of transition
 
         '''
-        return self.evalTransitionMean(time=t, state=state)
+        return self.eval_transition_mean(time=t, state=state)
 
-    def evalTransitionMean(self, parameters=None, time=None, state=None):
+    def eval_transition_mean(self, parameters=None, time=None, state=None):
         '''
         Evaluate the transition mean given parameters, state and time.
 
@@ -735,10 +735,10 @@ class SimulateOde(DeterministicOde):
         if self._transitionMeanCompile is None or self._hasNewTransition:
             self._computeTransitionMeanVar()
 
-        evalParam = self._getEvalParam(state, time, parameters)
-        return(self._transitionMeanCompile(evalParam))
+        eval_param = self._getEvalParam(state, time, parameters)
+        return(self._transitionMeanCompile(eval_param))
 
-    def transitionVar(self, state, t):
+    def transition_var(self, state, t):
         '''
         Evaluate the variance of the transitions given state and time
 
@@ -756,9 +756,9 @@ class SimulateOde(DeterministicOde):
             an array of size M where M is the number of transition
 
         '''
-        return(self.evalTransitionVar(time=t, state=state))
+        return(self.eval_transition_var(time=t, state=state))
 
-    def evalTransitionVar(self, parameters=None, time=None, state=None):
+    def eval_transition_var(self, parameters=None, time=None, state=None):
         '''
         Evaluate the transition variance given parameters, state and time.
 
@@ -792,7 +792,7 @@ class SimulateOde(DeterministicOde):
         for i in range(self.num_transitions):
             for j, eqn in enumerate(self._transitionVector):
                 for k, state in enumerate(self._iterStateList()):
-                    diffEqn = sympy.diff(eqn, state, 1) 
+                    diffEqn = sympy.diff(eqn, state, 1)
                     tempEqn, isDifficult = simplifyEquation(diffEqn)
                     F[i,j] += tempEqn*self._vMat[k,i]
                     self._isDifficult = self._isDifficult or isDifficult
@@ -843,14 +843,14 @@ class SimulateOde(DeterministicOde):
     #
     ########################################################################
 
-    def returnObjWithTransitionsAndBD(self):
+    def get_unrolled_obj(self):
         '''
         Returns a :class:`SimulateOde` with the same state and parameters
         as the current object but with the equations defined by a set of
         transitions and birth death process instead of say, odes
         '''
-        transition = self.getTransitionsFromOde()
-        bdList = self.getBDFromOde()
+        transition = self.get_transitions_from_ode()
+        bdList = self.get_bd_from_ode()
 
         return SimulateOde(
                            [str(s) for s in self._stateList],
@@ -860,7 +860,7 @@ class SimulateOde(DeterministicOde):
                            birth_death=bdList
                            )
 
-    def getTransitionsFromOde(self):
+    def get_transitions_from_ode(self):
         '''
         Returns a list of :class:`Transition` from this object by unrolling
         the odes.  All the elements are of TransitionType.T
@@ -879,7 +879,7 @@ class SimulateOde(DeterministicOde):
 
         return transition
 
-    def getBDFromOde(self, A=None):
+    def get_bd_from_ode(self, A=None):
         '''
         Returns a list of:class:`Transition` from this object by unrolling
         the odes.  All the elements are of TransitionType.B or
@@ -887,7 +887,7 @@ class SimulateOde(DeterministicOde):
         '''
         if A is None:
             if not ode_utils.none_or_empty_list(self._odeList):
-                eqnList = [t.getEquation() for t in self._odeList]
+                eqnList = [t.equation for t in self._odeList]
                 A = sympy.Matrix(checkEquation(eqnList,
                                                *self._getListOfVariablesDict(),
                                                subsDerived=False))
@@ -935,7 +935,7 @@ class SimulateOde(DeterministicOde):
         '''
         if A is None:
             if not ode_utils.none_or_empty_list(self._odeList):
-                eqn_list = [t.getEquation() for t in self._odeList]
+                eqn_list = [t.equation for t in self._odeList]
                 A = sympy.Matrix(checkEquation(eqn_list,
                                                *self._getListOfVariablesDict(),
                                                subsDerived=False))

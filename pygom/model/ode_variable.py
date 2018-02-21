@@ -17,7 +17,7 @@ class ODEVariable(object):
         identifier of the variable
     name: str, optional
         name of the variable in human readable format.
-        Defaults to None, which then takes the ID as the name 
+        Defaults to None, which then takes the ID as the name
     units: str, optional
         what unit the variable takes. Defaults to None.
     real: bool, optional
@@ -31,18 +31,18 @@ class ODEVariable(object):
             self.name = name
         self.units = units
         self.real = real
-        
+
     def __str__(self):
         return self.name
-    
+
     def __repr__(self):
         return 'ODEVariable(%s, %s, %s, %s)' % (
-                                                repr(self.ID), 
+                                                repr(self.ID),
                                                 repr(self.name),
                                                 repr(self.units),
                                                 repr(self.real)
                                                 )
-    
+
     def __eq__(self, other):
         if isinstance(other, str):
             return self.ID == other
@@ -54,10 +54,10 @@ class ODEVariable(object):
             return self.ID == str(other)
         else:
             raise NotImplementedError('Wrong input type of %s' % type(other))
-        
+
     def __neq__(self, other):
         return not self.__eq__(other)
-    
+
     def __lt__(self, other):
         raise NotImplementedError("Only equality comparison allowed")
 

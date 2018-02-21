@@ -150,8 +150,8 @@ def disease_progression_matrices(ode, disease_state, diff=True):
 
     FList = list()
     for t in ode.transition_list:
-        orig = _get_single_state_name(t.getOrigState())
-        dest = _get_single_state_name(t.getDestState())
+        orig = _get_single_state_name(t.origin)
+        dest = _get_single_state_name(t.destination)
         if isinstance(orig, str) and isinstance(dest, str):
             if orig not in disease_state and dest in disease_state:
                 FList.append(t)

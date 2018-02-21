@@ -15,8 +15,8 @@ class TestModelExisting(TestCase):
 
         # define the parameters
         param_eval = [
-                      ('beta',0.5),
-                      ('gamma',1.0/3.0)
+                      ('beta', 0.5),
+                      ('gamma', 1.0/3.0)
                      ]
 
         ode.parameters = param_eval
@@ -51,6 +51,6 @@ class TestModelExisting(TestCase):
         t = numpy.linspace(0, 100, 1001)
         x0 = [0.0658, 0.0007, 0.0002, 0.]
         ode.initial_values = (x0,0)
-        ode.parameters = [0.02,35.84,100,1800,0.27]
+        ode.parameters = [0.02, 35.84, 100, 1800, 0.27]
         # try to integrate to see if there is any problem
-        _solution, _output=ode.integrate(t[1::],True)
+        _solution, _output = ode.integrate(t[1::],True)

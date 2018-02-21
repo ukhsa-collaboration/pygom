@@ -15,10 +15,10 @@ class TestJacobians(TestCase):
         # initial time
         t0 = 0
         # the initial state, normalized to zero one
-        x0 = [1,1.27e-6,0]
+        x0 = [1, 1.27e-6, 0]
         # params
-        paramEval = [('beta',0.5), ('gamma',1.0/3.0)]
-        ode = common_models.SIR(paramEval)
+        param_eval = [('beta', 0.5), ('gamma', 1.0/3.0)]
+        ode = common_models.SIR(param_eval)
         ode.initial_values = (x0,t0)
 
         d = ode.num_state
@@ -58,9 +58,9 @@ class TestJacobians(TestCase):
         # initial time
         t0 = 0
         # the initial state, normalized to zero one
-        x0 = [1,1.27e-6,0]
+        x0 = [1, 1.27e-6, 0]
         # params
-        param_eval = [('beta',0.5), ('gamma',1.0/3.0)]
+        param_eval = [('beta', 0.5), ('gamma', 1.0/3.0)]
         ode = common_models.SIR(param_eval)
         ode.initial_values = (x0,t0)
 
@@ -69,13 +69,13 @@ class TestJacobians(TestCase):
 
         s0 = numpy.zeros(d*p)
         x0 = numpy.array(x0)
-        ffParam = numpy.append(x0,s0)
+        ffParam = numpy.append(x0, s0)
 
         t = numpy.linspace(0, 150, 100)
         # integrate without using the analytical Jacobian
         solution_sens, _out = scipy.integrate.odeint(ode.ode_and_sensitivity,
-                                            ffParam,t,
-                                            full_output=True)
+                                                     ffParam,t,
+                                                     full_output=True)
 
 
         # the Jacobian of the ode itself
@@ -89,9 +89,9 @@ class TestJacobians(TestCase):
             for j in range(0,d*(p+1)):
                 ffTemp = copy.deepcopy(ff0)
                 ffTemp[j] += h
-                J[i,j] = (ode.ode_and_sensitivity(ffTemp,t[index])[i] - J0[i]) / h
+                J[i,j] = (ode.ode_and_sensitivity(ffTemp, t[index])[i] - J0[i]) / h
 
-        JAnalytic = ode.ode_and_sensitivity_jacobian(ff0,t[index])
+        JAnalytic = ode.ode_and_sensitivity_jacobian(ff0, t[index])
         # JAnalytic = ode.odeAndSensitivityJacobian(ff0,t[index])
         if numpy.any(abs(J - JAnalytic) >= 1e-4):
             raise Exception("Test Failed")
@@ -105,18 +105,18 @@ class TestJacobians(TestCase):
         # initial time
         t0 = 0
         # the initial state, normalized to zero one
-        x0 = [1,1.27e-6,0]
+        x0 = [1, 1.27e-6, 0]
         # params
-        param_eval = [('beta',0.5), ('gamma',1.0/3.0)]
+        param_eval = [('beta', 0.5), ('gamma', 1.0/3.0)]
         ode = common_models.SIR(param_eval)
-        ode.initial_values = (x0,t0)
+        ode.initial_values = (x0, t0)
         d = ode.num_state
         p = ode.num_param
 
         ff0 = numpy.zeros(d*p*p)
         s0 = numpy.zeros(d*p)
         x0 = numpy.array(x0)
-        ffParam = numpy.append(numpy.append(x0,s0),ff0)
+        ffParam = numpy.append(numpy.append(x0, s0), ff0)
         # some small value
         h = numpy.sqrt(numpy.finfo(numpy.float).eps)
         # time frame
@@ -139,8 +139,8 @@ class TestJacobians(TestCase):
         JAnalytic = ode.ode_and_forwardforward_jacobian(ff0, t[index])
         # JAnalytic = ode.odeAndForwardforwardJacobian(ff0, t[index])
         # now we go and find the finite difference Jacobian
-        for i in range(0,numFF):
-            for j in range(0,numFF):
+        for i in range(numFF):
+            for j in range(numFF):
                 ffTemp = copy.deepcopy(ff0)
                 #ffTemp[i] += h
                 ffTemp[j] += h

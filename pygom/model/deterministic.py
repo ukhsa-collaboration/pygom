@@ -205,7 +205,17 @@ class DeterministicOde(BaseOdeModel):
             return self._ode
 
     def print_ode(self, latex_output=False):
-
+        '''
+        Prints the ode in symbolic form onto the screen/console in actual
+        symbols rather than the word of the symbol.
+        
+        Parameters
+        ----------
+        latex_output: bool, optional
+            Defaults to false which prints the equation in terms of symbols,
+            if set to yes then the formula in terms of latex equations will
+            be printed onto the screen.
+        '''
         A = self.get_ode_eqn()
         B = sympy.zeros(A.rows,2)
         for i in range(A.shape[0]):

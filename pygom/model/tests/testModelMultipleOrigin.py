@@ -46,7 +46,7 @@ class TestModelMultipleOrigin(TestCase):
         x0 = [0,0,0,0]
         t = numpy.linspace(0, 100, 100)
 
-        ode.parameters= param_eval
+        ode.parameters = param_eval
         ode.initial_values = (x0,t[0])
         _solution = ode.integrate(t[1::])
 
@@ -83,4 +83,4 @@ class TestModelMultipleOrigin(TestCase):
 
         ode.parameters = param_eval
         ode.initial_values = (x0, t[0])
-        _simX, _simT = ode.simulateJump(t, 5, full_output=True)
+        _simX, _simT = ode.simulate_jump(t, 5, full_output=True)

@@ -524,7 +524,7 @@ class BaseOdeModel(object):
         ----------
         transition: list
             list of :class:`.Transition` of type transition in
-            :class:`.getTransitionType`
+            :class:`.transition_type`
         '''
         if isinstance(transition_list, (list, tuple)):
             for t in transition_list:
@@ -558,7 +558,7 @@ class BaseOdeModel(object):
         ----------
         birth_death: list
             list of :class:`.Transition` of type birth or death in
-            :class:`.getTransitionType`
+            :class:`.transition_type`
 
         '''
         if isinstance(birth_death_list, (list, tuple)):
@@ -581,7 +581,7 @@ class BaseOdeModel(object):
             with elements as :class:`.Transition`
 
         '''
-        if self._explicitOde == True:
+        if self._explicitOde is True:
             return self._odeList
         else:
             raise OutputError("ode was not defined explicitly")
@@ -595,7 +595,7 @@ class BaseOdeModel(object):
         ----------
         ode: list
             list of :class:`.Transition` of type birth or death in
-            :class:`.getTransitionType`
+            :class:`.transition_type`
 
         '''
         if isinstance(ode_list, list):
@@ -821,10 +821,10 @@ class BaseOdeModel(object):
         self._derivedParamEqn += [(name, eqn)]
         return None
 
-    def _addVariable(self, symbol, var_obj, objList, objDict):
+    def _addVariable(self, symbol, var_obj, obj_list, obj_dict):
         assert isinstance(var_obj, ODEVariable), "Expecting type odeVariable"
-        objList.append(var_obj)
-        objDict[var_obj.ID] = symbol
+        obj_list.append(var_obj)
+        obj_dict[var_obj.ID] = symbol
 
     def add_transition(self, transition):
         '''
@@ -837,7 +837,7 @@ class BaseOdeModel(object):
             regarding the transition
         '''
         if isinstance(transition, Transition):
-            if transition.getTransitionType() is TransitionType.T:
+            if transition.transition_type is TransitionType.T:
                 self._transitionList.append(transition)
                 self._hasNewTransition = True
             else:
@@ -875,7 +875,7 @@ class BaseOdeModel(object):
 
         '''
         if isinstance(birth_death, Transition):
-            t = birth_death.getTransitionType()
+            t = birth_death.transition_type
             if t is TransitionType.B or t is TransitionType.D:
                 self._birthDeathList.append(birth_death)
                 self._hasNewTransition = True
@@ -893,9 +893,9 @@ class BaseOdeModel(object):
         for bdObj in self._birthDeathList:
             fromIndex, _toIndex, eqn = self._unrollTransition(bdObj)
             for i in fromIndex:
-                if bdObj.getTransitionType() is TransitionType.B:
+                if bdObj.transition_type is TransitionType.B:
                     self._birthDeathVector[i] += eqn
-                elif bdObj.getTransitionType() is TransitionType.D:
+                elif bdObj.transition_type is TransitionType.D:
                     self._birthDeathVector[i] -= eqn
 
         return self._birthDeathVector
@@ -914,7 +914,7 @@ class BaseOdeModel(object):
         # determine if the input object is of the correct type
         if isinstance(eqn, Transition):
             # then whether it is actually an ode
-            if eqn.getTransitionType() is TransitionType.ODE:
+            if eqn.transition_type is TransitionType.ODE:
                 # YES!!!
                 self._explicitOde = True
                 # add to the list
@@ -931,7 +931,7 @@ class BaseOdeModel(object):
         # allow the end user to input more state than initially desired
         if len(self.ode_list) <= self.num_state:
             self._ode = sympy.zeros(self.num_state, 1)
-            fromList, _t, eqnList = self._unrollTransitionList(self._odeList)
+            fromList, _t, eqnList = self._unrollTransitionList(self.ode_list)
             for i, eqn in enumerate(eqnList):
                 if len(fromList[i]) > 1:
                     raise InputError("An explicit ode cannot describe more " +
@@ -941,7 +941,7 @@ class BaseOdeModel(object):
         else:
             raise InputError("The total number of ode is %s " +
                              "where the number of state is %s" % \
-                             len(self._odeList), self.num_state)
+                             len(self.ode_list), self.num_state)
 
         return None
 
@@ -1001,10 +1001,10 @@ class BaseOdeModel(object):
                     self._vMat[k2,j] += 1
             else:
                 bdObj = self._birthDeathList[j - self.num_pure_transitions]
-                if bdObj.getTransitionType() is TransitionType.B:
+                if bdObj.transition_type is TransitionType.B:
                     for k1 in fromList[j]:
                         self._vMat[k1,j] += 1
-                elif bdObj.getTransitionType() is TransitionType.D:
+                elif bdObj.transition_type is TransitionType.D:
                     for k2 in fromList[j]:
                         self._vMat[k2,j] += -1
 
@@ -1057,29 +1057,26 @@ class BaseOdeModel(object):
 
         return state_out
 
-    def _unrollTransition(self, transitionObj):
+    def _unrollTransition(self, transition_obj):
         '''
         Given a transition object, get the information from it in a usable
         format i.e. indexing within this class
         '''
-        origState = transitionObj.getOrigState()
-        fromIndex = self._extractStateIndex(origState)
+        from_index = self._extractStateIndex(transition_obj.origin)
+        to_index = self._extractStateIndex(transition_obj.destination)
 
-        destState = transitionObj.getDestState()
-        toIndex = self._extractStateIndex(destState)
-
-        eqn = checkEquation(transitionObj.getEquation(),
+        eqn = checkEquation(transition_obj.equation,
                             *self._getListOfVariablesDict())
-        return fromIndex, toIndex, eqn
+        return from_index, to_index, eqn
 
-    def _unrollTransitionList(self, transitionList):
+    def _unrollTransitionList(self, transition_list):
         from_list = list()
         to_list = list()
         eqn_list = list()
-        for t in transitionList:
-            from_list.append(self._extractStateIndex(t.getOrigState()))
-            to_list.append(self._extractStateIndex(t.getDestState()))
-            eqn_list.append(t.getEquation())
+        for t in transition_list:
+            from_list.append(self._extractStateIndex(t.origin))
+            to_list.append(self._extractStateIndex(t.destination))
+            eqn_list.append(t.equation)
 
         eqn_list = checkEquation(eqn_list, *self._getListOfVariablesDict())
         eqn_list = eqn_list if hasattr(eqn_list, '__iter__') else [eqn_list]
@@ -1089,7 +1086,7 @@ class BaseOdeModel(object):
 
         n = self.num_pure_transitions if pureTransitions else self.num_transitions
 
-        all_transition = list() 
+        all_transition = list()
         for j in range(n):
             if j < self.num_pure_transitions:
                 all_transition.append(self._transitionList[j])
@@ -1122,39 +1119,39 @@ class BaseOdeModel(object):
     #
     ########################################################################
 
-    def _extractParamIndex(self, inputStr):
-        if inputStr in self._paramDict:
-            return self._paramList.index(self._paramDict[inputStr])
+    def _extractParamIndex(self, input_str):
+        if input_str in self._paramDict:
+            return self._paramList.index(self._paramDict[input_str])
         else:
-            raise InputError("Input parameter: " +inputStr+ " does not exist")
+            raise InputError("Input parameter: %s does not exist" % input_str)
 
-    def _extractParamSymbol(self, inputStr):
-        if isinstance(inputStr, ODEVariable):
-            inputStr = inputStr.ID
+    def _extractParamSymbol(self, input_str):
+        if isinstance(input_str, ODEVariable):
+            input_str = input_str.ID
 
-        if inputStr in self._paramDict:
-            return self._paramDict[inputStr]
+        if input_str in self._paramDict:
+            return self._paramDict[input_str]
         else:
-            raise InputError("Input parameter: "+inputStr+ " does not exist")
+            raise InputError("Input parameter: %s does not exist" % input_str)
 
-    def _extractStateIndex(self, inputStr):
-        if inputStr is None:
+    def _extractStateIndex(self, input_str):
+        if input_str is None:
             return list()
         else:
-            if isinstance(inputStr, (str, sympy.Symbol)):
-                inputStr = [inputStr] # make this an iterable
+            if isinstance(input_str, (str, sympy.Symbol)):
+                input_str = [input_str] # make this an iterable
 
-            if hasattr(inputStr, '__iter__'):
-                return [self._extractStateIndexSingle(i) for i in inputStr]
+            if hasattr(input_str, '__iter__'):
+                return [self._extractStateIndexSingle(i) for i in input_str]
             else:
                 raise Exception("Input must be a string or an iterable " +
                                 "object of string")
 
-    def _extractStateIndexSingle(self, inputStr):
-        if isinstance(inputStr, ODEVariable):
-            return self._stateList.index(inputStr)
+    def _extractStateIndexSingle(self, input_str):
+        if isinstance(input_str, ODEVariable):
+            return self._stateList.index(input_str)
         else:
-            sym_name = self._extractStateSymbol(inputStr)
+            sym_name = self._extractStateSymbol(input_str)
             return self._stateList.index(sym_name)
 
     def _extractStateSymbol(self, input_str):
@@ -1179,7 +1176,7 @@ class BaseOdeModel(object):
                     raise InputError("Cannot find input state, input %s " +
                                      "likely to be a vector" % symName)
             else:
-                raise InputError("Input state: " + input_str + " does not exist")
+                raise InputError("Input state: %s does not exist" % input_str)
 
     def _extractUpperTriangle(self, A, nrow=None, ncol=None):
         '''

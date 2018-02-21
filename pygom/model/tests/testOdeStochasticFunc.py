@@ -47,7 +47,7 @@ class TestSIRStochasticModel(TestCase):
         odeS.initial_values = (x0, t0)
 
         # now we generate the solutions
-        solutionDiff = odeS.simulateParam(t[1::], 1000) - solutionReference
+        solutionDiff = odeS.simulate_param(t[1::], 1000) - solutionReference
 
         # test :)
         if numpy.any(abs(solutionDiff) >= 0.2):
@@ -95,7 +95,7 @@ class TestSIRStochasticModel(TestCase):
         odeS.initial_values = (x0, t0)
 
         # now we generate the solutions
-        solutionDiff = odeS.simulateParam(t[1::], 1000) - solutionReference
+        solutionDiff = odeS.simulate_param(t[1::], 1000) - solutionReference
 
         # test :)
         if numpy.any(abs(solutionDiff) >= 0.2):
@@ -126,10 +126,10 @@ class TestSIRStochasticModel(TestCase):
         odeS.parameters = [0.5, 1.0/3.0, x0[0]]
         odeS.initial_values = (x0, t[0])
         solution = odeS.integrate(t[1::])
-        odeS.transitionMean(x0, t[0])
-        odeS.transitionVar(x0, t[0])
+        odeS.transition_mean(x0, t[0])
+        odeS.transition_var(x0, t[0])
 
-        odeS.transitionMean(solution[10,:], t[10])
-        odeS.transitionVar(solution[10,:], t[10])
+        odeS.transition_mean(solution[10,:], t[10])
+        odeS.transition_var(solution[10,:], t[10])
 
-        _simX, _simT = odeS.simulateJump(250, 3, full_output=True)
+        _simX, _simT = odeS.simulate_jump(250, 3, full_output=True)
