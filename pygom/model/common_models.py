@@ -5,9 +5,10 @@
 
 """
 
+from collections import OrderedDict
+
 from .transition import TransitionType, Transition
 from .deterministic import DeterministicOde
-from collections import OrderedDict
 
 def SIS(param=None):
     '''

@@ -7,11 +7,11 @@
 """
 
 __all__ = [
-           'asymptotic',
-           'profile',
-           'bootstrap',
-           'geometric'
-           ]
+    'asymptotic',
+    'profile',
+    'bootstrap',
+    'geometric'
+]
 
 import copy
 
@@ -20,20 +20,20 @@ import numpy as np
 from scipy.integrate import odeint
 from scipy.optimize import leastsq, minimize, root
 
-from .ode_loss import NormalLoss, SquareLoss, PoissonLoss
 from pygom.model._model_errors import EstimateError, InputError
 from pygom.utilR.distn import qchisq, qnorm
+from .ode_loss import NormalLoss, SquareLoss, PoissonLoss
 
 def asymptotic(obj, alpha=0.05, theta=None, lb=None, ub=None):
     '''
     Finds the confidence interval at the :math:`\\alpha` level
-    under the :math:`\mathcal{X}^{2}` assumption for the
+    under the :math:`\\mathcal{X}^{2}` assumption for the
     likelihood
 
     Parameters
     ----------
     obj: ode object
-        an object initialized from :class:`OperateOdeModel`
+        an object initialized from :class:`BaseLoss`
     alpha: numeric, optional
         confidence level, :math:`0 < \\alpha < 1`.  Defaults to 0.05.
     theta: array like, optional
@@ -51,7 +51,7 @@ def asymptotic(obj, alpha=0.05, theta=None, lb=None, ub=None):
     u: array like
         upper confidence interval
     '''
-    
+
     alpha, theta, lb, ub = _checkInput(obj, alpha, theta, lb, ub)
 
     H = obj.hessian(theta)
@@ -76,7 +76,7 @@ def bootstrap(obj, alpha=0.05, theta=None, lb=None, ub=None,
     Parameters
     ----------
     obj: ode object
-        an object initialized from :class:`OperateOdeModel`
+        an object initialized from :class:`BaseLoss`
     alpha: numeric, optional
         confidence level, :math:`0 < \\alpha < 1`. Defaults to 0.05.
     theta: array like, optional
@@ -103,7 +103,7 @@ def bootstrap(obj, alpha=0.05, theta=None, lb=None, ub=None,
     yhat = obj._getSolution(theta)
     if len(yhat.shape) > 1:
         if yhat.shape[1] == 1: yhat = yhat.flatten()
-    
+
     r = obj.residual()
     p = len(theta)
     if len(r) == r.size:
@@ -127,7 +127,7 @@ def bootstrap(obj, alpha=0.05, theta=None, lb=None, ub=None,
                 obj2._y[:,j] += np.random.choice(r[:,j], n)
         else:
             obj2._y += np.random.choice(r, n)
-            
+
         obj2._lossObj = obj2._setLossType()
 
         try:
@@ -153,7 +153,7 @@ def bootstrap(obj, alpha=0.05, theta=None, lb=None, ub=None,
         return xLB, xUB, setTheta
     else:
         return xLB, xUB
-    
+
 def geometric(obj, alpha=0.05, theta=None,
               method='jtj', geometry='o',
               full_output=False):
@@ -164,7 +164,7 @@ def geometric(obj, alpha=0.05, theta=None,
     Parameters
     ----------
     obj: ode object
-        an object initialized from :class:`OperateOdeModel`
+        an object initialized from :class:`BaseLoss`
     alpha: numeric
         confidence level, :math:`0 < \\alpha < 1`
     theta: array like, optional
@@ -174,10 +174,10 @@ def geometric(obj, alpha=0.05, theta=None,
         construction of the covariance matrix.  jtj is the :math:`J^{\\top}`
         where :math:`J` is the Jacobian of the ode.  'hessian' is the hessian
         of the ode while 'fisher' is the fisher information found by
-        :math:`cov(\\nabla_{\\theta}\mathcal{L})`.
+        :math:`cov(\\nabla_{\\theta}\\mathcal{L})`.
     geometry: string
         the two types of geometry defined in [Moolgavkar1987]_. c geometry uses the
-        covariance at the maximum likelihood estimate :math:`\hat{\\theta}`. 
+        covariance at the maximum likelihood estimate :math:`\\hat{\\theta}`.
         The 'o' geometry is the covariance defined at point :math:`\\theta`.
     full_output: bool, optional
         If True then both the l_path and u_path will be outputted, else only the
@@ -190,30 +190,30 @@ def geometric(obj, alpha=0.05, theta=None,
     u: array like
         upper confidence interval
     l_path: list
-        path from :math:`\hat{\\theta}` to the lower :math:`1 - \\alpha/2` point
+        path from :math:`\\hat{\\theta}` to the lower :math:`1 - \\alpha/2` point
         for all parameters
     u_path: list
         same as l_path but for the upper confidence interval
-        
+
     '''
     alpha, theta, lb, ub = _checkInput(obj, alpha, theta, None, None)
 
     p = len(theta)
     xU, xL = np.zeros(p), np.zeros(p)
     xLList, xUList = [], []
-    
+
     for i in range(p):
         dfFunc = _geometricOde(obj, alpha, theta, i, method, geometry)
         solutionU = odeint(dfFunc, theta, np.linspace(0, 1, 101))
         solutionL = odeint(dfFunc, theta, np.linspace(0, -1, 101))
-        
+
         if full_output:
             xUList.append(solutionU.copy())
             xLList.append(solutionL.copy())
 
         xU[i] = solutionU[-1][i]
         xL[i] = solutionL[-1][i]
-        
+
     if full_output:
         return xL, xU, xLList, xUList
     else:
@@ -265,7 +265,7 @@ def profile(obj, alpha, theta=None, lb=None, ub=None, full_output=False):
     Parameters
     ----------
     obj: ode object
-        an object initialized from :class:`OperateOdeModel`
+        an object initialized from :class:`BaseLoss`
     alpha: numeric
         confidence level, :math:`0 < \\alpha < 1`
     theta: array like, optional
@@ -300,15 +300,15 @@ def profile(obj, alpha, theta=None, lb=None, ub=None, full_output=False):
         funcF = _profileF(theta, i, alpha, obj)
         funcFgradient = _profileFgradient(theta, i, alpha, obj)
         funcFhessian = _profileFhessian(theta, i, alpha, obj)
-        
+
         lbT = np.ones(p)*-np.Inf if lb is None else lb.copy()
         ubT = np.ones(p)*np.Inf if ub is None else ub.copy()
 
         ubT[i] = theta[i]
 
         try:
-            xTempL, outL = _profileObtainViaNuisance(xhatL, theta, i, alpha, obj, 
-                                                     lbT, ubT,
+            xTempL, outL = _profileObtainViaNuisance(xhatL, theta, i, alpha,
+                                                     obj, lbT, ubT,
                                                      obtainLB=True,
                                                      full_output=True)
         except EstimateError:
@@ -324,8 +324,8 @@ def profile(obj, alpha, theta=None, lb=None, ub=None, full_output=False):
         lbT[i] = theta[i]
 
         try:
-            xTempU, outU = _profileObtainViaNuisance(xhatU, theta, i, alpha, obj, 
-                                                     lbT, ubT,
+            xTempU, outU = _profileObtainViaNuisance(xhatU, theta, i, alpha,
+                                                     obj, lbT, ubT,
                                                      obtainLB=False,
                                                      full_output=True)
         except EstimateError:
@@ -387,7 +387,7 @@ def _profileGetInitialValues(theta, i, alpha, obj, approx=True,
 def _profileOptimizeNuisance(theta, i, obj, lb, ub):
     '''
     Find the minimized nuisance parameters given the parameter of interest.
-    
+
     Parameters
     ----------
     theta: array like, optional
@@ -395,12 +395,12 @@ def _profileOptimizeNuisance(theta, i, obj, lb, ub):
     i: int
         index of the parameter of interest
     obj: ode object
-        an object initialized from :class:`OperateOdeModel`
+        an object initialized from :class:`BaseLoss`
     lb: array like, optional
         expected lower bound
     ub: array like, optional
         expected upper bound
-    
+
     Returns
     -------
     s: array like
@@ -420,7 +420,7 @@ def _profileOptimizeNuisance(theta, i, obj, lb, ub):
         raise Exception("Loss type not supported")
 
     if obj._targetParam is None:
-        targetParam2 = obj._ode.getParamList()
+        targetParam2 = obj._ode.param_list()
     else:
         targetParam2 = obj._targetParam
 
@@ -428,7 +428,7 @@ def _profileOptimizeNuisance(theta, i, obj, lb, ub):
     # for i in activeIndex:
     #     targetParam3.append(targetParam2[i])
     targetParam3 = [targetParam2[i] for i in activeIndex]
-        
+
     ode2 = copy.deepcopy(obj._ode)
     ode2.setParameters(theta)
     objSIR2 = lossF(copy.deepcopy(obj._theta[activeIndex]),
@@ -441,14 +441,14 @@ def _profileOptimizeNuisance(theta, i, obj, lb, ub):
                     copy.deepcopy(obj._stateWeight),
                     targetParam3,
                     copy.deepcopy(obj._targetState))
-    
-    boundsT = np.reshape(np.append(lb, ub), (len(lb),2), 'F')
-    
+
+    boundsT = np.reshape(np.append(lb, ub), (len(lb), 2), 'F')
+
     res = minimize(fun=objSIR2.cost, jac=objSIR2.gradient,
                    x0=obj._theta[activeIndex],
                    bounds=boundsT[activeIndex,:],
                    method='L-BFGS-B') # , callback=objSIR2.thetaCallBack)
-    
+
     return res['x']
 
 def _profileObtainViaNuisance(theta, xhat, i, alpha, obj, lb, ub,
@@ -461,14 +461,14 @@ def _profileObtainViaNuisance(theta, xhat, i, alpha, obj, lb, ub,
     xhatT = theta.copy()
     funcF = _profileF(xhat, i, alpha, obj)
     funcG = _profileG(xhat, i, alpha, obj)
-    
+
     lbT, ubT = lb.copy(), ub.copy()
     # ubT = ub.copy()
-    
+
     p = len(theta)
     setIndex = set(range(p))
     activeIndex = list(setIndex - set([i]))
-    
+
     # note that the bounds here needs to be reversed.
     if obtainLB:
         ubT[activeIndex] = xhat[activeIndex]
@@ -476,12 +476,12 @@ def _profileObtainViaNuisance(theta, xhat, i, alpha, obj, lb, ub,
         lbT[activeIndex] = xhat[activeIndex]
 
     # define the corresponding objective function that minimizes the nuisance
-    # parameters internally.    
+    # parameters internally.
     def ABC1(beta):
         xhatT[i] = beta
         xhatT[activeIndex] = _profileOptimizeNuisance(xhatT, i, obj, lbT, ubT)
         return funcG(xhatT)[i]
-    
+
     def ABCJac(beta):
         xhatT[0] = beta
         xhatT[activeIndex] = _profileOptimizeNuisance(xhatT, 0, obj, lb, ub)
@@ -492,10 +492,10 @@ def _profileObtainViaNuisance(theta, xhat, i, alpha, obj, lb, ub,
         res = root(ABC1, xhatT[i])
     except Exception:
         raise EstimateError("Error in using the direct root finder")
-          
+
     ## res1 = root(ABC1,xhatL[0],jac=ABCJac)
     ## res = scipy.optimize.minimize_scalar(ABC,bounds=(?,?))
-    
+
     if res['success'] == True:
         if obtainLB:
             # if we want the lower bound, then the estimate should not
@@ -505,9 +505,9 @@ def _profileObtainViaNuisance(theta, xhat, i, alpha, obj, lb, ub,
         else:
             if obj._theta[i] <= xhat[i]:
                 raise EstimateError("Estimate lower than MLE")
-                
+
         res['method'] = 'Nested Minimization'
-        if full_output == True:
+        if full_output is True:
             return obj._theta.copy(), res
         else:
             return obj._theta.copy()
@@ -580,7 +580,7 @@ def _checkInput(obj, alpha, theta, lb, ub):
         if ub is not None and lb is not None:
             theta = obj.fit(lb + (ub - lb)/2, lb=lb, ub=ub)
         else:
-            raise InputError("Expecting the estimated parameter when box" + 
+            raise InputError("Expecting the estimated parameter when box" +
                              "constraints are not supplied")
 
     return alpha, theta, lb, ub
@@ -611,7 +611,7 @@ def _profileGSecondOrderCorrection(xhat, i, alpha, obj, approx=True):
     of non-linear equations is a, then we return :math:`a + s`
     instead of :math:`G^{-1}a`, i.e. we have incorporated the correction
     into the gradient
-    
+
     Parameters
     ----------
     x: array like
@@ -626,12 +626,12 @@ def _profileGSecondOrderCorrection(xhat, i, alpha, obj, approx=True):
         ode object
     approx: bool, optional
         default is True.
-    
+
     Returns
     -------
     g: array like
         corrected set of non-linear equations
-        
+
     '''
     s = sympy.symbols('s')
     c = obj.cost(xhat) + 0.5*qchisq(1 - alpha, df=1)
@@ -646,7 +646,7 @@ def _profileGSecondOrderCorrection(xhat, i, alpha, obj, approx=True):
             H,output = obj.jtj(x, full_output=True)
         else:
             H, output = obj.hessian(x, full_output=True)
-         
+
         g = output['grad']
         G = H.copy()
         G[i] = g
@@ -658,7 +658,7 @@ def _profileGSecondOrderCorrection(xhat, i, alpha, obj, approx=True):
         # a lot of computation time here
         invG = np.linalg.inv(G)
         v = invG.dot(lvector)
-        
+
         sTemp = v + sympy.Matrix(invG[:,i])*s
         RHS = (sTemp.T*sympy.Matrix(H)*sTemp)[0]
         sRoots = sympy.solve(sympy.Eq(2*s, RHS), s)
@@ -677,7 +677,7 @@ def _profileGSecondOrderCorrection(xhat, i, alpha, obj, approx=True):
             return lvector
         else:
             return lvector
-        
+
     return func
 
 def _profileH(xhat, i, alpha, obj, approx=True):
@@ -686,7 +686,7 @@ def _profileH(xhat, i, alpha, obj, approx=True):
             H, output = obj.jtj(x, full_output=True)
         else:
             H, output = obj.hessian(x, full_output=True)
-        
+
         H[i] = output['grad']
         return H
 
