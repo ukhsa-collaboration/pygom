@@ -12,7 +12,7 @@ __all__ = [
     'Poisson'
     ]
 
-import numpy
+import numpy as np
 
 from pygom.model._model_errors import InitializeError
 from pygom.model.ode_utils import check_array_type
@@ -40,7 +40,7 @@ class Square(object):
 
         if weights is None:
             self._numVar = 0
-            self._w = numpy.ones(self._y.shape)
+            self._w = np.ones(self._y.shape)
         else:
             self._w = check_array_type(weights)
 
@@ -68,7 +68,7 @@ class Square(object):
         '''
         return (self.residual(yhat)**2).sum()
 
-    def diffLoss(self, yhat):
+    def diff_loss(self, yhat):
         '''
         Derivative under square loss.  Assuming that we are solving
         the minimization problem i.e. our objective function is the
@@ -100,7 +100,7 @@ class Square(object):
             either a scalar, vector or matrix depending on the shape of
             of the input yhat
         '''
-        return self._weightedResidual(2*numpy.ones(yhat.shape))
+        return self._weightedResidual(2*np.ones(yhat.shape))
 
     def residual(self, yhat):
         '''
@@ -151,7 +151,7 @@ class Normal(object):
     def __init__(self, y, sigma=1.0):
         err_str = "Standard deviation not of the correct "
         self._y = check_array_type(y)
-        if isinstance(sigma, numpy.ndarray):
+        if isinstance(sigma, np.ndarray):
             if len(sigma.shape) > 1:
                 if 1 in sigma.shape:
                     sigma = sigma.flatten()
@@ -166,7 +166,7 @@ class Normal(object):
                 else:
                     raise InitializeError(err_str + "size")
         elif sigma is None or sigma == 1.0:
-            self._sigma = numpy.ones(self._y.shape)
+            self._sigma = np.ones(self._y.shape)
         else:
             raise InitializeError(err_str + "type")
 
@@ -194,7 +194,7 @@ class Normal(object):
                 yhat = yhat.ravel()
         return (-dnorm(self._y, yhat, self._sigma, True)).sum()
 
-    def diffLoss(self, yhat):
+    def diff_loss(self, yhat):
         '''
         Derivative of the loss function which is
         :math:`\\sigma^{-1}(y - \\hat{y})`
@@ -227,7 +227,7 @@ class Normal(object):
         s: array like
             inverse of the variance with shape = yhat.shape
         '''
-        return numpy.ones(yhat.shape)/self._sigma2
+        return np.ones(yhat.shape)/self._sigma2
 
     def residual(self, yhat):
         '''
@@ -289,7 +289,7 @@ class Poisson(object):
         # note that we input the standard deviation here
         return (-dpois(self._y, yhat, True)).sum()
 
-    def diffLoss(self, yhat):
+    def diff_loss(self, yhat):
         '''
         Derivative of the loss function, :math:`1 - y\\hat{y}^{-1}`
 

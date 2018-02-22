@@ -10,13 +10,13 @@
 
 #__all__ = [] # don't really want to export this
 
-import copy, functools
+import copy
+import functools
+
+import numpy as np
 import scipy.sparse
 from scipy.interpolate import LSQUnivariateSpline
 from scipy.optimize import minimize
-
-import numpy as np
-# import gc
 
 from pygom.loss.loss_type import Square
 from pygom.model import ode_utils
@@ -31,7 +31,7 @@ class BaseLoss(object):
     ----------
     theta: array like
         input value of the parameters
-    ode: :class:`OperateOdeModel`
+    ode: :class:`DeterministicOde`
         the ode class in this package
     x0: numeric
         initial time
@@ -59,7 +59,7 @@ class BaseLoss(object):
 
         ### Execute all the checks first
 
-        # conversion into numpy
+        # conversion into np
         t = ode_utils.check_array_type(t)
         y = ode_utils.check_array_type(y)
 
@@ -91,8 +91,8 @@ class BaseLoss(object):
         # OperateOdeModel will take in the targetParam in a way so that the
         # gradient information is only computed on those targeted instead of
         # computing the full vector before extracting the relevant elements.
-        # Basically, it will require a lot of work to make things sync and that
-        # is too much effort and time which I do not have
+        # Basically, it will require a lot of work to make things sync and
+        # that is too much effort and time which I do not have
         if self._ode.parameters is None:
             if self._ode.num_param != 0:
                 # note that this is necessary because we want to make sure that
@@ -246,7 +246,7 @@ class BaseLoss(object):
             key                meaning
             =================  =================================================
             'resid'            residuals given theta
-            'diffLoss'         derivative of the loss function
+            'diff_loss'         derivative of the loss function
             'gradVec'          gradient vectors
             'adjVec'           adjoint vectors
             'interpolateInfo'  info from integration over the interpolating
@@ -280,7 +280,7 @@ class BaseLoss(object):
                                self._interpolateTime[1::],
                                includeOrigin=True,
                                full_output=full_output,
-                               intName=intName)
+                               method=intName)
 
         if full_output:
             solutionInterpolate = sAndOutInterpolate[0]
@@ -288,8 +288,9 @@ class BaseLoss(object):
         else:
             solutionInterpolate = sAndOutInterpolate
 
-        # holder, assuming that the index/order is kept (and correct) in the list
-        # we perform our interpolation per state and only need the functional form
+        # holder, assuming that the index/order is kept (and correct) in
+        # the list we perform our interpolation per state and only need
+        # the functional form
         interpolateList = list()
         for j in range(self._numState):
             spl = LSQUnivariateSpline(self._interpolateTime.tolist(),
@@ -302,8 +303,10 @@ class BaseLoss(object):
         solution = solutionInterpolate[self._interpolateTimeIndex,:]
 
         if full_output:
-            g, infoDict = self._adjointGivenInterpolation(solution, interpolateList,
-                                                          intName, full_output)
+            g, infoDict = self._adjointGivenInterpolation(solution,
+                                                          interpolateList,
+                                                          intName,
+                                                          full_output)
             infoDict['interpolateInfo'] = outputInterpolate
             infoDict['solInterpolate'] = solutionInterpolate
             return g, infoDict
@@ -328,14 +331,14 @@ class BaseLoss(object):
         self._interpolateTimeIndex = interpolateTimeIndex
 
     def _adjointGivenInterpolation(self, solution, interpolateList,
-                                   intName, full_output=False):
+                                   method, full_output=False):
         '''
         Given an interpolation of the solution of an IVP (for each state).
         Compute the gradient via the adjoint method by a backward integration
         '''
         # find the derivative of the loss function.  they act as events
         # which are the correction to the gradient function through time
-        diffLoss = self._lossObj.diffLoss(solution[:,self._stateIndex])
+        diffLoss = self._lossObj.diff_loss(solution[:,self._stateIndex])
         numDiffLoss = len(diffLoss)
 
         # finding the step size in reverse time
@@ -366,7 +369,7 @@ class BaseLoss(object):
                               self._ode.adjoint_interpolate_jacobian_T,
                               lambdaTemp, tTemp[1], tTemp[0],
                               args=(interpolateList,),
-                              intName=intName).ravel()
+                              method=method).ravel()
 
             # and correction due to the "event" i.e. observed value
             lambdaTemp[self._stateIndex] += diffLoss[-i-1]
@@ -384,7 +387,7 @@ class BaseLoss(object):
             # binding the dictionaries together
             infoDict = dict()
             infoDict['resid'] = self._lossObj.residual(solution[:,self._stateIndex])
-            infoDict['diffLoss'] = diffLoss
+            infoDict['diff_loss'] = diffLoss
             infoDict['gradVec'] = np.array(gradList)
             infoDict['adjVec'] = np.array(adjVecList)
             infoDict['tInterpolate'] = self._interpolateTime
@@ -393,9 +396,10 @@ class BaseLoss(object):
         else:
             return grad[self._getTargetParamIndex()]
 
-    def sensitivity(self, theta=None, full_output=False, intName=None):
+    def sensitivity(self, theta=None, full_output=False, method=None):
         '''
-        Obtain the gradient given input parameters using forward sensitivity method.
+        Obtain the gradient given input parameters using forward
+        sensitivity method.
 
         Parameters
         ----------
@@ -418,9 +422,9 @@ class BaseLoss(object):
 
         '''
 
-        _jac, output = self.jac(theta=theta, full_output=True, intName=intName)
+        _jac, output = self.jac(theta=theta, full_output=True, method=method)
         sens = output['sens']
-        diffLoss = output['diffLoss']
+        diffLoss = output['diff_loss']
         # resid = output['resid']
         grad = self._sensToGradWithoutIndex(sens, diffLoss)
 
@@ -430,7 +434,7 @@ class BaseLoss(object):
         else:
             return grad
 
-    def jac(self, theta=None, full_output=False, intName=None):
+    def jac(self, theta=None, full_output=False, method=None):
         '''
         Obtain the Jacobian of the objective function given input parameters
         using forward sensitivity method.
@@ -441,7 +445,7 @@ class BaseLoss(object):
             input value of the parameters
         full_output: bool, optional
             if additional output is required
-        intName: str, optional
+        method: str, optional
             Choice between lsoda, vode and dopri5, the three integrator
             provided by scipy.  Defaults to lsoda.
 
@@ -458,7 +462,7 @@ class BaseLoss(object):
             'sens'      intermediate values over the original ode and all the
                         sensitivities, by state, parameters
             'resid'     residuals given theta
-            'diffLoss'  derivative of the loss function
+            'diff_loss' derivative of the loss function
             ==========  ========================================================
 
         See also
@@ -472,8 +476,8 @@ class BaseLoss(object):
 
         self._ode.parameters = self._theta
 
-        if intName is None:
-            intName = self._ode._intName
+        if method is None:
+            method = self._ode._intName
 
         # first we want to find out the number of sensitivities required
         # add them to the initial values
@@ -486,7 +490,7 @@ class BaseLoss(object):
                         initialStateSens,
                         self._t[0], self._t[1::],
                         full_output=full_output,
-                        intName=intName)
+                        method=method)
 
         if full_output:
             solutionSens = sAndOutSens[0]
@@ -500,7 +504,7 @@ class BaseLoss(object):
             output = dict()
             i = self._stateIndex
             output['resid'] = self._lossObj.residual(solutionSens[:,i])
-            output['diffLoss'] = self._lossObj.diffLoss(solutionSens[:,i])
+            output['diff_loss'] = self._lossObj.diff_loss(solutionSens[:,i])
             output['sens'] = solutionSens
             for i in solutionOutput:
                 output[i] = solutionOutput[i]
@@ -515,7 +519,7 @@ class BaseLoss(object):
     #
     ############################################################
 
-    def sensitivityIV(self, theta=None, full_output=False, intName=None):
+    def sensitivityIV(self, theta=None, full_output=False, method=None):
         '''
         Obtain the gradient given input parameters (which include the current
         guess of the initial conditions) using forward sensitivity method.
@@ -551,10 +555,10 @@ class BaseLoss(object):
 
         _jacIV, outputIV = self.jacIV(theta=theta,
                                       full_output=True,
-                                      intName=intName)
-        # the most important information! and in fact all the information we need
-        # to calculate the gradient
-        diffLoss = outputIV['diffLoss']
+                                      method=method)
+        # the most important information! and in fact all the information
+        # we need to calculate the gradient
+        diffLoss = outputIV['diff_loss']
         sens = outputIV['sens']
 
         # grad for parameters and the initial values. Then join the two
@@ -567,7 +571,7 @@ class BaseLoss(object):
         else:
             return grad
 
-    def jacIV(self, theta=None, full_output=False, intName=None):
+    def jacIV(self, theta=None, full_output=False, method=None):
         '''
         Obtain the Jacobian of the objective function given input parameters
         which include the current guess of the initial value using forward
@@ -579,9 +583,9 @@ class BaseLoss(object):
             input value of the parameters
         full_output: bool, optional
             if additional output is required
-        intName: str, optional
-            Choice between lsoda, vode and dopri5, the three integrator provided
-            by scipy.  Defaults to lsoda
+        method: str, optional
+            Choice between lsoda, vode and dopri5, the three integrator
+            provided by scipy.  Defaults to lsoda
 
         Returns
         -------
@@ -609,8 +613,8 @@ class BaseLoss(object):
 
         self._ode.parameters = self._theta
 
-        if intName is None:
-            intName = self._ode._intName
+        if method is None:
+            method = self._ode._intName
 
         # first we want to find out the number of sensitivities required
         numSens = self._numState*self.num_param
@@ -624,7 +628,7 @@ class BaseLoss(object):
                           initialStateSens,
                           self._t[0], self._t[1::],
                           full_output=full_output,
-                          intName=intName)
+                          method=method)
 
         if full_output:
             solutionSensIV = sAndOutSensIV[0]
@@ -640,7 +644,7 @@ class BaseLoss(object):
             output = dict()
             i = self._stateIndex
             output['resid'] = self._lossObj.residual(solutionSensIV[:,i])
-            output['diffLoss'] = self._lossObj.diffLoss(solutionSensIV[:,i])
+            output['diff_loss'] = self._lossObj.diff_loss(solutionSensIV[:,i])
             output['sens'] = solutionSensIV
             for i in solutionOutputIV:
                 output[i] = solutionOutputIV[i]
@@ -655,7 +659,7 @@ class BaseLoss(object):
     #
     ############################################################
 
-    def hessian(self, theta=None, full_output=False, intName=None):
+    def hessian(self, theta=None, full_output=False, method=None):
         '''
         Obtain the Hessian using the forward forward sensitivities.
 
@@ -699,8 +703,8 @@ class BaseLoss(object):
 
         self._ode.parameters = self._theta
 
-        if intName is None:
-            intName = self._ode._intName
+        if method is None:
+            method = self._ode._intName
 
         nS = self._numState
         nP = self.num_param
@@ -719,17 +723,18 @@ class BaseLoss(object):
                        initialStateSens,
                        self._t[0], self._t[1::],
                        full_output=full_output,
-                       intName=intName)
+                       method=method)
 
         if full_output:
             solutionAll = sAndOutAll[0]
             solutionOutput = sAndOutAll[1]
         else:
             solutionAll = sAndOutAll
-        # the starting index for which the forward forward sensitivities are stored
+        # the starting index for which the forward forward sensitivities
+        # are stored
         baseIndexHess = nS + nS*nP
 
-        diffLoss = self._lossObj.diffLoss(solutionAll[:,self._stateIndex])
+        diffLoss = self._lossObj.diff_loss(solutionAll[:,self._stateIndex])
 
         H = np.zeros((nP, nP))
 
@@ -763,7 +768,7 @@ class BaseLoss(object):
         else:
             return HJTJ
 
-    def jtj(self, theta=None, full_output=False, intName=None):
+    def jtj(self, theta=None, full_output=False, method=None):
         '''
         Obtain the approximation to the Hessian using the inner
         product of the Jacobian.
@@ -800,9 +805,9 @@ class BaseLoss(object):
 
         '''
 
-        _jac, output = self.jac(theta=theta, full_output=True, intName=intName)
+        _jac, output = self.jac(theta=theta, full_output=True, method=method)
         sens = output['sens']
-        diffLoss = output['diffLoss']
+        diffLoss = output['diff_loss']
         JTJ = self._sensToJTJWithoutIndex(sens)
 
         if full_output:
@@ -812,7 +817,7 @@ class BaseLoss(object):
         else:
             return JTJ
 
-    def fisherInformation(self, theta=None, full_output=False, intName=None):
+    def fisher_information(self, theta=None, full_output=False, method=None):
         '''
         Obtain the Fisher information
 
@@ -848,13 +853,13 @@ class BaseLoss(object):
 
         '''
 
-        _jac, output = self.jac(theta=theta, full_output=True, intName=intName)
+        _jac, output = self.jac(theta=theta, full_output=True, method=method)
         sens = output['sens']
         JTJ = self._sensToJTJWithoutIndex(sens, output['resid'])
 
         if full_output:
             sens = output['sens']
-            diffLoss = output['diffLoss']
+            diffLoss = output['diff_loss']
             output['grad'] = self._sensToGradWithoutIndex(sens, diffLoss)
             return JTJ, output
         else:
@@ -875,7 +880,7 @@ class BaseLoss(object):
         ----------
         theta: array like
             input value of the parameters
-        ode: :class:`OperateOdeModel`
+        ode: :class:`DeterministicOde`
             the ode class in this package
         x0: numeric
             initial time
@@ -899,7 +904,7 @@ class BaseLoss(object):
 
         See also
         --------
-        :meth:`diffLoss`
+        :meth:`diff_loss`
 
         '''
         yhat = self._getSolution(theta)
@@ -910,7 +915,7 @@ class BaseLoss(object):
         else:
             return c
 
-    def diffLoss(self, theta=None):
+    def diff_loss(self, theta=None):
         '''
         Find the derivative of the loss function given time points
         and the corresponding observations, with initial conditions
@@ -932,7 +937,7 @@ class BaseLoss(object):
         try:
             # the solution does not include the origin
             solution = self._getSolution(theta)
-            return self._lossObj.diffLoss(solution)
+            return self._lossObj.diff_loss(solution)
         except Exception as e:
             # print(e)
             # print("parameters = " +str(theta))
@@ -1004,7 +1009,7 @@ class BaseLoss(object):
         solution = self._getSolution()
         return self._lossObj.loss(solution)
 
-    def diffLossIV(self, theta=None):
+    def diff_lossIV(self, theta=None):
         '''
         Find the derivative of the loss function w.r.t. the parameters
         given time points and the corresponding observations, with
@@ -1017,12 +1022,12 @@ class BaseLoss(object):
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             an array of result
 
         See also
         --------
-        :meth:`costIV`, :meth:`diffLoss`
+        :meth:`costIV`, :meth:`diff_loss`
 
         '''
         if theta is not None:
@@ -1031,7 +1036,7 @@ class BaseLoss(object):
         try:
             # the solution does not include the origin
             solution = self._getSolution()
-            return self._lossObj.diffLoss(solution)
+            return self._lossObj.diff_loss(solution)
         except Exception as e:
             # print(e)
             # print("parameters = " + str(theta))
@@ -1079,7 +1084,7 @@ class BaseLoss(object):
     #
     ############################################################
 
-    def sensToGrad(self, sens, diffLoss):
+    def sens_to_grad(self, sens, diff_loss):
         '''
         forward sensitivites to the gradient.
 
@@ -1087,7 +1092,7 @@ class BaseLoss(object):
         ----------
         sens: :class:`numpy.ndarray`
             forward sensitivities
-        diffLoss: array like
+        diff_loss: array like
             derivative of the loss function
 
         Returns
@@ -1098,9 +1103,9 @@ class BaseLoss(object):
         # the number of states which we will have residuals for
         numS = len(self._stateName)
 
-        assert isinstance(sens, np.ndarray), "Expecting an numpy.ndarray"
+        assert isinstance(sens, np.ndarray), "Expecting an np.ndarray"
         n,p = sens.shape
-        assert n == len(diffLoss), ("Length of sensitivity must equal to " +
+        assert n == len(diff_loss), ("Length of sensitivity must equal to " +
                                     "the derivative of the loss function")
                             
         # Divide through to obtain the number of parameters we are inferring
@@ -1110,11 +1115,11 @@ class BaseLoss(object):
         for j in range(numOut):
             sens[:,:,j] *= self._stateWeight
 
-        grad = functools.reduce(np.add,map(np.dot, diffLoss, sens)).ravel()
+        grad = functools.reduce(np.add,map(np.dot, diff_loss, sens)).ravel()
 
         return grad
 
-    def sensToJTJ(self, sens, resid=None):
+    def sens_to_jtj(self, sens, resid=None):
         '''
         forward sensitivites to :math:`J^{\\top}J` where :math:`J` is the
         Jacobian. The approximation to the Hessian.
@@ -1131,7 +1136,7 @@ class BaseLoss(object):
             of the Jacobian
         '''
 
-        assert isinstance(sens, np.ndarray), "Expecting an numpy.ndarray"
+        assert isinstance(sens, np.ndarray), "Expecting an np.ndarray"
         # the number of states which we will have residuals for
         numS = len(self._stateName)
         n,p = sens.shape
@@ -1161,14 +1166,14 @@ class BaseLoss(object):
         '''
         Plots the solution of all the states and the observed y values
         '''
-        solution = self._getSolution(allSolution=True)
+        solution = self._getSolution(all_solution=True)
         ode_utils.plot(solution, self._observeT, self._ode._stateList,
                         self._y, self._stateName)
 
     def fit(self, x, lb=None, ub=None, A=None, b=None,
             disp=False, full_output=False):
         '''
-        Find the estimates given the data and an initial guess :math:`x`. 
+        Find the estimates given the data and an initial guess :math:`x`.
         Note that there is no guarantee that the estimation procedure is
         successful.  It is recommended to at least supply box constraints,
         i.e. lower and upper bounds
@@ -1229,7 +1234,7 @@ class BaseLoss(object):
                 return func
 
             for a in A: # is the row vector
-                conList.append({'type':'ineq', 'fun':F(a,x)})
+                conList.append({'type': 'ineq', 'fun': F(a,x)})
 
             method = 'SLSQP'
 
@@ -1257,7 +1262,7 @@ class BaseLoss(object):
     #
     ############################################################
 
-    def _getSolution(self, theta=None, allSolution=False):
+    def _getSolution(self, theta=None, all_solution=False):
         '''
         Find the residuals given time points and the corresponding
         observations, with initial conditions
@@ -1278,8 +1283,8 @@ class BaseLoss(object):
                                               self._x0, self._t0,
                                               self._observeT,
                                               full_output=False,
-                                              intName=self._ode._intName)
-        if allSolution == True:
+                                              method=self._ode._intName)
+        if all_solution:
             return solution
         else:
             return solution[:,self._stateIndex]
@@ -1290,7 +1295,7 @@ class BaseLoss(object):
         Indicies obtained using information defined here
         '''
         indexOut = self._getTargetParamSensIndex()
-        return self.sensToGrad(sens[:,indexOut], diffLoss)
+        return self.sens_to_grad(sens[:,indexOut], diffLoss)
 
     def _sensToGradIVWithoutIndex(self, sens, diffLoss):
         '''
@@ -1298,7 +1303,7 @@ class BaseLoss(object):
         initial conditison
         '''
         indexOut = self._getTargetStateSensIndex()
-        return self.sensToGrad(sens[:,indexOut], diffLoss)
+        return self.sens_to_grad(sens[:,indexOut], diffLoss)
 
     def _sensToJTJWithoutIndex(self, sens, diffLoss=None):
         '''
@@ -1306,7 +1311,7 @@ class BaseLoss(object):
         the Jacobian. The approximation to the Hessian.
         '''
         indexOut = self._getTargetParamSensIndex()
-        return self.sensToJTJ(sens[:,indexOut], diffLoss)
+        return self.sens_to_jtj(sens[:,indexOut], diffLoss)
 
     def _sensToJTJIVWithoutIndex(self, sens, diffLoss=None):
         '''
@@ -1314,7 +1319,7 @@ class BaseLoss(object):
         initial conditison
         '''
         indexOut = self._getTargetStateSensIndex()
-        return self.sensToJTJ(sens[:,indexOut], diffLoss)
+        return self.sens_to_jtj(sens[:,indexOut], diffLoss)
 
 
     ############################################################
@@ -1420,7 +1425,7 @@ class BaseLoss(object):
             # we are expecting the standard case here
             if len(theta) != (self._numState + self.num_param):
                 raise InputError("Expecting a guess of the initial value, " +
-                                 "use diffLoss() " +
+                                 "use diff_loss() " +
                                  "instead for just parameter estimation")
             else:
                 self._setX0(theta[-self._numState:])
@@ -1445,10 +1450,10 @@ class BaseLoss(object):
                 # this mean all the state or without the states
                 if len(theta) == self.num_param:
                     # without the states, obviously using the wrong function call
-                    raise InputError("Input has the same length as the " + 
+                    raise InputError("Input has the same length as the " +
                                      "number of parameters. If the initial " +
-                                     "conditions for the states are not " + 
-                                     "required, use diffLoss() instead")
+                                     "conditions for the states are not " +
+                                     "required, use diff_loss() instead")
                 elif len(theta) == (self._numState + self.num_param):
                     # all the states
                     # begin setting the information

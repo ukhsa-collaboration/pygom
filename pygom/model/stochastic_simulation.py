@@ -5,12 +5,12 @@
 
 """
 
+import numpy as np
+import scipy.stats
+
 from ._model_errors import InputError, SimulationError
 from pygom.utilR.distn import rexp, ppois, rpois, runif
 from pygom.model.ode_utils import check_array_type
-
-import numpy as np
-import scipy.stats
 
 def exact(x0, t0, t1, state_change_mat, transition_func,
           output_time=False, seed=None):
@@ -40,10 +40,10 @@ def exact(x0, t0, t1, state_change_mat, transition_func,
     seed: optional
         represent which type of seed to use.  None or False uses the
         default seed.  When seed is an integer number, it will reset the seed
-        via numpy.random.seed.  When seed=True, then a
-        :class:`numpy.random.RandomState` object will be used for the
+        via np.random.seed.  When seed=True, then a
+        :class:`np.random.RandomState` object will be used for the
         underlying random number generating process. If seed is an object
-        of :class:`numpy.random.RandomState` then it will be used directly
+        of :class:`np.random.RandomState` then it will be used directly
 
 
     Returns
@@ -109,10 +109,10 @@ def hybrid(x0, t0, t1, state_change_mat, reactant_mat,
     seed: optional
         represent which type of seed to use.  None or False uses the
         default seed.  When seed is an integer number, it will reset the seed
-        via numpy.random.seed.  When seed=True, then a
-        :class:`numpy.random.RandomState` object will be used for the
+        via np.random.seed.  When seed=True, then a
+        :class:`np.random.RandomState` object will be used for the
         underlying random number generating process. If seed is an object
-        of :class:`numpy.random.RandomState` then it will be used directly
+        of :class:`np.random.RandomState` then it will be used directly
 
     Returns
     -------
@@ -192,10 +192,10 @@ def cle(x0, t0, t1, state_change_mat, transition_func,
     seed: optional
         represent which type of seed to use.  None or False uses the
         default seed.  When seed is an integer number, it will reset the seed
-        via numpy.random.seed.  When seed=True, then a
-        :class:`numpy.random.RandomState` object will be used for the
+        via np.random.seed.  When seed=True, then a
+        :class:`np.random.RandomState` object will be used for the
         underlying random number generating process. If seed is an object
-        of :class:`numpy.random.RandomState` then it will be used directly
+        of :class:`np.random.RandomState` then it will be used directly
 
     Returns
     -------
@@ -206,7 +206,7 @@ def cle(x0, t0, t1, state_change_mat, transition_func,
     '''
     
     assert isinstance(state_change_mat, np.ndarray), \
-            "state_change_mat should be a numpy array"
+            "state_change_mat should be a np array"
     
     if hasattr(positive, '__iter__'):
         assert len(positive) == len(x0), \
@@ -254,7 +254,7 @@ def sde(x0, t0, t1, drift, diffusion, state_change_mat=None,
     We assume that the input parameter drift and diffusion each gives
     a function that takes in two arguments :math:`(x,t)` and computes
     the drift and diffusion.  If state_change_mat is a
-    :class:`numpy.ndarray` then we assume that a pre-multiplication
+    :class:`np.ndarray` then we assume that a pre-multiplication
     against the drift and diffusion is required.
     
     Parameters
@@ -289,10 +289,10 @@ def sde(x0, t0, t1, drift, diffusion, state_change_mat=None,
     seed: optional
         represent which type of seed to use.  None or False uses the
         default seed.  When seed is an integer number, it will reset the seed
-        via numpy.random.seed.  When seed=True, then a
-        :class:`numpy.random.RandomState` object will be used for the
+        via np.random.seed.  When seed=True, then a
+        :class:`np.random.RandomState` object will be used for the
         underlying random number generating process. If seed is an object
-        of :class:`numpy.random.RandomState` then it will be used directly
+        of :class:`np.random.RandomState` then it will be used directly
 
     Returns
     -------
@@ -304,7 +304,7 @@ def sde(x0, t0, t1, drift, diffusion, state_change_mat=None,
 
     if state_change_mat is not None:
         assert isinstance(state_change_mat, np.ndarray), \
-            "state_change_mat should be a numpy array"
+            "state_change_mat should be a np array"
         p = state_change_mat.shape[1]
     else:
         p = len(drift(x0, t0))
@@ -395,10 +395,10 @@ def firstReaction(x, t, state_change_mat, transition_func, seed=None):
     seed: optional
         represent which type of seed to use.  None or False uses the
         default seed.  When seed is an integer number, it will reset the seed
-        via numpy.random.seed.  When seed=True, then a
-        :class:`numpy.random.RandomState` object will be used for the
+        via np.random.seed.  When seed=True, then a
+        :class:`np.random.RandomState` object will be used for the
         underlying random number generating process. If seed is an
-    object of :class:`numpy.random.RandomState` then it will be used directly
+    object of :class:`np.random.RandomState` then it will be used directly
 
     Returns
     -------

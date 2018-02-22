@@ -8,11 +8,11 @@
 import re
 from functools import reduce
 
+import sympy
+import numpy as np
+
 from .base_ode_model import BaseOdeModel
 from .transition import TransitionType
-
-import sympy
-import numpy
 
 greekLetter = ('alpha','beta','gamma','delta','epsilon','zeta','eta','theta',
                'iota','kappa','lambda','mu','nu','xi','omicron','pi','rho',
@@ -28,7 +28,7 @@ def generateTransitionGraph(odeModel, fileName=None):
         an ode model object
     fileName: str
         location of the file, if none entered, then the default directory is used
-    
+
     Returns
     -------
     dot: graphviz object
@@ -36,14 +36,14 @@ def generateTransitionGraph(odeModel, fileName=None):
     assert isinstance(odeModel, BaseOdeModel), "An ode model object required"
 
     from graphviz import Digraph
-        
+
     if fileName is None:
         dot = Digraph(comment='ode model')
     else:
         dot = Digraph(comment='ode model', filename=fileName)
-        
+
     dot.body.extend(['rankdir=LR'])
-    
+
     param = [str(p) for p in odeModel.getParamList()]
     states = [str(s) for s in odeModel.getStateList()]
 
@@ -52,13 +52,13 @@ def generateTransitionGraph(odeModel, fileName=None):
 
     transition = odeModel.getTransitionList()
     bdList = odeModel.getBirthDeathList()
-    
+
     for transition in (transition + bdList):
         s1 = transition.origin()
         eq = transition.equation()
-        
+
         eq = _makeEquationPretty(eq, param)
-        
+
         tType = transition.transition_type()
         if tType is TransitionType.T:
             s2 = transition.destination()
@@ -123,7 +123,7 @@ def generateDirectedDependencyGraph(odeMatrix, transition=None):
     else:
         assert isinstance(transition, list), "Require a list of transitions"
 
-    B = numpy.zeros((len(odeMatrix), len(transition)))
+    B = np.zeros((len(odeMatrix), len(transition)))
     for i, a in enumerate(odeMatrix):
         for j, transitionTuple in enumerate(transition):
             t1, t2 = transitionTuple
@@ -264,7 +264,7 @@ def _getLeaf(expr, inputDict):
     retain (x**2)
     '''
     t = expr.args
-    tLengths = numpy.array(list(map(_expressionLength, t)))
+    tLengths = np.array(list(map(_expressionLength, t)))
 
     for i, ti in enumerate(t):
         if tLengths[i] == 0:
@@ -283,9 +283,9 @@ def _getExpression(expr, inputDict):
     # print t
 
     # find out the length of the components within this node
-    tLengths = numpy.array(list(map(_expressionLength, t)))
+    tLengths = np.array(list(map(_expressionLength, t)))
     # print(tLengths)
-    if numpy.all(tLengths == 0):
+    if np.all(tLengths == 0):
         # if all components are leafs, then the node is an expression
         inputDict.setdefault(expr, 0)
         inputDict[expr] += 1
@@ -396,7 +396,7 @@ def odeToPureTransition(fx, states, output_remain=False):
     # checking if our decomposition is correct
     fx1 = pureTransitionToOde(A)
     diffOde = sympy.simplify(fx - fx1)
-    if numpy.all(numpy.array(map(lambda x: x == 0, diffOde)) == True):
+    if np.all(np.array(map(lambda x: x == 0, diffOde)) == True):
         if output_remain:
             return A, remainTermList
         else:

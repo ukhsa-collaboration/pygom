@@ -12,7 +12,7 @@ import copy
 import io
 
 # import sympy.core.numbers
-import numpy
+import numpy as np
 import sympy
 import scipy.linalg
 import matplotlib.image as mpimg
@@ -208,7 +208,7 @@ class DeterministicOde(BaseOdeModel):
         '''
         Prints the ode in symbolic form onto the screen/console in actual
         symbols rather than the word of the symbol.
-        
+
         Parameters
         ----------
         latex_output: bool, optional
@@ -324,13 +324,13 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
         t: double
             The current time
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             output of the same length as the ode
 
         '''
@@ -355,11 +355,11 @@ class DeterministicOde(BaseOdeModel):
             The current time
         state: array like
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
+        :class:`np.matrix` or :class:`mpmath.matrix`
             output of the same length as the ode.
 
         Notes
@@ -395,18 +395,18 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
         t: double
             The current time
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             eigenvalues of the system given input
 
         '''
         e = self.jacobian_eigenvalue(state, t)
-        return numpy.any(e > 0)
+        return np.any(e > 0)
 
     def jacobian_eigenvalue(self, state=None, t=None):
         '''
@@ -417,7 +417,7 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
         t: double
             The current time
 
@@ -444,13 +444,13 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
         t: double
             The current time
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             Matrix of dimension [number of state x number of state]
 
         '''
@@ -513,11 +513,11 @@ class DeterministicOde(BaseOdeModel):
             The current time
         state: array list
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
+        :class:`np.matrix` or :class:`mpmath.matrix`
             Matrix of dimension [number of state x number of state]
 
         Notes
@@ -555,13 +555,13 @@ class DeterministicOde(BaseOdeModel):
         state_param: array like
             The current numerical value for the states as
             well as the sensitivities, which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
         t: double
             The current time
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             Matrix of dimension [number of state *
             number of parameters x number of state]
 
@@ -592,11 +592,11 @@ class DeterministicOde(BaseOdeModel):
             The current time
         state: array list
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
+        :class:`np.matrix` or :class:`mpmath.matrix`
             Matrix of dimension [number of state x number of state]
 
         Notes
@@ -616,7 +616,7 @@ class DeterministicOde(BaseOdeModel):
         # basically, some magic
         # don't ask me what is actually going on here, I did it
         # while having my wizard hat on
-        return(numpy.reshape(self.diff_jacobian(state, time).dot(
+        return(np.reshape(self.diff_jacobian(state, time).dot(
             self._SAUtil.vecToMatSens(sens)).transpose(), (nS*nP, nS)))
 
     ############################## derivative of jacobian
@@ -629,13 +629,13 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
         t: double
             The current time
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             Matrix of dimension [number of state x number of state]
 
         '''
@@ -707,11 +707,11 @@ class DeterministicOde(BaseOdeModel):
             The current time
         state: array list
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
+        :class:`np.matrix` or :class:`mpmath.matrix`
             Matrix of dimension [number of state x number of state]
 
         Notes
@@ -780,13 +780,13 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
         t: numeric
             The current time
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             Matrix of dimension [number of state x number of parameters]
 
         """
@@ -811,11 +811,11 @@ class DeterministicOde(BaseOdeModel):
             The current time
         state: array list
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
+        :class:`np.matrix` or :class:`mpmath.matrix`
             Matrix of dimension [number of state x number of state]
 
         Notes
@@ -885,13 +885,13 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
         t: numeric
             The current time
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             Matrix of dimension [number of state x number of parameters]
 
         See also
@@ -921,11 +921,11 @@ class DeterministicOde(BaseOdeModel):
             The current time
         state: array list
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
+        :class:`np.matrix` or :class:`mpmath.matrix`
             Matrix of dimension [number of state x number of state]
 
         Notes
@@ -996,7 +996,7 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
         t: double
             The current time
 
@@ -1009,7 +1009,7 @@ class DeterministicOde(BaseOdeModel):
 
         """
         A = self.eval_hessian(state=state, time=time)
-        return [numpy.array(H, float) for H in A]
+        return [np.array(H, float) for H in A]
 
     def eval_hessian(self, parameters=None, time=None, state=None):
         '''
@@ -1024,7 +1024,7 @@ class DeterministicOde(BaseOdeModel):
             The current time
         state: array list
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
 
         Returns
         -------
@@ -1095,14 +1095,14 @@ class DeterministicOde(BaseOdeModel):
             The current time
         state: array like
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
         by_state: bool
             how we want the output to be arranged.  Default is True so
             that we have a block diagonal structure
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             f(s)
 
         """
@@ -1111,7 +1111,7 @@ class DeterministicOde(BaseOdeModel):
         # S = \nabla_{time} \frac{\partial State}{\partial Parameters}
         # rearrange the input if required
         if by_state:
-            S = numpy.reshape(sens, (self.num_state, self.num_param))
+            S = np.reshape(sens, (self.num_state, self.num_param))
         else:
             S = self._SAUtil.vecToMatSens(sens)
 
@@ -1130,7 +1130,7 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         S: array like
-            Which should be :class:`numpy.ndarray`.
+            Which should be :class:`np.ndarray`.
             The starting sensitivity of size [number of state x number of
             parameters].  Which are normally zero or one,
             depending on whether the initial conditions are also variables.
@@ -1138,14 +1138,14 @@ class DeterministicOde(BaseOdeModel):
             The current time
         state: array like
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
         by_state: bool
             how we want the output to be arranged.  Default is True so
             that we have a block diagonal structure
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             f(s)
 
         Notes
@@ -1163,10 +1163,10 @@ class DeterministicOde(BaseOdeModel):
         # where G is the gradient
         J = self.jacobian(state, t)
         G = self.grad(state, t)
-        A = numpy.dot(J, S) + G
+        A = np.dot(J, S) + G
 
         if by_state:
-            return numpy.reshape(A, self.num_state*self.num_param)
+            return np.reshape(A, self.num_state*self.num_param)
         else:
             return self._SAUtil.matToVecSens(A)
 
@@ -1193,7 +1193,7 @@ class DeterministicOde(BaseOdeModel):
         -------
         :class:`list`
             concatenation of 2 element. First contains the ode, second the
-            sensitivity. Both are of type :class:`numpy.ndarray`
+            sensitivity. Both are of type :class:`np.ndarray`
 
         See Also
         --------
@@ -1214,7 +1214,7 @@ class DeterministicOde(BaseOdeModel):
 
         out1 = self.ode(state, t)
         out2 = self.sensitivity(sens, t, state, by_state)
-        return numpy.append(out1, out2)
+        return np.append(out1, out2)
 
     def ode_and_sensitivity_T(self, t, state_param, by_state=False):
         '''
@@ -1242,7 +1242,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             output of a square matrix of size: number of ode + 1 times number
             of parameters
 
@@ -1265,14 +1265,14 @@ class DeterministicOde(BaseOdeModel):
         # Note that none of the ode integrator in scipy allow a sparse Jacobian
         # matrix.  All of them accept a banded matrix in packed format but not
         # an actual sparse, or specifying the number of bands.
-        outJ = numpy.kron(numpy.eye(self.num_param), J)
+        outJ = np.kron(np.eye(self.num_param), J)
         # Jacobian of the gradient
         GJ = self.grad_jacobian(state, t)
         # and now we add the gradient
         sensJacobianOfState = GJ + self.sens_jacobian_state(state_param, t)
 
         if by_state:
-            arrangeVector = numpy.zeros(self.num_state * self.num_param)
+            arrangeVector = np.zeros(self.num_state * self.num_param)
             k = 0
             for j in range(0, self.num_param):
                 for i in range(0, self.num_state):
@@ -1282,14 +1282,14 @@ class DeterministicOde(BaseOdeModel):
                         arrangeVector[k] = (i*(self.num_state - 1)) + j
                     k += 1
 
-            outJ = outJ[numpy.array(arrangeVector,int),:]
-            idx = numpy.array(arrangeVector, int)
+            outJ = outJ[np.array(arrangeVector,int),:]
+            idx = np.array(arrangeVector, int)
             sensJacobianOfState = sensJacobianOfState[idx,:]
         # The Jacobian of the ode, then the sensitivities w.r.t state and
         # the sensitivities. In block form.  Theoretically, only the diagonal
         # blocks are important but we output the full matrix for completeness
-        return numpy.asarray(numpy.bmat([
-            [J, numpy.zeros((self.num_state, self.num_state*self.num_param))],
+        return np.asarray(np.bmat([
+            [J, np.zeros((self.num_state, self.num_state*self.num_param))],
             [sensJacobianOfState, outJ]
         ]))
 
@@ -1326,11 +1326,11 @@ class DeterministicOde(BaseOdeModel):
             The current time
         state: array like
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             output of the same length as the ode
 
         """
@@ -1342,7 +1342,7 @@ class DeterministicOde(BaseOdeModel):
         sens = sensIV[:(nS*nP)]
         S = self._SAUtil.vecToMatSens(sens)
 
-        IV = numpy.reshape(sensIV[-(nS*nS):], (nS, nS), 'F')
+        IV = np.reshape(sensIV[-(nS*nS):], (nS, nS), 'F')
 
         return self.eval_sensitivityIV(S=S, IV=IV, t=t, state=state)
 
@@ -1360,7 +1360,7 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         S: array like
-            Which should be :class:`numpy.ndarray`.
+            Which should be :class:`np.ndarray`.
             The starting sensitivity of size [number of state x number of
             parameters].  Which are normallly zero or one,
             depending on whether the initial conditions are also variables.
@@ -1370,11 +1370,11 @@ class DeterministicOde(BaseOdeModel):
             The current time
         state: array like
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             :math:`f(s(x,\\theta))` and :math:`f(s(x_{0}))`
 
         Notes
@@ -1396,10 +1396,10 @@ class DeterministicOde(BaseOdeModel):
 
         J = self.jacobian(state, t)
         G = self.grad(state, t)
-        A = numpy.dot(J, S) + G
+        A = np.dot(J, S) + G
 
         # and jacobian * sensitivities of the initial condition
-        B = numpy.dot(J, IV)
+        B = np.dot(J, IV)
 
         # we want to output by parameters
         return self._SAUtil.matToVecSens(A), B.flatten('F')
@@ -1423,7 +1423,7 @@ class DeterministicOde(BaseOdeModel):
             concatenation of 3 element. First contains the ode, second the
             sensitivity, then the sensitivity of the initial value.  All
             of them are of type
-            :class:`numpy.ndarray`
+            :class:`np.ndarray`
 
         See Also
         --------
@@ -1442,7 +1442,7 @@ class DeterministicOde(BaseOdeModel):
         # separate evaluation
         out1 = self.ode(state,t)
         out2,out3 = self.sensitivityIV(sensIV, t, state)
-        return numpy.append(numpy.append(out1, out2), out3)
+        return np.append(np.append(out1, out2), out3)
 
     def ode_and_sensitivityIV_T(self, t, state_param):
         '''
@@ -1470,7 +1470,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             output of a square matrix of size: number of ode + 1 times number
             of parameters
 
@@ -1492,18 +1492,18 @@ class DeterministicOde(BaseOdeModel):
 
         # now the jacobian of the state vs initial value
         DJ = self.diff_jacobian(state, t)
-        A = DJ.dot(numpy.reshape(state_param[(nS*(nP+1))::], (nS, nS), 'F'))
-        A = numpy.reshape(A.transpose(), (nS*nS, nS))
+        A = DJ.dot(np.reshape(state_param[(nS*(nP+1))::], (nS, nS), 'F'))
+        A = np.reshape(A.transpose(), (nS*nS, nS))
 
         if nP == 0:
-            return numpy.asarray(numpy.bmat([
-                        [J, numpy.zeros((nS, nS*nS))],
-                        [A, numpy.kron(numpy.eye(nS), J)]
+            return np.asarray(np.bmat([
+                        [J, np.zeros((nS, nS*nS))],
+                        [A, np.kron(np.eye(nS), J)]
                         ]))
         else:
             # create the block diagonal jacobian, assuming that whoever is
             # calling this function wants it arranges by state-parameters
-            outJ = numpy.kron(numpy.eye(nP), J)
+            outJ = np.kron(np.eye(nP), J)
 
             # jacobian of the gradient
             GJ = self.grad_jacobian(state, t)
@@ -1512,10 +1512,10 @@ class DeterministicOde(BaseOdeModel):
 
             # The jacobian of the ode, then the sensitivities w.r.t state
             # and the sensitivities. In block form
-            return numpy.asarray(numpy.bmat([
-                [J, numpy.zeros((nS, nS*nP)), numpy.zeros((nS, nS*nS))],
-                [sensJacobianOfState, outJ, numpy.zeros((nS*nP, nS*nS))],
-                [A, numpy.zeros((nS*nS, nS*nP)), numpy.kron(numpy.eye(nS), J)]
+            return np.asarray(np.bmat([
+                [J, np.zeros((nS, nS*nP)), np.zeros((nS, nS*nS))],
+                [sensJacobianOfState, outJ, np.zeros((nS*nP, nS*nS))],
+                [A, np.zeros((nS*nS, nS*nP)), np.kron(np.eye(nS), J)]
             ]))
 
     def ode_and_sensitivityIV_jacobian_T(self, t, state_param):
@@ -1551,7 +1551,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             output of the same length as the ode
         '''
         state_param = [o(t) for o in interpolant]
@@ -1597,7 +1597,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             output of the same length as the ode
 
         Notes
@@ -1610,14 +1610,14 @@ class DeterministicOde(BaseOdeModel):
         J = self.jacobian(state_param, t)
 
         if func is None:
-            return numpy.dot(state, -J)
+            return np.dot(state, -J)
         else:
             return func(state_param, t) - J.transpose().dot(state)
 
     def _adjoint_NoCheck(self, state, t, state_param, func=None):
         J = self._Jacobian_NoCheck(state_param, t)
         if func is None:
-            return numpy.dot(state, -J)
+            return np.dot(state, -J)
         else:
             return func(state_param, t) - J.transpose().dot(state)
 
@@ -1653,7 +1653,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             output of is a two dimensional array of size
             [number of state x number of state]
 
@@ -1700,7 +1700,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             output of is a two dimensional array of size
             [number of state x number of state]
 
@@ -1748,7 +1748,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             :math:`f(x)` of size [number of state *
             (number of parameters * number of parameters)]
 
@@ -1784,7 +1784,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             f(x) of size [number of state *
             (number of parameters * number of parameters)]
 
@@ -1817,7 +1817,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             same size as the state_param input
         '''
 
@@ -1842,7 +1842,7 @@ class DeterministicOde(BaseOdeModel):
         out2 = self.sensitivity(sens, t, state)
         out3 = self.forwardforward(ff, t, state, sens)
 
-        return numpy.append(numpy.append(out1, out2), out3)
+        return np.append(np.append(out1, out2), out3)
 
     def ode_and_forwardforward_T(self, t, state_param):
         '''
@@ -1866,7 +1866,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`numpy.ndarray`
+        :class:`np.ndarray`
             size of (a,a) where a is the length of the
             state_param input
         '''
@@ -1881,8 +1881,8 @@ class DeterministicOde(BaseOdeModel):
         # We are only construct the block diagonal jacobian here
         # instead of the full one unlike some of the other methods within
         # this class
-        outJS = numpy.kron(numpy.eye(self.num_param), J)
-        outJFF = numpy.kron(numpy.eye(self.num_param*self.num_param), J)
+        outJS = np.kron(np.eye(self.num_param), J)
+        outJFF = np.kron(np.eye(self.num_param*self.num_param), J)
         # The jacobian of the ode, then the sensitivities, then the
         # forward forward sensitivities
         return scipy.linalg.block_diag(J, outJS, outJFF)
@@ -1920,13 +1920,13 @@ class DeterministicOde(BaseOdeModel):
         '''
         err_str = "More than one state in the defined system"
 
-        if isinstance(x0, numpy.ndarray):
+        if isinstance(x0, np.ndarray):
             self._x0 = x0
         elif isinstance(x0, (list, tuple)):
-            self._x0 = numpy.array(x0)
+            self._x0 = np.array(x0)
         elif isinstance(x0, (int, float)):
             if self.num_state == 1:
-                self._x0 = numpy.array([x0])
+                self._x0 = np.array([x0])
             else:
                 raise InitializeError(err_str)
         else:
@@ -1969,7 +1969,7 @@ class DeterministicOde(BaseOdeModel):
                 raise InitializeError(err_str + "single value")
         elif isinstance(t0, (list, tuple)):
             if len(t0) == 1:
-                self._t0 = numpy.array(t0[0])
+                self._t0 = np.array(t0[0])
             else:
                 raise InitializeError(err_str + "single value")
         else:
@@ -2060,11 +2060,11 @@ class DeterministicOde(BaseOdeModel):
 
         if ode_utils.is_list_like(t):
             if ode_utils.isNumeric(t[0]):
-                t = numpy.append(self._t0, t)
+                t = np.append(self._t0, t)
             else:
                 raise ArrayError("Expecting a list of numeric value")
         elif ode_utils.isNumeric(t):
-            t = numpy.append(self._t0, numpy.array(t))
+            t = np.append(self._t0, np.array(t))
         else:
             raise ArrayError("Expecting an array like input or a single " +
                              "numeric value")
@@ -2087,7 +2087,7 @@ class DeterministicOde(BaseOdeModel):
         else:
             return self._odeSolution
 
-    def _integrate2(self, t, full_output=True, intName=None):
+    def _integrate2(self, t, full_output=True, method=None):
         '''
         Integrate using :class:`scipy.integrate.ode` underneath
         '''
@@ -2100,7 +2100,7 @@ class DeterministicOde(BaseOdeModel):
                                                t[0], t[1::],
                                                includeOrigin=True,
                                                full_output=True,
-                                               intName=intName)
+                                               method=method)
 
         if full_output:
             return self._odeSolution, self._odeOutput

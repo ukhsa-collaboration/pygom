@@ -10,7 +10,7 @@
 import re
 
 import sympy
-import numpy
+import numpy as np
 from sympy import symbols
 from scipy.stats._distn_infrastructure import rv_frozen
 
@@ -37,7 +37,7 @@ class BaseOdeModel(object):
     paramList: list
         A list of the parameters (string)
     derived_param: list
-        A list of the derived parameters (tuple of (string,string))
+        A list of the derived parameters (tuple of (string, string))
     transition: list
         A list of transition (:class:`.Transition`)
     birth_death: list
@@ -216,11 +216,11 @@ class BaseOdeModel(object):
         if parameters is not None:
             # currently only accept 3 main types here, obviously apart
             # from the dict type below
-            if isinstance(parameters, (list, tuple, numpy.ndarray)):
+            if isinstance(parameters, (list, tuple, np.ndarray)):
                 # length checking, we are assuming here that we always set
                 # the full set of parameters
                 if len(parameters) == self.num_param:
-                    if isinstance(parameters, numpy.ndarray):
+                    if isinstance(parameters, np.ndarray):
                         if parameters.size == self.num_param:
                             parameters = parameters.ravel()
                         else:
@@ -276,7 +276,7 @@ class BaseOdeModel(object):
                         # we always assume that we have a frozen distribution
                         paramOut[f(inParam)] = value.rvs(1)[0]
                         # output of the rv from a frozen distribution is a
-                        # numpy.ndarray even when the number of sample is one
+                        # np.ndarray even when the number of sample is one
                         ## Now we are going make damn sure to record it down!
                         self._stochasticParam = parameters
                     elif isinstance(value, tuple):
@@ -325,9 +325,9 @@ class BaseOdeModel(object):
         #     self._paramValue = dict()
         self._paramValue = [0]*len(self._paramList)
 
-        for k, v in self._parameters.items():
-            index = self.get_param_index(k)
-            self._paramValue[index] = v
+        for key, val in self._parameters.items():
+            index = self.get_param_index(key)
+            self._paramValue[index] = val
 
     @property
     def state(self):
@@ -364,7 +364,7 @@ class BaseOdeModel(object):
                         self._state += [(self._extractStateSymbol(s[0]), s[1])]
                 else:
                     self._state = self._unrollState(state)
-            elif isinstance(state, numpy.ndarray):
+            elif isinstance(state, np.ndarray):
                 self._state = self._unrollState(state)
             elif ode_utils.isNumeric(state):
                 self._state = self._unrollState(state)
@@ -811,9 +811,9 @@ class BaseOdeModel(object):
         return None
 
     def _addDerivedParam(self, name, eqn):
-        varObj = ODEVariable(name, name)
-        fixedEqn = checkEquation(eqn, *self._getListOfVariablesDict())
-        self._addVariable(fixedEqn, varObj,
+        var_obj = ODEVariable(name, name)
+        fixed_eqn = checkEquation(eqn, *self._getListOfVariablesDict())
+        self._addVariable(fixed_eqn, var_obj,
                           self._derivedParamList,
                           self._derivedParamDict)
 
@@ -972,7 +972,7 @@ class BaseOdeModel(object):
                                     0, &otherwise \\right.
         '''
         # declare holder
-        self._lambdaMat = numpy.zeros((self.num_state, self.num_transitions), int)
+        self._lambdaMat = np.zeros((self.num_state, self.num_transitions), int)
 
         _fromList, _toList, eqnList = self._unrollTransitionList(self._getAllTransition())
         for j, eqn in enumerate(eqnList):
@@ -990,7 +990,7 @@ class BaseOdeModel(object):
                              -1, &if transition j cause state i to gain a particle, \\\\
                               0, &otherwise \\right.
         '''
-        self._vMat = numpy.zeros((self.num_state, self.num_transitions), int)
+        self._vMat = np.zeros((self.num_state, self.num_transitions), int)
 
         fromList, toList, eqnList = self._unrollTransitionList(self._getAllTransition())
         for j, _eqn in enumerate(eqnList):
@@ -1021,7 +1021,7 @@ class BaseOdeModel(object):
             self._computeStateChangeMatrix()
 
         nt = self.num_transitions
-        self._GMat = numpy.zeros((nt, nt), int)
+        self._GMat = np.zeros((nt, nt), int)
 
         for i in range(nt):
             for j in range(nt):

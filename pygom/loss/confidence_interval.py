@@ -57,7 +57,7 @@ def asymptotic(obj, alpha=0.05, theta=None, lb=None, ub=None):
     H = obj.hessian(theta)
     if np.any(np.linalg.eig(H)[0] <= 0.0):
         H = obj.jtj(theta)
-        ## H = obj.fisherInformation(theta)
+        ## H = obj.fisher_information(theta)
 
     I = np.linalg.inv(H)
 
@@ -226,7 +226,7 @@ def _geometricOde(obj, alpha, xhat, i, method='jtj', geometry='o'):
     elif method.lower() == 'hessian':
         cov = obj.hessian
     elif method.lower() == 'fisher':
-        cov = obj.fisherInformation
+        cov = obj.fisher_information
     else:
         raise Exception("Input method not recognized")
 
@@ -662,7 +662,7 @@ def _profileGSecondOrderCorrection(xhat, i, alpha, obj, approx=True):
         sTemp = v + sympy.Matrix(invG[:,i])*s
         RHS = (sTemp.T*sympy.Matrix(H)*sTemp)[0]
         sRoots = sympy.solve(sympy.Eq(2*s, RHS), s)
-        abc = sympy.lambdify((),sympy.Matrix(sRoots), 'numpy')
+        abc = sympy.lambdify((),sympy.Matrix(sRoots), 'np')
         sRootsReal = np.asarray(abc()).real
         rootsSize = sRootsReal.size
 

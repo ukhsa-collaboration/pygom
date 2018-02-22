@@ -1,6 +1,6 @@
 from functools import partial
 
-import numpy
+import numpy as np
 from scipy.interpolate import UnivariateSpline
 from scipy.integrate import simps
 from scipy.optimize import leastsq, minimize_scalar
@@ -31,11 +31,11 @@ def getInit(y, t, ode, theta=None, full_output=False):
     '''
     if theta is None:
         p = ode.getNumParam()
-        theta = numpy.ones(p)/2.0
+        theta = np.ones(p)/2.0
 
     f = partial(_fitGivenSmoothness, y, t, ode, theta)
     output = minimize_scalar(f, bounds=(0,10), method='bounded')
-    thetaNew = numpy.array(ode._paramValue) 
+    thetaNew = np.array(ode._paramValue) 
 
     if full_output:
         return thetaNew, output
@@ -47,7 +47,7 @@ def _fitGivenSmoothness(y, t, ode, theta, s):
     # d = ode.getNumState()
 
     splineList = interpolate(y, t, s=s)
-    interval = numpy.linspace(t[1], t[-1], 1000)
+    interval = np.linspace(t[1], t[-1], 1000)
     # xApprox, fxApprox, t = _getApprox(splineList, interval)
 
     # g2 = partial(residualSample, ode, fxApprox, xApprox, interval)
@@ -61,7 +61,7 @@ def _fitGivenSmoothness(y, t, ode, theta, s):
     for spline in splineList:
         loss += spline.get_residual()
     # approximate the integral using fixed points
-    r = numpy.reshape(res[2]['fvec']**2, (len(interval), len(splineList)), 'F')
+    r = np.reshape(res[2]['fvec']**2, (len(interval), len(splineList)), 'F')
 
     return (r.sum())*(interval[1] - interval[0]) + loss
 
@@ -72,7 +72,7 @@ def interpolate(solution, t, s=0):
     
     Parameters
     ----------
-    solution: :class:`numpy.ndarray`
+    solution: :class:`np.ndarray`
         f(t) of the ode with the rows correspond to time
     t: array like
         time
@@ -87,17 +87,17 @@ def interpolate(solution, t, s=0):
 
     n, p = solution.shape
     assert len(t) == n, "Number of observations and time point not equal"
-    # if isinstance(s, (numpy.ndarray, list, tuple)):
+    # if isinstance(s, (np.ndarray, list, tuple)):
     if hasattr(s, '__iter__'):
         if len(s) == 1:
             assert s >= 0, "Smoothing factor must be non-negative"
-            s = numpy.ones(p)*s
+            s = np.ones(p)*s
         else:
             assert len(s) == p, "Number of smoothing factor must be " + \
                 "equal to input solution columns"
     else:
         assert s >= 0, "Smoothing factor must be non-negative"
-        s = numpy.ones(p)*s
+        s = np.ones(p)*s
     
     splineList = [UnivariateSpline(t, solution[:,j], s=s[j]) for j in range(p)]
     
@@ -241,7 +241,7 @@ def costSample(ode, fxApprox, xApprox, t, theta, vec=True, aggregate=True):
             if vec:
                 return integrand
             else: 
-                return numpy.sum(integrand) 
+                return np.sum(integrand) 
         else:
             raise RuntimeError("Aggregation method not recognized")
 
@@ -285,7 +285,7 @@ def residualSample(ode, fxApprox, xApprox, t, theta, vec=True):
     :func:`costSample`
     '''
     ode = ode.setParameters(theta)
-    fx = numpy.zeros(fxApprox.shape)
+    fx = np.zeros(fxApprox.shape)
     for i, x in enumerate(xApprox):
         fx[i] = ode.ode(x, t[i])
 
@@ -329,12 +329,12 @@ def jacSample(ode, fxApprox, xApprox, t, theta, vec=True):
     n = len(fxApprox)
     d = ode.getNumState()
     p = ode.getNumParam()
-    g = numpy.zeros((n, d, p))
+    g = np.zeros((n, d, p))
     for i, x in enumerate(xApprox):
         g[i] = -2*ode.grad(x, t[i])
 
     if vec:
-        return numpy.reshape(g.transpose(1,0,2), (n*d, p))
+        return np.reshape(g.transpose(1,0,2), (n*d, p))
     else:
         return g
 
@@ -366,7 +366,7 @@ def gradSample(ode, fxApprox, xApprox, t, theta,
         
     Returns
     -------
-    g: :class:`numpy.ndarray`
+    g: :class:`np.ndarray`
         gradient of the objective function
         
     See Also
@@ -376,7 +376,7 @@ def gradSample(ode, fxApprox, xApprox, t, theta,
     ode = ode.setParameters(theta)
     r = residualSample(ode, fxApprox, xApprox, t, theta, vec=False)
 
-    g = numpy.zeros((len(fxApprox), ode.getNumParam()))
+    g = np.zeros((len(fxApprox), ode.getNumParam()))
     for i, x in enumerate(xApprox):
         g[i] = -2*ode.grad(x, t[i]).T.dot(r[i])
 
@@ -401,11 +401,11 @@ def _getApprox(splineList, t):
         
     Returns
     -------
-    x: :class:`numpy.ndarray`
+    x: :class:`np.ndarray`
         extrapolation of the function at t
-    fx: :class:`numpy.ndarray`
+    fx: :class:`np.ndarray`
         extrapolation of the first derivative at t
-    t: :class:`numpy.ndarray`
+    t: :class:`np.ndarray`
         the inputted time
         
     See Also
@@ -413,12 +413,12 @@ def _getApprox(splineList, t):
     :func:`costSample`, :func:`jacSample`
     '''  
     if not hasattr(t, '__iter__'):
-        t = numpy.array([t])
+        t = np.array([t])
 
     n = len(t)
     m = len(splineList)
-    xApprox = numpy.zeros((n,m))
-    fxApprox = numpy.zeros((n,m))
+    xApprox = np.zeros((n,m))
+    fxApprox = np.zeros((n,m))
     for j, spline in enumerate(splineList):
         xApprox[:,j] = spline(t)
         fxApprox[:,j] = spline.derivative()(t)

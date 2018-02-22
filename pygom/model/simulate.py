@@ -8,6 +8,11 @@
 
 __all__ = ['SimulateOde']
 
+import numpy as np
+import sympy
+import scipy.stats
+import copy
+
 from .deterministic import DeterministicOde
 from .stochastic_simulation import cle, exact, firstReaction, tauLeap, hybrid
 from .transition import TransitionType, Transition
@@ -16,10 +21,6 @@ from ._model_verification import checkEquation, simplifyEquation
 from . import _ode_composition
 from . import ode_utils
 
-import numpy as np
-import sympy
-import scipy.stats
-import copy
 
 class SimulateOde(DeterministicOde):
     '''
@@ -80,7 +81,7 @@ class SimulateOde(DeterministicOde):
 
         self._transitionVectorCompile = None
         self._transitionMatrixCompile = None
-        
+
         # micro times for jumps
         self._tau = None
         self._tauDict = None
@@ -92,7 +93,7 @@ class SimulateOde(DeterministicOde):
         '''
         Stochastic simulation using an exact method starting from time
         t0 to t1 with the starting state values of x0
-    
+
         Parameters
         ----------
         x: array like
@@ -104,7 +105,7 @@ class SimulateOde(DeterministicOde):
         '''
         return(exact(x0, t0, t1, self._vMat, self.transition_vector,
                      output_time=output_time, seed=True))
-    
+
     def cle(self, x0, t0, t1, output_time=False):
         '''
         Stochastic simulation using the CLE approximation starting from time
@@ -114,7 +115,7 @@ class SimulateOde(DeterministicOde):
         :math:`f(x,t)` while the CLE is defined as
         :math:`dx = x + V*h*f(x,t) + \\sqrt(f(x,t))*Z*\\sqrt(h)`
         with :math:`Z` being standard normal random variables.
-    
+
         Parameters
         ----------
         x: array like
@@ -167,9 +168,9 @@ class SimulateOde(DeterministicOde):
         Returns
         -------
         Y: :class:`numpy.ndarray`
-            of shape (len(t),len(state)), mean of all the simulation
-        Yall: :class:`numpy.ndarray`
-            of shape (iteration,len(t),len(state))
+            of shape (len(t), len(state)), mean of all the simulation
+        Yall: :class:`np.ndarray`
+            of shape (iteration, len(t), len(state))
         '''
 
         # if our parameters not stochastic, then we are going to
@@ -199,7 +200,7 @@ class SimulateOde(DeterministicOde):
                     y_i += [{key:rv.rvs(1)[0]}]
                 y += [y_i]
             # y = [rv.rvs(iteration) for rv in self._stochasticParam.values()]
-            # y = numpy.array(list(zip(*y)))
+            # y = np.array(list(zip(*y)))
             def sim(x):
                 self.parameters = x
                 return self.integrate(t)
@@ -238,18 +239,18 @@ class SimulateOde(DeterministicOde):
             number of iterations you wish to simulate
         exact: bool, optional
             True if exact simulation is desired, defaults to False
-        full_output: bool,optional
-            if we want additional information, simT
+        full_output: bool, optional
+            if we want additional information, sim_T
 
         Returns
         -------
-        simX: list
+        sim_X: list
             of length iteration each with (len(t),len(state)) if t is a vector,
             else it outputs unequal shape that was record of all the jumps
-        simT: list or :class:`numpy.ndarray`
+        sim_T: list or :class:`numpy.ndarray`
             if t is a single value, it outputs unequal shape that was
             record of all the jumps.  if t is a vector, it outputs t so that
-            it is a :class:`numpy.ndarray` instead
+            it is a :class:`np.ndarray` instead
 
         '''
 
@@ -261,7 +262,7 @@ class SimulateOde(DeterministicOde):
         # this determines what type of output we want
         timePoint = False
 
-        if ode_utils.isNumeric(t):#, (int, float, numpy.int64, numpy.float64)):
+        if ode_utils.isNumeric(t):#, (int, float, np.int64, np.float64)):
             finalT = t
         elif isinstance(t, (list, tuple)):
             t = np.array(t)
@@ -343,9 +344,9 @@ class SimulateOde(DeterministicOde):
             self._computeDependencyMatrix()
 
 #         rates = self.transition_vector(x,t)
-#         jumpTimes = numpy.array([self._t0 + rexp(1, r) for r in rates])
+#         jumpTimes = np.array([self._t0 + rexp(1, r) for r in rates])
 #         print rates
-#         print jumpTimes 
+#         print jumpTimes
         # keep jumping, Whoop Whoop (put your hands up!).
         f = firstReaction
         while t < finalT:
@@ -365,10 +366,10 @@ class SimulateOde(DeterministicOde):
                             x, t = x_tmp, t_tmp
                         else:
                             x, t, success = f(x, t, self._vMat,
-                                              self.transition_vector, seed=seed)                            
+                                              self.transition_vector, seed=seed)
                     else:
                         x, t, success = f(x, t, self._vMat,
-                                          self.transition_vector, seed=seed) 
+                                          self.transition_vector, seed=seed)
                 if success:
                     xList.append(x.copy())
                     tList.append(t)
@@ -420,7 +421,7 @@ class SimulateOde(DeterministicOde):
             return self._transitionMatrix
         else:
             return super(SimulateOde, self)._computeTransitionMatrix()
-    
+
     def get_transition_vector(self):
         '''
         Returns the set of transitions in a single vector, transitions
@@ -503,7 +504,7 @@ class SimulateOde(DeterministicOde):
                                               self._transitionMatrix)
 
         return None
-    
+
     def transition_vector(self, state, t):
         '''
         Evaluate the transition vector given state and time
@@ -593,7 +594,7 @@ class SimulateOde(DeterministicOde):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+            :class:`np.ndarray` or :class:`list`
         t: double
             The current time
 
@@ -756,7 +757,7 @@ class SimulateOde(DeterministicOde):
             an array of size M where M is the number of transition
 
         '''
-        return(self.eval_transition_var(time=t, state=state))
+        return self.eval_transition_var(time=t, state=state)
 
     def eval_transition_var(self, parameters=None, time=None, state=None):
         '''
@@ -781,8 +782,8 @@ class SimulateOde(DeterministicOde):
         if self._transitionVarCompile is None or self._hasNewTransition:
             self._computeTransitionMeanVar()
 
-        evalParam = self._getEvalParam(state, time, parameters)
-        return(self._transitionVarCompile(evalParam))
+        eval_param = self._getEvalParam(state, time, parameters)
+        return self._transitionVarCompile(eval_param)
 
     def _computeTransitionJacobian(self):
         if self._GMat is None:
@@ -803,7 +804,7 @@ class SimulateOde(DeterministicOde):
     def _computeTransitionMeanVar(self):
         '''
         This is the mean and variance information that we need
-        for the :math:`\tau`-Leap
+        for the :math:`\\tau`-Leap
         '''
 
         if self._transitionJacobian is None or self._hasNewTransition:
