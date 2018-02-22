@@ -43,11 +43,12 @@ class TestJacobians(TestCase):
             for j in range(0,d):
                 ffTemp = copy.deepcopy(ff0)
                 ffTemp[j] += h
-                J[i,j] = (ode.ode(ffTemp,t[index])[i] - J0[i]) / h
+                J[i,j] = (ode.ode(ffTemp,t[index])[i] - J0[i])/h
 
         JAnalytic = ode.jacobian(ff0, t[index])
-        if numpy.any(abs(J - JAnalytic) >= 1e-4):
-            raise Exception("Test Failed")
+        self.assertTrue(numpy.allclose(J, JAnalytic))
+        # if numpy.any(abs(J - JAnalytic) >= 1e-4):
+        #     raise Exception("Test Failed")
 
 
     def test_SensJacobian(self):
@@ -89,12 +90,14 @@ class TestJacobians(TestCase):
             for j in range(0,d*(p+1)):
                 ffTemp = copy.deepcopy(ff0)
                 ffTemp[j] += h
-                J[i,j] = (ode.ode_and_sensitivity(ffTemp, t[index])[i] - J0[i]) / h
+                J[i,j] = (ode.ode_and_sensitivity(ffTemp, t[index])[i] - J0[i])/h
 
         JAnalytic = ode.ode_and_sensitivity_jacobian(ff0, t[index])
         # JAnalytic = ode.odeAndSensitivityJacobian(ff0,t[index])
-        if numpy.any(abs(J - JAnalytic) >= 1e-4):
-            raise Exception("Test Failed")
+
+        self.assertTrue(numpy.allclose(J, JAnalytic))
+        # if numpy.any(abs(J - JAnalytic) >= 1e-4):
+        #     raise Exception("Test Failed")
 
     def test_HessianJacobian(self):
         '''
@@ -144,7 +147,7 @@ class TestJacobians(TestCase):
                 ffTemp = copy.deepcopy(ff0)
                 #ffTemp[i] += h
                 ffTemp[j] += h
-                J[i,j] = (ode.ode_and_forwardforward(ffTemp, t[index])[i] - J0[i]) / h
+                J[i,j] = (ode.ode_and_forwardforward(ffTemp, t[index])[i] - J0[i])/h
 
         print(J - JAnalytic)
         # Note that the two Jacobian above are not equivalent.  Only block diagonal

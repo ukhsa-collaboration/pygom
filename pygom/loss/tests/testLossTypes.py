@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-import numpy
+import numpy as np
 
 from pygom import common_models, SquareLoss, NormalLoss
 
@@ -12,7 +12,7 @@ class TestLossTypes(TestCase):
         # params
         param_eval = [('a', 0.2), ('b', 0.2),('c', 3.0)]
         # the time points for our observations
-        t = numpy.linspace(0, 20, 30).astype('float64')
+        t = np.linspace(0, 20, 30).astype('float64')
         ode = common_models.FitzHugh(param_eval)
         ode.initial_values = (x0, t[0])
 
@@ -32,21 +32,23 @@ class TestLossTypes(TestCase):
         s1 = 0
         for i in range(2): s1 += ((r[:,i]*w[i])**2).sum()
 
-        objFH1 = SquareLoss(theta, ode, x0, t[0], t[1::], solution[1::,:],
-                   ['V','R'], w)
+        objFH1 = SquareLoss(theta, ode, x0, t[0], t[1::],
+                            solution[1::,:], ['V','R'], w)
 
         # now the weight is a vector
-        w = numpy.random.rand(29, 2)
-        objFH2 = SquareLoss(theta, ode, x0, t[0], t[1::], solution[1::,:],
-                   ['V','R'], w)
+        w = np.random.rand(29, 2)
+        objFH2 = SquareLoss(theta, ode, x0, t[0], t[1::],
+                            solution[1::,:], ['V','R'], w)
 
-        s2 = ((r * numpy.array(w))**2).sum()
+        s2 = ((r * np.array(w))**2).sum()
 
-        if abs(objFH1.cost() - s1) >= 1e-2:
-            raise Exception("Failed!")
+        self.assertTrue(np.allclose(objFH1.cost(), s1))
+        # if abs(objFH1.cost() - s1) >= 1e-2:
+        #     raise Exception("Failed!")
 
-        if abs(objFH2.cost() - s2) >= 1e-2:
-            raise Exception("Failed!")
+        self.assertTrue(np.allclose(objFH2.cost(), s2))
+        # if abs(objFH2.cost() - s2) >= 1e-2:
+        #     raise Exception("Failed!")
 
     def test_FH_Normal(self):
         # initial values
@@ -58,7 +60,7 @@ class TestLossTypes(TestCase):
         ode = common_models.FitzHugh(param_eval)
         ode.initial_values = (x0, t0)
         # the time points for our observations
-        t = numpy.linspace(0, 20, 30).astype('float64')
+        t = np.linspace(0, 20, 30).astype('float64')
         # Standard.  Find the solution which we will be used as "observations later"
         solution, output = ode.integrate(t[1::], full_output=True)
         # initial guess
@@ -72,7 +74,7 @@ class TestLossTypes(TestCase):
                    ['V','R'], w)
 
         # now the weight is a vector
-        w = numpy.random.rand(29, 2)
+        w = np.random.rand(29, 2)
         objFH2 = NormalLoss(theta, ode, x0, t[0], t[1::], solution[1::,:],
                    ['V','R'], w)
 
@@ -86,7 +88,7 @@ class TestLossTypes(TestCase):
         # initial values
         x0 = [-1.0, 1.0]
         # the time points for our observations
-        t = numpy.linspace(0, 20, 30).astype('float64')
+        t = np.linspace(0, 20, 30).astype('float64')
         # params
         param_eval = [('a', 0.2), ('b', 0.2),('c', 3.0)]
 
@@ -103,17 +105,19 @@ class TestLossTypes(TestCase):
         wList.append([-1.])
         wList.append([0])
         wList.append([2.0, 3.0])
-        wList.append(numpy.random.rand(30))
+        wList.append(np.random.rand(30))
 
         for w in wList:
-            try:
-                objFH = SquareLoss(theta, ode, x0, t[0], t[1::], solution[1::,:],
-                                   'R', w)
-            except:
-                totalFail += 1
+            self.assertRaises(AssertionError, SquareLoss, theta, ode, x0,
+                             t[0], t[1::], solution[1::,:], 'R', w)
+        #     try:
+        #         objFH = SquareLoss(theta, ode, x0, t[0], t[1::],
+        #                            solution[1::,:], 'R', w)
+        #     except:
+        #         totalFail += 1
 
-        if totalFail != expectedFail:
-            raise Exception("We passed some of the illegal input...")
+        # if totalFail != expectedFail:
+        #     raise Exception("We passed some of the illegal input...")
 
     def test_FH_Square_2State_Fail(self):
         totalFail = 0
@@ -121,7 +125,7 @@ class TestLossTypes(TestCase):
         # initial values
         x0 = [-1.0, 1.0]
         # the time points for our observations
-        t = numpy.linspace(0, 20, 30).astype('float64')
+        t = np.linspace(0, 20, 30).astype('float64')
         # params
         param_eval = [('a', 0.2), ('b', 0.2),('c', 3.0)]
 
@@ -139,18 +143,20 @@ class TestLossTypes(TestCase):
         wList.append([2.0, 3.0, 4.0])
         wList.append([0.0, 0.0])
         wList.append([1.0, -1.0])
-        wList.append(numpy.random.rand(30))
-        wList.append([numpy.random.rand(30), numpy.random.rand(31)])
-        wList.append([numpy.random.rand(31), numpy.random.rand(31)])
-        wList.append([numpy.random.rand(30), numpy.random.rand(30), numpy.random.rand(30)])
+        wList.append(np.random.rand(30))
+        wList.append([np.random.rand(30), np.random.rand(31)])
+        wList.append([np.random.rand(31), np.random.rand(31)])
+        wList.append([np.random.rand(30), np.random.rand(30), np.random.rand(30)])
 
         for i, w in enumerate(wList):
-            try:
-                objFH = SquareLoss(theta, ode, x0, t[0], t[1::], solution[1::,:],
-                                   ['V','R'], w)
-            except:
-                print(i)
-                totalFail += 1
+            self.assertRaises(AssertionError, SquareLoss, theta, ode, x0,
+                             t[0], t[1::], solution[1::,:], 'R', w)
+        #     try:
+        #         objFH = SquareLoss(theta, ode, x0, t[0], t[1::], solution[1::,:],
+        #                            ['V','R'], w)
+        #     except:
+        #         print(i)
+        #         totalFail += 1
 
-        if totalFail != expectedFail:
-            raise Exception("We passed some of the illegal input...")
+        # if totalFail != expectedFail:
+        #     raise Exception("We passed some of the illegal input...")

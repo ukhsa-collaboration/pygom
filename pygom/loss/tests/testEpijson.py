@@ -14,12 +14,11 @@ class TestEpijson(TestCase):
         data = pkgutil.get_data('pygom', 'data/eg1.json')
         df = epijsonToDataFrame(data)
         y = df.values.ravel()
-        assert np.all(y == np.array([1.,2.,3.,4.,5.,6.])), \
-        "Error reading EpiJSON data"
+        self.assertTrue(np.all(y == np.array([1.,2.,3.,4.,5.,6.])))
 
     def test_initialize_epijson_loss(self):
         data = pkgutil.get_data('pygom', 'data/eg1.json')
         ode = common_models.SIR()
         ode.parameters = [0.5, 0.3]
         obj = EpijsonLoss([0.005, 0.03], ode, data, 'Death', 'R', [300, 2, 0])
-        assert np.allclose(obj.cost(), 10.86559460256), "Error with loss obj"
+        self.assertTrue(np.allclose(obj.cost(), 10.86559460256))

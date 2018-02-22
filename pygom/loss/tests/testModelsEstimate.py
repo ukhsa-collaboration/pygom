@@ -11,7 +11,7 @@ class TestModelEstimate(TestCase):
 
     def test_SIR_Estimate_SquareLoss(self):
         # define the model and parameters
-        ode = common_models.SIR({'beta':0.5,'gamma':1.0/3.0})
+        ode = common_models.SIR({'beta': 0.5, 'gamma': 1.0/3.0})
 
         # the initial state, normalized to zero one
         x0 = [1, 1.27e-6, 0]
@@ -28,7 +28,7 @@ class TestModelEstimate(TestCase):
         sir_obj = SquareLoss(theta, ode, x0, t[0], t[1::],
                              solution[1::,2], 'R')
         sir_obj.cost()
-        sir_obj.gradient()
+        sir_obj.gradient();
         sir_obj.hessian()
 
         # now we go on the real shit
@@ -47,12 +47,13 @@ class TestModelEstimate(TestCase):
                                         bounds=box_bounds)
 
         target = np.array([0.5, 1.0/3.0])
-        if np.any(abs(res_QP['x']-target) >= 1e-2):
-            raise Exception("Failed!")
+        self.assertTrue(np.allclose(res_QP['x'], target, 1e-2, 1e-2))
+#         if np.any(abs(res_QP['x']-target) >= 1e-2):
+#             raise Exception("Failed!")
 
     def test_SIR_Estimate_SquareLoss_Adjoint(self):
         # define the model and parameters
-        ode = common_models.SIR({'beta':0.5,'gamma':1.0/3.0})
+        ode = common_models.SIR({'beta': 0.5, 'gamma': 1.0/3.0})
 
         # the initial state, normalized to zero one
         x0 = [1, 1.27e-6, 0]
@@ -72,19 +73,20 @@ class TestModelEstimate(TestCase):
 
         box_bounds = [(EPSILON, 5),(EPSILON, 5)]
 
-        resQP = scipy.optimize.minimize(fun=sir_obj.cost,
+        res_QP = scipy.optimize.minimize(fun=sir_obj.cost,
                                         jac=sir_obj.adjoint,
                                         x0=theta,
                                         method='SLSQP',
                                         bounds=box_bounds)
 
         target = np.array([0.5, 1.0/3.0])
-        if np.any(abs(resQP['x'] - target) >= 1e-2):
-            raise Exception("Failed!")
+        self.assertTrue(np.allclose(res_QP['x'], target, 1e-2, 1e-2))
+#         if np.any(abs(resQP['x'] - target) >= 1e-2):
+#             raise Exception("Failed!")
 
     def test_SIR_Estimate_NormalLoss(self):
         # define the model and parameters
-        ode = common_models.SIR({'beta':0.5,'gamma':1.0/3.0})
+        ode = common_models.SIR({'beta': 0.5, 'gamma': 1.0/3.0})
 
         # the initial state, normalized to zero one
         x0 = [1, 1.27e-6, 0]
@@ -104,15 +106,16 @@ class TestModelEstimate(TestCase):
 
         box_bounds = [(EPSILON, 5), (EPSILON, 5)]
 
-        resQP = scipy.optimize.minimize(fun=sir_obj.cost,
+        res_QP = scipy.optimize.minimize(fun=sir_obj.cost,
                                         jac=sir_obj.sensitivity,
                                         x0=theta,
                                         method='SLSQP',
                                         bounds=box_bounds)
 
         target = np.array([0.5, 1.0/3.0])
-        if np.any(abs(resQP['x'] - target) >= 1e-2):
-            raise Exception("Failed!")
+        self.assertTrue(np.allclose(res_QP['x'], target, 1e-2, 1e-2))
+#         if np.any(abs(resQP['x'] - target) >= 1e-2):
+#             raise Exception("Failed!")
 
     def test_SIR_Estimate_PoissonLoss_1TargetState(self):
         # initial values
@@ -120,7 +123,7 @@ class TestModelEstimate(TestCase):
         x0 = [N, 3.0, 0.0]
         t = np.linspace(0, 150, 100).astype('float64')
         # params
-        param_eval = [('beta', 0.5), ('gamma', 1.0/3.0),('N', N)]
+        param_eval = [('beta', 0.5), ('gamma', 1.0/3.0), ('N', N)]
 
         state_list = ['S', 'I', 'R']
         param_list = ['beta', 'gamma', 'N']
@@ -140,11 +143,11 @@ class TestModelEstimate(TestCase):
         # Standard.  Find the solution.
         solution = ode.integrate(t[1::])
         # initial value
-        theta = [0.4,0.3]
+        theta = [0.4, 0.3]
 
         sir_obj = PoissonLoss(theta, ode, x0, t[0], t[1::],
                               np.round(solution[1::,2]),
-                              'R', targetParam=['beta','gamma'])
+                              'R', targetParam=['beta', 'gamma'])
 
         # constraints
         EPSILON = np.sqrt(np.finfo(np.float).eps)
@@ -158,8 +161,9 @@ class TestModelEstimate(TestCase):
                                       bounds=box_bounds)
 
         target = np.array([0.5, 1.0/3.0])
-        if np.any(abs(res['x'] - target) >= 1e-2):
-            raise Exception("Failed!")
+        self.assertTrue(np.allclose(res['x'], target))
+        # if np.any(abs(res['x'] - target) >= 1e-2):
+        #     raise Exception("Failed!")
 
     def test_SIR_Estimate_PoissonLoss_2TargetState(self):
         # initial values
@@ -208,16 +212,16 @@ class TestModelEstimate(TestCase):
                                       bounds=box_bounds)
 
         target = np.array([0.5, 1.0/3.0])
-        if np.any(abs(res['x'] - target) >= 1e-2):
-            raise Exception("Failed!")
-
+        self.assertTrue(np.allclose(res['x'], target))
+        # if np.any(abs(res['x'] - target) >= 1e-2):
+        #     raise Exception("Failed!")
 
     def test_FH_Obj(self):
         # initial values
         x0 = [-1.0, 1.0]
         t0 = 0
         # params
-        param_eval = [('a', 0.2), ('b', 0.2),('c', 3.0)]
+        param_eval = [('a', 0.2), ('b', 0.2), ('c', 3.0)]
 
         ode = common_models.FitzHugh(param_eval)
         ode.initial_values = (x0, t0)
@@ -257,13 +261,13 @@ class TestModelEstimate(TestCase):
                                        method='L-BFGS-B')
 
         target = np.array([0.2, 0.2, 3.0])
-        self.assertTrue(np.allclose(target, res['x']))
-        if np.any(abs(target - res['x']) >= 1e-2):
-            raise Exception("Failed!")
+        self.assertTrue(np.allclose(target, res['x'], 1e-2, 1e-2))
+        # if np.any(abs(target - res['x']) >= 1e-2):
+        #     raise Exception("Failed!")
 
-        self.assertTrue(np.allclose(target, res2['x']))
-        if np.any(abs(target - res2['x']) >= 1e-2):
-            raise Exception("Failed!")
+        self.assertTrue(np.allclose(target, res2['x'], 1e-2, 1e-2))
+        # if np.any(abs(target - res2['x']) >= 1e-2):
+        #     raise Exception("Failed!")
 
 
     def test_FH_IV(self):
@@ -302,5 +306,6 @@ class TestModelEstimate(TestCase):
                                       method='L-BFGS-B')
 
         target = np.array([0.2, 0.2, 3.0, -1.0, 1.0])
-        if np.any(abs(target-res['x']) >= 1e-2):
-            raise Exception("Failed!")
+        self.assertTrue(np.allclose(res['x'], target, 1e-2, 1e-2))
+        # if np.any(abs(target-res['x']) >= 1e-2):
+        #     raise Exception("Failed!")

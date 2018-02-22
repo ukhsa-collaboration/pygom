@@ -737,7 +737,7 @@ class SimulateOde(DeterministicOde):
             self._computeTransitionMeanVar()
 
         eval_param = self._getEvalParam(state, time, parameters)
-        return(self._transitionMeanCompile(eval_param))
+        return self._transitionMeanCompile(eval_param)
 
     def transition_var(self, state, t):
         '''

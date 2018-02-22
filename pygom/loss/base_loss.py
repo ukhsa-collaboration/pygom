@@ -1107,7 +1107,7 @@ class BaseLoss(object):
         n,p = sens.shape
         assert n == len(diff_loss), ("Length of sensitivity must equal to " +
                                     "the derivative of the loss function")
-                            
+
         # Divide through to obtain the number of parameters we are inferring
         numOut = int(p/numS) # number of out parameters
 
@@ -1158,7 +1158,7 @@ class BaseLoss(object):
                 J += np.dot(s.T, s)
             else:
                 s1 = s*resid[i].T
-                J += np.dot(s1.T, s1)            
+                J += np.dot(s1.T, s1)
 
         return J
 
@@ -1211,7 +1211,7 @@ class BaseLoss(object):
                 raise InputError("Number of box constraints must equal to " +
                                  "the number of variables")
 
-        boxBounds = np.reshape(np.append(lb,ub), (len(lb),2), 'F')
+        boxBounds = np.reshape(np.append(lb, ub), (len(lb), 2), 'F')
 
         conList = list()
 

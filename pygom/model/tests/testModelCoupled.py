@@ -26,17 +26,21 @@ class TestModelCoupled(TestCase):
         solution4 = self.very_short(n)
         solution5 = self.confused(n)
 
-        if numpy.any((solution1 - solution2) >= 0.001):
-            raise Exception("Solution not match")
+        self.assertTrue(numpy.allclose(solution1, solution2))
+        # if numpy.any((solution1 - solution2) >= 0.001):
+        #     raise Exception("Solution not match")
 
-        if numpy.any((solution3 - solution2) >= 0.001):
-            raise Exception("Solution not match")
+        self.assertTrue(numpy.allclose(solution2, solution3))
+        # if numpy.any((solution3 - solution2) >= 0.001):
+        #     raise Exception("Solution not match")
 
-        if numpy.any((solution4 - solution3) >= 0.001):
-            raise Exception("Solution not match")
+        self.assertTrue(numpy.allclose(solution3, solution4))
+        # if numpy.any((solution4 - solution3) >= 0.001):
+        #     raise Exception("Solution not match")
 
-        if numpy.any((solution5 - solution4) >= 0.001):
-            raise Exception("Solution not match")
+        self.assertTrue(numpy.allclose(solution4, solution5))
+        # if numpy.any((solution5 - solution4) >= 0.001):
+        #     raise Exception("Solution not match")
 
     def naive(self, n):
         # n = 2

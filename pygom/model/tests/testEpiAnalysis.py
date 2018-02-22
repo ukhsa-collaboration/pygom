@@ -20,5 +20,6 @@ class TestEpiAnalysis(TestCase):
         F, V = epi_analysis.disease_progression_matrices(ode, diseaseState)
         e = epi_analysis.R0_from_matrix(F, V)
         dfe = epi_analysis.DFE(ode, ['I'])
-        if sympy.simplify(R0 - e[0].subs(dfe)) != 0:
-            raise Exception("Simple: Epi Analysis failed")
+        self.assertTrue(sympy.simplify(R0 - e[0].subs(dfe)) == 0)
+        # if sympy.simplify(R0 - e[0].subs(dfe)) != 0:
+        #     raise Exception("Simple: Epi Analysis failed")

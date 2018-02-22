@@ -6,6 +6,7 @@ import scipy.integrate
 from pygom import common_models
 
 class TestModelExisting(TestCase):
+
     def test_SIR(self):
         '''
         Test the SIR model from the set of pre-defined models in common_models
@@ -38,8 +39,10 @@ class TestModelExisting(TestCase):
                                                    initial_state,
                                                    t,
                                                    full_output=True)
-        if output['message']!='Integration successful.':
-            raise Exception("Failed integration")
+
+        self.assertTrue(output['message'] == 'Integration successful.')
+        # if output['message'] != 'Integration successful.':
+        #     raise Exception("Failed integration")
 
         # Happy! :)
 
@@ -53,4 +56,4 @@ class TestModelExisting(TestCase):
         ode.initial_values = (x0,0)
         ode.parameters = [0.02, 35.84, 100, 1800, 0.27]
         # try to integrate to see if there is any problem
-        _solution, _output = ode.integrate(t[1::],True)
+        _solution, _output = ode.integrate(t[1::], True)

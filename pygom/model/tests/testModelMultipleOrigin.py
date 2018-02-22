@@ -1,15 +1,17 @@
 from unittest import TestCase
 
-from pygom import DeterministicOde, SimulateOde, Transition, TransitionType
+from collections import OrderedDict
+
 import numpy
 import sympy
-from collections import OrderedDict
+
+from pygom import DeterministicOde, SimulateOde, Transition, TransitionType
 
 ## define parameters
 param_eval = {'k1':0.001,
-             'k2':0.01,
-             'k3':1.2,
-             'k4':1.0}
+              'k2':0.01,
+              'k3':1.2,
+              'k4':1.0}
 
 class TestModelMultipleOrigin(TestCase):
 
@@ -43,11 +45,11 @@ class TestModelMultipleOrigin(TestCase):
                                birth_death=birth_death_list,
                                transition=transition_list)
 
-        x0 = [0,0,0,0]
+        x0 = [0, 0, 0, 0]
         t = numpy.linspace(0, 100, 100)
 
         ode.parameters = param_eval
-        ode.initial_values = (x0,t[0])
+        ode.initial_values = (x0, t[0])
         _solution = ode.integrate(t[1::])
 
     def test_stochastic(self):
@@ -78,7 +80,7 @@ class TestModelMultipleOrigin(TestCase):
                           birth_death=bd_list,
                           transition=transition_list)
 
-        x0 = [0,0,0,0]
+        x0 = [0, 0, 0, 0]
         t = numpy.linspace(0, 100, 100)
 
         ode.parameters = param_eval
