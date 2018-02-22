@@ -9,8 +9,8 @@ import numpy as np
 import scipy.stats
 
 from ._model_errors import InputError, SimulationError
+from .ode_utils import check_array_type
 from pygom.utilR.distn import rexp, ppois, rpois, runif
-from pygom.model.ode_utils import check_array_type
 
 def exact(x0, t0, t1, state_change_mat, transition_func,
           output_time=False, seed=None):

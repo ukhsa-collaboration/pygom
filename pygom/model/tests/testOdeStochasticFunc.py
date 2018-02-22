@@ -1,9 +1,11 @@
 from unittest import TestCase
 
-from pygom import common_models, SimulateOde, Transition, TransitionType
-from pygom.utilR import rgamma
-import scipy.stats
 import numpy
+import scipy.stats
+
+from pygom import SimulateOde, Transition, TransitionType
+from pygom.utilR import rgamma
+from pygom.model import common_models
 
 class TestSIRStochasticModel(TestCase):
 

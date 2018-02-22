@@ -1,9 +1,11 @@
 from unittest import TestCase
 
-from pygom import common_models
+import copy
+
 import numpy
 import scipy.integrate
-import copy
+
+from pygom.model import common_models
 
 class TestJacobians(TestCase):
 
@@ -29,7 +31,7 @@ class TestJacobians(TestCase):
         t = numpy.linspace(0, 150, 100)
         # integrate without using the analytical Jacobian
         solution, _output = scipy.integrate.odeint(ode.ode,
-                                                   x0,t,
+                                                   x0, t,
                                                    full_output=True)
 
         # the Jacobian of the ode itself
@@ -85,8 +87,8 @@ class TestJacobians(TestCase):
         # random.randomint(0,150)
         ff0 = solution_sens[index,:]
         J0 = ode.ode_and_sensitivity(ff0,t[index])
-        J = numpy.zeros((d*(p+1),d*(p+1)))
-        for i in range(0,d*(p+1)):
+        J = numpy.zeros((d*(p+1), d*(p+1)))
+        for i in range(d*(p+1)):
             for j in range(0,d*(p+1)):
                 ffTemp = copy.deepcopy(ff0)
                 ffTemp[j] += h
@@ -150,5 +152,5 @@ class TestJacobians(TestCase):
                 J[i,j] = (ode.ode_and_forwardforward(ffTemp, t[index])[i] - J0[i])/h
 
         print(J - JAnalytic)
-        # Note that the two Jacobian above are not equivalent.  Only block diagonal
-        # is implemented in the analytic case
+        # Note that the two Jacobian above are not equivalent.  Only block
+        # diagonal is implemented in the analytic case

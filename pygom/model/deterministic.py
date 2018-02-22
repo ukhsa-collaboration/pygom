@@ -10,6 +10,7 @@ __all__ = ['DeterministicOde']
 
 import copy
 import io
+from numbers import Number
 
 # import sympy.core.numbers
 import numpy as np
@@ -241,12 +242,12 @@ class DeterministicOde(BaseOdeModel):
             self._ode = sympy.zeros(self.num_state, 1)
             pureTransitionList = self._getAllTransition(pureTransitions=True)
             fromList, \
-                toList, \
-                eqnList = self._unrollTransitionList(pureTransitionList)
-            for i, eqn in enumerate(eqnList):
+                to, \
+                eqn = self._unrollTransitionList(pureTransitionList)
+            for i, eqn in enumerate(eqn):
                 for k in fromList[i]:
                     self._ode[k] -= eqn
-                for k in toList[i]:
+                for k in to[i]:
                     self._ode[k] += eqn
 
         # now we just need to add in the birth death processes
@@ -1957,11 +1958,11 @@ class DeterministicOde(BaseOdeModel):
         '''
 
         err_str = "Initial time should be a "
-        if ode_utils.isNumeric(t0):
+        if isinstance(t0, Number):
             self._t0 = t0
         elif ode_utils.is_list_like(t0):
             if len(t0) == 1:
-                if ode_utils.isNumeric(t0[0]):
+                if isinstance(t0[0], Number):
                     self._t0 = t0[0]
                 else:
                     raise InitializeError(err_str + "numeric value")
@@ -1980,8 +1981,8 @@ class DeterministicOde(BaseOdeModel):
         '''
         Returns the initial values, both time and state as a tuple (x0, t0)
         '''
-        return (self.initial_state, self.initial_time) 
-        
+        return (self.initial_state, self.initial_time)
+
     @initial_values.setter
     def initial_values(self, x0t0):
         '''
@@ -2059,11 +2060,11 @@ class DeterministicOde(BaseOdeModel):
         assert self._t0 is not None, "Initial time not set"
 
         if ode_utils.is_list_like(t):
-            if ode_utils.isNumeric(t[0]):
+            if isinstance(t[0], Number):
                 t = np.append(self._t0, t)
             else:
                 raise ArrayError("Expecting a list of numeric value")
-        elif ode_utils.isNumeric(t):
+        elif isinstance(t, Number):
             t = np.append(self._t0, np.array(t))
         else:
             raise ArrayError("Expecting an array like input or a single " +

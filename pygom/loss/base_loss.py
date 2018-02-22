@@ -12,6 +12,7 @@
 
 import copy
 import functools
+from numbers import Number
 
 import numpy as np
 import scipy.sparse
@@ -54,8 +55,8 @@ class BaseLoss(object):
     def __init__(self, theta, ode,
                  x0, t0,
                  t, y,
-                 stateName, stateWeight=None,
-                 targetParam=None, targetState=None):
+                 state_name, state_weight=None,
+                 target_param=None, target_state=None):
 
         ### Execute all the checks first
 
@@ -63,8 +64,8 @@ class BaseLoss(object):
         t = ode_utils.check_array_type(t)
         y = ode_utils.check_array_type(y)
 
-        if stateWeight is None:
-            stateWeight = 1.0
+        if state_weight is None:
+            state_weight = 1.0
 
         if len(y) == y.size:
             y = y.flatten()
@@ -84,11 +85,11 @@ class BaseLoss(object):
         self._ode = ode
 
         # We are making a shitty check here because I screwed up (sort of)
-        # Should have been a base class where we do not have the targetParam
-        # and targetState and another class extending it.  The only problem of
+        # Should have been a base class where we do not have the target_param
+        # and target_state and another class extending it.  The only problem of
         # that is the lost of ability to make faster calculation, which is not
         # even possible now because of how OperateOdeModel works.  Ideally,
-        # OperateOdeModel will take in the targetParam in a way so that the
+        # OperateOdeModel will take in the target_param in a way so that the
         # gradient information is only computed on those targeted instead of
         # computing the full vector before extracting the relevant elements.
         # Basically, it will require a lot of work to make things sync and
@@ -112,39 +113,39 @@ class BaseLoss(object):
                                      "values provided")
 
         # Information
-        self.num_param = self._ode.num_param
-        self._numState = self._ode.num_state
+        self._num_param = self._ode.num_param
+        self._num_state = self._ode.num_state
 
         ### We wish to know whether we are dealing with a multiobjective problem
 
         # decide whether we are working on a restricted set
         # the target parameters
-        if targetParam is None:
+        if target_param is None:
             self._targetParam = None
         else:
-            self._targetParam = ode_utils.str_or_list(targetParam)
+            self._targetParam = ode_utils.str_or_list(target_param)
 
-        if targetState is None:
+        if target_state is None:
             self._targetState = None
         else:
-            self._targetState = ode_utils.str_or_list(targetState)
+            self._targetState = ode_utils.str_or_list(target_state)
 
         # check stuff
         # if you are trying to go through this, I apologize
-        if stateName is None:
+        if state_name is None:
             # then if
             if solution.shape[1] == p:
-                stateName = [str(i) for i in self._ode._iterStateList()]
-                self._setWeight(n, p, stateWeight)
+                state_name = [str(i) for i in self._ode._iterStateList()]
+                self._setWeight(n, p, state_weight)
             else:
                 raise InputError("Expecting the name of states " +
                                  "for the observations")
-        elif isinstance(stateName, (str, list, tuple)):
-            if isinstance(stateName, str):
-                stateName = [stateName]
+        elif isinstance(state_name, (str, list, tuple)):
+            if isinstance(state_name, str):
+                state_name = [state_name]
 
-            assert p == len(stateName), "len(stateName) and len(y[0]) not equal"
-            self._setWeight(n, p, stateWeight)
+            assert p == len(state_name), "len(state_name) and len(y[0]) not equal"
+            self._setWeight(n, p, state_weight)
         else:
             raise InputError("State name should be str or of type list/tuple")
 
@@ -154,7 +155,7 @@ class BaseLoss(object):
 
         # finish ordering information
         # now get the index of target states
-        self._stateName = stateName
+        self._stateName = state_name
         self._stateIndex = self._ode.get_state_index(self._stateName)
         # finish
 
@@ -292,7 +293,7 @@ class BaseLoss(object):
         # the list we perform our interpolation per state and only need
         # the functional form
         interpolateList = list()
-        for j in range(self._numState):
+        for j in range(self._num_state):
             spl = LSQUnivariateSpline(self._interpolateTime.tolist(),
                                       solutionInterpolate[:,j],
                                       self._t[1:-1])
@@ -345,7 +346,7 @@ class BaseLoss(object):
         diffT = np.diff(self._t)
 
         # holders.  for in place insertion
-        lambdaTemp = np.zeros(self._numState)
+        lambdaTemp = np.zeros(self._num_state)
         gradList = list()
         ga = gradList.append
         # the last gradient value.
@@ -481,7 +482,7 @@ class BaseLoss(object):
 
         # first we want to find out the number of sensitivities required
         # add them to the initial values
-        numSens =  self._numState*self.num_param
+        numSens =  self._num_state*self._num_param
         initialStateSens = np.append(self._x0, np.zeros(numSens))
 
         f = ode_utils.integrateFuncJac
@@ -617,10 +618,10 @@ class BaseLoss(object):
             method = self._ode._intName
 
         # first we want to find out the number of sensitivities required
-        numSens = self._numState*self.num_param
+        numSens = self._num_state*self._num_param
         # add them to the initial values
         initialStateSens = np.append(np.append(self._x0, np.zeros(numSens)),
-                                        np.eye(self._numState).flatten())
+                                        np.eye(self._num_state).flatten())
 
         f = ode_utils.integrateFuncJac
         sAndOutSensIV = f(self._ode.ode_and_sensitivityIV_T,
@@ -706,8 +707,8 @@ class BaseLoss(object):
         if method is None:
             method = self._ode._intName
 
-        nS = self._numState
-        nP = self.num_param
+        nS = self._num_state
+        nP = self._num_param
         numTime = len(self._t)
 
         # first we want to find out the number of initial values required to
@@ -1022,7 +1023,7 @@ class BaseLoss(object):
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             an array of result
 
         See also
@@ -1086,7 +1087,7 @@ class BaseLoss(object):
 
     def sens_to_grad(self, sens, diff_loss):
         '''
-        forward sensitivites to the gradient.
+        Forward sensitivites to the gradient.
 
         Parameters
         ----------
@@ -1300,7 +1301,7 @@ class BaseLoss(object):
     def _sensToGradIVWithoutIndex(self, sens, diffLoss):
         '''
         Same as sensToGradWithoutIndex above but now we also include the
-        initial conditison
+        initial conditions.
         '''
         indexOut = self._getTargetStateSensIndex()
         return self.sens_to_grad(sens[:,indexOut], diffLoss)
@@ -1316,7 +1317,7 @@ class BaseLoss(object):
     def _sensToJTJIVWithoutIndex(self, sens, diffLoss=None):
         '''
         Same as sensToJTJIVWithoutIndex above but now we also include the
-        initial conditison
+        initial conditions.
         '''
         indexOut = self._getTargetStateSensIndex()
         return self.sens_to_jtj(sens[:,indexOut], diffLoss)
@@ -1342,11 +1343,11 @@ class BaseLoss(object):
                     # always ignore the first numState because they are
                     # outputs from the actual ode and not the sensitivities.
                     # Hence the +1
-                    indexOut.append(j + (i+1) * self._numState)
+                    indexOut.append(j + (i+1) * self._num_state)
         else:
             # else, happy times!
             for i in indexList:
-                indexOut.append(stateIndex + (i+1) * self._numState)
+                indexOut.append(stateIndex + (i+1) * self._num_state)
 
         return np.sort(np.array(indexOut)).tolist()
 
@@ -1356,7 +1357,7 @@ class BaseLoss(object):
         '''
         # we assume that all the parameters are targets
         if self._targetParam is None:
-            indexList = range(0, self.num_param)
+            indexList = range(0, self._num_param)
         else:
             # only select from the list
             indexList = list()
@@ -1382,11 +1383,11 @@ class BaseLoss(object):
                 for i in indexList:
                     # always ignore the first numState because they are outputs
                     # from the actual ode and not the sensitivities
-                    indexOut.append(j + (i + 1 + self.num_param)*self._numState)
+                    indexOut.append(j + (i + 1 + self._num_param)*self._num_state)
         else:
             # else, happy times!
             for i in indexList:
-                indexOut.append(stateIndex +(i+1+self.num_param)*self._numState)
+                indexOut.append(stateIndex +(i+1+self._num_param)*self._num_state)
 
         return np.sort(np.array(indexOut)).tolist()
 
@@ -1395,7 +1396,7 @@ class BaseLoss(object):
         Get the indices of our targeted states
         '''
         if self._targetState is None:
-            indexList = range(self._numState)
+            indexList = range(self._num_state)
         else:
             indexList = [self._ode.get_state_index(i) for i in self._targetState]
             # indexList = list()
@@ -1406,7 +1407,7 @@ class BaseLoss(object):
 
     def _setParamInput(self, theta):
         if self._targetParam is None:
-            if len(theta) != self.num_param:
+            if len(theta) != self._num_param:
                 raise InputError("Expecting input to all the parameters")
             else: # happy, standard case
                 self._setParam(theta)
@@ -1419,53 +1420,53 @@ class BaseLoss(object):
 
     def _setParamStateInput(self, theta):
         '''
-        Set both the parameters and initial conditin :math:`x_{0}`
+        Set both the parameters and initial condition :math:`x_{0}`
         '''
         if self._targetParam is None and self._targetState is None:
             # we are expecting the standard case here
-            if len(theta) != (self._numState + self.num_param):
+            if len(theta) != (self._num_state + self._num_param):
                 raise InputError("Expecting a guess of the initial value, " +
                                  "use diff_loss() " +
                                  "instead for just parameter estimation")
             else:
-                self._setX0(theta[-self._numState:])
-                self._setParam(theta[:self.num_param])
+                self._setX0(theta[-self._num_state:])
+                self._setParam(theta[:self._num_param])
         else:
             if self._targetParam is None:
                 # this mean all the parameters or without the parameters
                 if len(theta) == len(self._targetState):
                     # without parameters
                     self._unrollState(theta)
-                elif len(theta) == (self.num_param + len(self._targetState)):
+                elif len(theta) == (self._num_param + len(self._targetState)):
                     # the parameters first
-                    self._setParam(theta[:self.num_param])
+                    self._setParam(theta[:self._num_param])
                     # then the states
                     # x0 = theta[-len(self._targetState):]
                     self._unrollState(theta[-len(self._targetState):])
                 else:
                     raise InputError("Expecting input to all the parameters " +
-                                     "and to the states with " +
-                                     "length " + str(len(self._targetState)))
+                                     "and to the states with length %s" %
+                                     len(self._targetState))
             elif self._targetState is None:
                 # this mean all the state or without the states
-                if len(theta) == self.num_param:
+                if len(theta) == self._num_param:
                     # without the states, obviously using the wrong function call
                     raise InputError("Input has the same length as the " +
                                      "number of parameters. If the initial " +
                                      "conditions for the states are not " +
                                      "required, use diff_loss() instead")
-                elif len(theta) == (self._numState + self.num_param):
+                elif len(theta) == (self._num_state + self._num_param):
                     # all the states
                     # begin setting the information
-                    self._setParam(theta[:self.num_param])
+                    self._setParam(theta[:self._num_param])
                     # then the states
-                    # x0 = theta[-self._numState:]
-                    self._setX0(theta[-self._numState:])
-                elif len(theta) == (self._numState + len(self._targetParam)):
+                    # x0 = theta[-self._num_state:]
+                    self._setX0(theta[-self._num_state:])
+                elif len(theta) == (self._num_state + len(self._targetParam)):
                     # again we have all the states
                     self._unrollParam(theta[:len(self._targetParam)])
-                    # x0 = theta[-self._numState:]
-                    self._setX0(theta[-self._numState:])
+                    # x0 = theta[-self._num_state:]
+                    self._setX0(theta[-self._num_state:])
                 else: # happy
                     raise InputError("The number of input is just plain " +
                                      "wrong. Cannot help you further.")
@@ -1488,7 +1489,7 @@ class BaseLoss(object):
         '''
         Set the parameters
         '''
-        if self.num_param == 0:
+        if self._num_param == 0:
             self._theta = None
         else:
             if self._targetParam is not None:
@@ -1504,7 +1505,7 @@ class BaseLoss(object):
                     for i in range(l1):
                         thetaDict[self._targetParam[i]] = theta[i]
                 else:
-                    if ode_utils.isNumeric(theta):
+                    if isinstance(theta, Number):
                         thetaDict[self._targetParam[0]] = theta
                     elif len(theta) > 1:
                         raise InputError("Input length = "  +str(l1) +
@@ -1582,10 +1583,10 @@ class BaseLoss(object):
                     self._theta[k] = v
             else:
                 # theta only contains the value
-                for i in range(len(theta)):
+                for i, ti in enumerate(theta):
                     # unroll the name of the parameters
                     paramStr = self._targetParam[i]
-                    self._theta[paramStr] = theta[i]
+                    self._theta[paramStr] = ti
         else: # it is none, we swap all the values
             if isinstance(self._theta, dict):
                 i = 0
@@ -1624,6 +1625,3 @@ class BaseLoss(object):
             f(x)
         '''
         print("f(x) = " + str(f) + " ; x = " + str(x))
-
-    def _selfInner(self, A):
-        return A.T.dot(A)

@@ -9,8 +9,10 @@ __all__ = [
     'compileCode'
     ]
 
-import numpy as np
 import math
+from numbers import Number
+
+import numpy as np
 import scipy.integrate
 import scipy.sparse
 import sympy
@@ -26,7 +28,7 @@ rtol = 1e-10
 class shapeAdjust(object):
     '''
     A class that change vector into matrix and vice versa for
-    vectors used in :class:`OperateOdeModel`
+    vectors used in :class:`DeterministicOde`
 
     Parameters
     ----------
@@ -115,12 +117,12 @@ class shapeAdjust(object):
 def integrate(ode, x0, t, full_output=False):
     '''
     A wrapper on top of :mod:`odeint <scipy.integrate.odeint>` using
-    :class:`OperateOdeModel <pygom.model.OperateOdeModel>`.
+    :class:`DeterministicOde <pygom.model.DeterministicOde>`.
 
     Parameters
     ----------
     ode: object
-        of type :class:`OperateOdeModel <pygom.model.OperateOdeModel>`
+        of type :class:`DeterministicOde <pygom.model.DeterministicOde>`
     t: array like
         the time points including initial time
     full_output: bool, optional
@@ -179,7 +181,7 @@ def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
     Returns
     -------
     solution: array like
-        a :class:`np.ndarray` of shape (len(t),len(x0)) if includeOrigin is
+        a :class:`np.ndarray` of shape (len(t), len(x0)) if includeOrigin is
         False, else an extra row with x0 being the first.
     output : dict, only returned if full_output=True
         Dictionary containing additional output information
@@ -219,7 +221,7 @@ def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
     if includeOrigin:
         solution.append(x0)
 
-    if isNumeric(t):
+    if isinstance(t, Number):
         # force it to something iterable
         t = [t]
     elif is_list_like(t): #, (np.ndarray, list, tuple)):
@@ -343,7 +345,7 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
 
     Parameters
     ==========
-    solution: :class:`np.ndarray`
+    solution: :class:`numpy.ndarray`
         solution from the integration
     t: array like
         the vector of time where the integration output correspond to
@@ -572,7 +574,7 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
 
 def vecToMatSens(s, numState, numParam):
     '''
-    Convert the vector of :class:`np.ndarray` of forward
+    Convert the vector of :class:`numpy.ndarray` of forward
     sensitivities into a matrix.
 
     Parameters
@@ -597,7 +599,7 @@ def vecToMatSens(s, numState, numParam):
 
 def vecToMatFF(ff, numState, numParam):
     '''
-    Convert the vector of :class:`np.ndarray` of forward
+    Convert the vector of :class:`numpy.ndarray` of forward
     forward sensitivities into a matrix.
 
     Parameters
@@ -622,7 +624,7 @@ def vecToMatFF(ff, numState, numParam):
 
 def matToVecSens(S, numState, numParam):
     '''
-    Convert the matrix of :class:`np.ndarray` of forward
+    Convert the matrix of :class:`numpy.ndarray` of forward
     sensitivities into a vector.
 
     Parameters
@@ -650,9 +652,9 @@ def matToVecSens(S, numState, numParam):
 
 def matToVecFF(FF, numState, numParam):
     '''
-    Convert the matrix of :class:`np.ndarray` of forward
+    Convert the matrix of :class:`numpy.ndarray` of forward
     forward sensitivities into a vector.
-    
+
     Parameters
     ----------
     FF:
@@ -665,7 +667,7 @@ def matToVecFF(FF, numState, numParam):
     Returns
     -------
     ff in vector form
-    
+
     See also
     --------
     :func:`vecToMatFF`
@@ -811,7 +813,7 @@ class compileCode(object):
         '''
         Compiles the expression given the symbols and determine which
         type of output is it.  Transforms the output appropriately into
-        np
+        numpy
 
         Parameters
         ----------
@@ -862,27 +864,27 @@ def check_array_type(x):
     Parameters
     ----------
     x: array like
-        which can be either a :class:`np.ndarray` or list or tuple
+        which can be either a :class:`numpy.ndarray` or list or tuple
 
     Returns
     -------
-    x: :class:`np.ndarray`
+    x: :class:`numpy.ndarray`
         checked and converted array
     '''
 
     if isinstance(x, np.ndarray):
         pass
     elif isinstance(x, (list, tuple)):
-        if isNumeric(x[0]):
+        if isinstance(x[0], Number):
             x = np.array(x)
         elif isinstance(x[0], (list, tuple, np.ndarray)):
-            if isNumeric(x[0][0]):
+            if isinstance(x[0][0], Number):
                 x = np.array(x)
             else:
                 raise ArrayError("Expecting elements of float or int")
         else:
             raise ArrayError("Expecting elements of float or int")
-    elif isNumeric(x):
+    elif isinstance(x, Number):
         x = np.array([x])
     else:
         raise ArrayError("Expecting an array like object, got %s" % type(x))
@@ -891,7 +893,7 @@ def check_array_type(x):
 
 def check_dimension(x, y):
     '''
-    Compare the length of two array like objects.  Converting both to a np
+    Compare the length of two array like objects.  Converting both to a numpy
     array in the process if they are not already one.
 
     Parameters
@@ -903,9 +905,9 @@ def check_dimension(x, y):
 
     Returns
     -------
-    x: :class:`np.array`
+    x: :class:`numpy.array`
         checked and converted first array
-    y: :class:`np.array`
+    y: :class:`numpy.array`
         checked and converted second array
     '''
 
@@ -917,27 +919,6 @@ def check_dimension(x, y):
                          "should have the same length")
 
     return (x, y)
-
-
-def isNumeric(x):
-    '''
-    Test whether the input is a numeric
-
-    Parameters
-    ----------
-    x:
-        anything
-
-    Returns
-    -------
-    bool:
-        True if it belongs to one of the recognized data type from
-        the list (int, np.int16, np.int32, np.int64,
-        float, np.float16, np.float32, np.float64)
-    '''
-    return isinstance(x,
-                      (int, np.int16, np.int32, np.int64,
-                      float, np.float16, np.float32, np.float64))
 
 def is_list_like(x):
     '''

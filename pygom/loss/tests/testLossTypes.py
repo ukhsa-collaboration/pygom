@@ -2,7 +2,8 @@ from unittest import TestCase
 
 import numpy as np
 
-from pygom import common_models, SquareLoss, NormalLoss
+from pygom import SquareLoss, NormalLoss
+from pygom.model import common_models
 
 class TestLossTypes(TestCase):
 
@@ -16,13 +17,15 @@ class TestLossTypes(TestCase):
         ode = common_models.FitzHugh(param_eval)
         ode.initial_values = (x0, t[0])
 
-        # Standard.  Find the solution which we will be used as "observations later"
+        # Standard.  Find the solution which we will be used as
+        # "observations later"
         solution, _output = ode.integrate(t[1::], full_output=True)
         # initial guess
         theta = [0.5, 0.5, 0.5]
 
         #objFH = squareLoss(theta,ode,x0,t0,t,solution[1::,1],'R')
-        objFH = SquareLoss(theta, ode, x0, t[0], t[1::], solution[1::,:], ['V','R'])
+        objFH = SquareLoss(theta, ode, x0, t[0], t[1::],
+                           solution[1::,:], ['V','R'])
 
         r = objFH.residual()
 
@@ -67,24 +70,25 @@ class TestLossTypes(TestCase):
         theta = [0.5, 0.5, 0.5]
 
         #objFH = squareLoss(theta,ode,x0,t0,t,solution[1::,1],'R')
-        objFH = NormalLoss(theta, ode, x0, t[0], t[1::], solution[1::,:], ['V','R'])
+        objFH = NormalLoss(theta, ode, x0, t[0], t[1::],
+                           solution[1::,:], ['V','R'])
 
         w = [2.0,3.0]
-        objFH1 = NormalLoss(theta, ode, x0, t[0], t[1::], solution[1::,:],
-                   ['V','R'], w)
+        objFH1 = NormalLoss(theta, ode, x0, t[0], t[1::],
+                            solution[1::,:], ['V','R'], w)
 
         # now the weight is a vector
         w = np.random.rand(29, 2)
-        objFH2 = NormalLoss(theta, ode, x0, t[0], t[1::], solution[1::,:],
-                   ['V','R'], w)
+        objFH2 = NormalLoss(theta, ode, x0, t[0], t[1::],
+                            solution[1::,:], ['V','R'], w)
 
         objFH.cost()
         objFH1.cost()
         objFH2.cost()
 
     def test_FH_Square_1State_Fail(self):
-        totalFail = 0
-        expectedFail = 4
+        ## totalFail = 0
+        ## expectedFail = 4
         # initial values
         x0 = [-1.0, 1.0]
         # the time points for our observations
@@ -95,21 +99,22 @@ class TestLossTypes(TestCase):
         ode = common_models.FitzHugh(param_eval)
         ode.initial_values = (x0, t[0])
 
-        # Standard.  Find the solution which we will be used as "observations later"
+        # Standard.  Find the solution which we will be used as
+        # "observations later"
         solution, output = ode.integrate(t[1::], full_output=True)
         # initial guess
         theta = [0.5, 0.5, 0.5]
 
-        wList = list()
+        w_list = list()
 
-        wList.append([-1.])
-        wList.append([0])
-        wList.append([2.0, 3.0])
-        wList.append(np.random.rand(30))
+        w_list.append([-1.])
+        w_list.append([0])
+        w_list.append([2.0, 3.0])
+        w_list.append(np.random.rand(30))
 
-        for w in wList:
+        for w in w_list:
             self.assertRaises(AssertionError, SquareLoss, theta, ode, x0,
-                             t[0], t[1::], solution[1::,:], 'R', w)
+                              t[0], t[1::], solution[1::,:], 'R', w)
         #     try:
         #         objFH = SquareLoss(theta, ode, x0, t[0], t[1::],
         #                            solution[1::,:], 'R', w)
@@ -120,8 +125,8 @@ class TestLossTypes(TestCase):
         #     raise Exception("We passed some of the illegal input...")
 
     def test_FH_Square_2State_Fail(self):
-        totalFail = 0
-        expectedFail = 8
+        ## totalFail = 0
+        ## expectedFail = 8
         # initial values
         x0 = [-1.0, 1.0]
         # the time points for our observations
@@ -132,23 +137,24 @@ class TestLossTypes(TestCase):
         ode = common_models.FitzHugh(param_eval)
         ode.initial_values = (x0, t[0])
 
-        # Standard.  Find the solution which we will be used as "observations later"
-        solution, output = ode.integrate(t[1::], full_output=True)
+        # Standard.  Find the solution which we will be used as
+        # "observations later"
+        solution, _output = ode.integrate(t[1::], full_output=True)
         # initial guess
         theta = [0.5, 0.5, 0.5]
 
-        wList = list()
+        w_list = list()
 
-        wList.append([-2.0])
-        wList.append([2.0, 3.0, 4.0])
-        wList.append([0.0, 0.0])
-        wList.append([1.0, -1.0])
-        wList.append(np.random.rand(30))
-        wList.append([np.random.rand(30), np.random.rand(31)])
-        wList.append([np.random.rand(31), np.random.rand(31)])
-        wList.append([np.random.rand(30), np.random.rand(30), np.random.rand(30)])
+        w_list.append([-2.0])
+        w_list.append([2.0, 3.0, 4.0])
+        w_list.append([0.0, 0.0])
+        w_list.append([1.0, -1.0])
+        w_list.append(np.random.rand(30))
+        w_list.append([np.random.rand(30), np.random.rand(31)])
+        w_list.append([np.random.rand(31), np.random.rand(31)])
+        w_list.append([np.random.rand(30), np.random.rand(30), np.random.rand(30)])
 
-        for i, w in enumerate(wList):
+        for w in w_list:
             self.assertRaises(AssertionError, SquareLoss, theta, ode, x0,
                              t[0], t[1::], solution[1::,:], 'R', w)
         #     try:

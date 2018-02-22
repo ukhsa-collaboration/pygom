@@ -8,6 +8,7 @@
 """
 # string evaluation
 import re
+from numbers import Number
 
 import sympy
 import numpy as np
@@ -32,9 +33,9 @@ class BaseOdeModel(object):
 
     Parameters
     ----------
-    stateList: list
+    state: list
         A list of states (string)
-    paramList: list
+    param: list
         A list of the parameters (string)
     derived_param: list
         A list of the derived parameters (tuple of (string, string))
@@ -239,7 +240,7 @@ class BaseOdeModel(object):
                             valueTemp = parameters[i][1]
                             paramOut[indexTemp] = valueTemp
                 # we are happy... I guess
-                elif ode_utils.isNumeric(parameters[0]):
+                elif isinstance(parameters[0], Number):
                     for i, pi in enumerate(parameters):
                         if isinstance(self._paramList[i], ODEVariable):
                             paramOut[str(self._paramList[i])] = pi
@@ -265,7 +266,7 @@ class BaseOdeModel(object):
                 # extra the key from the parameters dictionary
                 for inParam in parameters:
                     value = parameters[inParam]
-                    if ode_utils.isNumeric(value):
+                    if isinstance(value, Number):
                         # get index
                         if isinstance(inParam, sympy.Symbol):
                             paramOut[f(str(inParam))] = value
@@ -366,7 +367,7 @@ class BaseOdeModel(object):
                     self._state = self._unrollState(state)
             elif isinstance(state, np.ndarray):
                 self._state = self._unrollState(state)
-            elif ode_utils.isNumeric(state):
+            elif isinstance(state, Number):
                 self._state = self._unrollState(state)
             else:
                 raise InputError(err_str)
@@ -855,10 +856,10 @@ class BaseOdeModel(object):
         self._transitionMatrix = sympy.zeros(self.num_state, self.num_state)
         # going through the list of transitions
         pure_trans = self._getAllTransition(pureTransitions=True)
-        fromList, toList, eqnList = self._unrollTransitionList(pure_trans)
-        for k, eqn in enumerate(eqnList):
+        fromList, to, eqn = self._unrollTransitionList(pure_trans)
+        for k, eqn in enumerate(eqn):
             for i in fromList[k]:
-                for j in toList[k]:
+                for j in to[k]:
                     self._transitionMatrix[i,j] += eqn
 
         return self._transitionMatrix
@@ -931,8 +932,8 @@ class BaseOdeModel(object):
         # allow the end user to input more state than initially desired
         if len(self.ode_list) <= self.num_state:
             self._ode = sympy.zeros(self.num_state, 1)
-            fromList, _t, eqnList = self._unrollTransitionList(self.ode_list)
-            for i, eqn in enumerate(eqnList):
+            fromList, _t, eqn = self._unrollTransitionList(self.ode_list)
+            for i, eqn in enumerate(eqn):
                 if len(fromList[i]) > 1:
                     raise InputError("An explicit ode cannot describe more " +
                                      "than a single state")
@@ -951,8 +952,8 @@ class BaseOdeModel(object):
         state transition then the birth death processes
         '''
         self._transitionVector = sympy.zeros(self.num_transitions, 1)
-        _f, _t, eqnList = self._unrollTransitionList(self._getAllTransition())
-        for i, eqn in enumerate(eqnList):
+        _f, _t, eqn = self._unrollTransitionList(self._getAllTransition())
+        for i, eqn in enumerate(eqn):
             self._transitionVector[i] = eqn
 
         return self._transitionVector
@@ -969,13 +970,13 @@ class BaseOdeModel(object):
 
         .. math::
             \\lambda_{i,j} = \\left\\{ 1, &if state i is involved in transition j, \\\\
-                                    0, &otherwise \\right.
+                                       0, &otherwise \\right.
         '''
         # declare holder
         self._lambdaMat = np.zeros((self.num_state, self.num_transitions), int)
 
-        _fromList, _toList, eqnList = self._unrollTransitionList(self._getAllTransition())
-        for j, eqn in enumerate(eqnList):
+        _f, _t, eqn = self._unrollTransitionList(self._getAllTransition())
+        for j, eqn in enumerate(eqn):
             for i, state in enumerate(self._stateList):
                 if self._stateDict[state.ID] in eqn.atoms():
                     self._lambdaMat[i,j] = 1
@@ -987,25 +988,25 @@ class BaseOdeModel(object):
         The state change matrix, where
         .. math::
             v_{i,j} = \\left\\{ 1, &if transition j cause state i to lose a particle, \\\\
-                             -1, &if transition j cause state i to gain a particle, \\\\
-                              0, &otherwise \\right.
+                               -1, &if transition j cause state i to gain a particle, \\\\
+                                0, &otherwise \\right.
         '''
         self._vMat = np.zeros((self.num_state, self.num_transitions), int)
 
-        fromList, toList, eqnList = self._unrollTransitionList(self._getAllTransition())
-        for j, _eqn in enumerate(eqnList):
+        f, t, eqn = self._unrollTransitionList(self._getAllTransition())
+        for j, _eqn in enumerate(eqn):
             if j < self.num_pure_transitions:
-                for k1 in fromList[j]:
+                for k1 in f[j]:
                     self._vMat[k1,j] += -1
-                for k2 in toList[j]:
+                for k2 in t[j]:
                     self._vMat[k2,j] += 1
             else:
                 bdObj = self._birthDeathList[j - self.num_pure_transitions]
                 if bdObj.transition_type is TransitionType.B:
-                    for k1 in fromList[j]:
+                    for k1 in f[j]:
                         self._vMat[k1,j] += 1
                 elif bdObj.transition_type is TransitionType.D:
-                    for k2 in fromList[j]:
+                    for k2 in f[j]:
                         self._vMat[k2,j] += -1
 
         return self._vMat
@@ -1043,14 +1044,14 @@ class BaseOdeModel(object):
         Information unrolling from vector to sympy in state
         '''
         state_out = list()
-        if len(self.num_state) == 1:
-            if ode_utils.isNumeric(state):
+        if self.num_state == 1:
+            if isinstance(state, Number):
                 state_out.append((self._stateList[0], state))
             else:
                 raise InputError("Number of input state not as expected")
         else:
-            if len(state) == len(self.num_state):
-                for i, si in enumerate(self.num_state):
+            if len(state) == self.num_state:
+                for i, si in enumerate(self._stateList):
                     state_out.append((si, state[i]))
             else:
                 raise InputError("Number of input state not as expected")
@@ -1067,6 +1068,7 @@ class BaseOdeModel(object):
 
         eqn = checkEquation(transition_obj.equation,
                             *self._getListOfVariablesDict())
+
         return from_index, to_index, eqn
 
     def _unrollTransitionList(self, transition_list):
@@ -1080,11 +1082,17 @@ class BaseOdeModel(object):
 
         eqn_list = checkEquation(eqn_list, *self._getListOfVariablesDict())
         eqn_list = eqn_list if hasattr(eqn_list, '__iter__') else [eqn_list]
+
         return from_list, to_list, eqn_list
 
     def _getAllTransition(self, pureTransitions=False):
+        assert isinstance(pureTransitions, bool), \
+            "requires type(pureTransitions) = bool"
 
-        n = self.num_pure_transitions if pureTransitions else self.num_transitions
+        if pureTransitions:
+            n = self.num_pure_transitions
+        else:
+            n = self.num_transitions
 
         all_transition = list()
         for j in range(n):
@@ -1093,6 +1101,7 @@ class BaseOdeModel(object):
             else:
                 i = j - self.num_pure_transitions
                 all_transition.append(self._birthDeathList[i])
+
         return all_transition
 
     def _iterStateList(self):
@@ -1209,4 +1218,3 @@ class BaseOdeModel(object):
                 B[i,j] = A[i,j]
 
         return B
-

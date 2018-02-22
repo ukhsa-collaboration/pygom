@@ -13,7 +13,7 @@ from dateutil import parser, tz
 import pandas as pd
 import numpy as np
 
-def epijsonToDataFrame(inData, full_output=False):
+def epijson_to_data_frame(in_data, full_output=False):
     '''
     Obtain a :class:`pandas.DataFrame' given EpiJSON input. The data is
     aggregated (through time).  The original can be obtained by setting
@@ -21,7 +21,7 @@ def epijsonToDataFrame(inData, full_output=False):
 
     Parameters
     ----------
-    inData: dict or str
+    in_data: dict or str
         dict that conforms to the EpiJSON format or a str
         which will be read as JSON
     full_output: bool, optional
@@ -35,18 +35,18 @@ def epijsonToDataFrame(inData, full_output=False):
         data in as cumulative sum where the row represent the
         unique time stamps and column the events
     '''
-    if isinstance(inData, str):
+    if isinstance(in_data, str):
         try:
-            epijson = json.loads(inData)
+            epijson = json.loads(in_data)
         except:
-            with open(inData, 'r') as fp:
+            with open(in_data, 'r') as fp:
                 epijson = json.load(fp)
-    elif isinstance(inData, bytes):
-        epijson = json.loads(inData.decode())
+    elif isinstance(in_data, bytes):
+        epijson = json.loads(in_data.decode())
     else:
-        epijson = inData
+        epijson = in_data
 
-    allRecords = checkEpijsonFormat(epijson)
+    allRecords = check_epijson_format(epijson)
 
     # obtain the data into (event, date)
     f = lambda x: list(map(lambda x1: (x1['name'], x1['date']), x))
@@ -94,7 +94,7 @@ def _parseDate(x):
         y = parser.parse(x, tzinfos=tz.tzutc)
     return y
 
-def checkEpijsonFormat(epijson, returnRecord=True):
+def check_epijson_format(epijson, return_record=True):
     '''
     Simple checks to see whether the input follows the EpiJSON schema
 
@@ -102,7 +102,7 @@ def checkEpijsonFormat(epijson, returnRecord=True):
     ----------
     epijson: dict
         data
-    returnRecord: bool, optional
+    return_record: bool, optional
         defaults to True, which outputs the records within the data,
         else the function returns None
     '''
@@ -112,7 +112,7 @@ def checkEpijsonFormat(epijson, returnRecord=True):
     assert sum(f) == 2, "Does not appear to be a valid EpiJSON format"
 
     y = epijson['records']
-    assert _checkUniqueID(y) == True, "Records id not unique"
+    assert _checkUniqueID(y) is True, "Records id not unique"
 
     # verify the uniqueness of the id in each record
     # this is relatively unimportant
@@ -120,7 +120,7 @@ def checkEpijsonFormat(epijson, returnRecord=True):
     assert sum(map(_checkUniqueID, y1)) == len(y1), \
         "Events id not unique in records"
 
-    return y1 if returnRecord else True
+    return y1 if return_record else True
 
 def _checkUniqueID(y):
     '''

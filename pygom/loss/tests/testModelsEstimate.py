@@ -1,11 +1,14 @@
 from unittest import TestCase
 
-import numpy as np
-import scipy.integrate, scipy.optimize
 import copy
 
-from pygom import common_models, SquareLoss, NormalLoss, PoissonLoss
+import numpy as np
+import scipy.integrate
+import scipy.optimize
+
+from pygom import SquareLoss, NormalLoss, PoissonLoss
 from pygom import Transition, TransitionType, DeterministicOde
+from pygom.model import common_models
 
 class TestModelEstimate(TestCase):
 
@@ -28,7 +31,7 @@ class TestModelEstimate(TestCase):
         sir_obj = SquareLoss(theta, ode, x0, t[0], t[1::],
                              solution[1::,2], 'R')
         sir_obj.cost()
-        sir_obj.gradient();
+        sir_obj.gradient()
         sir_obj.hessian()
 
         # now we go on the real shit
@@ -41,10 +44,10 @@ class TestModelEstimate(TestCase):
         box_bounds = [(EPSILON, 5), (EPSILON, 5)]
 
         res_QP = scipy.optimize.minimize(fun=sir_obj.cost,
-                                        jac=sir_obj.sensitivity,
-                                        x0=theta,
-                                        method='SLSQP',
-                                        bounds=box_bounds)
+                                         jac=sir_obj.sensitivity,
+                                         x0=theta,
+                                         method='SLSQP',
+                                         bounds=box_bounds)
 
         target = np.array([0.5, 1.0/3.0])
         self.assertTrue(np.allclose(res_QP['x'], target, 1e-2, 1e-2))
@@ -147,7 +150,7 @@ class TestModelEstimate(TestCase):
 
         sir_obj = PoissonLoss(theta, ode, x0, t[0], t[1::],
                               np.round(solution[1::,2]),
-                              'R', targetParam=['beta', 'gamma'])
+                              'R', target_param=['beta', 'gamma'])
 
         # constraints
         EPSILON = np.sqrt(np.finfo(np.float).eps)
@@ -198,7 +201,7 @@ class TestModelEstimate(TestCase):
         # to make sense
         objSIR = PoissonLoss(theta, ode, x0, t[0], t[1::],
                              np.round(solution[1::,1:3]),
-                             ['I', 'R'], targetParam=['beta', 'gamma'])
+                             ['I', 'R'], target_param=['beta', 'gamma'])
 
         # constraints
         EPSILON = np.sqrt(np.finfo(np.float).eps)

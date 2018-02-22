@@ -2,10 +2,10 @@ from unittest import TestCase
 
 from collections import OrderedDict
 
-from pygom import DeterministicOde, Transition, TransitionType
 import numpy
 import sympy
-# import six
+
+from pygom import DeterministicOde, Transition, TransitionType
 
 ## define parameters
 param_eval = {'beta_00':0.0010107,'beta_01':0.0010107,'beta_10':0.0010107,'beta_11':0.0010107,

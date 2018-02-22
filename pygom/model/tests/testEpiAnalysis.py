@@ -1,7 +1,8 @@
 from unittest import TestCase
 
-from pygom import common_models, epi_analysis
 import sympy
+
+from pygom.model import common_models, epi_analysis 
 
 class TestEpiAnalysis(TestCase):
 

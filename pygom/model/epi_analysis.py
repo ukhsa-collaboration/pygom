@@ -8,7 +8,7 @@
 
 import sympy
 
-from pygom.model.simulate import SimulateOde
+from .simulate import SimulateOde
 
 __all__ = [
            'DFE',

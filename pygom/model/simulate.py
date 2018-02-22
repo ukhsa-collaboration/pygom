@@ -8,10 +8,12 @@
 
 __all__ = ['SimulateOde']
 
+import copy
+from numbers import Number
+
 import numpy as np
 import sympy
 import scipy.stats
-import copy
 
 from .deterministic import DeterministicOde
 from .stochastic_simulation import cle, exact, firstReaction, tauLeap, hybrid
@@ -29,9 +31,9 @@ class SimulateOde(DeterministicOde):
 
     Parameters
     ----------
-    stateList: list
+    state: list
         A list of states (string)
-    paramList: list
+    param: list
         A list of the parameters (string)
     derived_param: list
         A list of the derived parameters (tuple of (string,string))
@@ -145,10 +147,10 @@ class SimulateOde(DeterministicOde):
             final time
         '''
         return(hybrid(x0, t0, t1, self._vMat, self._lambdaMat,
-                   self.transition_vector,
-                   self.transition_mean,
-                   self.transition_var,
-                   output_time=output_time, seed=True))
+                      self.transition_vector,
+                      self.transition_mean,
+                      self.transition_var,
+                      output_time=output_time, seed=True))
 
     def simulate_param(self, t, iteration, full_output=False):
         '''
@@ -162,14 +164,14 @@ class SimulateOde(DeterministicOde):
         iteration: int
             number of iterations you wish to simulate
         full_output: bool, optional
-            if we want additional information, Yall in the return,
-            defaults o false
+            if we want additional information, Y_all in the return,
+            defaults to false
 
         Returns
         -------
         Y: :class:`numpy.ndarray`
             of shape (len(t), len(state)), mean of all the simulation
-        Yall: :class:`np.ndarray`
+        Y_all: :class:`np.ndarray`
             of shape (iteration, len(t), len(state))
         '''
 
@@ -262,7 +264,7 @@ class SimulateOde(DeterministicOde):
         # this determines what type of output we want
         timePoint = False
 
-        if ode_utils.isNumeric(t):#, (int, float, np.int64, np.float64)):
+        if isinstance(t, Number):#, (int, float, np.int64, np.float64)):
             finalT = t
         elif isinstance(t, (list, tuple)):
             t = np.array(t)
@@ -417,7 +419,7 @@ class SimulateOde(DeterministicOde):
 
         '''
         if self._transitionMatrixCompile is not None \
-           or self._hasNewTransition == False:
+           or self._hasNewTransition is False:
             return self._transitionMatrix
         else:
             return super(SimulateOde, self)._computeTransitionMatrix()
@@ -888,8 +890,8 @@ class SimulateOde(DeterministicOde):
         '''
         if A is None:
             if not ode_utils.none_or_empty_list(self._odeList):
-                eqnList = [t.equation for t in self._odeList]
-                A = sympy.Matrix(checkEquation(eqnList,
+                eqn = [t.equation for t in self._odeList]
+                A = sympy.Matrix(checkEquation(eqn,
                                                *self._getListOfVariablesDict(),
                                                subsDerived=False))
             else:

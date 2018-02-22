@@ -1,9 +1,6 @@
 from unittest import TestCase
 
-from collections import OrderedDict
-
 import numpy
-import sympy
 
 from pygom import DeterministicOde, SimulateOde, Transition, TransitionType
 

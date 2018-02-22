@@ -26,7 +26,8 @@ class TestModelVector(TestCase):
                                      transition_type=TransitionType.T)
                           ]
         # initialize the model
-        ode = DeterministicOde(state_list, param_list, transition=transition_list)
+        ode = DeterministicOde(state_list, param_list,
+                               transition=transition_list)
         ode.get_ode_eqn()
 
         t = numpy.append(0, 4*numpy.logspace(-6, 6, 1000))

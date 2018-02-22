@@ -3,7 +3,7 @@ from unittest import TestCase
 import numpy
 import scipy.integrate
 
-from pygom import common_models
+from pygom.model import common_models
 
 class TestModelExisting(TestCase):
 

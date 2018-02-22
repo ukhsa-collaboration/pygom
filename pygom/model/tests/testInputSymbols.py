@@ -21,7 +21,7 @@ class TestInputSymbols(TestCase):
 #                 ode = DeterministicOde(state, param_list)
 #             except:
 #                 total_fail += 1
-# 
+#
 #         if totalFail != len(state_list):
 #             raise Exception("We passed some of the illegal input...")
         # Happy! :)
