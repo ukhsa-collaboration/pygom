@@ -32,7 +32,7 @@ We set up an SIR model as seen previously in :ref:`sir`.
 
     In [189]: # initialize the model
 
-    In [190]: ode = common_models.SIR().setParameters(paramEval)
+    In [190]: ode = common_models.SIR(paramEval)
 
 
 and we assume that we have perfect information about the :math:`R` compartment.

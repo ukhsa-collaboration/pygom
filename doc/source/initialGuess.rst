@@ -26,7 +26,9 @@ A method to obtain such initial guess based on the collocation is available in t
 
     In [6]: paramEval = [('a',0.2), ('b',0.2), ('c',3.0)]
 
-    In [7]: ode = common_models.FitzHugh().setParameters(paramEval).setInitialValue(x0, t0)
+    In [7]: ode = common_models.FitzHugh(paramEval)
+
+    In [8]: ode.initial_values = (x0, t0)
 
     In [8]: t = numpy.linspace(1, 20, 30).astype('float64')
 
@@ -36,7 +38,7 @@ Below, we try to find the initial guess without supplying any further informatio
 
 .. ipython::
 
-    In [10]: theta, sInfo = get_init.getInit(solution[1::,:], t, ode, theta=None, full_output=True)
+    In [10]: theta, sInfo = get_init(solution[1::,:], t, ode, theta=None, full_output=True)
     
     In [11]: print(theta)
     

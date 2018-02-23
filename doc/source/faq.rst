@@ -15,7 +15,7 @@ This is because the package is not optimized for speed.  Although the some of th
     G = self.Grad(state,t)
     A = numpy.dot(J,S) + G
     
-in :func:`.operateOdeModel.evalSensitivity`.  The first two operations can be inlined into the third and the third line itself can be rewritten as:
+in :func:`.DeterministicOde.evalSensitivity`.  The first two operations can be inlined into the third and the third line itself can be rewritten as:
 
 .. python:
 
@@ -33,7 +33,7 @@ Why not use mpmath library throughout?
 
 This is because we have a fair number of operations that depends on :mod:`scipy`.  Obviously, we can solve ode using :mod:`mpmath` and do standard linear algebra.  Unfortunately, optimization and statistics packages and routine are mostly based on :mod:`numpy`.
 
-Computing the gradient using :class:`.squareLoss` is slow
+Computing the gradient using :class:`.SquareLoss` is slow
 =========================================================
 
 It will always be slow on the first operation.  This is due to the design where the initialization of the class is fast and only find derivative information/compile function during runtime.  After the first calculation, things should be significantly faster.
@@ -47,7 +47,7 @@ Can you not convert a non-autonumous system to an autonomous system for me autom
 
 Although we can do that, it is not, and will not be implemented.  This is to ensure that the end user such as yourself are fully aware of the equations being defined.
 
-Getting the sensitivities from :class:`.squareLoss` did not get a speed up when I used a restricted set of parameters
+Getting the sensitivities from :class:`.SquareLoss` did not get a speed up when I used a restricted set of parameters
 =====================================================================================================================
 
 This is because we currently evaluate the full set of sensitivities before extracting them out.  Speeding this up for a restrictive set is being considered.  A main reason that stopped us from implementing is that we find the symbolic gradient of the ode before compiling it.  Which means that one function call to the compiled file will return the full set of sensitivities and we would only be extracting the appropriate elements from the matrix.  This only amounts to a small speed up.  The best method would be to compile only the necessary elements of the gradient matrix, but this would require much more work both within the code, and later on when variables are being added/deleted as all these compilation are perfromed in runtime.

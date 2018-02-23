@@ -10,13 +10,13 @@ This package provides the functionality to process EpiJSON data.  Due to the nat
 
 .. ipython::
 
-    In [1]: from pygom.loss.read_epijson import epijsonToDataFrame
+    In [1]: from pygom.loss.read_epijson import epijson_to_data_frame
 
     In [2]: import pkgutil
 
     In [3]: data = pkgutil.get_data('pygom', 'data/eg1.json')
 
-    In [3]: df = epijsonToDataFrame(data)
+    In [3]: df = epijson_to_data_frame(data)
 
     In [4]: print(df)
 
@@ -28,7 +28,7 @@ Given that the aim of loading the data is usually for model fitting, we allow Ep
 
     In [2]: from pygom.loss.epijson_loss import EpijsonLoss
 
-    In [3]: ode = common_models.SIR().setParameters([0.5, 0.3])
+    In [3]: ode = common_models.SIR([0.5, 0.3])
 
     In [4]: obj = EpijsonLoss([0.005, 0.03], ode, data, 'Death', 'R', [300, 2, 0])
 

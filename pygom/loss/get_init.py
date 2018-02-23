@@ -16,7 +16,7 @@ def get_init(y, t, ode, theta=None, full_output=False):
         observed values
     t: array like
         time
-    ode: :class:`pygom.model.OperateOdeModel`
+    ode: :class:`.DeterministicOde`
         an ode object
     theta: array like
         parameter value
@@ -30,7 +30,7 @@ def get_init(y, t, ode, theta=None, full_output=False):
 
     '''
     if theta is None:
-        p = ode._num_param
+        p = ode.num_param
         theta = np.ones(p)/2.0
 
     f = partial(_fitGivenSmoothness, y, t, ode, theta)
@@ -110,7 +110,7 @@ def cost_grad_interpolant(ode, spline_list, t, theta):
 
     Parameters
     ----------
-    ode: :class:`pygom.model.DeterministicOde`
+    ode: :class:`.DeterministicOde`
         an ode object
     spline_list: list
         list of :class:`scipy.interpolate.UnivariateSpline`
@@ -138,7 +138,7 @@ def cost_interpolant(ode, spline_list, t, theta, vec=True, aggregate=True):
 
     Parameters
     ----------
-    ode: :class:`pygom.model.DeterministicOde`
+    ode: :class:`.DeterministicOde`
         an ode object
     spline_list: list
         list of :class:`scipy.interpolate.UnivariateSpline`
@@ -167,7 +167,7 @@ def residual_interpolant(ode, spline_list, t, theta, vec=True):
 
     Parameters
     ----------
-    ode: :class:`pygom.model.DeterministicOde`
+    ode: :class:`.DeterministicOde`
         an ode object
     spline_list: list
         list of :class:`scipy.interpolate.UnivariateSpline`
@@ -205,7 +205,7 @@ def cost_sample(ode, fxApprox, xApprox, t, theta, vec=True, aggregate=True):
 
     Parameters
     ----------
-    ode: :class:`pygom.model.DeterministicOde`
+    ode: :class:`.DeterministicOde`
         an ode object
     fxApprox: list
         list of approximated values for the first derivative
@@ -262,7 +262,7 @@ def residual_sample(ode, fxApprox, xApprox, t, theta, vec=True):
 
     Parameters
     ----------
-    ode: :class:`pygom.model.DeterministicOde`
+    ode: :class:`.DeterministicOde`
         an ode object
     fxApprox: list
         list of approximated values for the first derivative
@@ -303,7 +303,7 @@ def jac_sample(ode, fxApprox, xApprox, t, theta, vec=True):
 
     Parameters
     ----------
-    ode: :class:`pygom.model.DeterministicOde`
+    ode: :class:`.DeterministicOde`
         an ode object
     fxApprox: list
         list of approximated values for the first derivative
@@ -328,7 +328,7 @@ def jac_sample(ode, fxApprox, xApprox, t, theta, vec=True):
     ode.parameters = theta
     n = len(fxApprox)
     d = ode.num_state
-    p = ode._num_param
+    p = ode.num_param
     g = np.zeros((n, d, p))
     for i, x in enumerate(xApprox):
         g[i] = -2*ode.grad(x, t[i])
@@ -339,7 +339,7 @@ def jac_sample(ode, fxApprox, xApprox, t, theta, vec=True):
         return g
 
 def grad_sample(ode, fxApprox, xApprox, t, theta,
-               vec=False, output_residual=False):
+                vec=False, output_residual=False):
     '''
     Returns the gradient of the objective value using the state
     values of the interpolant given samples at time points t. Note
@@ -348,7 +348,7 @@ def grad_sample(ode, fxApprox, xApprox, t, theta,
 
     Parameters
     ----------
-    ode: :class:`pygom.model.DeterministicOde`
+    ode: :class:`.DeterministicOde`
         an ode object
     fxApprox: list
         list of approximated values for the first derivative
@@ -376,7 +376,7 @@ def grad_sample(ode, fxApprox, xApprox, t, theta,
     ode.parameters = theta
     r = residual_sample(ode, fxApprox, xApprox, t, theta, vec=False)
 
-    g = np.zeros((len(fxApprox), ode._num_param))
+    g = np.zeros((len(fxApprox), ode.num_param))
     for i, x in enumerate(xApprox):
         g[i] = -2*ode.grad(x, t[i]).T.dot(r[i])
 

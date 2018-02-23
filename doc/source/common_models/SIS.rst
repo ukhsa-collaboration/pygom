@@ -23,11 +23,12 @@ An example would be
     In [1]: t = numpy.linspace(0, 20, 101)
     
     In [1]: x0 = [1.0, 0.1]
-    
-    In [1]: solution = ode.setInitialValue(x0, t[0]).integrate(t[1::])
-    
+
+    In [1]: ode.initial_values = (x0, t[0])
+
+    In [1]: solution = ode.integrate(t[1::])
+
     @savefig common_models_sis.png    
     In [1]: ode.plot()
 
     In [1]: plt.close()
-

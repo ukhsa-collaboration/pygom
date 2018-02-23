@@ -24,8 +24,10 @@ Note that the examples and parameters are taken from [Brauer2008]_, namely Figur
     In [1]: N = 7781984.0
     
     In [1]: x0 = [1.0, 10.0/N, 0.0]
-    
-    In [1]: solution = ode.setInitialValue(x0, t[0]).integrate(t[1::])
+
+    In [1]: ode.initial_values = (x0, t[0])
+
+    In [1]: solution = ode.integrate(t[1::])
     
     @savefig common_models_sir.png  
     In [1]: ode.plot()
@@ -35,8 +37,10 @@ Now we have the more sensible plot, where the initial susceptibles is only a fra
 .. ipython::
 
     In [1]: x0 = [0.065, 123*(5.0/30.0)/N, 0.0]
-    
-    In [1]: solution = ode.setInitialValue(x0, t[0]).integrate(t[1::])
+
+    In [1]: ode.initial_values = (x0, t[0])
+
+    In [1]: solution = ode.integrate(t[1::])
     
     @savefig common_models_sir_realistic.png  
     In [1]: ode.plot()

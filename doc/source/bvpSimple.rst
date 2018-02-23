@@ -4,7 +4,7 @@
 Solving Boundary Value Problems
 *******************************
 
-In addition to finding solutions for an IVP and estimate the unknown parameters, this package also allows you to solve BVP with a little bit of imagination.  Here, we are going to show how a BVP can be solved by treating it as a parameter estimation problem.  Essentially, a shooting method where the first boundary condition defines the initial condition of an IVP and the second boundary condition is an observation.  Two examples, both from MATLAB [1], will be shown here.
+In addition to finding solutions for an IVP and estimate the unknown parameters, this package also allows you to solve BVP with a little bit of imagination.  Here, we are going to show how a BVP can be solved by treating it as a parameter estimation problem.  Essentially, a shooting method where the first boundary condition defines the initial condition of an IVP and the second boundary condition is an observation.  Two examples, both from MATLAB [1]_, will be shown here.
 
 Simple model 1
 ==============
@@ -25,7 +25,7 @@ using an auxiliary variable :math:`y_{1} = \nabla y` and :math:`y_{0} = y`.  Set
 
 .. ipython::
 
-    In [1]: from pygom import Transition, TransitionType, OperateOdeModel, SquareLoss
+    In [1]: from pygom import Transition, TransitionType, DeterministicOde, SquareLoss
 
     In [1]: import matplotlib.pyplot as plt
 
@@ -33,19 +33,19 @@ using an auxiliary variable :math:`y_{1} = \nabla y` and :math:`y_{0} = y`.  Set
 
     In [3]: paramList = []
     
-    In [4]: ode1 = Transition(origState='y0',
+    In [4]: ode1 = Transition(origin='y0',
        ...:                   equation='y1',
-       ...:                   transitionType=TransitionType.ODE)
+       ...:                   transition_type=TransitionType.ODE)
 
-    In [5]: ode2 = Transition(origState='y1', 
+    In [5]: ode2 = Transition(origin='y1', 
        ...:                   equation='-abs(y0)',
-       ...:                   transitionType=TransitionType.ODE)
+       ...:                   transition_type=TransitionType.ODE)
                               
-    In [6]: model = OperateOdeModel(stateList,
-       ...:                         paramList,
-       ...:                         odeList=[ode1, ode2])    
+    In [6]: model = DeterministicOde(stateList,
+       ...:                          paramList,
+       ...:                          ode=[ode1, ode2])    
 
-    In [7]: model.getOde()
+    In [7]: model.get_ode_eqn()
     
 We check that the equations are correct before proceeding to set up our loss function.  
     
@@ -59,7 +59,7 @@ We check that the equations are correct before proceeding to set up our loss fun
 
     In [3]: t = numpy.linspace(0, 4, 100)
 
-    In [4]: model = model.setInitialValue(initialState, t[0])
+    In [4]: model.initial_values = (initialState, t[0])
     
     In [5]: solution = model.integrate(t[1::])
     
@@ -82,8 +82,8 @@ Setting up the second boundary condition :math:`y(4) = -2` is easy, because that
        ...:                  t0=t[0], 
        ...:                  t=t[-1], 
        ...:                  y=[-2],
-       ...:                  stateName=['y0'],
-       ...:                  targetState=['y1'])
+       ...:                  state_name=['y0'],
+       ...:                  target_state=['y1'])
                              
     In [9]: thetaHat = minimize(fun=obj.costIV, x0=[0.0])
     
@@ -131,36 +131,40 @@ and we aim to solve it by converting it to a first order ODE and tackle it as an
 
     In [5]: ode3 = Transition('tau', '1', TransitionType.ODE)
 
-    In [6]: model = OperateOdeModel(stateList,paramList,odeList=[ode1, ode2, ode3])
+    In [6]: model = DeterministicOde(stateList, paramList, ode=[ode1, ode2, ode3])
 
     In [7]: theta = [1.0, 1.0, 0.0]
 
-    In [7]: p = 15.0
+    In [8]: p = 15.0
 
-    In [7]: t = numpy.linspace(0, numpy.pi)
+    In [9]: t = numpy.linspace(0, numpy.pi)
 
-    In [8]: model = model.setParameters([('p',p)]).setInitialValue(theta,t[0])
+    In [10]: model.parameters = [('p',p)]
 
-    In [8]: solution = model.integrate(t[1::])
+    In [11]: model.initial_values = (theta, t[0])
+
+    In [12]: solution = model.integrate(t[1::])
     
-    In [9]: f = plt.figure()
+    In [13]: f = plt.figure()
 
     @savefig bvp2_random_guess_plot.png
-    In [9]: model.plot()
+    In [14]: model.plot()
 
-    In [7]: plt.close()
+    In [15]: plt.close()
 
 Now we are ready to setup the estimation.  Like before, we setup the second boundary condition by pretending that it is an observation.  We have all the initial conditions defined by the first boundary condition
 
 .. ipython::
 
-    In [1]: obj = SquareLoss(15.0, model, x0=[1.0, 0.0, 0.0], t0=0.0, t=numpy.pi, y=0.0, stateName='y1')
+    In [1]: obj = SquareLoss(15.0, model, x0=[1.0, 0.0, 0.0], t0=0.0, t=numpy.pi, y=0.0, state_name='y1')
 
     In [2]: xhatObj = minimize(obj.cost,[15])
 
     In [3]: print(xhatObj)
 
-    In [4]: model = model.setParameters([('p',xhatObj['x'][0])]).setInitialValue([1.0, 0.0, 0.0], t[0])
+    In [4]: model.parameters = [('p', xhatObj['x'][0])]
+
+    In [5]: model.initial_values = ([1.0, 0.0, 0.0], t[0])
 
     In [5]: solution = model.integrate(t[1::])
     
@@ -171,8 +175,8 @@ Now we are ready to setup the estimation.  Like before, we setup the second boun
     
     In [8]: plt.close()
 
-The plot of the solution shows the path that satisfies all boundary condition.  The last subplot is time which obvious is redundant here but the :meth:`OperateOdeModel.plot` method is not yet able to recognize the time component.  Possible speed up can be achieved through the use of derivative information or via root finding method that tackles the gradient directly, instead of the cost function.
+The plot of the solution shows the path that satisfies all boundary condition.  The last subplot is time which obvious is redundant here but the :meth:`DeterministicOde.plot` method is not yet able to recognize the time component.  Possible speed up can be achieved through the use of derivative information or via root finding method that tackles the gradient directly, instead of the cost function.
 
 **Reference**
 
-[1] http://uk.mathworks.com/help/matlab/ref/bvp4c.html
+.. [1] http://uk.mathworks.com/help/matlab/ref/bvp4c.html

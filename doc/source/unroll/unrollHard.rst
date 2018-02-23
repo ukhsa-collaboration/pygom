@@ -35,39 +35,39 @@ We slightly change the model by introducing a new state **D** to convert it into
 
 .. ipython::
 
-    In [1]: from pygom import SimulateOdeModel, Transition, TransitionType
+    In [1]: from pygom import SimulateOde, Transition, TransitionType
 
     In [1]: stateList = ['S', 'L', 'I', 'A', 'R', 'D']
 
     In [2]: paramList = ['beta', 'p', 'kappa', 'alpha', 'f', 'delta', 'epsilon', 'N']
 
     In [3]: odeList = [
-       ...:            Transition(origState='S', equation='- beta*S/N*(I + delta*A)', transitionType=TransitionType.ODE),
-       ...:            Transition(origState='L', equation='beta*S/N*(I + delta*A) - kappa*L', transitionType=TransitionType.ODE),
-       ...:            Transition(origState='I', equation='p*kappa*L - alpha*I', transitionType=TransitionType.ODE),
-       ...:            Transition(origState='A', equation='(1 - p)*kappa * L - epsilon*A', transitionType=TransitionType.ODE),
-       ...:            Transition(origState='R', equation='f*alpha*I + epsilon*A', transitionType=TransitionType.ODE),
-       ...:            Transition(origState='D', equation='(1 - f)*alpha*I', transitionType=TransitionType.ODE) ]
+       ...:            Transition(origin='S', equation='- beta*S/N*(I + delta*A)', transition_type=TransitionType.ODE),
+       ...:            Transition(origin='L', equation='beta*S/N*(I + delta*A) - kappa*L', transition_type=TransitionType.ODE),
+       ...:            Transition(origin='I', equation='p*kappa*L - alpha*I', transition_type=TransitionType.ODE),
+       ...:            Transition(origin='A', equation='(1 - p)*kappa * L - epsilon*A', transition_type=TransitionType.ODE),
+       ...:            Transition(origin='R', equation='f*alpha*I + epsilon*A', transition_type=TransitionType.ODE),
+       ...:            Transition(origin='D', equation='(1 - f)*alpha*I', transition_type=TransitionType.ODE) ]
 
-    In [4]: ode = SimulateOdeModel(stateList, paramList, odeList=odeList)
+    In [4]: ode = SimulateOde(stateList, paramList, ode=odeList)
 
-    In [5]: ode.getTransitionMatrix()
+    In [5]: ode.get_transition_matrix()
 
-    In [6]: ode2 = ode.returnObjWithTransitionsAndBD()
+    In [6]: ode2 = ode.get_unrolled_obj()
 
-    In [7]: ode2.getTransitionMatrix()
+    In [7]: ode2.get_transition_matrix()
     
-    In [8]: ode2.getOde()
+    In [8]: ode2.get_ode_eqn()
 
 After unrolling the odes, we have the following transition graph
 
 .. ipython::
     
     @savefig sir_unrolled_transition_graph_hard.png
-    In [1]: ode2.getTransitionGraph()
+    In [1]: ode2.get_transition_graph()
     
     In [2]: plt.close()
     
-    In [3]: print(sum(ode.getOde() - ode2.getOde()).simplify()) # difference
+    In [3]: print(sum(ode.get_ode_eqn() - ode2.get_ode_eqn()).simplify()) # difference
 
 which is exactly the same apart from slightly weird arrangement of symbols in some of the equations.  The last line with a value of zero also reaffirms the result.

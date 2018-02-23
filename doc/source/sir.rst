@@ -34,9 +34,9 @@ We can set this up as follows
     In [38]: # then the set of ode
 
     In [38]: odeList = [
-       ....:     Transition(origState='S', equation='-beta*S*I', transitionType=TransitionType.ODE),
-       ....:     Transition(origState='I', equation='beta*S*I - gamma*I', transitionType=TransitionType.ODE),
-       ....:     Transition(origState='R', equation='gamma*I', transitionType=TransitionType.ODE)
+       ....:     Transition(origin='S', equation='-beta*S*I', transition_type=TransitionType.ODE),
+       ....:     Transition(origin='I', equation='beta*S*I - gamma*I', transition_type=TransitionType.ODE),
+       ....:     Transition(origin='R', equation='gamma*I', transition_type=TransitionType.ODE)
        ....: ]
 
 Here, we have invoke a class from :mod:`Transition` to define the transition object.  We proceed here and ignore the details for now.  The details of defining a transition object will be covered later in :ref:`transition`.  Both the set of states and parameters should be defined when constructing the object, even though not explicitly enforced, to help clarify what we are trying to model.  Similarly, this holds for the rest, such as the derived parameters and transitions, where we force the end user to input the different type of transition/process via the corret argument.  See :ref:`defining-eqn` for an example when the input is wrong.
@@ -45,19 +45,19 @@ Here, we have invoke a class from :mod:`Transition` to define the transition obj
 
     In [39]: # now we import the ode module
 
-    In [40]: from pygom import OperateOdeModel
+    In [40]: from pygom import DeterministicOde
 
     In [41]: # initialize the model
 
-    In [42]: model = OperateOdeModel(stateList,
-       ....:                         paramList,
-       ....:                         odeList=odeList)
+    In [42]: model = DeterministicOde(stateList,
+       ....:                          paramList,
+       ....:                          ode=odeList)
 
 That is all the information required to define a simple SIR model.  We can verify the equations by
 
 .. ipython::
 
-    In [40]: model.getOde()
+    In [40]: model.get_ode_eqn()
 
 where we can see the equations corresponding to their respective :math:`S,I` and :math:`R` state. The set of ode is in the standard :math:`S,I,R` sequence because of how the states are defined initially.  We can change them around
 
@@ -67,19 +67,19 @@ where we can see the equations corresponding to their respective :math:`S,I` and
 
     In [60]: stateList = ['R', 'S', 'I']
 
-    In [61]: model = OperateOdeModel(stateList,
-       ....:                         paramList,
-       ....:                         odeList=odeList)
+    In [61]: model = DeterministicOde(stateList,
+       ....:                          paramList,
+       ....:                          ode=odeList)
 
-    In [62]: model.getOde()
+    In [62]: model.get_ode_eqn()
 
 and find that the set of ode's still comes out in the correct order with respect to how the states are ordered.  In addition to showing the ode in English, we can also display it as either symbols or latex code which save some extra typing when porting the equations to a proper document.
 
 .. ipython::
 
-    In [1]: model.printOde()
+    In [1]: model.print_ode()
 
-    In [2]: model.printOde(True)
+    In [2]: model.print_ode(True)
 
 The SIR model above was defined as a set of explicit ODEs.  An alternative way is to define the model using a series of transitions between the states.  We have provided the capability to obtain a *best guess* transition matrix when only the ODEs are available.  See the section :ref:`unrollOde` for more information, and in particular :ref:`unrollSimple` for the continuing demonstration of the SIR model.
 
@@ -91,19 +91,19 @@ The most obvious thing information we wish to know about an ode is whether it is
 
 .. ipython:: 
 
-    In [65]: model.isOdeLinear()
+    In [65]: model.linear_ode()
 
 which we know is not for an SIR.  So we may want to have a look at the Jacobian say, it is as simple as 
 
 .. ipython::
 
-    In [64]: model.getJacobian()
+    In [64]: model.get_jacobian_eqn()
 
 or maybe we want to know the gradient (of the ode)
 
 .. ipython::
 
-    In [65]: model.getGrad()
+    In [65]: model.get_grad_eqn()
 
 Invoking the functions that computes :math:`f(x)` (or the derivatives) like below will output an error (not run)
 
@@ -111,7 +111,7 @@ Invoking the functions that computes :math:`f(x)` (or the derivatives) like belo
 
     In [66]: # model.ode()
     
-    In [67]: # model.Jacobian()
+    In [67]: # model.jacobian()
 
 This is because the some of the functions are used to solve the ode numerically and expect input values of both state and time.  But just invoking the two methods above without defining the parameter value, such as the second line below, will also throws an error.
 
@@ -125,7 +125,7 @@ It is important to note at this point that the numeric values of the states need
 
 .. ipython::
     
-    In [79]: model.getStateList()
+    In [79]: model.state_list
 
 There is currently no mechanism to set the numeric values of the states along with the state.  This is because of implementation issue with external package, such as solving an initial value problem.   
 
@@ -143,7 +143,7 @@ Setting the parameters will allow us to evaluate
        ....:     ('gamma',1.0/3.0)
        ....:     ]
 
-    In [82]: model = model.setParameters(paramEval)
+    In [82]: model.parameters = paramEval
 
     In [83]: model.ode(initialState, 1)
 
@@ -186,19 +186,23 @@ Where a nice standard SIR progression can be observed in the figure above.  Alte
 
 .. ipython::
 
-    In [1]: solution = model.setInitialValue(initialState, t[0]).setParameters(paramEval).integrate(t[1::])
+    In [1]: model.initial_values = (initialState, t[0])
 
-    In [2]: model.plot()
+    In [2]: model.parameters = paramEval
+
+    In [3]: solution = model.integrate(t[1::])
+
+    In [4]: model.plot()
 
 The plot is not shown as it is identical to the one above without the axis labels.  Obviously, we can solve the ode above using the Jacobian as well.  Unfortunately, it does not help because the number of times the Jacobian was evaluated was zero, as expected given that our set of equations are not stiff.
 
 .. ipython::
 
-    In [583]: %timeit solution1,output1 = scipy.integrate.odeint(model.ode, initialState, t, full_output=True)
+    In [583]: %timeit solution1, output1 = scipy.integrate.odeint(model.ode, initialState, t, full_output=True)
 
-    In [584]: %timeit solution2,output2 = scipy.integrate.odeint(model.ode, initialState, t, Dfun=model.Jacobian, mu=None, ml=None, full_output=True)
+    In [584]: %timeit solution2, output2 = scipy.integrate.odeint(model.ode, initialState, t, Dfun=model.jacobian, mu=None, ml=None, full_output=True)
 
-    In [584]: %timeit solution3,output3 = model.integrate(t, full_output=True)
+    In [584]: %timeit solution3, output3 = model.integrate(t, full_output=True)
 
 It is important to note that we return our Jacobian as a dense square matrix.  Hence, the two argument (mu,ml) for the ode solver was set to ``None`` to let it know the output explicitly.
 
@@ -211,9 +215,9 @@ Likewise, the sensitivity equations are also solved as an initial value problem.
 
     In [452]: stateList = ['S', 'I', 'R']
 
-    In [453]: model = OperateOdeModel(stateList,
-       .....:                         paramList,
-       .....:                         odeList=odeList)
+    In [453]: model = DeterministicOde(stateList,
+       .....:                          paramList,
+       .....:                          ode=odeList)
 
     In [454]: initialState = [1, 1.27e-6, 0]
 
@@ -222,9 +226,9 @@ Likewise, the sensitivity equations are also solved as an initial value problem.
        .....:              ('gamma', 1.0/3.0)
        .....:             ]
 
-    In [456]: model.setParameters(paramEval)
+    In [456]: model.parameters = paramEval
 
-    In [457]: solution = scipy.integrate.odeint(model.odeAndSensitivity, numpy.append(initialState, numpy.zeros(6)), t)
+    In [457]: solution = scipy.integrate.odeint(model.ode_and_sensitivity, numpy.append(initialState, numpy.zeros(6)), t)
 
     In [458]: f,axarr = plt.subplots(3,3);
 

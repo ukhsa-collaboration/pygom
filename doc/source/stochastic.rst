@@ -8,7 +8,7 @@ There are multiple interpretation of stochasticity of a deterministic ode.  We h
 
 .. ipython::
 
-    In [1]: from pygom import SimulateOdeModel, Transition, TransitionType
+    In [1]: from pygom import SimulateOde, Transition, TransitionType
 
     In [1]: import matplotlib.pyplot as plt
 
@@ -23,13 +23,15 @@ There are multiple interpretation of stochasticity of a deterministic ode.  We h
     In [1]: paramList = ['beta', 'gamma']
 
     In [1]: transitionList = [
-       ...:                   Transition(origState='S', destState='I', equation='beta*S*I', transitionType=TransitionType.T),
-       ...:                   Transition(origState='I', destState='R', equation='gamma*I', transitionType=TransitionType.T)
+       ...:                   Transition(origin='S', destination='I', equation='beta*S*I', transition_type=TransitionType.T),
+       ...:                   Transition(origin='I', destination='R', equation='gamma*I', transition_type=TransitionType.T)
        ...:                   ]
 
-    In [1]: odeS = SimulateOdeModel(stateList,paramList,transitionList=transitionList)
+    In [1]: odeS = SimulateOde(stateList, paramList, transition=transitionList)
 
-    In [1]: odeS = odeS.setParameters([0.5, 1.0/3.0]).setInitialValue(x0, t[0])
+    In [1]: odeS.parameters = [0.5, 1.0/3.0]
+
+    In [1]: odeS.initial_values = (x0, t[0])
 
     In [1]: solutionReference = odeS.integrate(t[1::], full_output=False)
 
@@ -49,9 +51,9 @@ In our first scenario, we assume that the parameters follow some underlying dist
 
     In [1]: d['gamma'] = (rgamma,(100.0, 300.0))
 
-    In [1]: odeS = odeS.setParameters(d)
+    In [1]: odeS.parameters = d
 
-    In [1]: Ymean,Yall = odeS.simulateParam(t[1::], 10, full_output=True)
+    In [1]: Ymean, Yall = odeS.simulate_param(t[1::], 10, full_output=True)
 
 Note that a message is printed above where it is trying to connect to an mpi backend, as our module has the capability to compute in parallel using the IPython.  We have simulated a total of 10 different solutions using different parameters, the plots can be seen below
 
@@ -100,9 +102,9 @@ Obviously, there may be scenarios where only some of the parameters are stochast
 
     In [1]: d['gamma'] = 1.0/3.0
 
-    In [1]: odeS = odeS.setParameters(d)
+    In [1]: odeS.parameters = d
 
-    In [1]: YmeanSingle, YallSingle = odeS.simulateParam(t[1::], 5, full_output=True)
+    In [1]: YmeanSingle, YallSingle = odeS.simulate_param(t[1::], 5, full_output=True)
 
     In [1]: f, axarr = plt.subplots(1,3)
 
@@ -138,17 +140,19 @@ A couple of the commmon implementation for the jump process have been implemente
     In [1]: paramList = ['beta', 'gamma', 'N']
 
     In [1]: transitionList = [
-       ...:                   Transition(origState='S', destState='I', equation='beta*S*I/N', transitionType=TransitionType.T),
-       ...:                   Transition(origState='I', destState='R', equation='gamma*I', transitionType=TransitionType.T)
+       ...:                   Transition(origin='S', destination='I', equation='beta*S*I/N', transition_type=TransitionType.T),
+       ...:                   Transition(origin='I', destination='R', equation='gamma*I', transition_type=TransitionType.T)
        ...:                   ]
 
-    In [1]: odeS = SimulateOdeModel(stateList, paramList, transitionList=transitionList)
+    In [1]: odeS = SimulateOde(stateList, paramList, transition=transitionList)
 
-    In [1]: odeS = odeS.setParameters([0.5, 1.0/3.0, x0[0]]).setInitialValue(x0, t[0])
+    In [1]: odeS.parameters = [0.5, 1.0/3.0, x0[0]]
+
+    In [1]: odeS.initial_values = (x0, t[0])
 
     In [1]: solutionReference = odeS.integrate(t[1::])
 
-    In [1]: simX,simT = odeS.simulateJump(t[1:10], 10, full_output=True)
+    In [1]: simX, simT = odeS.simulate_jump(t[1:10], 10, full_output=True)
 
     In [1]: f, axarr = plt.subplots(1, 3)
 
@@ -166,7 +170,7 @@ Above, we see ten different simulation, again using the SIR model but without st
 
 .. ipython::
 
-    In [1]: simX,simT = odeS.simulateJump(t, 5, full_output=True)
+    In [1]: simX,simT = odeS.simulate_jump(t, 5, full_output=True)
 
     In [1]: simMean = numpy.mean(simX, axis=0)
 

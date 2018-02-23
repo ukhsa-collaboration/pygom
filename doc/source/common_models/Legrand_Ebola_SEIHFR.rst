@@ -82,7 +82,9 @@ A brief example (from [3]) is given here with a slightly more in depth example i
        ...:                                    ('interventionTime',7.0)
        ...:                                    ])
 
-    In [1]: solution = ode.setInitialValue(x0, 0).integrate(t)
+    In [1]: ode.initial_values = (x0, t[0])
+
+    In [1]: solution = ode.integrate(t)
 
     @savefig common_models_seihfr.png
     In [1]: ode.plot()

@@ -27,28 +27,28 @@ Let's define this using the code block below
 
 .. ipython::
 
-    In [1]: from pygom import SimulateOdeModel, Transition, TransitionType
+    In [1]: from pygom import SimulateOde, Transition, TransitionType
 
-    In [2]: ode1 = Transition(origState='S',equation='-beta*S*I', transitionType=TransitionType.ODE)
+    In [2]: ode1 = Transition(origin='S', equation='-beta*S*I', transition_type=TransitionType.ODE)
 
-    In [3]: ode2 = Transition(origState='I',equation='beta*S*I - gamma*I', transitionType=TransitionType.ODE)
+    In [3]: ode2 = Transition(origin='I', equation='beta*S*I - gamma*I', transition_type=TransitionType.ODE)
 
-    In [4]: ode3 = Transition(origState='R',equation='gamma*I', transitionType=TransitionType.ODE)
+    In [4]: ode3 = Transition(origin='R', equation='gamma*I', transition_type=TransitionType.ODE)
 
     In [6]: stateList = ['S', 'I', 'R']
 
     In [7]: paramList = ['beta', 'gamma']
 
-    In [8]: ode = SimulateOdeModel(stateList,
-       ...:                        paramList,
-       ...:                        odeList=[ode1, ode2, ode3])
+    In [8]: ode = SimulateOde(stateList,
+       ...:                   paramList,
+       ...:                   ode=[ode1, ode2, ode3])
 
-    In [9]: ode.getTransitionMatrix()
+    In [9]: ode.get_transition_matrix()
 
 and the last line shows that the transition matrix is empty.  This is the expected result because :class:`SimulateOdeModel` was not initialized using transitions.  We populate the transition matrix below and demonstrate the difference. 
 
 .. ipython::
 
-    In [1]: ode = ode.returnObjWithTransitionsAndBD()
+    In [1]: ode = ode.get_unrolled_obj()
 
-    In [2]: ode.getTransitionMatrix()
+    In [2]: ode.get_transition_matrix()
