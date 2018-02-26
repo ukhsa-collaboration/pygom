@@ -15,20 +15,21 @@ __all__ = [
 
 from pygom.loss.base_loss import BaseLoss
 from pygom.loss.loss_type import Normal, Square, Poisson
-from pygom.model.ode_utils import checkArrayType
+from pygom.model.ode_utils import check_array_type
 
 class SquareLoss(BaseLoss):
     '''
     The square loss function
     '''
-    def __init__(self, theta, ode, x0, t0, t, y, stateName,
-                 stateWeight=None, targetParam=None, targetState=None):
-        super(SquareLoss, self).__init__(theta, ode, x0, t0, t, y, stateName,
-                                         stateWeight, targetParam, targetState)
+    def __init__(self, theta, ode, x0, t0, t, y, state_name,
+                 state_weight=None, target_param=None, target_state=None):
+        super(SquareLoss, self).__init__(theta, ode, x0, t0, t, y,
+                                         state_name, state_weight,
+                                         target_param, target_state)
 
     def __repr__(self):
-        return "SquareLoss" + self._getModelStr()
-    
+        return "SquareLoss" + self._get_model_str()
+
     def _setLossType(self):
         self._lossObj = Square(self._y, self._stateWeight)
         return self._lossObj
@@ -37,18 +38,20 @@ class NormalLoss(BaseLoss):
     '''
     Realizations from a Normal distribution
     '''
-    def __init__(self, theta, ode, x0, t0, t, y, stateName,
-                 sigma=None, targetParam=None, targetState=None):
+    def __init__(self, theta, ode, x0, t0, t, y, state_name,
+                 sigma=None, target_param=None, target_state=None):
         if sigma is None:
-            super(NormalLoss, self).__init__(theta, ode, x0, t0, t, y, stateName,
-                                             sigma, targetParam, targetState)
+            super(NormalLoss, self).__init__(theta, ode, x0, t0, t, y,
+                                             state_name, sigma,
+                                             target_param, target_state)
         else:
-            sigma = checkArrayType(sigma)
-            super(NormalLoss, self).__init__(theta, ode, x0, t0, t, y, stateName,
-                                             1.0/sigma, targetParam, targetState)
+            sigma = check_array_type(sigma)
+            super(NormalLoss, self).__init__(theta, ode, x0, t0, t, y,
+                                             state_name, 1.0/sigma,
+                                             target_param, target_state)
 
     def __repr__(self):
-        return "NormalLoss" + self._getModelStr()
+        return "NormalLoss" + self._get_model_str()
 
     def _setLossType(self):
         if self._stateWeight is None:
@@ -66,13 +69,12 @@ class PoissonLoss(BaseLoss):
     '''
     Realizations from a Poisson distribution
     '''
-    def __init__(self, theta, ode, x0, t0, t, y, stateName,
-                 targetParam=None, targetState=None):
-        super(PoissonLoss, self).__init__(theta, ode, x0, t0, t, y, stateName,
-                                          None, targetParam, targetState)
+    def __init__(self, theta, ode, x0, t0, t, y, state_name,
+                 target_param=None, target_state=None):
+        super(PoissonLoss, self).__init__(theta, ode, x0, t0, t, y, state_name,
+                                          None, target_param, target_state)
     def __repr__(self):
-        return "PoissonLoss" + self._getModelStr()
-    
+        return "PoissonLoss" + self._get_model_str()
+
     def _setLossType(self):
         return Poisson(self._y)
-

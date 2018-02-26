@@ -20,7 +20,9 @@ with both birth and death processes.
 
     In [1]: x0 = [2.0, 6.0]
 
-    In [1]: ode = common_models.Lotka_Volterra({'alpha':1, 'delta':3, 'c':2, 'gamma':6}).setInitialValue(x0, 0)
+    In [1]: ode = common_models.Lotka_Volterra({'alpha':1, 'delta':3, 'c':2, 'gamma':6})
+
+    In [1]: ode.initial_values = (x0, 0)
 
     In [1]: t = numpy.linspace(0.1, 100, 10000)
 
@@ -41,9 +43,15 @@ Then we generate the graph at `Wolfram Alpha <http://www.wolframalpha.com/input/
 
     In [1]: fig = plt.figure()
 
-    In [1]: solutionList = [common_models.Lotka_Volterra({'alpha':1, 'delta':3, 'c':2, 'gamma':6}).setInitialValue([x1List[i], x2List[i]], 0).integrate(t) for i in range(len(x1List))]
+    In [1]: solutionList = list()
 
-    In [1]: for i in range(len(x1List)): plt.plot(solutionList[i][100::,0],solutionList[i][100::,1], 'b')
+    In [1]: ode = common_models.Lotka_Volterra({'alpha':1, 'delta':3, 'c':2, 'gamma':6})
+
+    In [1]: for i in range(len(x1List)):
+       ...:     ode.initial_values = ([x1List[i], x2List[i]], 0)
+       ...:     solutionList += [ode.integrate(t)]
+
+    In [1]: for i in range(len(x1List)): plt.plot(solutionList[i][100::,0], solutionList[i][100::,1], 'b')
 
     In [1]: plt.xlabel('x')
 
@@ -64,10 +72,13 @@ We also know that the system has the critical points at :math:`x = \delta / \gam
 
     In [1]: fig = plt.figure()
 
-    In [1]: solutionList = [common_models.Lotka_Volterra({'alpha':1, 'delta':3, 'c':cList[i], 'gamma':gammaList[i]}).setInitialValue(x0, 0).integrate(t) for i in range(len(cList))]
-    
+    In [1]: for i in range(len(x1List)):
+       ...:     ode = common_models.Lotka_Volterra({'alpha':1, 'delta':3, 'c':cList[i], 'gamma':gammaList[i]})
+       ...:     ode.initial_values = (x0, 0)
+       ...:     solutionList += [ode.integrate(t)]
+
     In [1]: for i in range(len(cList)): plt.plot(solutionList[i][100::,0], solutionList[i][100::,1])
-    
+
     In [1]: plt.xlabel('x')
 
     In [1]: plt.ylabel('y')

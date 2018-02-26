@@ -5,9 +5,10 @@
 
 """
 
-from .transition import TransitionType, Transition
-from .deterministic import OperateOdeModel
 from collections import OrderedDict
+
+from .transition import TransitionType, Transition
+from .deterministic import DeterministicOde
 
 def SIS(param=None):
     '''
@@ -27,24 +28,25 @@ def SIS(param=None):
     >>> ode.plot()
     '''
 
-    stateList = ['S', 'I']
-    paramList = ['beta', 'gamma']
-    transitionList = [
-        Transition(origState='S', destState='I', equation='beta*S*I',
-                   transitionType=TransitionType.T),
-        Transition(origState='I', destState='S', equation='gamma*I',
-                   transitionType=TransitionType.T)
+    state = ['S', 'I']
+    param_list = ['beta', 'gamma']
+    transition = [
+        Transition(origin='S', destination='I', equation='beta*S*I',
+                   transition_type=TransitionType.T),
+        Transition(origin='I', destination='S', equation='gamma*I',
+                   transition_type=TransitionType.T)
         ]
     # initialize the model
-    ode = OperateOdeModel(stateList,
-                          paramList,
-                          transitionList=transitionList)
+    ode = DeterministicOde(state,
+                           param_list,
+                           transition=transition)
 
     # set return, depending on whether we have input the parameters
     if param is None:
         return ode
     else:
-        return ode.setParameters(param)
+        ode.parameters = param
+        return ode
 
 
 def SIS_Periodic(param=None):
@@ -72,28 +74,28 @@ def SIS_Periodic(param=None):
     >>> ode.plot()
     '''
 
-    stateList = ['I', 'tau']
-    paramList = ['alpha']
-    derivedParamList = [('betaT', '2 - 1.8*cos(5*tau)')]
-    odeList = [
-        Transition(origState='I',
+    state = ['I', 'tau']
+    param_list = ['alpha']
+    derived_param = [('betaT', '2 - 1.8*cos(5*tau)')]
+    ode = [
+        Transition(origin='I',
                    equation='(betaT - alpha)*I - betaT*I*I',
-                   transitionType=TransitionType.ODE),
-        Transition(origState='tau',
+                   transition_type=TransitionType.ODE),
+        Transition(origin='tau',
                    equation='1',
-                   transitionType=TransitionType.ODE)
+                   transition_type=TransitionType.ODE)
         ]
     # initialize the model
-    ode = OperateOdeModel(stateList,
-                          paramList,
-                          derivedParamList=derivedParamList,
-                          odeList=odeList)
+    ode_obj = DeterministicOde(state, param_list,
+                               derived_param=derived_param,
+                               ode=ode)
 
     # set return, depending on whether we have input the parameters
     if param is None:
-        return ode
+        return ode_obj
     else:
-        return ode.setParameters(param)
+        ode_obj.parameters = param
+        return ode_obj
 
 def SIR(param=None):
     '''
@@ -129,25 +131,23 @@ def SIR(param=None):
     >>> ode.plot()
 
     '''
-    stateList = ['S', 'I', 'R']
-    paramList = ['beta', 'gamma']
-    transitionList = [
-        Transition(origState='S', destState='I', equation='beta*S*I',
-                   transitionType=TransitionType.T),
-        Transition(origState='I', destState='R', equation='gamma*I',
-                   transitionType=TransitionType.T)
+    state = ['S', 'I', 'R']
+    param_list = ['beta', 'gamma']
+    transition = [
+        Transition(origin='S', destination='I', equation='beta*S*I',
+                   transition_type=TransitionType.T),
+        Transition(origin='I', destination='R', equation='gamma*I',
+                   transition_type=TransitionType.T)
         ]
     # initialize the model
-    ode = OperateOdeModel(stateList,
-                          paramList,
-                          transitionList=transitionList)
+    ode_obj = DeterministicOde(state, param_list, transition=transition)
 
     # set return, depending on whether we have input the parameters
     if param is None:
-        return ode
+        return ode_obj
     else:
-        ode.setParameters(param)
-        return ode
+        ode_obj.parameters = param
+        return ode_obj
 
 def SIR_N(param=None):
     '''
@@ -183,26 +183,23 @@ def SIR_N(param=None):
     >>> ode.plot()
 
     '''
-    stateList = ['S', 'I', 'R']
-    paramList = ['beta', 'gamma','N']
-    transitionList = [
-        Transition(origState='S', destState='I', equation='beta*S*I/N',
-                   transitionType=TransitionType.T),
-        Transition(origState='I', destState='R', equation='gamma*I',
-                   transitionType=TransitionType.T)
+    state = ['S', 'I', 'R']
+    param_list = ['beta', 'gamma','N']
+    transition = [
+        Transition(origin='S', destination='I', equation='beta*S*I/N',
+                   transition_type=TransitionType.T),
+        Transition(origin='I', destination='R', equation='gamma*I',
+                   transition_type=TransitionType.T)
         ]
     # initialize the model
-    ode = OperateOdeModel(stateList,
-                          paramList,
-                          transitionList=transitionList)
+    ode_obj = DeterministicOde(state, param_list, transition=transition)
 
     # set return, depending on whether we have input the parameters
     if param is None:
-        return ode
+        return ode_obj
     else:
-        ode.setParameters(param)
-        return ode
-
+        ode_obj.parameters = param
+        return ode_obj
 
 def SIR_Birth_Death(param=None):
     '''
@@ -232,36 +229,36 @@ def SIR_Birth_Death(param=None):
     --------
     :func:`SIR`
     '''
-    stateList = ['S', 'I', 'R']
-    paramList = ['beta', 'gamma', 'B', 'mu']
-    transitionList = [
-        Transition(origState='S', destState='I', equation='beta*S*I',
-                   transitionType=TransitionType.T),
-        Transition(origState='I', destState='R', equation='gamma*I',
-                   transitionType=TransitionType.T)
+    state = ['S', 'I', 'R']
+    param_list = ['beta', 'gamma', 'B', 'mu']
+    transition = [
+        Transition(origin='S', destination='I', equation='beta*S*I',
+                   transition_type=TransitionType.T),
+        Transition(origin='I', destination='R', equation='gamma*I',
+                   transition_type=TransitionType.T)
         ]
     # our birth and deaths
-    birthDeathList = [
-        Transition(origState='S', equation='B',
-                   transitionType=TransitionType.B),
-        Transition(origState='S', equation='mu*S',
-                   transitionType=TransitionType.D),
-        Transition(origState='I', equation='mu*I',
-                   transitionType=TransitionType.D)
+    birth_death = [
+        Transition(origin='S', equation='B',
+                   transition_type=TransitionType.B),
+        Transition(origin='S', equation='mu*S',
+                   transition_type=TransitionType.D),
+        Transition(origin='I', equation='mu*I',
+                   transition_type=TransitionType.D)
         ]
 
     # initialize the model
-    ode = OperateOdeModel(stateList,
-                          paramList,
-                          birthDeathList=birthDeathList,
-                          transitionList=transitionList)
+    ode_obj = DeterministicOde(state, param_list,
+                           birth_death=birth_death,
+                           transition=transition)
 
     # set return, depending on whether we have input the parameters
     if param is None:
-        return ode
+        return ode_obj
     else:
-        ode.setParameters(param)
-        return ode
+        ode_obj.parameters = param
+        return ode_obj
+
 
 def SEIR(param=None):
     '''
@@ -288,26 +285,25 @@ def SEIR(param=None):
     :func:`SEIR_Birth_Death`
     '''
 
-    stateList = ['S', 'E', 'I', 'R']
-    paramList = ['beta', 'alpha', 'gamma']
+    state = ['S', 'E', 'I', 'R']
+    param_list = ['beta', 'alpha', 'gamma']
 
-    transitionList = [
-        Transition(origState='S', destState='E', equation='beta*S*I',
-                   transitionType=TransitionType.T),
-        Transition(origState='E', destState='I', equation='alpha*E',
-                   transitionType=TransitionType.T),
-        Transition(origState='I', destState='R', equation='gamma*I',
-                   transitionType=TransitionType.T)
+    transition = [
+        Transition(origin='S', destination='E', equation='beta*S*I',
+                   transition_type=TransitionType.T),
+        Transition(origin='E', destination='I', equation='alpha*E',
+                   transition_type=TransitionType.T),
+        Transition(origin='I', destination='R', equation='gamma*I',
+                   transition_type=TransitionType.T)
         ]
 
-    ode = OperateOdeModel(stateList,
-                          paramList,
-                          transitionList=transitionList)
+    ode_obj = DeterministicOde(state, param_list, transition=transition)
 
     if param is None:
-        return ode
+        return ode_obj
     else:
-        return ode.setParameters(param)
+        ode_obj.parameters = param
+        return ode_obj
 
 def SEIR_Birth_Death(param=None):
     '''
@@ -337,38 +333,38 @@ def SEIR_Birth_Death(param=None):
     :func:`SEIR`
     '''
 
-    stateList = ['S', 'E', 'I', 'R']
-    paramList = ['beta', 'alpha', 'gamma', 'mu']
+    state = ['S', 'E', 'I', 'R']
+    param_list = ['beta', 'alpha', 'gamma', 'mu']
 
-    transitionList = [
-        Transition(origState='S', destState='E', equation='beta*S*I',
-                   transitionType=TransitionType.T),
-        Transition(origState='E', destState='I', equation='alpha*E',
-                   transitionType=TransitionType.T),
-        Transition(origState='I', destState='R', equation='gamma*I',
-                   transitionType=TransitionType.T)
+    transition = [
+        Transition(origin='S', destination='E', equation='beta*S*I',
+                   transition_type=TransitionType.T),
+        Transition(origin='E', destination='I', equation='alpha*E',
+                   transition_type=TransitionType.T),
+        Transition(origin='I', destination='R', equation='gamma*I',
+                   transition_type=TransitionType.T)
         ]
 
     bdList = [
-        Transition(origState='S', equation='mu*S',
-                   transitionType=TransitionType.D),
-        Transition(origState='E', equation='mu*E',
-                   transitionType=TransitionType.D),
-        Transition(origState='I', equation='mu*I',
-                   transitionType=TransitionType.D),
-        Transition(origState='S', equation='mu',
-                   transitionType=TransitionType.B)
+        Transition(origin='S', equation='mu*S',
+                   transition_type=TransitionType.D),
+        Transition(origin='E', equation='mu*E',
+                   transition_type=TransitionType.D),
+        Transition(origin='I', equation='mu*I',
+                   transition_type=TransitionType.D),
+        Transition(origin='S', equation='mu',
+                   transition_type=TransitionType.B)
         ]
 
-    ode = OperateOdeModel(stateList,
-                          paramList,
-                          transitionList=transitionList,
-                          birthDeathList=bdList)
+    ode_obj = DeterministicOde(state, param_list,
+                           transition=transition,
+                           birth_death=bdList)
 
     if param is None:
-        return ode
+        return ode_obj
     else:
-        return ode.setParameters(param)
+        ode_obj.parameters = param
+        return ode_obj
 
 def SEIR_Birth_Death_Periodic(param=None):
     '''
@@ -411,31 +407,30 @@ def SEIR_Birth_Death_Periodic(param=None):
     :func:`SEIR`,:func:`SEIR_Birth_Death`,:func:`SIR_Periodic`
 
     '''
-    stateList = ['S', 'E', 'I', 'tau']
-    paramList = ['mu', 'alpha', 'gamma', 'beta_0', 'beta_1']
-    derivedParamList = [('beta_S', 'beta_0 * (1 + beta_1*cos(2*pi*tau))')]
-    odeList = [
-        Transition(origState='S', equation='mu - beta_S*S*I - mu*S',
-                   transitionType=TransitionType.ODE),
-        Transition(origState='E', equation='beta_S*S*I - (mu + alpha)*E',
-                   transitionType=TransitionType.ODE),
-        Transition(origState='I', equation='alpha*E - (mu + gamma)*I',
-                   transitionType=TransitionType.ODE),
-        Transition(origState='tau', equation='1',
-                   transitionType=TransitionType.ODE)
+    state = ['S', 'E', 'I', 'tau']
+    param_list = ['mu', 'alpha', 'gamma', 'beta_0', 'beta_1']
+    derived_param = [('beta_S', 'beta_0 * (1 + beta_1*cos(2*pi*tau))')]
+    ode = [
+        Transition(origin='S', equation='mu - beta_S*S*I - mu*S',
+                   transition_type=TransitionType.ODE),
+        Transition(origin='E', equation='beta_S*S*I - (mu + alpha)*E',
+                   transition_type=TransitionType.ODE),
+        Transition(origin='I', equation='alpha*E - (mu + gamma)*I',
+                   transition_type=TransitionType.ODE),
+        Transition(origin='tau', equation='1',
+                   transition_type=TransitionType.ODE)
         ]
     # initialize the model
-    ode = OperateOdeModel(stateList,
-                          paramList,
-                          derivedParamList=derivedParamList,
-                          odeList=odeList)
+    ode_obj = DeterministicOde(state, param_list,
+                               derived_param=derived_param,
+                               ode=ode)
 
     if param is None:
-        return ode
+        return ode_obj
     else:
-        ode.setParameters(param)
-        return ode
-    
+        ode_obj.parameters = param
+        return ode_obj
+
 def SEIR_Multiple(n=2, param=None):
     '''
     An SEIR model that describe spatial heterogeneity [Brauer2008]_, page 180.
@@ -448,11 +443,11 @@ def SEIR_Multiple(n=2, param=None):
         \\frac{dI_{i}}{dt} &= \\epsilon E_{i} - (d + \\gamma) I_{i} \\\\
         \\frac{dR_{i}}{dt} &= \\gamma I_{i} - dR_{i}
 
-    where 
-    
+    where
+
     .. math::
         \\lambda_{i} = \\sum_{j=1}^{n} \\beta_{i,j} I_{j} (1\\{i \\neq j\\} p)
-        
+
     with :math:`n` being the number of patch and :math:`p` the coupled factor.
 
     Examples
@@ -479,21 +474,21 @@ def SEIR_Multiple(n=2, param=None):
     if n is None:
         n = 2
     s = [str(i) for i in range(n)]
-        
+
     beta = []
     lambdaStr = []
     lambdaName = []
 
     stateName = ["S", "E", "I", "R"]
     states = OrderedDict.fromkeys(stateName, [])
-    N =  []
+    N = []
 
     for i in s:
         for v in states:
             states[v] = states[v] + [str(v) + "_" + i]
         N += ['N_' + i]
         lambdaTemp = '0'
-        for j in s: 
+        for j in s:
             beta += ['beta_' + i + j]
             if i==j:
                 lambdaTemp += '+ I_' + j + '*beta_' + i + j
@@ -507,32 +502,37 @@ def SEIR_Multiple(n=2, param=None):
     stateList = []
     for v in states: stateList += states[v]
 
-    transitionList = []
+    transition = []
     bdList = []
-    derivedParamList = []
+    derived_param = []
     for i in range(n):
-        derivedParamList += [(lambdaName[i],lambdaStr[i])]
-        transitionList += [Transition(origState=states['S'][i],
-                                      destState=states['E'][i],
+        derived_param += [(lambdaName[i],lambdaStr[i])]
+        transition += [Transition(origin=states['S'][i],
+                                      destination=states['E'][i],
                                       equation=lambdaName[i] + '*' +states['S'][i] ,
-                                      transitionType=TransitionType.T)]
-        transitionList += [Transition(origState=states['E'][i], destState=states['I'][i], equation='epsilon*' + states['E'][i], transitionType=TransitionType.T)]
-        transitionList += [Transition(origState=states['I'][i], destState=states['R'][i], equation='gamma*' + states['I'][i], transitionType=TransitionType.T)]
+                                      transition_type=TransitionType.T)]
+        transition += [Transition(origin=states['E'][i],
+                                  destination=states['I'][i],
+                                  equation='epsilon*' + states['E'][i],
+                                  transition_type=TransitionType.T)]
+        transition += [Transition(origin=states['I'][i],
+                                  destination=states['R'][i],
+                                  equation='gamma*' + states['I'][i],
+                                  transition_type=TransitionType.T)]
         for v in states:
-            bdList += [Transition(origState=states[v][i], equation='d*' + states[v][i], transitionType=TransitionType.D)]
-        bdList += [Transition(origState=states['S'][i], equation='d*' + N[i], transitionType=TransitionType.B)]
-            
-    ode = OperateOdeModel(stateList,
-                          paramList,
-                          derivedParamList=derivedParamList,
-                          transitionList=transitionList,
-                          birthDeathList=bdList)
-    if param is None:
-        return ode
-    else:
-        ode.setParameters(param)
-        return ode
+            bdList += [Transition(origin=states[v][i], equation='d*' + states[v][i], transition_type=TransitionType.D)]
+        bdList += [Transition(origin=states['S'][i], equation='d*' + N[i], transition_type=TransitionType.B)]
 
+    ode_obj = DeterministicOde(stateList,
+                           paramList,
+                           derived_param=derived_param,
+                           transition=transition,
+                           birth_death=bdList)
+    if param is None:
+        return ode_obj
+    else:
+        ode_obj.parameters = param
+        return ode_obj
 
 def Influenza_SLIARN(param=None):
     '''
@@ -543,40 +543,37 @@ def Influenza_SLIARN(param=None):
         \\frac{dL}{dt} &= S \\beta (I + \\delta A) - \\kappa L \\\\
         \\frac{dI}{dt} &= p \\kappa L - \\alpha I \\\\
         \\frac{dA}{dt} &= (1 - p) \\kappa L - \\eta A \\\\
-        \\frac{dR}{dt} &= f \\alpha I + \\eta A \\\\ 
+        \\frac{dR}{dt} &= f \\alpha I + \\eta A \\\\
         \\frac{dN}{dt} &= -(1 - f) \\alpha I
-        
     '''
-    
-    stateList = ['S', 'L', 'I', 'A', 'R', 'N']
-    paramList = ['beta', 'p', 'kappa', 'alpha', 'f', 'delta', 'epsilon']
-    odeList = [
-               Transition(origState='S', equation='-beta*S*(I + delta*A)',
-               transitionType=TransitionType.ODE),
-               Transition(origState='L', equation='beta*S*(I + delta*A) - kappa*L',
-               transitionType=TransitionType.ODE),
-               Transition(origState='I', equation='p*kappa*L - alpha*I',
-               transitionType=TransitionType.ODE),
-               Transition(origState='A', equation='(1 - p)*kappa*L - epsilon*A',
-               transitionType=TransitionType.ODE),
-               Transition(origState='R', equation='f*alpha*I + epsilon*A',
-               transitionType=TransitionType.ODE),
-               Transition(origState='N', equation='-(1 - f)*alpha*I',
-               transitionType=TransitionType.ODE)
+
+    state = ['S', 'L', 'I', 'A', 'R', 'N']
+    param_list = ['beta', 'p', 'kappa', 'alpha', 'f', 'delta', 'epsilon']
+    ode = [
+               Transition(origin='S', equation='-beta*S*(I + delta*A)',
+               transition_type=TransitionType.ODE),
+               Transition(origin='L', equation='beta*S*(I + delta*A) - kappa*L',
+               transition_type=TransitionType.ODE),
+               Transition(origin='I', equation='p*kappa*L - alpha*I',
+               transition_type=TransitionType.ODE),
+               Transition(origin='A', equation='(1 - p)*kappa*L - epsilon*A',
+               transition_type=TransitionType.ODE),
+               Transition(origin='R', equation='f*alpha*I + epsilon*A',
+               transition_type=TransitionType.ODE),
+               Transition(origin='N', equation='-(1 - f)*alpha*I',
+               transition_type=TransitionType.ODE)
                ]
     # initialize the model
-    ode = OperateOdeModel(stateList,
-                          paramList,
-                          odeList=odeList)
-    
+    ode_obj = DeterministicOde(state, param_list, ode=ode)
+
     if param is None:
-        return ode
+        return ode_obj
     else:
-        ode.setParameters(param)
-        return ode
+        ode_obj.parameters = param
+        return ode_obj
 
 def Legrand_Ebola_SEIHFR(param=None):
-    '''
+    """
     The Legrand Ebola model [Legrand2007]_ with 6 compartments that includes the
     H = hospitalization and F = funeral state. Note that because this
     is an non-autonomous system, there are in fact a total of 7 states
@@ -585,7 +582,7 @@ def Legrand_Ebola_SEIHFR(param=None):
     .. math::
         \\frac{dS}{dt} &= -(\\beta_{I}SI + \\beta_{H}SH + \\beta_{F}SF) \\\\
         \\frac{dE}{dt} &= (\\beta_{I}SI + \\beta_{H}SH + \\beta_{F}SF) - \\alpha E \\\\
-        \\frac{dI}{dt} &= \\alpha E - (\\gamma_{H} \\theta_{1} + \\gamma_{I}(1-\\theta_{1})(1-\\delta_{1}) + \gamma_{D}(1-\\theta_{1})\\delta_{1})I \\\\
+        \\frac{dI}{dt} &= \\alpha E - (\\gamma_{H} \\theta_{1} + \\gamma_{I}(1-\\theta_{1})(1-\\delta_{1}) + \\gamma_{D}(1-\\theta_{1})\\delta_{1})I \\\\
         \\frac{dH}{dt} &= \\gamma_{H}\\theta_{1}I - (\\gamma_{DH}\\delta_{2} + \\gamma_{IH}(1-\\delta_{2}))H \\\\
         \\frac{dF}{dt} &= \\gamma_{D}(1-\\theta_{1})\\delta_{1}I + \\gamma_{DH}\\delta_{2}H - \\gamma_{F}F \\\\
         \\frac{dR}{dt} &= \\gamma_{I}(1-\\theta_{1})(1-\\delta_{1})I + \\gamma_{IH}(1-\\delta_{2})H + \\gamma_{F}F.
@@ -597,8 +594,7 @@ def Legrand_Ebola_SEIHFR(param=None):
     >>> ode = common_models.Legrand_Ebola_SEIHFR([('beta_I',0.588),('beta_H',0.794),('beta_F',7.653),('omega_I',10.0/7.0),('omega_D',9.6/7.0),('omega_H',5.0/7.0),('omega_F',2.0/7.0),('alphaInv',7.0/7.0),('delta',0.81),('theta',0.80),('kappa',300.0),('interventionTime',7.0)]).setInitialValue(x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
-
-    '''
+    """
 
     # define our states
     state = ['S', 'E', 'I', 'H', 'F', 'R', 'tau']
@@ -612,7 +608,7 @@ def Legrand_Ebola_SEIHFR(param=None):
     # which has 2 item
     # name
     # equation
-    derivedParamList = [
+    derived_param = [
         ('gamma_I', '1/omega_I'),
         ('gamma_D', '1/omega_D'),
         ('gamma_H', '1/omega_H'),
@@ -629,9 +625,9 @@ def Legrand_Ebola_SEIHFR(param=None):
         ]
 
     # alternatively, we can do it on the operate ode model
-    ode = OperateOdeModel(state, params)
+    ode_obj = DeterministicOde(state, params)
     # add the derived parameter
-    ode.setDerivedParamList(derivedParamList)
+    ode_obj.derived_param_list = derived_param
 
     # define the set of transitions
     # name of origin state
@@ -639,46 +635,46 @@ def Legrand_Ebola_SEIHFR(param=None):
     # equation
     # type of equation, which is a transition between two state in this case
 
-    transitionList = [
-        Transition(origState='S', destState='E',
+    transition = [
+        Transition(origin='S', destination='E',
                    equation='(beta_I*S*I + beta_H_Time*S*H + beta_F_Time*S*F)',
-                   transitionType=TransitionType.T),
-        Transition(origState='E', destState='I',
+                   transition_type=TransitionType.T),
+        Transition(origin='E', destination='I',
                    equation='alpha*E',
-                   transitionType=TransitionType.T),
-        Transition(origState='I', destState='H',
+                   transition_type=TransitionType.T),
+        Transition(origin='I', destination='H',
                    equation='gamma_H*theta_1*I',
-                   transitionType=TransitionType.T),
-        Transition(origState='I', destState='F',
+                   transition_type=TransitionType.T),
+        Transition(origin='I', destination='F',
                    equation='gamma_D*(1 - theta_1) * delta_1*I',
-                   transitionType=TransitionType.T),
-        Transition(origState='I', destState='R',
+                   transition_type=TransitionType.T),
+        Transition(origin='I', destination='R',
                    equation='gamma_I*(1 - theta_1)*(1 - delta_1)*I',
-                   transitionType=TransitionType.T),
-        Transition(origState='H', destState='F',
+                   transition_type=TransitionType.T),
+        Transition(origin='H', destination='F',
                    equation='gamma_DH*delta_2*H',
-                   transitionType=TransitionType.T),
-        Transition(origState='H', destState='R',
+                   transition_type=TransitionType.T),
+        Transition(origin='H', destination='R',
                    equation='gamma_IH*(1 - delta_2)*H',
-                   transitionType=TransitionType.T),
-        Transition(origState='F', destState='R',
+                   transition_type=TransitionType.T),
+        Transition(origin='F', destination='R',
                    equation='gamma_F*F',
-                   transitionType=TransitionType.T)
+                   transition_type=TransitionType.T)
         ]
-    #print transitionList
-    bdList = [Transition(origState='tau', equation='1',
-                         transitionType=TransitionType.B)]
+    #print transition
+    bdList = [Transition(origin='tau', equation='1',
+                         transition_type=TransitionType.B)]
 
     # see how we can insert the transitions later, after initializing the ode object
     # this is not the preferred choice though
-    ode.setTransitionList(transitionList)
-    ode.setBirthDeathList(bdList)
+    ode_obj.transition_list = transition
+    ode_obj.birth_death_list = bdList
     # set return, depending on whether we have input the parameters
     if param is None:
-        return ode
+        return ode_obj
     else:
-        ode.setParameters(param)
-        return ode
+        ode_obj.parameters = param
+        return ode_obj
 
 def Lotka_Volterra(param=None):
     '''
@@ -701,26 +697,24 @@ def Lotka_Volterra(param=None):
 
     # our two state and four parameters
     # no idea why they are not in capital
-    stateList = ['x', 'y']
+    state = ['x', 'y']
     # while these 4 are
-    paramList = ['alpha', 'delta', 'c', 'gamma']
+    param_list = ['alpha', 'delta', 'c', 'gamma']
     # then define the set of ode
-    odeList = [
-        Transition(origState='x', equation='alpha*x - c*x*y',
-                   transitionType=TransitionType.ODE),
-        Transition(origState='y', equation='-delta*y + gamma*x*y',
-                   transitionType=TransitionType.ODE)
+    ode = [
+        Transition(origin='x', equation='alpha*x - c*x*y',
+                   transition_type=TransitionType.ODE),
+        Transition(origin='y', equation='-delta*y + gamma*x*y',
+                   transition_type=TransitionType.ODE)
         ]
 
-    ode = OperateOdeModel(stateList,
-                          paramList,
-                          odeList=odeList)
+    ode_obj = DeterministicOde(state, param_list, ode=ode)
     # set return, depending on whether we have input the parameters
     if param is None:
-        return ode
+        return ode_obj
     else:
-        ode.setParameters(param)
-        return ode
+        ode_obj.parameters = param
+        return ode_obj
 
 def Lotka_Volterra_4State(param=None):
     '''
@@ -747,31 +741,31 @@ def Lotka_Volterra_4State(param=None):
     '''
 
     # four states
-    stateList = ['a', 'x', 'y', 'b']
+    state = ['a', 'x', 'y', 'b']
     # three parameters
-    paramList = ['k0', 'k1', 'k2']
+    param_list = ['k0', 'k1', 'k2']
 
     # then define the set of ode
-    transitionList = [
-        Transition(origState='a', destState='x',
+    transition = [
+        Transition(origin='a', destination='x',
                    equation='k0*a*x',
-                   transitionType=TransitionType.T),
-        Transition(origState='x', destState='y',
+                   transition_type=TransitionType.T),
+        Transition(origin='x', destination='y',
                    equation='k1*x*y',
-                   transitionType=TransitionType.T),
-        Transition(origState='y', destState='b',
+                   transition_type=TransitionType.T),
+        Transition(origin='y', destination='b',
                    equation='k2*y',
-                   transitionType=TransitionType.T)
+                   transition_type=TransitionType.T)
         ]
 
-    ode = OperateOdeModel(stateList, paramList, transitionList=transitionList)
+    ode_obj = DeterministicOde(state, param_list, transition=transition)
 
     # set return, depending on whether we have input the parameters
     if param is None:
-        return ode
+        return ode_obj
     else:
-        ode.setParameters(param)
-        return ode
+        ode_obj.parameters = param
+        return ode_obj
 
 def FitzHugh(param=None):
     '''
@@ -793,30 +787,29 @@ def FitzHugh(param=None):
     '''
 
     # the two states
-    stateList = ['V', 'R']
+    state = ['V', 'R']
     # and the three parameters
-    paramList = ['a', 'b', 'c']
+    param_list = ['a', 'b', 'c']
 
     # the set of ode
-    odeList = [
-        Transition(origState='V', equation='c*(V - (V*V*V)/3 + R)',
-                   transitionType=TransitionType.ODE),
-        Transition(origState='R', equation='-( (V - a + b*R)/c )',
-                   transitionType=TransitionType.ODE)
+    ode = [
+        Transition(origin='V', equation='c*(V - (V*V*V)/3 + R)',
+                   transition_type=TransitionType.ODE),
+        Transition(origin='R', equation='-( (V - a + b*R)/c )',
+                   transition_type=TransitionType.ODE)
         ]
     # setup our ode
-    ode = OperateOdeModel(stateList,
-                          paramList,
-                          derivedParamList=None,
-                          transitionList=None,
-                          birthDeathList=None,
-                          odeList=odeList)
-    # set return, depending on whehter we have input the parameters
+    ode_obj = DeterministicOde(state, param_list,
+                               derived_param=None,
+                               transition=None,
+                               birth_death=None,
+                               ode=ode)
+    # set return, depending on whether we have input the parameters
     if param is None:
-        return ode
+        return ode_obj
     else:
-        ode.setParameters(param)
-        return ode
+        ode_obj.parameters = param
+        return ode_obj
 
 def Lorenz(param=None):
     '''
@@ -840,43 +833,43 @@ def Lorenz(param=None):
 
     '''
 
-    stateList = ['x', 'y', 'z']
-    paramList = ['beta', 'sigma', 'rho']
-    odeList = [
-        Transition(origState='x', equation='sigma*(y - x)',
-                   transitionType=TransitionType.ODE),
-        Transition(origState='y', equation='x*(rho - z) - y',
-                   transitionType=TransitionType.ODE),
-        Transition(origState='z', equation='x*y - beta*z',
-                   transitionType=TransitionType.ODE)
+    state = ['x', 'y', 'z']
+    param_list = ['beta', 'sigma', 'rho']
+    ode = [
+        Transition(origin='x', equation='sigma*(y - x)',
+                   transition_type=TransitionType.ODE),
+        Transition(origin='y', equation='x*(rho - z) - y',
+                   transition_type=TransitionType.ODE),
+        Transition(origin='z', equation='x*y - beta*z',
+                   transition_type=TransitionType.ODE)
         ]
     # initialize the model
-    ode = OperateOdeModel(stateList, paramList, odeList=odeList)
+    ode_obj = DeterministicOde(state, param_list, ode=ode)
 
     if param is None:
-        return ode
+        return ode_obj
     else:
-        ode.setParameters(param)
-        return ode
+        ode_obj.parameters = param
+        return ode_obj
 
 def vanDelPol(param=None):
     '''
     The van der Pol equation [vanderpol1926]_, a second order ode
 
     .. math::
-        y^{\prime\prime} - \mu (1-y^{2}) y^{\prime} + y = 0
+        y^{\\prime\\prime} - \\mu (1-y^{2}) y^{\\prime} + y = 0
 
-    where :math:`\mu > 0`.  This can be converted to a first
-    order ode by equating :math:`x = y^{\prime}`
+    where :math:`\\mu > 0`.  This can be converted to a first
+    order ode by equating :math:`x = y^{\\prime}`
 
     .. math::
-        x^{\prime} - \mu (1 - y^{2}) x + y = 0
+        x^{\\prime} - \\mu (1 - y^{2}) x + y = 0
 
     which result in a coupled ode
 
     .. math::
-        x^{\prime} &= \\mu (1 - y^{2}) x - y \\\\
-        y^{\prime} &= x
+        x^{\\prime} &= \\mu (1 - y^{2}) x - y \\\\
+        y^{\\prime} &= x
 
     and this can be solved via standard method.
 
@@ -891,22 +884,22 @@ def vanDelPol(param=None):
     >>> ode.plot()
     '''
 
-    stateList = ['y', 'x']
-    paramList = ['mu']
-    odeList = [
-        Transition(origState='y', equation='x',
-                   transitionType=TransitionType.ODE),
-        Transition(origState='x', equation='mu*(1 - y*y)*x -  y',
-                   transitionType=TransitionType.ODE)
+    state_list = ['y', 'x']
+    param_list = ['mu']
+    ode = [
+        Transition(origin='y', equation='x',
+                   transition_type=TransitionType.ODE),
+        Transition(origin='x', equation='mu*(1 - y*y)*x -  y',
+                   transition_type=TransitionType.ODE)
         ]
     # initialize the model
-    ode = OperateOdeModel(stateList, paramList, odeList=odeList)
+    ode_obj = DeterministicOde(state_list, param_list, ode=ode)
 
     if param is None:
-        return ode
+        return ode_obj
     else:
-        ode.setParameters(param)
-        return ode
+        ode_obj.parameters = param
+        return ode_obj
 
 def Robertson(param=None):
     '''
@@ -914,9 +907,9 @@ def Robertson(param=None):
     test stiff integrator.
 
     .. math::
-        \\frac{dy_{1}}{dt} &= -0.04 y_{1} + 1 \cdot 10^{4} y_{2} y_{3} \\\\
-        \\frac{dy_{2}}{dt} &= 0.04 y_{1} - 1 \cdot 10^{4} y_{2} y_{3} - 3 \cdot 10^{7} y_{2}^{2}\\\\
-        \\frac{dy_{3}}{dt} &= 3 \cdot 10^{7} y_{2}^{2}
+        \\frac{dy_{1}}{dt} &= -0.04 y_{1} + 1 \\cdot 10^{4} y_{2} y_{3} \\\\
+        \\frac{dy_{2}}{dt} &= 0.04 y_{1} - 1 \\cdot 10^{4} y_{2} y_{3} - 3 \\cdot 10^{7} y_{2}^{2}\\\\
+        \\frac{dy_{3}}{dt} &= 3 \\cdot 10^{7} y_{2}^{2}
 
     Examples
     --------
@@ -930,27 +923,27 @@ def Robertson(param=None):
 
     '''
     # note how we have short handed the definition
-    stateList = ['y1:4']
+    state = ['y1:4']
     # note that we do not have any parameters, or rather,
     # we have hard coded in the parameters
-    paramList = []
-    transitionList = [
-        Transition(origState='y1', destState='y2',
+    param_list = []
+    transition = [
+        Transition(origin='y1', destination='y2',
                    equation='0.04*y1',
-                   transitionType=TransitionType.T),
-        Transition(origState='y2', destState='y1',
+                   transition_type=TransitionType.T),
+        Transition(origin='y2', destination='y1',
                    equation='1e4*y2*y3',
-                   transitionType=TransitionType.T),
-        Transition(origState='y2', destState='y3',
+                   transition_type=TransitionType.T),
+        Transition(origin='y2', destination='y3',
                    equation='3e7*y2*y2',
-                   transitionType=TransitionType.T)
+                   transition_type=TransitionType.T)
         ]
     # initialize the model
-    ode = OperateOdeModel(stateList, paramList, transitionList=transitionList)
+    ode_obj = DeterministicOde(state, param_list, transition=transition)
 
     if param is None:
-        return ode
+        return ode_obj
     else:
         raise Warning("Input parameters not used")
-        return ode
-
+        ode_obj.parameters = param
+        return ode_obj

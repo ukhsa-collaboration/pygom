@@ -19,13 +19,15 @@ An example would be
     In [1]: import matplotlib.pyplot as plt
 
     In [1]: ode = common_models.FitzHugh({'a':0.2, 'b':0.2, 'c':3.0})
-    
+
     In [1]: t = numpy.linspace(0, 20, 101)
     
     In [1]: x0 = [1.0, -1.0]
-    
-    In [1]: solution = ode.setInitialValue(x0, t[0]).integrate(t[1::])
-    
+
+    In [1]: ode.initial_values = (x0, t[0])
+
+    In [1]: solution = ode.integrate(t[1::])
+
     @savefig common_models_fh_1.png
     In [1]: ode.plot()
 
@@ -39,4 +41,3 @@ An example would be
     In [1]: plt.show()
 
     In [1]: plt.close()
-

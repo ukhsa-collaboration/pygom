@@ -57,8 +57,10 @@ Again, we demonstrate the functionalities of our classes using an SIR model.
 
     In [6]: t0 = 0
 
-    In [4]: ode = ode.setParameters(paramEval).setInitialValue(x0,t0)
-    
+    In [5]: ode.parameters = paramEval
+
+    In [6]: ode.initial_values = (x0, t0)
+
     In [9]: # set the time sequence that we would like to observe
      
     In [10]: t = numpy.linspace(1, 150, 100)

@@ -12,7 +12,7 @@ A common application of ordinary differential equations is in the field of epide
 
     In [2]: ode = common_models.SIR_Birth_Death()
 
-    In [3]: print(ode.getOde())
+    In [3]: print(ode.get_ode_eqn())
 
 
 Obtaining the R0
@@ -26,7 +26,7 @@ To obtain the :math:`R_{0}`, we simply have to tell the function which states re
 
     In [1]: from pygom.model.epi_analysis import *
     
-    In [2]: print(getR0(ode, 'I'))
+    In [2]: print(R0(ode, 'I'))
 
 Algebraic R0
 ============
@@ -35,9 +35,9 @@ We may also wish to get the :math:`R_{0}` in pure algebraic term.  This can be a
 
 .. ipython::
 
-    In [1]: F, V = getDiseaseProgressionMatrices(ode, 'I')
+    In [1]: F, V = disease_progression_matrices(ode, 'I')
 
-    In [2]: e = getR0GivenMatrix(F, V)
+    In [2]: e = R0_from_matrix(F, V)
 
     In [3]: print(e)
 
@@ -46,7 +46,7 @@ To replicate the output before, we have to find the values where the disease-fre
 
 .. ipython::
 
-    In [1]: dfe = getDFE(ode, ['I'])
+    In [1]: dfe = DFE(ode, ['I'])
 
     In [2]: print(dfe)
 

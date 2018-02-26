@@ -1,28 +1,28 @@
 from functools import partial
 
-import numpy
+import numpy as np
 from scipy.interpolate import UnivariateSpline
 from scipy.integrate import simps
 from scipy.optimize import leastsq, minimize_scalar
 
-def getInit(y, t, ode, theta=None, full_output=False):
+def get_init(y, t, ode, theta=None, full_output=False):
     '''
     Get an initial guess of theta given the observations y and the
     corresponding time points t.
-    
+
     Parameters
     ----------
     y: :array like
         observed values
     t: array like
         time
-    ode: :class:`pygom.model.OperateOdeModel`
+    ode: :class:`.DeterministicOde`
         an ode object
     theta: array like
         parameter value
     full_output: bool, optional
         True if the optimization result should be returned. Defaults to False.
-        
+
     Returns
     -------
     theta: array like
@@ -30,30 +30,30 @@ def getInit(y, t, ode, theta=None, full_output=False):
 
     '''
     if theta is None:
-        p = ode.getNumParam()
-        theta = numpy.ones(p)/2.0
+        p = ode.num_param
+        theta = np.ones(p)/2.0
 
     f = partial(_fitGivenSmoothness, y, t, ode, theta)
     output = minimize_scalar(f, bounds=(0,10), method='bounded')
-    thetaNew = numpy.array(ode._paramValue) 
+    thetaNew = np.array(ode._paramValue)
 
     if full_output:
         return thetaNew, output
     else:
         return thetaNew
-    
+
 def _fitGivenSmoothness(y, t, ode, theta, s):
     # p = ode.getNumParam()
     # d = ode.getNumState()
 
     splineList = interpolate(y, t, s=s)
-    interval = numpy.linspace(t[1], t[-1], 1000)
+    interval = np.linspace(t[1], t[-1], 1000)
     # xApprox, fxApprox, t = _getApprox(splineList, interval)
 
-    # g2 = partial(residualSample, ode, fxApprox, xApprox, interval)
-    # g2J = partial(jacSample, ode, fxApprox, xApprox, interval)
-    g2 = partial(residualInterpolant, ode, splineList, interval)
-    g2J = partial(jacInterpolant, ode, splineList, interval)
+    # g2 = partial(residual_sample, ode, fxApprox, xApprox, interval)
+    # g2J = partial(jac_sample, ode, fxApprox, xApprox, interval)
+    g2 = partial(residual_interpolant, ode, splineList, interval)
+    g2J = partial(jac_interpolant, ode, splineList, interval)
 
     res = leastsq(func=g2, x0=theta, Dfun=g2J, full_output=True)
 
@@ -61,7 +61,7 @@ def _fitGivenSmoothness(y, t, ode, theta, s):
     for spline in splineList:
         loss += spline.get_residual()
     # approximate the integral using fixed points
-    r = numpy.reshape(res[2]['fvec']**2, (len(interval), len(splineList)), 'F')
+    r = np.reshape(res[2]['fvec']**2, (len(interval), len(splineList)), 'F')
 
     return (r.sum())*(interval[1] - interval[0]) + loss
 
@@ -69,7 +69,7 @@ def interpolate(solution, t, s=0):
     '''
     Interpolate the solution of the ode given the time points
     and a suitable smoothing vector using univariate spline
-    
+
     Parameters
     ----------
     solution: :class:`numpy.ndarray`
@@ -77,8 +77,8 @@ def interpolate(solution, t, s=0):
     t: array like
         time
     s: smoothing scalar, optional
-        greater or equal to zero 
-        
+        greater or equal to zero
+
     Returns
     -------
     splineList: list
@@ -87,38 +87,38 @@ def interpolate(solution, t, s=0):
 
     n, p = solution.shape
     assert len(t) == n, "Number of observations and time point not equal"
-    # if isinstance(s, (numpy.ndarray, list, tuple)):
+    # if isinstance(s, (np.ndarray, list, tuple)):
     if hasattr(s, '__iter__'):
         if len(s) == 1:
             assert s >= 0, "Smoothing factor must be non-negative"
-            s = numpy.ones(p)*s
+            s = np.ones(p)*s
         else:
             assert len(s) == p, "Number of smoothing factor must be " + \
                 "equal to input solution columns"
     else:
         assert s >= 0, "Smoothing factor must be non-negative"
-        s = numpy.ones(p)*s
-    
+        s = np.ones(p)*s
+
     splineList = [UnivariateSpline(t, solution[:,j], s=s[j]) for j in range(p)]
-    
+
     return splineList
-        
-def costGradInterpolant(ode, splineList, t, theta):
+
+def cost_grad_interpolant(ode, spline_list, t, theta):
     '''
     Returns the cost (sum of squared residuals) and the gradient between the
     first derivative of the interpolant and the function of the ode
-    
+
     Parameters
     ----------
-    ode: :class:`pygom.model.OperateOdeModel`
+    ode: :class:`.DeterministicOde`
         an ode object
-    splineList: list
+    spline_list: list
         list of :class:`scipy.interpolate.UnivariateSpline`
     t: array like
         time
     theta: array list
-        paramter value 
-        
+        parameter value
+
     Returns
     -------
     cost: double
@@ -127,20 +127,20 @@ def costGradInterpolant(ode, splineList, t, theta):
         gradient of the squared residuals
     '''
 
-    xApprox, fxApprox, t = _getApprox(splineList, t)
-    g, r = gradSample(ode, fxApprox, xApprox, t, theta, outputResidual=True)
+    xApprox, fxApprox, t = _getApprox(spline_list, t)
+    g, r = grad_sample(ode, fxApprox, xApprox, t, theta, output_residual=True)
     return (r.ravel()**2).sum(), g
 
-def costInterpolant(ode, splineList, t, theta, vec=True, aggregate=True):
+def cost_interpolant(ode, spline_list, t, theta, vec=True, aggregate=True):
     '''
-    Returns the cost (sum of squared residuals) between the first 
+    Returns the cost (sum of squared residuals) between the first
     derivative of the interpolant and the function of the ode
-    
+
     Parameters
     ----------
-    ode: :class:`pygom.model.OperateOdeModel`
+    ode: :class:`.DeterministicOde`
         an ode object
-    splineList: list
+    spline_list: list
         list of :class:`scipy.interpolate.UnivariateSpline`
     t: array like
         time
@@ -150,26 +150,26 @@ def costInterpolant(ode, splineList, t, theta, vec=True, aggregate=True):
         if the matrix should be flattened to be a vector
     aggregate: bool, optional
         sum the vector/matrix
-        
+
     Returns
     -------
     cost: double
         sum of squared residuals
     '''
-    
-    xApprox, fxApprox, t = _getApprox(splineList, t)
-    return costSample(ode, fxApprox, xApprox, t, theta, vec, aggregate)
 
-def residualInterpolant(ode, splineList, t, theta, vec=True):
+    xApprox, fxApprox, t = _getApprox(spline_list, t)
+    return cost_sample(ode, fxApprox, xApprox, t, theta, vec, aggregate)
+
+def residual_interpolant(ode, spline_list, t, theta, vec=True):
     '''
-    Returns the residuals between the first derivative of the 
+    Returns the residuals between the first derivative of the
     interpolant and the function of the ode
-    
+
     Parameters
     ----------
-    ode: :class:`pygom.model.OperateOdeModel`
+    ode: :class:`.DeterministicOde`
         an ode object
-    splineList: list
+    spline_list: list
         list of :class:`scipy.interpolate.UnivariateSpline`
     t: array like
         time
@@ -179,36 +179,36 @@ def residualInterpolant(ode, splineList, t, theta, vec=True):
         if the matrix should be flattened to be a vector
     aggregate: bool, optional
         sum the vector/matrix
-        
+
     Returns
     -------
     r: array list
         the residuals
     '''
-    
-    xApprox, fxApprox, t = _getApprox(splineList, t)
-    return residualSample(ode, fxApprox, xApprox, t, theta, vec)
 
-def jacInterpolant(ode, splineList, t, theta, vec=True): 
-    xApprox, fxApprox, t = _getApprox(splineList, t)
-    return jacSample(ode, fxApprox, xApprox, t, theta, vec)
+    xApprox, fxApprox, t = _getApprox(spline_list, t)
+    return residual_sample(ode, fxApprox, xApprox, t, theta, vec)
 
-def gradInterpolant(ode, splineList, t, theta, outputResidual=False):
-    xApprox, fxApprox, t = _getApprox(splineList, t)
-    return gradSample(ode, fxApprox, xApprox, t, theta, outputResidual)
+def jac_interpolant(ode, spline_list, t, theta, vec=True): 
+    xApprox, fxApprox, t = _getApprox(spline_list, t)
+    return jac_sample(ode, fxApprox, xApprox, t, theta, vec)
 
-def costSample(ode, fxApprox, xApprox, t, theta, vec=True, aggregate=True):
+def grad_interpolant(ode, spline_list, t, theta, outputResidual=False):
+    xApprox, fxApprox, t = _getApprox(spline_list, t)
+    return grad_sample(ode, fxApprox, xApprox, t, theta, outputResidual)
+
+def cost_sample(ode, fxApprox, xApprox, t, theta, vec=True, aggregate=True):
     '''
     Returns the cost (sum of squared residuals) between the first
     derivative of the interpolant and the function of the ode using
     samples at time points t.
-    
+
     Parameters
     ----------
-    ode: :class:`pygom.model.OperateOdeModel`
+    ode: :class:`.DeterministicOde`
         an ode object
     fxApprox: list
-        list of approximated values for the first derivative 
+        list of approximated values for the first derivative
     xApprox: list
         list of approximated values for the states
     t: array like
@@ -223,30 +223,30 @@ def costSample(ode, fxApprox, xApprox, t, theta, vec=True, aggregate=True):
         where True outputs a vector where the elements contain the values of
         the integrand on each of the dimensions of the ode.  False returns
         the sum of this vector, a scalar.
-        
+
     Returns
     -------
     r: array list
         the cost or the residuals if vec is True
-    
+
     See Also
     --------
-    :func:`residualSample`
+    :func:`residual_sample`
     '''
-    
+
     if isinstance(aggregate, str):
-        c = residualSample(ode, fxApprox, xApprox, t, theta, vec=False)**2
+        c = residual_sample(ode, fxApprox, xApprox, t, theta, vec=False)**2
         if aggregate.lower() == 'int':
             integrand = simps(c, x=t, axis=0)
             if vec:
                 return integrand
-            else: 
-                return numpy.sum(integrand) 
+            else:
+                return np.sum(integrand)
         else:
             raise RuntimeError("Aggregation method not recognized")
 
     elif isinstance(aggregate, bool):
-        c = residualSample(ode, fxApprox, xApprox, t, theta, vec)**2
+        c = residual_sample(ode, fxApprox, xApprox, t, theta, vec)**2
         if aggregate:
             return c.sum(0)
         else:
@@ -254,38 +254,38 @@ def costSample(ode, fxApprox, xApprox, t, theta, vec=True, aggregate=True):
     else:
         raise RuntimeError("Aggregation method not recognized")
 
-def residualSample(ode, fxApprox, xApprox, t, theta, vec=True):
+def residual_sample(ode, fxApprox, xApprox, t, theta, vec=True):
     '''
     Returns the residuals between the first derivative of the
     interpolant and the function of the ode using samples at
     time points t.
-    
+
     Parameters
     ----------
-    ode: :class:`pygom.model.OperateOdeModel`
+    ode: :class:`.DeterministicOde`
         an ode object
     fxApprox: list
-        list of approximated values for the first derivative 
+        list of approximated values for the first derivative
     xApprox: list
         list of approximated values for the states
     t: array like
         time
     theta: array list
-        paramter value
+        parameter value
     vec: bool, optional
         if the matrix should be flattened to be a vector
-        
+
     Returns
     -------
     r: array list
         the residuals
-        
+
     See Also
     --------
-    :func:`costSample`
+    :func:`cost_sample`
     '''
-    ode = ode.setParameters(theta)
-    fx = numpy.zeros(fxApprox.shape)
+    ode.parameters = theta
+    fx = np.zeros(fxApprox.shape)
     for i, x in enumerate(xApprox):
         fx[i] = ode.ode(x, t[i])
 
@@ -294,19 +294,19 @@ def residualSample(ode, fxApprox, xApprox, t, theta, vec=True):
     else:
         return fxApprox - fx
 
-def jacSample(ode, fxApprox, xApprox, t, theta, vec=True):
+def jac_sample(ode, fxApprox, xApprox, t, theta, vec=True):
     '''
     Returns the Jacobian of the objective value using the state
     values of the interpolant given samples at time points t. Note
     that the parameters taken here is chosen to be same as
-    :func:`costSample` for convenience.
-    
+    :func:`cost_sample` for convenience.
+
     Parameters
     ----------
-    ode: :class:`pygom.model.OperateOdeModel`
+    ode: :class:`.DeterministicOde`
         an ode object
     fxApprox: list
-        list of approximated values for the first derivative 
+        list of approximated values for the first derivative
     xApprox: list
         list of approximated values for the states
     t: array like
@@ -315,43 +315,43 @@ def jacSample(ode, fxApprox, xApprox, t, theta, vec=True):
         parameter value
     vec: bool, optional
         if the matrix should be flattened to be a vector
-        
+
     Returns
     -------
     r: array list
         the residuals
-        
+
     See Also
     --------
-    :func:`costSample`
+    :func:`cost_sample`
     '''
-    ode = ode.setParameters(theta)
+    ode.parameters = theta
     n = len(fxApprox)
-    d = ode.getNumState()
-    p = ode.getNumParam()
-    g = numpy.zeros((n, d, p))
+    d = ode.num_state
+    p = ode.num_param
+    g = np.zeros((n, d, p))
     for i, x in enumerate(xApprox):
-        g[i] = -2*ode.Grad(x, t[i])
+        g[i] = -2*ode.grad(x, t[i])
 
     if vec:
-        return numpy.reshape(g.transpose(1,0,2), (n*d, p))
+        return np.reshape(g.transpose(1,0,2), (n*d, p))
     else:
         return g
 
-def gradSample(ode, fxApprox, xApprox, t, theta,
-               vec=False, outputResidual=False):
+def grad_sample(ode, fxApprox, xApprox, t, theta,
+                vec=False, output_residual=False):
     '''
     Returns the gradient of the objective value using the state
     values of the interpolant given samples at time points t. Note
     that the parameters taken here is chosen to be same as
-    :func:`costSample` for convenience.
-    
+    :func:`cost_sample` for convenience.
+
     Parameters
     ----------
-    ode: :class:`pygom.model.OperateOdeModel`
+    ode: :class:`.DeterministicOde`
         an ode object
     fxApprox: list
-        list of approximated values for the first derivative 
+        list of approximated values for the first derivative
     xApprox: list
         list of approximated values for the states
     t: array like
@@ -360,27 +360,27 @@ def gradSample(ode, fxApprox, xApprox, t, theta,
         parameter value
     vec: bool, optional
         if the matrix should be flattened to be a vector
-    outputResidual: bool, optional
+    output_residual: bool, optional
         if True, then the residuals will be returned as an
         additional argument
-        
+
     Returns
     -------
     g: :class:`numpy.ndarray`
         gradient of the objective function
-        
+
     See Also
     --------
-    :func:`jacSample`
+    :func:`jac_sample`
     '''
-    ode = ode.setParameters(theta)
-    r = residualSample(ode, fxApprox, xApprox, t, theta, vec=False)
+    ode.parameters = theta
+    r = residual_sample(ode, fxApprox, xApprox, t, theta, vec=False)
 
-    g = numpy.zeros((len(fxApprox), ode.getNumParam()))
+    g = np.zeros((len(fxApprox), ode.num_param))
     for i, x in enumerate(xApprox):
-        g[i] = -2*ode.Grad(x, t[i]).T.dot(r[i])
+        g[i] = -2*ode.grad(x, t[i]).T.dot(r[i])
 
-    if outputResidual:
+    if output_residual:
         return g.sum(0), r
     else:
         return g.sum(0)
@@ -391,14 +391,14 @@ def _getApprox(splineList, t):
     value of the ode given the interpolants and a series of time
     points.  The interpolants are expected to have been interpolated
     against observations of the states.
-    
+
     Parameters
     ----------
     splinelist: list of :class:`scipy.interpolate.UnivariateSpline`
         the interpolating function of the state values
     t: array like
         time
-        
+
     Returns
     -------
     x: :class:`numpy.ndarray`
@@ -407,23 +407,23 @@ def _getApprox(splineList, t):
         extrapolation of the first derivative at t
     t: :class:`numpy.ndarray`
         the inputted time
-        
+
     See Also
     --------
-    :func:`costSample`, :func:`jacSample`
-    '''  
+    :func:`cost_sample`, :func:`jac_sample`
+    '''
     if not hasattr(t, '__iter__'):
-        t = numpy.array([t])
+        t = np.array([t])
 
     n = len(t)
     m = len(splineList)
-    xApprox = numpy.zeros((n,m))
-    fxApprox = numpy.zeros((n,m))
+    xApprox = np.zeros((n,m))
+    fxApprox = np.zeros((n,m))
     for j, spline in enumerate(splineList):
         xApprox[:,j] = spline(t)
         fxApprox[:,j] = spline.derivative()(t)
 
     return xApprox, fxApprox, t
 
-def integrateFunc(ode, splineList, t, theta):
-    return (residualInterpolant(ode, splineList, t, theta, vec=False)**2).sum(1)
+# def integrateFunc(ode, splineList, t, theta):
+#     return (residual_interpolant(ode, splineList, t, theta, vec=False)**2).sum(1)

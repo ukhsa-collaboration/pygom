@@ -13,7 +13,7 @@ This is a problem that describes an autocatalytic reaction.  One of those common
 
 .. ipython::
 
-    In [1]: from pygom import OperateOdeModel, Transition, TransitionType
+    In [1]: from pygom import DeterministicOde, Transition, TransitionType
     
     In [1]: import numpy
     
@@ -28,14 +28,16 @@ This is a problem that describes an autocatalytic reaction.  One of those common
     In [1]: paramList = []
     
     In [1]: transitionList = [
-       ...:                  Transition(origState='y1', destState='y2', equation='0.04*y1', transitionType=TransitionType.T),
-       ...:                  Transition(origState='y2', destState='y1', equation='1e4*y2*y3', transitionType=TransitionType.T),
-       ...:                  Transition(origState='y2', destState='y3', equation='3e7*y2*y2', transitionType=TransitionType.T)
+       ...:                  Transition(origin='y1', destination='y2', equation='0.04*y1', transition_type=TransitionType.T),
+       ...:                  Transition(origin='y2', destination='y1', equation='1e4*y2*y3', transition_type=TransitionType.T),
+       ...:                  Transition(origin='y2', destination='y3', equation='3e7*y2*y2', transition_type=TransitionType.T)
        ...:                  ]
 
-    In [1]: ode = OperateOdeModel(stateList, paramList, transitionList=transitionList)
+    In [1]: ode = DeterministicOde(stateList, paramList, transition=transitionList)
 
-    In [1]: solution,output = ode.setInitialValue([1.0, 0.0, 0.0], t[0]).integrate(t[1::], full_output=True)
+    In [1]: ode.initial_values = ([1.0, 0.0, 0.0], t[0])
+
+    In [1]: solution, output = ode.integrate(t[1::], full_output=True)
 
     In [1]: f, axarr = plt.subplots(1, 3)
     
@@ -57,14 +59,16 @@ To simplify even further, we can use `y` with the corresponding subscript direct
     In [1]: stateList = ['y1:4']
 
     In [1]: transitionList = [
-       ...:                  Transition(origState='y[0]', destState='y[1]', equation='0.04*y[0]', transitionType=TransitionType.T),
-       ...:                  Transition(origState='y[1]', destState='y[0]', equation='1e4*y[1]*y[2]', transitionType=TransitionType.T),
-       ...:                  Transition(origState='y[1]', destState='y[2]', equation='3e7*y[1]*y[1]', transitionType=TransitionType.T)
+       ...:                  Transition(origin='y[0]', destination='y[1]', equation='0.04*y[0]', transition_type=TransitionType.T),
+       ...:                  Transition(origin='y[1]', destination='y[0]', equation='1e4*y[1]*y[2]', transition_type=TransitionType.T),
+       ...:                  Transition(origin='y[1]', destination='y[2]', equation='3e7*y[1]*y[1]', transition_type=TransitionType.T)
        ...:                  ]
 
-    In [1]: ode = OperateOdeModel(stateList,paramList,transitionList=transitionList)
+    In [1]: ode = DeterministicOde(stateList, paramList, transition=transitionList)
 
-    In [1]: solution2 = ode.setInitialValue([1.0, 0.0, 0.0], t[0]).integrate(t[1::])
+    In [1]: ode.initial_values =([1.0, 0.0, 0.0], t[0])
+
+    In [1]: solution2 = ode.integrate(t[1::])
 
     In [1]: numpy.max(solution - solution2)
 

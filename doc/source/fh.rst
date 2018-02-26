@@ -29,7 +29,9 @@ We are going to investigate another classic model here, the FitzHugh-Nagumo, or 
 
     In [4]: paramEval = [('a',0.2), ('b',0.2), ('c',3.0)]
 
-    In [5]: ode = common_models.FitzHugh().setParameters(paramEval).setInitialValue(x0, t0)
+    In [5]: ode = common_models.FitzHugh(paramEval)
+
+    In [5]: ode.initial_values = (x0, t0)
 
 Define a set of time points and lets see how the two states :math:`V` and :math:`R` are suppose to behave.
 

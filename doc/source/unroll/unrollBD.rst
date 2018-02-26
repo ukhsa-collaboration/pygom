@@ -33,7 +33,7 @@ Let's define this in terms of ODEs, and unroll it back to the individual process
 
 .. ipython::
 
-    In [1]: from pygom import Transition, TransitionType, SimulateOdeModel, common_models
+    In [1]: from pygom import Transition, TransitionType, SimulateOde, common_models
     
     In [1]: import matplotlib.pyplot as plt
     
@@ -42,25 +42,25 @@ Let's define this in terms of ODEs, and unroll it back to the individual process
     In [1]: paramList = ['beta', 'gamma', 'B', 'mu']
 
     In [1]: odeList = [
-       ...:            Transition(origState='S', 
+       ...:            Transition(origin='S', 
        ...:                       equation='-beta*S*I + B - mu*S',
-       ...:                       transitionType=TransitionType.ODE),
-       ...:            Transition(origState='I', 
+       ...:                       transition_type=TransitionType.ODE),
+       ...:            Transition(origin='I', 
        ...:                       equation='beta*S*I - gamma*I - mu*I',
-       ...:                       transitionType=TransitionType.ODE),
-       ...:            Transition(origState='R', 
+       ...:                       transition_type=TransitionType.ODE),
+       ...:            Transition(origin='R', 
        ...:                       equation='gamma*I',
-       ...:                       transitionType=TransitionType.ODE)
+       ...:                       transition_type=TransitionType.ODE)
        ...:            ]
 
-    In [1]: ode = SimulateOdeModel(stateList, paramList, odeList=odeList)
+    In [1]: ode = SimulateOde(stateList, paramList, ode=odeList)
     
-    In [1]: ode2 = ode.returnObjWithTransitionsAndBD()
+    In [1]: ode2 = ode.get_unrolled_obj()
     
     In [1]: f = plt.figure()
     
     @savefig sir_unrolled_transition_graph.png
-    In [1]: ode2.getTransitionGraph()
+    In [1]: ode2.get_transition_graph()
     
     In [1]: plt.close()
     

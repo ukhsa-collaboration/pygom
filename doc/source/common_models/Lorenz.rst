@@ -21,8 +21,10 @@ A classic example is
     
     In [1]: t = numpy.linspace(0, 100, 20000)
     
-    In [1]: ode = common_models.Lorenz({'beta':8.0/3.0, 'sigma':10.0, 'rho':28.0}).setInitialValue([1., 1., 1.], t[0])
-    
+    In [1]: ode = common_models.Lorenz({'beta':8.0/3.0, 'sigma':10.0, 'rho':28.0})
+
+    In [1]: ode.initial_values = ([1., 1., 1.], t[0])
+
     In [1]: solution = ode.integrate(t[1::])
 
     In [1]: f = plt.figure()

@@ -14,7 +14,7 @@ The purpose of this package is to allow the end user to easily define a set of o
 .. math::
     \frac{\partial \mathbf{x}}{\partial t} = f(\mathbf{x},\boldsymbol{\theta})
 
-where :math:`\mathbf{x} = \left(x_{1},x_{2},\ldots,x_{n}\right)` is the state vector with :math:`d` state and :math:`\boldsymbol{\theta}` the parameters of :math:`p` dimension.  Currently, this package allows the end user to find the algebraic expression of the ode, Jacobian, gradient and forward sensitivity of the ode.  A numerical output is given when all the state and parameter values are provided.   Note that the only important class is :file:`OperateOdeModel` all the functionality described previously are exposed.
+where :math:`\mathbf{x} = \left(x_{1},x_{2},\ldots,x_{n}\right)` is the state vector with :math:`d` state and :math:`\boldsymbol{\theta}` the parameters of :math:`p` dimension.  Currently, this package allows the end user to find the algebraic expression of the ode, Jacobian, gradient and forward sensitivity of the ode.  A numerical output is given when all the state and parameter values are provided.   Note that the only important class is :file:`DeterministicOde` all the functionality described previously are exposed.
 
 The current plan is to extend the functionality to include
 

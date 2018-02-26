@@ -25,7 +25,7 @@ where :math:`I(\theta)` is the Fisher information, which is the Hessian subject 
 
     In [6]: import copy
 
-    In [7]: ode = common_models.SIR().setParameters([('beta', 0.5), ('gamma', 1.0/3.0)])
+    In [7]: ode = common_models.SIR([('beta', 0.5), ('gamma', 1.0/3.0)])
 
 and we assume that we only have observed realization from the :math:`R` compartment
 
@@ -35,7 +35,7 @@ and we assume that we only have observed realization from the :math:`R` compartm
 
     In [2]: t = numpy.linspace(0, 150, 100).astype('float64')
 
-    In [3]: ode = ode.setInitialValue(x0, t[0])
+    In [3]: ode.initial_values = (x0, t[0])
 
     In [4]: solution = ode.integrate(t[1::])
 
@@ -43,7 +43,7 @@ and we assume that we only have observed realization from the :math:`R` compartm
 
     In [6]: targetState = ['R']
 
-    In [7]: targetStateIndex = numpy.array(ode.getStateIndex(targetState))
+    In [7]: targetStateIndex = numpy.array(ode.get_state_index(targetState))
 
     In [8]: y = solution[1::,targetStateIndex] + numpy.random.normal(0, 0.01, (len(solution[1::,targetStateIndex]), 1))
 
@@ -347,12 +347,14 @@ To investigate why it was hard to find the profile likelihood confidence interva
 
     In [3]: funcOut = numpy.linspace(0.0, 2.0, numIter)
 
-    In [4]: ode = ode.setParameters([('beta',0.5), ('gamma',1.0/3.0)])
+    In [4]: ode.parameters = [('beta',0.5), ('gamma',1.0/3.0)]
 
     In [5]: for i in range(numIter):
        ...:     paramEval = [('beta',x2[i]), ('gamma',x2[i])]
-       ...:     ode2 = copy.deepcopy(ode).setParameters(paramEval).setInitialValue(x0, t[0])
-       ...:     objSIR2 = NormalLoss(x2[i], ode2, x0, t[0], t[1::], yObv.copy(), targetState, targetParam='gamma')
+       ...:     ode2 = copy.deepcopy(ode)
+       ...:     ode2.parameters = paramEval
+       ...:     ode2.initial_values = (x0, t[0])
+       ...:     objSIR2 = NormalLoss(x2[i], ode2, x0, t[0], t[1::], yObv.copy(), targetState, target_param='gamma')
        ...:     res = scipy.optimize.minimize(fun=objSIR2.cost,
        ...:                                   jac=objSIR2.gradient,
        ...:                                   x0=x2[i],
@@ -376,6 +378,7 @@ To investigate why it was hard to find the profile likelihood confidence interva
 
     In [16]: plt.legend((l1,), (r'$-0.5\mathcal{X}_{1 - \alpha}^{2}(1)$',), loc='lower right');
 
+    @savefig profileLLMaximizerGivenBeta.png
     In [17]: plt.show() #    @savefig profileLLMaximizerGivenBeta.png
 
     In [18]: plt.close()
@@ -387,7 +390,7 @@ Both the upper and lower confidence interval can be found in the profiling proce
 
     In [1]: targetState = ['I', 'R']
 
-    In [2]: targetStateIndex = numpy.array(ode.getStateIndex(targetState))
+    In [2]: targetStateIndex = numpy.array(ode.get_state_index(targetState))
 
     In [3]: y = solution[1::,targetStateIndex] + numpy.random.normal(0, 0.01, (len(solution[1::,targetStateIndex]), 1))
 
@@ -397,8 +400,10 @@ Both the upper and lower confidence interval can be found in the profiling proce
 
     In [6]: for i in range(numIter):
        ...:     paramEval = [('beta', x2[i]), ('gamma', x2[i])]
-       ...:     ode2 = copy.deepcopy(ode).setParameters(paramEval).setInitialValue(x0, t[0])
-       ...:     objSIR2 = NormalLoss(x2[i], ode2, x0, t[0], t[1::], y.copy(), targetState, targetParam='gamma')
+       ...:     ode2 = copy.deepcopy(ode)
+       ...:     ode2.parameters = paramEval
+       ...:     ode2.initial_values = (x0, t[0])
+       ...:     objSIR2 = NormalLoss(x2[i], ode2, x0, t[0], t[1::], y.copy(), targetState, target_param='gamma')
        ...:     res = scipy.optimize.minimize(fun=objSIR2.cost,
        ...:                                   jac=objSIR2.gradient,
        ...:                                   x0=x2[i],
@@ -422,6 +427,7 @@ Both the upper and lower confidence interval can be found in the profiling proce
 
     In [16]: plt.legend((l1,), (r'$-0.5\mathcal{X}_{1 - \alpha}^{2}(1)$',), loc='lower right');
 
+    @savefig profileLLMaximizerGivenBetaMoreObs.png
     In [17]: plt.show() #     @savefig profileLLMaximizerGivenBetaMoreObs.png
 
     In [18]: plt.close()

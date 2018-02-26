@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 
 # Although reimporting * is not generally recommended
 # we have to do it here so that it has all the mathematical
@@ -52,11 +52,11 @@ def simplifyEquation(inputStr):
     '''
     sList = list()
     # these are considered the "dangerous" operation that will
-    # overflow/underflow in numpy
+    # overflow/underflow in np
     sList.append(len(inputStr.atoms(exp)))
     sList.append(len(inputStr.atoms(log)))
 
-    if numpy.sum(sList) != 0:
+    if np.sum(sList) != 0:
         # it is dangerous to simplify!
         return inputStr, True
     else:

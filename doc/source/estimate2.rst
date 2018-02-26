@@ -175,7 +175,9 @@ Next, we demonstrate the estimation on a model that is widely used in the recent
 
     In [30]: x0 = numpy.array([population, 0.0, 49.0, 0.0, 0.0, 29.0, 0.0])/population
 
-    In [30]: ode = ode.setInitialValue(x0, t[0]).setParameters(theta)
+    In [30]: ode.parameters = theta
+
+    In [31]: ode.initial_values = (x0, t[0])
 
     In [32]: objLegrand = SquareLoss(theta, ode, x0, t[0], t[1::], y[1::,:], ['I','R'], numpy.sqrt([population]*2))
 

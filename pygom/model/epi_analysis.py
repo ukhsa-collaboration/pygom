@@ -8,16 +8,16 @@
 
 import sympy
 
-from .stochastic import SimulateOdeModel
+from .simulate import SimulateOde
 
 __all__ = [
-           'getDFE',
-           'getR0',
-           'getR0GivenMatrix',
-           'getDiseaseProgressionMatrices'
+           'DFE',
+           'R0',
+           'R0_from_matrix',
+           'disease_progression_matrices'
            ]
 
-def getDFE(ode, diseaseState):
+def DFE(ode, disease_state):
     '''
     Returns the disease free equilibrium from an ode object
 
@@ -27,7 +27,7 @@ def getDFE(ode, diseaseState):
         a class object from pygom
     diseaseState: array like
         name of the disease states
-    
+
     Returns
     -------
     e: array like
@@ -35,21 +35,21 @@ def getDFE(ode, diseaseState):
 
     '''
 
-    eqn = ode.getOde()
-    index = ode.getStateIndex(diseaseState)
+    eqn = ode.get_ode_eqn()
+    index = ode.get_state_index(disease_state)
     states = [s for s in ode._iterStateList()]
-    statesSubs = {states[i]:0 for i in index}
-    eqn = eqn.subs(statesSubs)
+    states_subs = {states[i]: 0 for i in index}
+    eqn = eqn.subs(states_subs)
 
-    DFE = sympy.solve(eqn, states)
-    if len(DFE) == 0: DFE = {}
+    DFE_solution = sympy.solve(eqn, states)
+    if len(DFE_solution) == 0: DFE_solution = {}
 
     for s in states:
-        if s not in statesSubs.keys() and s not in DFE.keys():
-            DFE.setdefault(s, 0)
-    return DFE
+        if s not in states_subs.keys() and s not in DFE_solution.keys():
+            DFE_solution.setdefault(s, 0)
+    return DFE_solution
 
-def getR0(ode, diseaseState):
+def R0(ode, disease_state):
     '''
     Returns the basic reproduction number, in symbolic form when
     the parameter values are not available
@@ -60,7 +60,7 @@ def getR0(ode, diseaseState):
         a class object from pygom
     diseaseStateIndex: array like
         name of the disease states
-    
+
     Returns
     -------
     e: array like
@@ -72,18 +72,18 @@ def getR0(ode, diseaseState):
 
     '''
 
-    F, V = getDiseaseProgressionMatrices(ode, diseaseState)
-    ## index = ode.getStateIndex(diseaseState)
-    e = getR0GivenMatrix(F, V)
-    DFE = getDFE(ode, diseaseState)
-    e = [eig.subs(DFE) for eig in e]
-    if ode.getParameters() is not None:
-        e = [eig.subs(ode.getParameters()) for eig in e]
+    F, V = disease_progression_matrices(ode, disease_state)
+    ## index = ode.get_state_index(disease_state)
+    e = R0_from_matrix(F, V)
+    DFE_eqn = DFE(ode, disease_state)
+    e = [eig.subs(DFE_eqn) for eig in e]
+    if ode.parameters is not None:
+        e = [eig.subs(ode.parameters) for eig in e]
 
     e = list(filter(lambda x: sympy.Integer(-1) not in x.args, e))
     return (e if len(e) > 1 else e[0])
 
-def getR0GivenMatrix(F, V, diseaseState=None):
+def R0_from_matrix(F, V, disease_state=None):
     '''
     Returns the symbolic form of the basic reproduction number. This will
     include the states symbols which is different from :func:`getR0` where
@@ -92,13 +92,13 @@ def getR0GivenMatrix(F, V, diseaseState=None):
     Parameters
     ----------
     F: :class:`sympy.matrices.MatrixBase`
-        secondary infection rates        
+        secondary infection rates
     V: :class:`sympy.matrices.MatrixBase`
         disease progression rates
-    diseaseState: list like, optional
+    disease_state: list like, optional
         list of the disease state as :class:`sympy.Symbol`.  Defaults
         to None which assumes that :math:`F,V` had been differentiated
-    
+
     Returns
     -------
     e: :class:`sympy.matrices.MatrixBase`
@@ -109,22 +109,22 @@ def getR0GivenMatrix(F, V, diseaseState=None):
     :func:`getDiseaseProgressionMatrices`, :func:`getR0`
     '''
 
-    if diseaseState is None:
+    if disease_state is None:
         dF = F
         dV = V
     else:
-        dF = F.jacobian(diseaseState)
-        dV = F.jacobian(diseaseState)
+        dF = F.jacobian(disease_state)
+        dV = F.jacobian(disease_state)
 
     K = dF*dV.inv()
     e = K.eigenvals().keys()
     e = filter(lambda x: x != 0, e)
     return list(e)
 
-def getDiseaseProgressionMatrices(ode, diseaseState, diff=True):
+def disease_progression_matrices(ode, disease_state, diff=True):
     '''
-    Returns (F,V), the secondary infection rates and disease progression rate
-    respectively.
+    Returns (F,V), the secondary infection rates and disease progression
+    rate respectively.
 
     Parameters
     ----------
@@ -134,44 +134,42 @@ def getDiseaseProgressionMatrices(ode, diseaseState, diff=True):
         the name of the disease states
     diff: bool, optional
         if the first derivative of the matrices are return, defaults to true
-    
+
     Returns
     -------
     (F, V): tuple
-        The progression matrices.  If diff=False, then we return the :math:`F_{i}` and
-        :math:`V_{i}` matrices as per [Brauer2008]_.
+        The progression matrices.  If diff=False, then we return the
+        :math:`F_{i}` and :math:`V_{i}` matrices as per [Brauer2008]_.
     '''
 
-    diseaseIndex = ode.getStateIndex(diseaseState)
-    stateList = list()
+    diseaseIndex = ode.get_state_index(disease_state)
+    state_list = list()
     for i, s in enumerate(ode._iterStateList()):
         if i in diseaseIndex:
-            stateList.append(s)
+            state_list.append(s)
 
     FList = list()
-    for t in ode.getTransitionList():
-        orig = _getSingleStateName(t.getOrigState())
-        dest = _getSingleStateName(t.getDestState())
+    for t in ode.transition_list:
+        orig = _get_single_state_name(t.origin)
+        dest = _get_single_state_name(t.destination)
         if isinstance(orig, str) and isinstance(dest, str):
-            if orig not in diseaseState and dest in diseaseState:
+            if orig not in disease_state and dest in disease_state:
                 FList.append(t)
 
-    ode2 = SimulateOdeModel(ode.getStateList(), 
-                            ode.getParamList(), 
-                            transitionList=FList)
+    ode2 = SimulateOde(ode.state_list, ode.param_list, transition=FList)
 
-    F = ode2.getOde().row(diseaseIndex)
-    V = F - ode.getOde().row(diseaseIndex)
+    F = ode2.get_ode_eqn().row(diseaseIndex)
+    V = F - ode.get_ode_eqn().row(diseaseIndex)
 
     if diff:
-        dF = F.jacobian(stateList)
-        dV = V.jacobian(stateList)
+        dF = F.jacobian(state_list)
+        dV = V.jacobian(state_list)
         return dF, dV
     else:
         return F,V
 
 
-def _getSingleStateName(state):
+def _get_single_state_name(state):
     if hasattr(state, '__iter__'):
         state = state[0] if len(state) == 1 else None
     if isinstance(state, str):
