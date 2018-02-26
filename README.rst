@@ -48,4 +48,4 @@ Edwin Tye (Edwin.Tye@phe.gov.uk)
 
 Version
 =======
-0.1.1 Improved parallel computation
+0.1.2 Pythonic class and function names
