@@ -16,8 +16,7 @@ from numbers import Number
 import numpy as np
 import sympy
 import scipy.linalg
-import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
+
 from sympy.core.function import diff
 
 from .base_ode_model import BaseOdeModel
@@ -307,6 +306,8 @@ class DeterministicOde(BaseOdeModel):
         '''
         dot = _ode_composition.generateTransitionGraph(self, file_name)
         if show:
+            import matplotlib.image as mpimg
+            import matplotlib.pyplot as plt
             img = mpimg.imread(io.BytesIO(dot.pipe("png")))
             plt.imshow(img)
             plt.show(block=False)
