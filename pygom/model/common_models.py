@@ -23,7 +23,7 @@ def SIS(param=None):
     >>> ode = common_models.SIS({'beta':0.5, 'gamma':0.2})
     >>> t = numpy.linspace(0, 20, 101)
     >>> x0 = [1.0, 0.1]
-    >>> ode.setInitialValue(x0, t[0])
+    >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
     '''
@@ -69,7 +69,7 @@ def SIS_Periodic(param=None):
     >>> ode = common_models.SIS_Periodic({'alpha':1.0})
     >>> t = numpy.linspace(0, 10, 101)
     >>> x0 = [0.1, 0.0]
-    >>> ode.setInitialValue(x0, t[0])
+    >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
     '''
@@ -126,7 +126,7 @@ def SIR(param=None):
     >>> t = numpy.linspace(0, 730, 1001)
     >>> N = 7781984.0
     >>> x0 = [0.065, 123*(5.0/30.0)/N, 0.0]
-    >>> ode.setInitialValue(x0, t[0])
+    >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
 
@@ -178,7 +178,7 @@ def SIR_N(param=None):
     >>> t = numpy.linspace(0, 730, 1001)
     >>> N = 7781984.0
     >>> x0 = [0.065, 123*(5.0/30.0)/N, 0.0]
-    >>> ode.setInitialValue(x0, t[0])
+    >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
 
@@ -221,7 +221,7 @@ def SIR_Birth_Death(param=None):
     >>> ode = common_models.SIR_Birth_Death(params)
     >>> t = numpy.linspace(0, 35*365, 10001)
     >>> x0 = [0.065, 123.0*(5.0/30.0)/N, 0.0]
-    >>> ode.setInitialValue(x0, t[0])
+    >>> ode.initial_values = (x0, t[0])
     >>> solution,output = ode.integrate(t[1::], full_output=True)
     >>> ode.plot()
 
@@ -276,7 +276,7 @@ def SEIR(param=None):
     >>> ode = common_models.SEIR({'beta':1800, 'gamma':100, 'alpha':35.84})
     >>> t = numpy.linspace(0, 50, 1001)
     >>> x0 = [0.0658, 0.0007, 0.0002, 0.0]
-    >>> ode.setInitialValue(x0, t[0])
+    >>> ode.initial_values = (x0, t[0])
     >>> solution,output = ode.integrate(t[1::], full_output=True)
     >>> ode.plot()
 
@@ -324,7 +324,7 @@ def SEIR_Birth_Death(param=None):
     >>> ode = common_models.SEIR_Birth_Death(params)
     >>> t = numpy.linspace(0, 50, 1001)
     >>> x0 = [0.0658, 0.0007, 0.0002, 0.0]
-    >>> ode.setInitialValue(x0, t[0])
+    >>> ode.initial_values = (x0, t[0])
     >>> solution,output = ode.integrate(t[1::], full_output=True)
     >>> ode.plot()
 
@@ -393,7 +393,7 @@ def SEIR_Birth_Death_Periodic(param=None):
     >>> ode = common_models.SEIR_Birth_Death_Periodic(params)
     >>> t = numpy.linspace(0, 50, 1001)
     >>> x0 = [0.0658, 0.0007, 0.0002, 0.0]
-    >>> ode.setInitialValue(x0, t[0])
+    >>> ode.initial_values = (x0, t[0])
     >>> solution,output = ode.integrate(t[1::], full_output=True)
     >>> ode.plot()
     >>> import matplotlib.pyplot as plt
@@ -467,8 +467,9 @@ def SEIR_Multiple(n=2, param=None):
     >>> for s in x0:
     >>>     x01 += [s]
     >>>     x01 += [s]
-    >>> ode.setParameters(paramEval).setInitialValue(numpy.array(x01, float), t[0])
-    >>> solution,output = ode.integrate(t[1::], full_output=True)
+    >>> ode.parameters = paramEval
+    >>> ode.initial_values = (x01, t[0])
+    >>> solution, output = ode.integrate(t[1::], full_output=True)
     >>> ode.plot()
     '''
     if n is None:
@@ -591,7 +592,8 @@ def Legrand_Ebola_SEIHFR(param=None):
     --------
     >>> x0 = [1.0, 3.0/200000.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     >>> t = numpy.linspace(0, 25, 100)
-    >>> ode = common_models.Legrand_Ebola_SEIHFR([('beta_I',0.588),('beta_H',0.794),('beta_F',7.653),('omega_I',10.0/7.0),('omega_D',9.6/7.0),('omega_H',5.0/7.0),('omega_F',2.0/7.0),('alphaInv',7.0/7.0),('delta',0.81),('theta',0.80),('kappa',300.0),('interventionTime',7.0)]).setInitialValue(x0, t[0])
+    >>> ode = common_models.Legrand_Ebola_SEIHFR([('beta_I',0.588),('beta_H',0.794),('beta_F',7.653),('omega_I',10.0/7.0),('omega_D',9.6/7.0),('omega_H',5.0/7.0),('omega_F',2.0/7.0),('alphaInv',7.0/7.0),('delta',0.81),('theta',0.80),('kappa',300.0),('interventionTime',7.0)])
+    >>> ode.parameters = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
     """
@@ -688,7 +690,8 @@ def Lotka_Volterra(param=None):
     --------
 
     >>> params = {'alpha':1, 'delta':3, 'c':2, 'gamma':6}
-    >>> ode = common_models.Lotka_Volterra(params).setInitialValue([2.0, 6.0], 0)
+    >>> ode = common_models.Lotka_Volterra(params)
+    >>> ode.initial_values = ([2.0, 6.0], 0)
     >>> t = numpy.linspace(0.1, 100, 10000)
     >>> ode.integrate(t)
     >>> ode.plot()
@@ -734,7 +737,7 @@ def Lotka_Volterra_4State(param=None):
     >>> t = numpy.linspace(0, 15, 100)
     >>> params = [0.01, 0.1, 1.0]
     >>> ode = common_models.Lotka_Volterra_4State(params)
-    >>> ode = ode.setInitialValue(x0, t[0])
+    >>> ode.initial_values = (x0, t[0])
     >>> ode.integrate(t[1::])
     >>> ode.plot()
 
@@ -780,7 +783,7 @@ def FitzHugh(param=None):
     >>> ode = common_models.FitzHugh({'a':0.2, 'b':0.2, 'c':3.0})
     >>> t = numpy.linspace(0, 20, 101)
     >>> x0 = [1.0, -1.0]
-    >>> ode.setInitialValue(x0, t[0])
+    >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
 
@@ -824,9 +827,11 @@ def Lorenz(param=None):
     Examples
     --------
     >>> import matplotlib.pyplot as plt
+    >>> import numpy
     >>> t = numpy.linspace(0, 20, 101)
     >>> params = {'beta':8.0/3.0, 'sigma':10.0, 'rho':28.0}
-    >>> ode = common_models.Lorenze(params).setInitialValue([1., 1., 1.], t[0])
+    >>> ode = common_models.Lorenze(params)
+    >>> ode.initial_values = ([1., 1., 1.], t[0])
     >>> solution = ode.integrate(t[1::])
     >>> plt.plot(solution[:,0], solution[:,2])
     >>> plt.show()
@@ -879,7 +884,7 @@ def vanDelPol(param=None):
     >>> import numpy
     >>> t = numpy.linspace(0, 20, 1000)
     >>> ode = common_models.vanDelPol({'mu':1.0})
-    >>> ode = ode.setInitialValue([2.0,0.0], t[0])
+    >>> ode.initial_values = ([2.0,0.0], t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
     '''
@@ -917,7 +922,8 @@ def Robertson(param=None):
     >>> from pygom import common_models
     >>> import numpy
     >>> t = numpy.append(0, 4*numpy.logspace(-6, 6, 1000))
-    >>> ode = common_models.Robertson().setInitialValue([1.0,0.0,0.0], t[0])
+    >>> ode = common_models.Robertson()
+    >>> ode.initial_values = ([1.0,0.0,0.0], t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot() # note that this is not being plotted in the log scale
 
