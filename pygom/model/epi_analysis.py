@@ -171,7 +171,10 @@ def disease_progression_matrices(ode, disease_state, diff=True):
 
 def _get_single_state_name(state):
     if hasattr(state, '__iter__'):
-        state = state[0] if len(state) == 1 else None
+        if isinstance(state, str):
+            return state
+        else:
+            state = state[0] if len(state) == 1 else None
     if isinstance(state, str):
         return state
     elif isinstance(state, sympy.Symbol):
