@@ -127,7 +127,7 @@ def dnorm(x, mean=0, sd=1, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html
     '''
     if log:
-        return s.norm.logpdf(x, loc=mean, scale=sd)
+        return st.norm.logpdf(x, loc=mean, scale=sd)
     else:
         return st.norm.pdf(x, loc=mean, scale=sd)
 
