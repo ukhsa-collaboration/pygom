@@ -149,7 +149,7 @@ class TestSIRStochasticModel(TestCase):
         self.assertTrue(np.allclose(solution1, solution2))
 
         for i, yi in enumerate(Yall1):
-            self.assertTrue(np.allclose(Yall2, yi))
+            self.assertTrue(np.allclose(Yall2[i], yi))
 
 
     def test_simulateParam_different_seed(self):

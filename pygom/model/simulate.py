@@ -297,15 +297,18 @@ class SimulateOde(DeterministicOde):
 
                 xtmp = dask.bag.from_sequence(np.ones(iteration)*finalT)
                 xtmp = xtmp.map(jump_partial).compute()
+                print("Parallel simulation")
             except Exception:# as e:
                 # print(e)
+                print("Revert to serial")
                 xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
         else:
+            print("Serial computation")
             xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
 
         xmat = list(zip(*xtmp))
         simXList, simTList = list(xmat[0]), list(xmat[1])
-        print("Finish computation")
+        ## print("Finish computation")
         # now we want to fix our simulation, if they need fixing that is
         # print timePoint
         if timePoint:
