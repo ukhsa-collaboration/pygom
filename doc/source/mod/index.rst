@@ -14,7 +14,7 @@ model
     common_models
     transition
     deterministic
-    stochastic
+    simulate
     epi_analysis
     odeutils
 

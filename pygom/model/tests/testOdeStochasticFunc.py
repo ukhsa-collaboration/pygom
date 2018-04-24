@@ -262,15 +262,15 @@ class TestSIRStochasticModel(TestCase):
 
         seed = np.random.randint(1000)
 
-        ## First note that the default is a parallel simulation using
-        ## dask as the backend.  This does not use the seed
-        np.random.seed(seed)
-        simX1, simT1 = odeS.simulate_jump(t[1::], 10, full_output=True)
-        np.random.seed(seed)
-        simX2, simT2 = odeS.simulate_jump(t[1::], 10, full_output=True)
+        # ## First note that the default is a parallel simulation using
+        # ## dask as the backend.  This does not use the seed
+        # np.random.seed(seed)
+        # simX1, simT1 = odeS.simulate_jump(t[1::], 10, full_output=True)
+        # np.random.seed(seed)
+        # simX2, simT2 = odeS.simulate_jump(t[1::], 10, full_output=True)
         
-        for i, xi in enumerate(simX1):
-            self.assertFalse(np.allclose(simX2[i], xi))
+        # for i, xi in enumerate(simX1):
+        #     self.assertFalse(np.allclose(simX2[i], xi))
 
         ## But if we run it in serial then the seed will be used
         ## and the output will be identical

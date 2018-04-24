@@ -457,14 +457,14 @@ class BaseLoss(object):
         infodict : dict, only returned if full_output=True
             Dictionary containing additional output information
 
-            ==========  ========================================================
-            key         meaning
-            ==========  ========================================================
-            'sens'      intermediate values over the original ode and all the
-                        sensitivities, by state, parameters
-            'resid'     residuals given theta
-            'diff_loss' derivative of the loss function
-            ==========  ========================================================
+            ===========  =======================================================
+            key          meaning
+            ===========  =======================================================
+            'sens'       intermediate values over the original ode and all the
+                         sensitivities, by state, parameters
+            'resid'      residuals given theta
+            'diff_loss'  derivative of the loss function
+            ===========  =======================================================
 
         See also
         --------
