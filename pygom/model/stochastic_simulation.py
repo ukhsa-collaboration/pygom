@@ -6,11 +6,11 @@
 """
 
 import numpy as np
-import scipy.stats
 
 from ._model_errors import InputError, SimulationError
 from .ode_utils import check_array_type
-from pygom.utilR.distn import rexp, ppois, rpois, runif
+from pygom.utilR.distn import rexp, ppois, rpois, runif, test_seed
+
 
 def exact(x0, t0, t1, state_change_mat, transition_func,
           output_time=False, seed=None):
@@ -56,7 +56,6 @@ def exact(x0, t0, t1, state_change_mat, transition_func,
 
     x = check_array_type(x0)
     t = t0
-    if seed: seed = np.random.RandomState()
 
     while t < t1:
         x_new, t_new, s = firstReaction(x, t,
@@ -124,7 +123,6 @@ def hybrid(x0, t0, t1, state_change_mat, reactant_mat,
 
     x = check_array_type(x0)
     t = t0
-    if seed: seed = np.random.RandomState()
 
     f = firstReaction
     while t < t1:
@@ -204,10 +202,10 @@ def cle(x0, t0, t1, state_change_mat, transition_func,
     t: double
         time
     '''
-    
+
     assert isinstance(state_change_mat, np.ndarray), \
             "state_change_mat should be a np array"
-    
+
     if hasattr(positive, '__iter__'):
         assert len(positive) == len(x0), \
         "an array for the input positive should have same length as x"
@@ -218,14 +216,11 @@ def cle(x0, t0, t1, state_change_mat, transition_func,
         assert isinstance(positive, bool), "positive should be a bool"
         positive = np.array([positive]*len(x0))
 
-    if seed:
-        rvs = np.random.RandomState().normal
-    else:
-        rvs = scipy.stats.norm.rvs
-    
+    rvs = test_seed(seed).normal
+
     if h is None:
         h = (t1 - t0)/n
-        
+
     x = check_array_type(x0)
     t = t0
     p = state_change_mat.shape[1]
@@ -239,7 +234,7 @@ def cle(x0, t0, t1, state_change_mat, transition_func,
         ## represent a physical count
         x[x[positive]<0] = 0
         t += h
-        
+
     if output_time:
         return x, t
     else:
@@ -256,7 +251,7 @@ def sde(x0, t0, t1, drift, diffusion, state_change_mat=None,
     the drift and diffusion.  If state_change_mat is a
     :class:`np.ndarray` then we assume that a pre-multiplication
     against the drift and diffusion is required.
-    
+
     Parameters
     ----------
     x: array like
@@ -319,10 +314,7 @@ def sde(x0, t0, t1, drift, diffusion, state_change_mat=None,
         assert isinstance(positive, bool), "positive should be a bool"
         positive = np.array([positive]*len(x0))
 
-    if seed:
-        rvs = np.random.RandomState().normal
-    else:
-        rvs = scipy.stats.norm.rvs
+    rvs = test_seed(seed).normal
 
     if h is None:
         h = (t1 - t0)/n
@@ -353,9 +345,7 @@ def directReaction(x, t, state_change_mat, transition_func, seed=None):
     The direct reaction method.  Same as :func:`firstReaction` for both
     input and output, only differ in internal computation
     '''
-    
-    if seed: seed = np.random.RandomState()
-    
+
     rates = transition_func(x,t)
     totalRate = sum(rates)
     jumpRate = np.cumsum(rates)
@@ -373,11 +363,11 @@ def directReaction(x, t, state_change_mat, transition_func, seed=None):
     else:
         # we can't jump
         raise SimulationError("Cannot perform any more reactions")
-        
+
 def firstReaction(x, t, state_change_mat, transition_func, seed=None):
     '''
     The first reaction method
-    
+
     Parameters
     ----------
     x: array like
@@ -410,8 +400,7 @@ def firstReaction(x, t, state_change_mat, transition_func, seed=None):
         if the leap was successful.  A change in both x and t if it is
         successful, no change otherwise
     '''
-    
-    if seed: seed = np.random.RandomState()
+
     rates = transition_func(x,t)
     # find our jump times
     jumpTimes = _newJumpTimes(rates, seed=seed)
@@ -433,7 +422,6 @@ def nextReaction(x, t, state_change_mat, dependency_graph,
     The next reaction method
     '''
 
-    if seed: seed = np.random.RandomState()
     # smallest time :)
     index = np.argmin(jump_times)
     # moving state and time
@@ -471,7 +459,7 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
             epsilon=0.1, seed=None):
     '''
     The Poisson :math:`\\tau`-Leap
-    
+
     Parameters
     ----------
     x: array like
@@ -498,7 +486,7 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
         of transition variance
     epsilon: double, optional
         tolerance of the size of the jump, defaults to 0.1
-    
+
     Returns
     -------
     x: array like
@@ -509,8 +497,7 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
         if the leap was successful.  A change in both x and t if it is
         successful, no change otherwise
     '''
-    
-    if seed: seed = np.random.RandomState()
+
     # go through the list of transitions
     rates = transition_func(x,t)
     totalRate = sum(rates)
@@ -606,7 +593,7 @@ def _updateStateWithJump(x, transition_index, state_change_mat, n=1.0):
     transition has happened
     '''
     return x + state_change_mat[:,transition_index]*n
-    
+
 def _checkJump(x, new_x, t, jump_time):
     failedJump = np.any(new_x < 0)
 

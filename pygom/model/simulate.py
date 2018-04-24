@@ -106,7 +106,7 @@ class SimulateOde(DeterministicOde):
             final time
         '''
         return(exact(x0, t0, t1, self._vMat, self.transition_vector,
-                     output_time=output_time, seed=True))
+                     output_time=output_time))
 
     def cle(self, x0, t0, t1, output_time=False):
         '''
@@ -128,7 +128,7 @@ class SimulateOde(DeterministicOde):
             final time
         '''
         return(cle(x0, t0, t1, self._vMat, self.transition_vector,
-                   output_time=output_time, seed=True))
+                   output_time=output_time))
 
     def hybrid(self, x0, t0, t1, output_time=False):
         '''
@@ -150,7 +150,7 @@ class SimulateOde(DeterministicOde):
                       self.transition_vector,
                       self.transition_mean,
                       self.transition_var,
-                      output_time=output_time, seed=True))
+                      output_time=output_time))
 
     def simulate_param(self, t, iteration, full_output=False):
         '''
@@ -226,11 +226,14 @@ class SimulateOde(DeterministicOde):
         else:
             return Y
 
-    def simulate_jump(self, t, iteration, exact=False, full_output=False):
+    def simulate_jump(self, t, iteration, parallel=True,
+                      exact=False, full_output=False):
         '''
         Simulate the ode using stochastic simulation.  It switches
         between a first reaction method and a :math:`\\tau`-leap
-        algorithm internally.
+        algorithm internally. When a parallel backend exists, then a new random
+        state (seed) will be used for each processor.  This is due to a lack
+        of appropriate parallel seed random number generator in python.
 
         Parameters
         ----------
@@ -239,6 +242,8 @@ class SimulateOde(DeterministicOde):
             or the final time point
         iteration: int
             number of iterations you wish to simulate
+        parallel: bool, optional
+            Defaults to True
         exact: bool, optional
             True if exact simulation is desired, defaults to False
         full_output: bool, optional
@@ -252,7 +257,7 @@ class SimulateOde(DeterministicOde):
         sim_T: list or :class:`numpy.ndarray`
             if t is a single value, it outputs unequal shape that was
             record of all the jumps.  if t is a vector, it outputs t so that
-            it is a :class:`np.ndarray` instead
+            it is a :class:`numpy.ndarray` instead
 
         '''
 
@@ -282,17 +287,20 @@ class SimulateOde(DeterministicOde):
         if self._transitionVectorCompile is None:
             self._compileTransitionVector()
 
-        try:
-            import dask.bag
-            def jump_partial(final_t): return(self._jump(final_t,
-                                                         exact=exact,
-                                                         full_output=True,
-                                                         seed=True))
+        if parallel:
+            try:
+                import dask.bag
+                def jump_partial(final_t): return(self._jump(final_t,
+                                                             exact=exact,
+                                                             full_output=True,
+                                                             seed=True))
 
-            xtmp = dask.bag.from_sequence(np.ones(iteration)*finalT)
-            xtmp = xtmp.map(jump_partial).compute()
-        except Exception:# as e:
-            # print(e)
+                xtmp = dask.bag.from_sequence(np.ones(iteration)*finalT)
+                xtmp = xtmp.map(jump_partial).compute()
+            except Exception:# as e:
+                # print(e)
+                xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
+        else:
             xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
 
         xmat = list(zip(*xtmp))
@@ -333,7 +341,6 @@ class SimulateOde(DeterministicOde):
         assert self._t0 is not None, "No initial time"
         assert self._x0 is not None, "No initial state"
 
-        if seed: seed = np.random.RandomState()
         t = self._t0.tolist()
         x = copy.deepcopy(self._x0)
 
