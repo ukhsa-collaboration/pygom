@@ -229,7 +229,7 @@ One of the possible use of compartmental models is to generate forecasts.  Altho
 
     In [1]: Ymean2, Yall2 = odeS.simulate_param(t[1::], 10, full_output=True)
 
-    In [1]: sim_diff = [np.linalg.norm(Yall1[i] - yi) for i, yi in enumerate(Yall)]
+    In [1]: sim_diff = [np.linalg.norm(Yall[i] - yi) for i, yi in enumerate(Yall1)]
 
     In [1]: sim_diff12 = [np.linalg.norm(Yall2[i] - yi) for i, yi in enumerate(Yall1)]
 
@@ -259,11 +259,11 @@ In the alternative interpretation, setting the global seed is insufficient.  Unl
 
     In [1]: simX2, simT2 = odeS.simulate_jump(t[1:10], 10, parallel=False, full_output=True)
 
-    In [1]: sim_diff = [(simX[i] - x1).sum() for i, x1 in enumerate(simX)]
+    In [1]: sim_diff = [np.linalg.norm(simX[i] - x1) for i, x1 in enumerate(simX1)]
 
-    In [1]: sim_diff12 = [(simX1[i] - x2).sum() for i, x2 in enumerate(simX2)]
+    In [1]: sim_diff12 = [np.linalg.norm(simX2[i] - x1) for i, x1 in enumerate(simX1)]
 
     In [1]: print("Difference in simulation: %s" % np.sum(np.abs(sim_diff)))
 
-    In [1]: print("Difference in simulation using same seed: %s" % np.sum(np.abs(sim_diff)))
+    In [1]: print("Difference in simulation using same seed: %s" % np.sum(np.abs(sim_diff12)))
 
