@@ -51,8 +51,6 @@ class TestModelEstimate(TestCase):
 
         target = np.array([0.5, 1.0/3.0])
         self.assertTrue(np.allclose(res_QP['x'], target, 1e-2, 1e-2))
-#         if np.any(abs(res_QP['x']-target) >= 1e-2):
-#             raise Exception("Failed!")
 
     def test_SIR_Estimate_SquareLoss_Adjoint(self):
         # define the model and parameters
@@ -84,8 +82,6 @@ class TestModelEstimate(TestCase):
 
         target = np.array([0.5, 1.0/3.0])
         self.assertTrue(np.allclose(res_QP['x'], target, 1e-2, 1e-2))
-#         if np.any(abs(resQP['x'] - target) >= 1e-2):
-#             raise Exception("Failed!")
 
     def test_SIR_Estimate_NormalLoss(self):
         # define the model and parameters
@@ -117,8 +113,6 @@ class TestModelEstimate(TestCase):
 
         target = np.array([0.5, 1.0/3.0])
         self.assertTrue(np.allclose(res_QP['x'], target, 1e-2, 1e-2))
-#         if np.any(abs(resQP['x'] - target) >= 1e-2):
-#             raise Exception("Failed!")
 
     def test_SIR_Estimate_PoissonLoss_1TargetState(self):
         # initial values
@@ -165,8 +159,6 @@ class TestModelEstimate(TestCase):
 
         target = np.array([0.5, 1.0/3.0])
         self.assertTrue(np.allclose(res['x'], target))
-        # if np.any(abs(res['x'] - target) >= 1e-2):
-        #     raise Exception("Failed!")
 
     def test_SIR_Estimate_PoissonLoss_2TargetState(self):
         # initial values
@@ -216,8 +208,6 @@ class TestModelEstimate(TestCase):
 
         target = np.array([0.5, 1.0/3.0])
         self.assertTrue(np.allclose(res['x'], target))
-        # if np.any(abs(res['x'] - target) >= 1e-2):
-        #     raise Exception("Failed!")
 
     def test_FH_Obj(self):
         # initial values
@@ -265,13 +255,8 @@ class TestModelEstimate(TestCase):
 
         target = np.array([0.2, 0.2, 3.0])
         self.assertTrue(np.allclose(target, res['x'], 1e-2, 1e-2))
-        # if np.any(abs(target - res['x']) >= 1e-2):
-        #     raise Exception("Failed!")
 
         self.assertTrue(np.allclose(target, res2['x'], 1e-2, 1e-2))
-        # if np.any(abs(target - res2['x']) >= 1e-2):
-        #     raise Exception("Failed!")
-
 
     def test_FH_IV(self):
         # initial values
@@ -310,5 +295,3 @@ class TestModelEstimate(TestCase):
 
         target = np.array([0.2, 0.2, 3.0, -1.0, 1.0])
         self.assertTrue(np.allclose(res['x'], target, 1e-2, 1e-2))
-        # if np.any(abs(target-res['x']) >= 1e-2):
-        #     raise Exception("Failed!")

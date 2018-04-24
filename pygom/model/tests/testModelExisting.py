@@ -41,9 +41,6 @@ class TestModelExisting(TestCase):
                                                    full_output=True)
 
         self.assertTrue(output['message'] == 'Integration successful.')
-        # if output['message'] != 'Integration successful.':
-        #     raise Exception("Failed integration")
-
         # Happy! :)
 
     def test_SEIR_periodic(self):

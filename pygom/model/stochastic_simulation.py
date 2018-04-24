@@ -38,13 +38,13 @@ def exact(x0, t0, t1, state_change_mat, transition_func,
         defaults to False, if True then a tuple of two elements will be
         returned, else only the state vector
     seed: optional
-        represent which type of seed to use.  None or False uses the
-        default seed.  When seed is an integer number, it will reset the seed
+        represents which type of seed to use.  None will defaults to the
+        current global state while False will reinitialize to the initial
+        global state. When seed is an integer number, it will reset the seed
         via np.random.seed.  When seed=True, then a
         :class:`np.random.RandomState` object will be used for the
         underlying random number generating process. If seed is an object
         of :class:`np.random.RandomState` then it will be used directly
-
 
     Returns
     -------
@@ -106,8 +106,9 @@ def hybrid(x0, t0, t1, state_change_mat, reactant_mat,
         defaults to False, if True then a tuple of two elements will be
         returned, else only the state vector
     seed: optional
-        represent which type of seed to use.  None or False uses the
-        default seed.  When seed is an integer number, it will reset the seed
+        represents which type of seed to use.  None will defaults to the
+        current global state while False will reinitialize to the initial
+        global state. When seed is an integer number, it will reset the seed
         via np.random.seed.  When seed=True, then a
         :class:`np.random.RandomState` object will be used for the
         underlying random number generating process. If seed is an object
@@ -188,8 +189,9 @@ def cle(x0, t0, t1, state_change_mat, transition_func,
         defaults to False, if True then a tuple of two elements will be
         returned, else only the state vector
     seed: optional
-        represent which type of seed to use.  None or False uses the
-        default seed.  When seed is an integer number, it will reset the seed
+        represents which type of seed to use.  None will defaults to the
+        current global state while False will reinitialize to the initial
+        global state. When seed is an integer number, it will reset the seed
         via np.random.seed.  When seed=True, then a
         :class:`np.random.RandomState` object will be used for the
         underlying random number generating process. If seed is an object
@@ -282,8 +284,9 @@ def sde(x0, t0, t1, drift, diffusion, state_change_mat=None,
         defaults to False, if True then a tuple of two elements will be
         returned, else only the state vector
     seed: optional
-        represent which type of seed to use.  None or False uses the
-        default seed.  When seed is an integer number, it will reset the seed
+        represents which type of seed to use.  None will defaults to the
+        current global state while False will reinitialize to the initial
+        global state. When seed is an integer number, it will reset the seed
         via np.random.seed.  When seed=True, then a
         :class:`np.random.RandomState` object will be used for the
         underlying random number generating process. If seed is an object
@@ -383,12 +386,13 @@ def firstReaction(x, t, state_change_mat, transition_func, seed=None):
         a function that takes the input argument (x,t) and returns the vector
         of transition rates
     seed: optional
-        represent which type of seed to use.  None or False uses the
-        default seed.  When seed is an integer number, it will reset the seed
+        represents which type of seed to use.  None will defaults to the
+        current global state while False will reinitialize to the initial
+        global state. When seed is an integer number, it will reset the seed
         via np.random.seed.  When seed=True, then a
         :class:`np.random.RandomState` object will be used for the
-        underlying random number generating process. If seed is an
-    object of :class:`np.random.RandomState` then it will be used directly
+        underlying random number generating process. If seed is an object
+        of :class:`np.random.RandomState` then it will be used directly
 
     Returns
     -------

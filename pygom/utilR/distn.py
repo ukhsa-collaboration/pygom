@@ -26,7 +26,7 @@ def dexp(x, rate=1.0, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html
     '''
     if log:
-        return st.expon.pdf(x, scale=1.0/rate)
+        return st.expon.logpdf(x, scale=1.0/rate)
     else:
         return st.expon.pdf(x, scale=1.0/rate)
 
@@ -54,9 +54,9 @@ def rexp(n, rate=1.0, seed=None):
 
     @param seed represent which type of seed to use.  None or False uses the
     default seed.  When seed is an integer number, it will reset the seed
-    via np.random.seed.  When seed=True, then a
-    :class:`np.random.RandomState` object will be used. If seed is an
-    object of :class:`np.random.RandomState` then it will be used directly
+    via numpy.random.seed.  When seed=True, then a
+    :class:`numpy.random.RandomState` object will be used. If seed is an
+    object of :class:`numpy.random.RandomState` then it will be used directly
     '''
     if seed is None:
         rvs = np.random.exponential
@@ -105,9 +105,9 @@ def rgamma(n, shape, rate=1.0, seed=None):
 
     @param seed represent which type of seed to use.  None or False uses the
     default seed.  When seed is an integer number, it will reset the seed
-    via np.random.seed.  When seed=True, then a
-    :class:`np.random.RandomState` object will be used. If seed is an
-    object of :class:`np.random.RandomState` then it will be used directly
+    via numpy.random.seed.  When seed=True, then a
+    :class:`numpy.random.RandomState` object will be used. If seed is an
+    object of :class:`numpy.random.RandomState` then it will be used directly
     '''
     if seed is None:
         rvs = np.random.gamma
@@ -155,9 +155,9 @@ def rnorm(n, mean=0, sd=1, seed=None):
 
     @param seed represent which type of seed to use.  None or False uses the
     default seed.  When seed is an integer number, it will reset the seed
-    via np.random.seed.  When seed=True, then a
-    :class:`np.random.RandomState` object will be used.  If seed is an
-    object of :class:`np.random.RandomState` then it will be used directly
+    via numpy.random.seed.  When seed=True, then a
+    :class:`numpy.random.RandomState` object will be used.  If seed is an
+    object of :class:`numpy.random.RandomState` then it will be used directly
     '''
     if seed is None:
         rvs = np.random.normal
@@ -205,9 +205,9 @@ def rchisq(n, df, seed=None):
 
     @param seed represent which type of seed to use.  None or False uses the
     default seed.  When seed is an integer number, it will reset the seed
-    via np.random.seed.  When seed=True, then a
-    :class:`np.random.RandomState` object will be used. If seed is an
-    object of :class:`np.random.RandomState` then it will be used directly
+    via numpy.random.seed.  When seed=True, then a
+    :class:`numpy.random.RandomState` object will be used. If seed is an
+    object of :class:`numpy.random.RandomState` then it will be used directly
     '''
     if seed is None:
         rvs = np.random.chisquare
@@ -255,9 +255,9 @@ def runif(n, min=0.0, max=1.0, seed=None):
 
     @param seed represent which type of seed to use.  None or False uses the
     default seed.  When seed is an integer number, it will reset the seed
-    via np.random.seed.  When seed=True, then a
-    :class:`np.random.RandomState` object will be used. If seed is an
-    object of :class:`np.random.RandomState` then it will be used directly
+    via numpy.random.seed.  When seed=True, then a
+    :class:`numpy.random.RandomState` object will be used. If seed is an
+    object of :class:`numpy.random.RandomState` then it will be used directly
     '''
     if seed is None:
         rvs = np.random.uniform
@@ -317,9 +317,9 @@ def rpois(n, mu=1.0, seed=None):
 
     @param seed represent which type of seed to use.  None or False uses the
     default seed.  When seed is an integer number, it will reset the seed
-    via np.random.seed.  When seed=True, then a
-    :class:`np.random.RandomState` object will be used. If seed is an
-    object of :class:`np.random.RandomState` then it will be used directly
+    via numpy.random.seed.  When seed=True, then a
+    :class:`numpy.random.RandomState` object will be used. If seed is an
+    object of :class:`numpy.random.RandomState` then it will be used directly
     '''
     if seed is None:
         rvs = np.random.poisson
@@ -367,9 +367,9 @@ def rbinom(n, size, prob, seed=None):
 
     @param seed represent which type of seed to use.  None or False uses the
     default seed.  When seed is an integer number, it will reset the seed
-    via np.random.seed.  When seed=True, then a
-    :class:`np.random.RandomState` object will be used. If seed is an
-    object of :class:`np.random.RandomState` then it will be used directly
+    via numpy.random.seed.  When seed=True, then a
+    :class:`numpy.random.RandomState` object will be used. If seed is an
+    object of :class:`numpy.random.RandomState` then it will be used directly
     '''
     if seed is None:
         rvs = np.random.binomial

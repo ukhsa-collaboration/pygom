@@ -22,5 +22,3 @@ class TestEpiAnalysis(TestCase):
         e = epi_analysis.R0_from_matrix(F, V)
         dfe = epi_analysis.DFE(ode, ['I'])
         self.assertTrue(sympy.simplify(R0 - e[0].subs(dfe)) == 0)
-        # if sympy.simplify(R0 - e[0].subs(dfe)) != 0:
-        #     raise Exception("Simple: Epi Analysis failed")

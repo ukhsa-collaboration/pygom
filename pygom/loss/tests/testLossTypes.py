@@ -46,12 +46,7 @@ class TestLossTypes(TestCase):
         s2 = ((r * np.array(w))**2).sum()
 
         self.assertTrue(np.allclose(objFH1.cost(), s1))
-        # if abs(objFH1.cost() - s1) >= 1e-2:
-        #     raise Exception("Failed!")
-
         self.assertTrue(np.allclose(objFH2.cost(), s2))
-        # if abs(objFH2.cost() - s2) >= 1e-2:
-        #     raise Exception("Failed!")
 
     def test_FH_Normal(self):
         # initial values
@@ -115,14 +110,6 @@ class TestLossTypes(TestCase):
         for w in w_list:
             self.assertRaises(AssertionError, SquareLoss, theta, ode, x0,
                               t[0], t[1::], solution[1::,:], 'R', w)
-        #     try:
-        #         objFH = SquareLoss(theta, ode, x0, t[0], t[1::],
-        #                            solution[1::,:], 'R', w)
-        #     except:
-        #         totalFail += 1
-
-        # if totalFail != expectedFail:
-        #     raise Exception("We passed some of the illegal input...")
 
     def test_FH_Square_2State_Fail(self):
         ## totalFail = 0
@@ -157,12 +144,3 @@ class TestLossTypes(TestCase):
         for w in w_list:
             self.assertRaises(AssertionError, SquareLoss, theta, ode, x0,
                              t[0], t[1::], solution[1::,:], 'R', w)
-        #     try:
-        #         objFH = SquareLoss(theta, ode, x0, t[0], t[1::], solution[1::,:],
-        #                            ['V','R'], w)
-        #     except:
-        #         print(i)
-        #         totalFail += 1
-
-        # if totalFail != expectedFail:
-        #     raise Exception("We passed some of the illegal input...")

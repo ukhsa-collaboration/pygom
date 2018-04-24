@@ -12,7 +12,7 @@ class TestSIRStochasticModel(TestCase):
     def test_simulateParam1(self):
         '''
         Stochastic ode under the interpretation that the parameters follow
-        some sort of distribution.  In this case, a scipy.distn object
+        some sort of distribution.  In this case, a scipy.distn object.
         '''
         t0 = 0
         # the initial state, normalized to zero one
@@ -52,14 +52,13 @@ class TestSIRStochasticModel(TestCase):
         solutionDiff = odeS.simulate_param(t[1::], 1000) - solutionReference
 
         # test :)
-        if np.any(abs(solutionDiff) >= 0.2):
-            raise Exception("Possible problem with simulating the parameters")
+        self.assertTrue(np.any(abs(solutionDiff) <= 0.2))
 
     def test_simulateParam2(self):
         '''
         Stochastic ode under the interpretation that the parameters follow
         some sort of distribution.  In this case, a function handle which
-        has the same name as those found in R 
+        has the same name as those found in R.
         '''
         t0 = 0
         # the initial state, normalized to zero one
@@ -100,8 +99,7 @@ class TestSIRStochasticModel(TestCase):
         solutionDiff = odeS.simulate_param(t[1::], 1000) - solutionReference
 
         # test :)
-        if np.any(abs(solutionDiff) >= 0.2):
-            raise Exception("Possible problem with simulating the parameters")
+        self.assertTrue(np.all(abs(solutionDiff) <= 0.2))
 
     def test_simulateParam_same_seed(self):
         '''
@@ -280,7 +278,7 @@ class TestSIRStochasticModel(TestCase):
         np.random.seed(seed)
         simX2, simT2 = odeS.simulate_jump(t[1::], 10,
                                           parallel=False, full_output=True)
-        
+
         for i, xi in enumerate(simX1):
             self.assertTrue(np.allclose(simX2[i], xi))
 
@@ -327,13 +325,4 @@ class TestSIRStochasticModel(TestCase):
 
         for i, xi in enumerate(simX1):
             self.assertFalse(np.allclose(simX2[i], xi))
-
-
-# np.random.seed(1)
-# simX1, simT1 = odeS.simulate_jump(t[1::], 10, full_output=True)
-# np.random.seed(1)
-# simX2, simT2 = odeS.simulate_jump(t[1::], 10, full_output=True)
-
-# for i, xi in enumerate(simX1):
-#     print(np.allclose(simX2[i], xi))
 

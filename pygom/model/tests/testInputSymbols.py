@@ -17,13 +17,6 @@ class TestInputSymbols(TestCase):
         for state in state_list:
             self.assertRaises(AssertionError, DeterministicOde,
                               state, param_list)
-#             try:
-#                 ode = DeterministicOde(state, param_list)
-#             except:
-#                 total_fail += 1
-#
-#         if totalFail != len(state_list):
-#             raise Exception("We passed some of the illegal input...")
         # Happy! :)
 
     def test_multi_symbol_in_str(self):
