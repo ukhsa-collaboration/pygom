@@ -1,5 +1,5 @@
 enum34>=1.0.4; python_version == '2.7'
-dask>=0.13.0
+dask[complete]>=0.13.0
 graphviz>=0.4.9
 matplotlib>=1.0.0
 numpy>=1.6.0
@@ -9,4 +9,4 @@ python-libsbml>=5.0.0
 scipy>=0.10.0
 sympy>=1.0.0
 numpydoc>=0.6.0
-sphinx>=1.4.1
+sphinx>=1.4.1sphinx_rtd_theme>=0.2.0
