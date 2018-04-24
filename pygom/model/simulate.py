@@ -297,13 +297,13 @@ class SimulateOde(DeterministicOde):
 
                 xtmp = dask.bag.from_sequence(np.ones(iteration)*finalT)
                 xtmp = xtmp.map(jump_partial).compute()
-                print("Parallel simulation")
+                # print("Parallel simulation")
             except Exception as e:
-                print(e)
-                print("Revert to serial")
+                # print(e)
+                # print("Revert to serial")
                 xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
         else:
-            print("Serial computation")
+            # print("Serial computation")
             xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
 
         xmat = list(zip(*xtmp))
@@ -355,10 +355,6 @@ class SimulateOde(DeterministicOde):
         if self._GMat is None:
             self._computeDependencyMatrix()
 
-#         rates = self.transition_vector(x,t)
-#         jumpTimes = np.array([self._t0 + rexp(1, r) for r in rates])
-#         print rates
-#         print jumpTimes
         # keep jumping, Whoop Whoop (put your hands up!).
         f = firstReaction
         while t < finalT:

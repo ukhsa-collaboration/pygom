@@ -267,69 +267,69 @@ class BaseLoss(object):
             self._setParam(theta)
 
         self._ode.parameters = self._theta
-        intName = self._ode._intName
 
         if self._interpolateTime is None:
             self._setupInterpolationTime()
 
         # integrate forward using the extra time points
         f = ode_utils.integrateFuncJac
-        sAndOutInterpolate = f(self._ode.ode_T,
+        s_and_i = f(self._ode.ode_T,
                                self._ode.jacobian_T,
                                self._x0,
                                self._interpolateTime[0],
                                self._interpolateTime[1::],
                                includeOrigin=True,
                                full_output=full_output,
-                               method=intName)
+                               method=self._ode._intName)
 
         if full_output:
-            solutionInterpolate = sAndOutInterpolate[0]
-            outputInterpolate = sAndOutInterpolate[1]
+            sol = s_and_i[0]
+            out = s_and_i[1]
         else:
-            solutionInterpolate = sAndOutInterpolate
+            sol = s_and_i
 
         # holder, assuming that the index/order is kept (and correct) in
         # the list we perform our interpolation per state and only need
         # the functional form
-        interpolateList = list()
+        interpolate_list = list()
         for j in range(self._num_state):
             spl = LSQUnivariateSpline(self._interpolateTime.tolist(),
-                                      solutionInterpolate[:,j],
+                                      sol[:,j],
                                       self._t[1:-1])
-            interpolateList.append(copy.deepcopy(spl))
+            interpolate_list.append(copy.deepcopy(spl))
 
         # find the derivative of the loss function.  they act as events
         # which are the correction to the gradient function through time
-        solution = solutionInterpolate[self._interpolateTimeIndex,:]
+        solution = sol[self._interpolateTimeIndex,:]
 
         if full_output:
             g, infoDict = self._adjointGivenInterpolation(solution,
-                                                          interpolateList,
-                                                          intName,
+                                                          interpolate_list,
+                                                          self._ode._intName,
                                                           full_output)
-            infoDict['interpolateInfo'] = outputInterpolate
-            infoDict['solInterpolate'] = solutionInterpolate
+            infoDict['interpolateInfo'] = out
+            infoDict['solInterpolate'] = sol
             return g, infoDict
         else:
-            return self._adjointGivenInterpolation(solution, interpolateList,
-                                                   intName, full_output)
+            return self._adjointGivenInterpolation(solution, interpolate_list,
+                                                   self._ode._intName,
+                                                   full_output)
 
     def _setupInterpolationTime(self):
         '''
         Increase the number of output time points by putting in equally
         space points between two original time step
         '''
-        interpolateTime = np.array([self._t[0]])
-        interpolateTimeIndex = list()
-        numTime = len(self._t)
-        for i in range(numTime - 1):
+        interpolate_time = np.array([self._t[0]])
+        interpolate_index = list()
+        num_time = len(self._t)
+        for i in range(num_time - 1):
             tTemp = np.linspace(self._t[i], self._t[i+1], 20)[1::]
-            interpolateTime = np.append(interpolateTime, tTemp)
-            interpolateTimeIndex += [len(interpolateTime) - 1]
+            interpolate_time = np.append(interpolate_time, tTemp)
+            interpolate_index += [len(interpolate_time) - 1]
 
-        self._interpolateTime = interpolateTime
-        self._interpolateTimeIndex = interpolateTimeIndex
+        self._interpolateTime = interpolate_time
+        self._interpolateTimeIndex = interpolate_index
 
     def _adjointGivenInterpolation(self, solution, interpolateList,
                                    method, full_output=False):
@@ -425,9 +425,9 @@ class BaseLoss(object):
 
         _jac, output = self.jac(theta=theta, full_output=True, method=method)
         sens = output['sens']
-        diffLoss = output['diff_loss']
+        diff_loss = output['diff_loss']
         # resid = output['resid']
-        grad = self._sensToGradWithoutIndex(sens, diffLoss)
+        grad = self._sensToGradWithoutIndex(sens, diff_loss)
 
         if full_output:
             output['JTJ'] = self._sensToJTJWithoutIndex(sens)
@@ -482,37 +482,37 @@ class BaseLoss(object):
 
         # first we want to find out the number of sensitivities required
         # add them to the initial values
-        numSens =  self._num_state*self._num_param
-        initialStateSens = np.append(self._x0, np.zeros(numSens))
+        num_sens =  self._num_state*self._num_param
+        init_state_sens = np.append(self._x0, np.zeros(num_sens))
 
         f = ode_utils.integrateFuncJac
-        sAndOutSens = f(self._ode.ode_and_sensitivity_T,
-                        self._ode.ode_and_sensitivity_jacobian_T,
-                        initialStateSens,
-                        self._t[0], self._t[1::],
-                        full_output=full_output,
-                        method=method)
+        s_sens = f(self._ode.ode_and_sensitivity_T,
+                   self._ode.ode_and_sensitivity_jacobian_T,
+                   init_state_sens,
+                   self._t[0], self._t[1::],
+                   full_output=full_output,
+                   method=method)
 
         if full_output:
-            solutionSens = sAndOutSens[0]
-            solutionOutput = sAndOutSens[1]
+            sol_sens = s_sens[0]
+            sol_out = s_sens[1]
         else:
-            solutionSens = sAndOutSens
+            sol_sens = s_sens
 
-        indexOut = self._getTargetParamSensIndex()
+        index_out = self._getTargetParamSensIndex()
 
         if full_output:
             output = dict()
             i = self._stateIndex
-            output['resid'] = self._lossObj.residual(solutionSens[:,i])
-            output['diff_loss'] = self._lossObj.diff_loss(solutionSens[:,i])
-            output['sens'] = solutionSens
-            for i in solutionOutput:
-                output[i] = solutionOutput[i]
+            output['resid'] = self._lossObj.residual(sol_sens[:,i])
+            output['diff_loss'] = self._lossObj.diff_loss(sol_sens[:,i])
+            output['sens'] = sol_sens
+            for i in sol_out:
+                output[i] = sol_out[i]
 
-            return solutionSens[:,indexOut], output
+            return sol_sens[:,index_out], output
         else:
-            return solutionSens[:,indexOut]
+            return sol_sens[:,index_out]
 
     ############################################################
     #
@@ -554,21 +554,21 @@ class BaseLoss(object):
 
         '''
 
-        _jacIV, outputIV = self.jacIV(theta=theta,
+        _jac_iv, output_iv = self.jacIV(theta=theta,
                                       full_output=True,
                                       method=method)
         # the most important information! and in fact all the information
         # we need to calculate the gradient
-        diffLoss = outputIV['diff_loss']
-        sens = outputIV['sens']
+        diff_loss = output_iv['diff_loss']
+        sens = output_iv['sens']
 
         # grad for parameters and the initial values. Then join the two
-        grad = self._sensToGradWithoutIndex(sens, diffLoss)
-        gradIV = self._sensToGradIVWithoutIndex(sens, diffLoss)
-        grad = np.append(grad, gradIV)
+        grad = self._sensToGradWithoutIndex(sens, diff_loss)
+        grad_iv = self._sensToGradIVWithoutIndex(sens, diff_loss)
+        grad = np.append(grad, grad_iv)
 
         if full_output:
-            return grad, outputIV
+            return grad, output_iv
         else:
             return grad
 
@@ -624,7 +624,7 @@ class BaseLoss(object):
                                         np.eye(self._num_state).flatten())
 
         f = ode_utils.integrateFuncJac
-        sAndOutSensIV = f(self._ode.ode_and_sensitivityIV_T,
+        s_iv = f(self._ode.ode_and_sensitivityIV_T,
                           self._ode.ode_and_sensitivityIV_jacobian_T,
                           initialStateSens,
                           self._t[0], self._t[1::],
@@ -632,27 +632,27 @@ class BaseLoss(object):
                           method=method)
 
         if full_output:
-            solutionSensIV = sAndOutSensIV[0]
-            solutionOutputIV = sAndOutSensIV[1]
+            sol_iv = s_iv[0]
+            output_iv = s_iv[1]
         else:
-            solutionSensIV = sAndOutSensIV
+            sol_iv = s_iv
         # build the indexes to locate the correct parameters
         index1 = self._getTargetParamSensIndex()
         index2 = self._getTargetStateSensIndex()
-        indexOut = index1 + index2
+        index_out = index1 + index2
 
         if full_output:
             output = dict()
             i = self._stateIndex
-            output['resid'] = self._lossObj.residual(solutionSensIV[:,i])
-            output['diff_loss'] = self._lossObj.diff_loss(solutionSensIV[:,i])
-            output['sens'] = solutionSensIV
-            for i in solutionOutputIV:
-                output[i] = solutionOutputIV[i]
+            output['resid'] = self._lossObj.residual(sol_iv[:,i])
+            output['diff_loss'] = self._lossObj.diff_loss(sol_iv[:,i])
+            output['sens'] = sol_iv
+            for i in output_iv:
+                output[i] = output_iv[i]
 
-            return solutionSensIV[:,indexOut], output
+            return sol_iv[:,index_out], output
         else:
-            return solutionSensIV[:,indexOut]
+            return sol_iv[:,index_out]
 
     ############################################################
     #
@@ -747,20 +747,20 @@ class BaseLoss(object):
 
         # just the J^{\top}J part of the Hessian (which is guarantee to be PSD)
         # full Hessian with the outer product gradient
-        setParamIndex = self._getTargetParamIndex()
-        HJTJ = H[setParamIndex][:,setParamIndex].copy()
+        param_idx = self._getTargetParamIndex()
+        HJTJ = H[param_idx][:,param_idx].copy()
         JTJ = self._sensToJTJWithoutIndex(solutionAll)
         HJTJ += 2*JTJ
 
         if full_output:
-            indexOutSens = self._getTargetParamSensIndex()
+            sens_idx = self._getTargetParamSensIndex()
             output = dict()
 
             i = self._stateIndex
             output['resid'] = self._lossObj.residual(solutionAll[:,i])
             output['grad'] = self._sensToGradWithoutIndex(solutionAll, diffLoss)
             output['state'] = solutionAll[:,nS:(nS*(nP+1))]
-            output['sens'] = solutionAll[:,indexOutSens]
+            output['sens'] = solutionAll[:,sens_idx]
             output['hess'] = solutionAll[:,baseIndexHess::]
             output['info'] = solutionOutput
             output['H'] = H
@@ -808,12 +808,12 @@ class BaseLoss(object):
 
         _jac, output = self.jac(theta=theta, full_output=True, method=method)
         sens = output['sens']
-        diffLoss = output['diff_loss']
+        diff_loss = output['diff_loss']
         JTJ = self._sensToJTJWithoutIndex(sens)
 
         if full_output:
             sens = output['sens']
-            output['grad'] = self._sensToGradWithoutIndex(sens, diffLoss)
+            output['grad'] = self._sensToGradWithoutIndex(sens, diff_loss)
             return JTJ, output
         else:
             return JTJ
@@ -1102,7 +1102,7 @@ class BaseLoss(object):
             gradient of the loss function
         '''
         # the number of states which we will have residuals for
-        numS = len(self._stateName)
+        num_s = len(self._stateName)
 
         assert isinstance(sens, np.ndarray), "Expecting an np.ndarray"
         n,p = sens.shape
@@ -1110,10 +1110,10 @@ class BaseLoss(object):
                                     "the derivative of the loss function")
 
         # Divide through to obtain the number of parameters we are inferring
-        numOut = int(p/numS) # number of out parameters
+        num_out = int(p/num_s) # number of out parameters
 
-        sens = np.reshape(sens, (n, numS, numOut), 'F')
-        for j in range(numOut):
+        sens = np.reshape(sens, (n, num_s, num_out), 'F')
+        for j in range(num_out):
             sens[:,:,j] *= self._stateWeight
 
         grad = functools.reduce(np.add,map(np.dot, diff_loss, sens)).ravel()
@@ -1139,19 +1139,19 @@ class BaseLoss(object):
 
         assert isinstance(sens, np.ndarray), "Expecting an np.ndarray"
         # the number of states which we will have residuals for
-        numS = len(self._stateName)
-        n,p = sens.shape
+        num_s = len(self._stateName)
+        n, p = sens.shape
         # obviously divide through to find out the number of parameters
         # we are inferring
-        numOut = int(p/numS)
+        num_out = int(p/num_s)
 
         # define our holder accordingly
-        J = np.zeros((numOut, numOut))
+        J = np.zeros((num_out, num_out))
         # s = np.zeros((numS, numOut))
 
-        sens = np.reshape(sens, (n, numS, numOut), 'F')
+        sens = np.reshape(sens, (n, num_s, num_out), 'F')
 
-        for j in range(numOut):
+        for j in range(num_out):
             sens[:,:,j] *= self._stateWeight
 
         for i, s in enumerate(sens):
@@ -1295,32 +1295,32 @@ class BaseLoss(object):
         forward sensitivites to g where g is the gradient.
         Indicies obtained using information defined here
         '''
-        indexOut = self._getTargetParamSensIndex()
-        return self.sens_to_grad(sens[:,indexOut], diffLoss)
+        index_out = self._getTargetParamSensIndex()
+        return self.sens_to_grad(sens[:,index_out], diffLoss)
 
     def _sensToGradIVWithoutIndex(self, sens, diffLoss):
         '''
         Same as sensToGradWithoutIndex above but now we also include the
         initial conditions.
         '''
-        indexOut = self._getTargetStateSensIndex()
-        return self.sens_to_grad(sens[:,indexOut], diffLoss)
+        index_out = self._getTargetStateSensIndex()
+        return self.sens_to_grad(sens[:,index_out], diffLoss)
 
     def _sensToJTJWithoutIndex(self, sens, diffLoss=None):
         '''
         forward sensitivites to :math:`J^{\\top}J: where :math:`J` is
         the Jacobian. The approximation to the Hessian.
         '''
-        indexOut = self._getTargetParamSensIndex()
-        return self.sens_to_jtj(sens[:,indexOut], diffLoss)
+        index_out = self._getTargetParamSensIndex()
+        return self.sens_to_jtj(sens[:,index_out], diffLoss)
 
     def _sensToJTJIVWithoutIndex(self, sens, diffLoss=None):
         '''
         Same as sensToJTJIVWithoutIndex above but now we also include the
         initial conditions.
         '''
-        indexOut = self._getTargetStateSensIndex()
-        return self.sens_to_jtj(sens[:,indexOut], diffLoss)
+        index_out = self._getTargetStateSensIndex()
+        return self.sens_to_jtj(sens[:,index_out], diffLoss)
 
 
     ############################################################
@@ -1334,22 +1334,22 @@ class BaseLoss(object):
         stateIndex = self._ode.get_state_index(self._stateName)
 
         # build the indexes to locate the correct parameters
-        indexOut = list()
+        index_out = list()
         # locate the target indexes
-        indexList = self._getTargetParamIndex()
+        index_list = self._getTargetParamIndex()
         if isinstance(stateIndex, list):
             for j in stateIndex:
-                for i in indexList:
+                for i in index_list:
                     # always ignore the first numState because they are
                     # outputs from the actual ode and not the sensitivities.
                     # Hence the +1
-                    indexOut.append(j + (i+1) * self._num_state)
+                    index_out.append(j + (i + 1) * self._num_state)
         else:
             # else, happy times!
-            for i in indexList:
-                indexOut.append(stateIndex + (i+1) * self._num_state)
+            for i in index_list:
+                index_out.append(stateIndex + (i + 1) * self._num_state)
 
-        return np.sort(np.array(indexOut)).tolist()
+        return np.sort(np.array(index_out)).tolist()
 
     def _getTargetParamIndex(self):
         '''
@@ -1357,53 +1357,52 @@ class BaseLoss(object):
         '''
         # we assume that all the parameters are targets
         if self._targetParam is None:
-            indexList = range(0, self._num_param)
+            index_list = range(0, self._num_param)
         else:
             # only select from the list
-            indexList = list()
+            index_list = list()
             # note that "i" is a string here
             for i in self._targetParam:
-                indexList.append(self._ode.get_param_index(i))
+                index_list.append(self._ode.get_param_index(i))
 
-        return indexList
+        return index_list
 
     def _getTargetStateSensIndex(self):
         # as usual, locate the index of the state
         stateIndex = self._ode.get_state_index(self._stateName)
 
         # build the indexes to locate the correct parameters
-        indexOut = list()
+        index_out = list()
         # locate the target indexes
-        indexList = self._getTargetStateIndex()
+        index_list = self._getTargetStateIndex()
 
         ## Note to self. We do not use list comprehension here because it will
         ## exceed the 80 character limit
+        n_s = self._num_state
+        n_p = self._num_param
         if isinstance(stateIndex, list):
             for j in stateIndex:
-                for i in indexList:
+                for i in index_list:
                     # always ignore the first numState because they are outputs
                     # from the actual ode and not the sensitivities
-                    indexOut.append(j + (i + 1 + self._num_param)*self._num_state)
+                    index_out.append(j + (i + 1 + n_p)*n_s)
         else:
             # else, happy times!
-            for i in indexList:
-                indexOut.append(stateIndex +(i+1+self._num_param)*self._num_state)
+            for i in index_list:
+                index_out.append(stateIndex + (i + 1 + n_p)*n_s)
 
-        return np.sort(np.array(indexOut)).tolist()
+        return np.sort(np.array(index_out)).tolist()
 
     def _getTargetStateIndex(self):
         '''
         Get the indices of our targeted states
         '''
         if self._targetState is None:
-            indexList = range(self._num_state)
+            index_list = range(self._num_state)
         else:
-            indexList = [self._ode.get_state_index(i) for i in self._targetState]
-            # indexList = list()
-            # for i in self._targetState:
-            #     indexList.append(self._ode.get_state_index(i))
+            index_list = [self._ode.get_state_index(i) for i in self._targetState]
 
-        return indexList
+        return index_list
 
     def _setParamInput(self, theta):
         if self._targetParam is None:
@@ -1450,7 +1449,8 @@ class BaseLoss(object):
             elif self._targetState is None:
                 # this mean all the state or without the states
                 if len(theta) == self._num_param:
-                    # without the states, obviously using the wrong function call
+                    # without the states, obviously using the wrong function
+                    # call
                     raise InputError("Input has the same length as the " +
                                      "number of parameters. If the initial " +
                                      "conditions for the states are not " +

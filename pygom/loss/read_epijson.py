@@ -50,42 +50,42 @@ def epijson_to_data_frame(in_data, full_output=False):
 
     # obtain the data into (event, date)
     f = lambda x: list(map(lambda x1: (x1['name'], x1['date']), x))
-    dataTuple = map(f, allRecords)
+    data_tuple = map(f, allRecords)
     ## dataTuple = map(lambda x: list(map(lambda x1: (x1['name'], x1['date']), x)), allRecords)
 
     # combining the records as information of the individual is
     # unimportant from pygom point of view
-    dataTuple = functools.reduce(lambda x,y: x + y, list(dataTuple))
+    data_tuple = functools.reduce(lambda x,y: x + y, list(data_tuple))
 
     # parse the dates under ISO 8601
-    data = map(lambda x_y: (x_y[0], _parseDate(x_y[1])), dataTuple)
+    data = map(lambda x_y: (x_y[0], _parseDate(x_y[1])), data_tuple)
     # making sure that we have time zone information
 
     # we put the data info in a dict format to
     # 1. get the unique time stamps
     # 2. speed up indexing / locating events
-    dataDict = dict()
-    colName = set()
+    data_dict = dict()
+    col_name = set()
     for name, date in data:
-        dataDict.setdefault(date, list())
-        dataDict[date] += [str(name)]
-        colName.add(str(name))
+        data_dict.setdefault(date, list())
+        data_dict[date] += [str(name)]
+        col_name.add(str(name))
 
-    colName = list(colName)
-    rowName = sorted(dataDict.keys())
+    col_name = list(col_name)
+    row_name = sorted(data_dict.keys())
 
-    dataList = [_eventNameToVector(dataDict[date], colName) for date in rowName]
-    df = pd.DataFrame(dataList, index=rowName, columns=colName)
+    data_list = [_eventNameToVector(data_dict[d], col_name) for d in row_name]
+    df = pd.DataFrame(data_list, index=row_name, columns=col_name)
 
     if full_output:
         return df, epijson
     else:
         return df.cumsum()
 
-def _eventNameToVector(x, nameList):
-    y = np.zeros(len(nameList))
+def _eventNameToVector(x, name_list):
+    y = np.zeros(len(name_list))
     for name in x:
-        y[nameList.index(name)] += 1
+        y[name_list.index(name)] += 1
     return y
 
 def _parseDate(x):

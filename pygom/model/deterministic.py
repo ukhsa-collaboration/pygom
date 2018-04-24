@@ -351,7 +351,7 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         parameters: list
-            see :meth:`.setParameters`
+            see :meth:`.parameters`
         time: numeric
             The current time
         state: array like
@@ -509,7 +509,7 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         parameters: list
-            see :meth:`.setParameters`
+            see :meth:`.parameters`
         time: double
             The current time
         state: array list
@@ -588,7 +588,7 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         parameters: list
-            see :meth:`.setParameters`
+            see :meth:`.parameters`
         time: double
             The current time
         state: array list
@@ -703,7 +703,7 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         parameters: list
-            see :meth:`.setParameters`
+            see :meth:`.parameters`
         time: double
             The current time
         state: array list
@@ -807,7 +807,7 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         parameters: list
-            see :meth:`.setParameters`
+            see :meth:`.parameters`
         time: double
             The current time
         state: array list
@@ -1082,9 +1082,10 @@ class DeterministicOde(BaseOdeModel):
         """
         Evaluate the sensitivity given state and time.  The default is to
         output the values by parameters, i.e. :math:`s_{i},\\ldots,s_{i+n}` are
-        partial derivatives w.r.t. the states for :math:`i \\in {1,1+p,1+2p,1+3p
-        \\ldots, 1+(n-1)p}`.  This is to take advantage of the fact that
-        we have a block diagonal jacobian that was already evaluated
+        partial derivatives w.r.t. the states for
+        :math:`i \\in {1,1+p,1+2p,1+3p, \\ldots, 1+(n-1)p}`.  This is
+        to take advantage of the fact that we have a block diagonal
+        jacobian that was already evaluated
 
         Parameters
         ----------
@@ -1148,8 +1149,8 @@ class DeterministicOde(BaseOdeModel):
 
         Notes
         -----
-        It is different to :meth:`.eval_ode` and :meth:`.eval_jacobian` in that
-        the extra input argument is not a parameter
+        It is different to :meth:`.eval_ode` and :meth:`.eval_jacobian` in
+        that the extra input argument is not a parameter
 
         See Also
         --------
@@ -1183,9 +1184,9 @@ class DeterministicOde(BaseOdeModel):
         by_state: bool
             Whether the output vector should be arranged by state or by
             parameters. If False, then it means that the vector of output is
-            arranged according to looping i,j from Sensitivity_{i,j} with i the
-            state and j the param. This is the preferred way because it leads
-            to a block diagonal Jacobian
+            arranged according to looping i,j from Sensitivity_{i,j} with i
+            being the state and j the param. This is the preferred way because
+            it leds to a block diagonal Jacobian
 
         Returns
         -------
@@ -1293,7 +1294,8 @@ class DeterministicOde(BaseOdeModel):
 
     def ode_and_sensitivity_jacobian_T(self, t, state_param, by_state=False):
         '''
-        Same as :meth:`ode_and_sensitivity_jacobian` but with t as first parameter
+        Same as :meth:`ode_and_sensitivity_jacobian` but with t as
+        first parameter
         '''
         return self.ode_and_sensitivity_jacobian(state_param, t, by_state)
 
@@ -1309,9 +1311,10 @@ class DeterministicOde(BaseOdeModel):
         Evaluate the sensitivity which include the initial values as
         our parameters given state and time.  The default is to
         output the values by parameters, i.e. :math:`s_{i},\\ldots,s_{i+n}` are
-        partial derivatives w.r.t. the states for :math:`i \\in {1,1+p,1+2p,1+3p
-        \\ldots, 1+(n-1)p}`.  This is to take advantage of the fact that
-        we have a block diagonal Jacobian that was already evaluated
+        partial derivatives w.r.t. the states for
+        :math:`i \\in {1,1+p,1+2p,1+3p, \\ldots, 1+(n-1)p}`.  This is to take
+        advantage of the fact that we have a block diagonal Jacobian that was
+        already evaluated.
 
         Parameters
         ----------
@@ -1376,8 +1379,8 @@ class DeterministicOde(BaseOdeModel):
 
         Notes
         -----
-        It is different to :meth:`.eval_ode` and :meth:`.eval_jacobian` in that
-        the extra input argument is not a parameter
+        It is different to :meth:`.eval_ode` and :meth:`.eval_jacobian` in
+        that the extra input argument is not a parameter.
 
         See Also
         --------
@@ -1435,10 +1438,10 @@ class DeterministicOde(BaseOdeModel):
         # unrolling, assuming that we would always put the state first
         state = state_param[0:self.num_state]
         # the remainings
-        sensIV = state_param[self.num_state::]
+        sens_iv = state_param[self.num_state::]
         # separate evaluation
         out1 = self.ode(state,t)
-        out2,out3 = self.sensitivityIV(sensIV, t, state)
+        out2,out3 = self.sensitivityIV(sens_iv, t, state)
         return np.append(np.append(out1, out2), out3)
 
     def ode_and_sensitivityIV_T(self, t, state_param):
@@ -1517,7 +1520,8 @@ class DeterministicOde(BaseOdeModel):
 
     def ode_and_sensitivityIV_jacobian_T(self, t, state_param):
         '''
-        Same as :meth:`ode_and_sensitivityIV_jacobian` but with t as first parameter
+        Same as :meth:`ode_and_sensitivityIV_jacobian` but with t as
+        first parameter
         '''
         return self.ode_and_sensitivityIV_jacobian(state_param, t)
 
@@ -1544,7 +1548,8 @@ class DeterministicOde(BaseOdeModel):
         func: callable
             This should take inputs similar to an ode, i.e. of the form
             func(y,t).  If j(y,t) is the cost function, then func
-            is a function that calculates :math:`\\partial j \\over \\partial x`.
+            is a function that calculates
+            :math:`\\partial j \\over \\partial x`.
 
         Returns
         -------
@@ -1590,7 +1595,8 @@ class DeterministicOde(BaseOdeModel):
         func: callable
             This should take inputs similar to an ode, i.e. of the form
             func(y,t).  If j(y,t) is the cost function, then func
-            is a function that calculates :math:`\\partial j \\over \\partial x`.
+            is a function that calculates
+            :math:`\\partial j \\over \\partial x`.
 
         Returns
         -------
@@ -1646,7 +1652,8 @@ class DeterministicOde(BaseOdeModel):
         func: callable
             This should take inputs similar to an ode, i.e. of the form
             func(y,t).  If j(y,t) is the cost function, then func
-            is a function that calculates :math:`\\partial j \\over \\partial x`.
+            is a function that calculates
+            :math:`\\partial j \\over \\partial x`.
 
         Returns
         -------

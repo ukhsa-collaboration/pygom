@@ -7,17 +7,17 @@
 
 import numpy as np
 
-from ._model_errors import InputError, SimulationError
-from .ode_utils import check_array_type
 from pygom.utilR.distn import rexp, ppois, rpois, runif, test_seed
 
+from ._model_errors import InputError, SimulationError
+from .ode_utils import check_array_type
 
 def exact(x0, t0, t1, state_change_mat, transition_func,
           output_time=False, seed=None):
     '''
     Stochastic simulation using an exact method starting from time
     t0 to t1 with the starting state values of x0
-
+ 
     Parameters
     ----------
     x: array like
