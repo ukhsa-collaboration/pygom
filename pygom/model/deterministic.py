@@ -301,8 +301,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        dot:
-            :class:`graphviz.Digraph`
+        :class:`graphviz.Digraph`
         '''
         dot = _ode_composition.generateTransitionGraph(self, file_name)
         if show:
@@ -326,13 +325,13 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
         t: double
             The current time
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             output of the same length as the ode
 
         '''
@@ -352,16 +351,16 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         parameters: list
-            see :meth:`.setParameters`
+            see :meth:`.parameters`
         time: numeric
             The current time
         state: array like
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`np.matrix` or :class:`mpmath.matrix`
+        :class:`numpy.matrix` or :class:`mpmath.matrix`
             output of the same length as the ode.
 
         Notes
@@ -397,13 +396,13 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
         t: double
             The current time
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             eigenvalues of the system given input
 
         '''
@@ -419,7 +418,7 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
         t: double
             The current time
 
@@ -446,13 +445,13 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
         t: double
             The current time
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             Matrix of dimension [number of state x number of state]
 
         '''
@@ -510,16 +509,16 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         parameters: list
-            see :meth:`.setParameters`
+            see :meth:`.parameters`
         time: double
             The current time
         state: array list
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`np.matrix` or :class:`mpmath.matrix`
+        :class:`numpy.matrix` or :class:`mpmath.matrix`
             Matrix of dimension [number of state x number of state]
 
         Notes
@@ -557,13 +556,13 @@ class DeterministicOde(BaseOdeModel):
         state_param: array like
             The current numerical value for the states as
             well as the sensitivities, which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
         t: double
             The current time
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             Matrix of dimension [number of state *
             number of parameters x number of state]
 
@@ -589,16 +588,16 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         parameters: list
-            see :meth:`.setParameters`
+            see :meth:`.parameters`
         time: double
             The current time
         state: array list
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`np.matrix` or :class:`mpmath.matrix`
+        :class:`numpy.matrix` or :class:`mpmath.matrix`
             Matrix of dimension [number of state x number of state]
 
         Notes
@@ -631,13 +630,13 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
         t: double
             The current time
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             Matrix of dimension [number of state x number of state]
 
         '''
@@ -704,16 +703,16 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         parameters: list
-            see :meth:`.setParameters`
+            see :meth:`.parameters`
         time: double
             The current time
         state: array list
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`np.matrix` or :class:`mpmath.matrix`
+        :class:`numpy.matrix` or :class:`mpmath.matrix`
             Matrix of dimension [number of state x number of state]
 
         Notes
@@ -782,13 +781,13 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
         t: numeric
             The current time
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             Matrix of dimension [number of state x number of parameters]
 
         """
@@ -808,16 +807,16 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         parameters: list
-            see :meth:`.setParameters`
+            see :meth:`.parameters`
         time: double
             The current time
         state: array list
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`np.matrix` or :class:`mpmath.matrix`
+        :class:`numpy.matrix` or :class:`mpmath.matrix`
             Matrix of dimension [number of state x number of state]
 
         Notes
@@ -887,13 +886,13 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
         t: numeric
             The current time
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             Matrix of dimension [number of state x number of parameters]
 
         See also
@@ -918,16 +917,16 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         parameters: list
-            see :meth:`.setParameters`
+            see :meth:`.parameters`
         time: double
             The current time
         state: array list
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`np.matrix` or :class:`mpmath.matrix`
+        :class:`numpy.matrix` or :class:`mpmath.matrix`
             Matrix of dimension [number of state x number of state]
 
         Notes
@@ -998,7 +997,7 @@ class DeterministicOde(BaseOdeModel):
         ----------
         state: array like
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
         t: double
             The current time
 
@@ -1021,12 +1020,12 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         parameters: list
-            see :meth:`.setParameters`
+            see :meth:`.parameters`
         time: double
             The current time
         state: array list
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
 
         Returns
         -------
@@ -1083,9 +1082,10 @@ class DeterministicOde(BaseOdeModel):
         """
         Evaluate the sensitivity given state and time.  The default is to
         output the values by parameters, i.e. :math:`s_{i},\\ldots,s_{i+n}` are
-        partial derivatives w.r.t. the states for :math:`i \\in {1,1+p,1+2p,1+3p
-        \\ldots, 1+(n-1)p}`.  This is to take advantage of the fact that
-        we have a block diagonal jacobian that was already evaluated
+        partial derivatives w.r.t. the states for
+        :math:`i \\in {1,1+p,1+2p,1+3p, \\ldots, 1+(n-1)p}`.  This is
+        to take advantage of the fact that we have a block diagonal
+        jacobian that was already evaluated
 
         Parameters
         ----------
@@ -1097,16 +1097,14 @@ class DeterministicOde(BaseOdeModel):
             The current time
         state: array like
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
         by_state: bool
             how we want the output to be arranged.  Default is True so
             that we have a block diagonal structure
 
         Returns
         -------
-        :class:`np.ndarray`
-            f(s)
-
+        :class:`numpy.ndarray`
         """
         # TODO: allows the functionality to not evaluate all sensitivity
 
@@ -1132,7 +1130,7 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         S: array like
-            Which should be :class:`np.ndarray`.
+            Which should be :class:`numpy.ndarray`.
             The starting sensitivity of size [number of state x number of
             parameters].  Which are normally zero or one,
             depending on whether the initial conditions are also variables.
@@ -1140,20 +1138,19 @@ class DeterministicOde(BaseOdeModel):
             The current time
         state: array like
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
         by_state: bool
             how we want the output to be arranged.  Default is True so
             that we have a block diagonal structure
 
         Returns
         -------
-        :class:`np.ndarray`
-            f(s)
+        :class:`numpy.ndarray`
 
         Notes
         -----
-        It is different to :meth:`.eval_ode` and :meth:`.eval_jacobian` in that
-        the extra input argument is not a parameter
+        It is different to :meth:`.eval_ode` and :meth:`.eval_jacobian` in
+        that the extra input argument is not a parameter
 
         See Also
         --------
@@ -1187,15 +1184,15 @@ class DeterministicOde(BaseOdeModel):
         by_state: bool
             Whether the output vector should be arranged by state or by
             parameters. If False, then it means that the vector of output is
-            arranged according to looping i,j from Sensitivity_{i,j} with i the
-            state and j the param. This is the preferred way because it leads
-            to a block diagonal Jacobian
+            arranged according to looping i,j from Sensitivity_{i,j} with i
+            being the state and j the param. This is the preferred way because
+            it leds to a block diagonal Jacobian
 
         Returns
         -------
         :class:`list`
             concatenation of 2 element. First contains the ode, second the
-            sensitivity. Both are of type :class:`np.ndarray`
+            sensitivity. Both are of type :class:`numpy.ndarray`
 
         See Also
         --------
@@ -1244,7 +1241,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             output of a square matrix of size: number of ode + 1 times number
             of parameters
 
@@ -1297,7 +1294,8 @@ class DeterministicOde(BaseOdeModel):
 
     def ode_and_sensitivity_jacobian_T(self, t, state_param, by_state=False):
         '''
-        Same as :meth:`ode_and_sensitivity_jacobian` but with t as first parameter
+        Same as :meth:`ode_and_sensitivity_jacobian` but with t as
+        first parameter
         '''
         return self.ode_and_sensitivity_jacobian(state_param, t, by_state)
 
@@ -1313,26 +1311,26 @@ class DeterministicOde(BaseOdeModel):
         Evaluate the sensitivity which include the initial values as
         our parameters given state and time.  The default is to
         output the values by parameters, i.e. :math:`s_{i},\\ldots,s_{i+n}` are
-        partial derivatives w.r.t. the states for :math:`i \\in {1,1+p,1+2p,1+3p
-        \\ldots, 1+(n-1)p}`.  This is to take advantage of the fact that
-        we have a block diagonal Jacobian that was already evaluated
+        partial derivatives w.r.t. the states for
+        :math:`i \\in {1,1+p,1+2p,1+3p, \\ldots, 1+(n-1)p}`.  This is to take
+        advantage of the fact that we have a block diagonal Jacobian that was
+        already evaluated.
 
         Parameters
         ----------
         sensIV: array like
             The starting sensitivity of size [number of state x number of
             parameters] + [number of state x number of state] for the
-            initial condition.  The latter is an identity matrix at time
-            zero.
+            initial condition.  The latter is an identity matrix at time zero.
         t: double
             The current time
         state: array like
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             output of the same length as the ode
 
         """
@@ -1362,9 +1360,9 @@ class DeterministicOde(BaseOdeModel):
         Parameters
         ----------
         S: array like
-            Which should be :class:`np.ndarray`.
+            Which should be :class:`numpy.ndarray`.
             The starting sensitivity of size [number of state x number of
-            parameters].  Which are normallly zero or one,
+            parameters].  Which are normally zero or one,
             depending on whether the initial conditions are also variables.
         IV: array like
             sensitivities for the initial values
@@ -1372,17 +1370,17 @@ class DeterministicOde(BaseOdeModel):
             The current time
         state: array like
             The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
+            :class:`numpy.ndarray` or :class:`list`
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             :math:`f(s(x,\\theta))` and :math:`f(s(x_{0}))`
 
         Notes
         -----
-        It is different to :meth:`.eval_ode` and :meth:`.eval_jacobian` in that
-        the extra input argument is not a parameter
+        It is different to :meth:`.eval_ode` and :meth:`.eval_jacobian` in
+        that the extra input argument is not a parameter.
 
         See Also
         --------
@@ -1425,7 +1423,7 @@ class DeterministicOde(BaseOdeModel):
             concatenation of 3 element. First contains the ode, second the
             sensitivity, then the sensitivity of the initial value.  All
             of them are of type
-            :class:`np.ndarray`
+            :class:`numpy.ndarray`
 
         See Also
         --------
@@ -1440,10 +1438,10 @@ class DeterministicOde(BaseOdeModel):
         # unrolling, assuming that we would always put the state first
         state = state_param[0:self.num_state]
         # the remainings
-        sensIV = state_param[self.num_state::]
+        sens_iv = state_param[self.num_state::]
         # separate evaluation
         out1 = self.ode(state,t)
-        out2,out3 = self.sensitivityIV(sensIV, t, state)
+        out2,out3 = self.sensitivityIV(sens_iv, t, state)
         return np.append(np.append(out1, out2), out3)
 
     def ode_and_sensitivityIV_T(self, t, state_param):
@@ -1472,7 +1470,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             output of a square matrix of size: number of ode + 1 times number
             of parameters
 
@@ -1522,7 +1520,8 @@ class DeterministicOde(BaseOdeModel):
 
     def ode_and_sensitivityIV_jacobian_T(self, t, state_param):
         '''
-        Same as :meth:`ode_and_sensitivityIV_jacobian` but with t as first parameter
+        Same as :meth:`ode_and_sensitivityIV_jacobian` but with t as
+        first parameter
         '''
         return self.ode_and_sensitivityIV_jacobian(state_param, t)
 
@@ -1549,11 +1548,12 @@ class DeterministicOde(BaseOdeModel):
         func: callable
             This should take inputs similar to an ode, i.e. of the form
             func(y,t).  If j(y,t) is the cost function, then func
-            is a function that calculates :math:`\\partial j \\over \\partial x`.
+            is a function that calculates
+            :math:`\\partial j \\over \\partial x`.
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             output of the same length as the ode
         '''
         state_param = [o(t) for o in interpolant]
@@ -1595,11 +1595,12 @@ class DeterministicOde(BaseOdeModel):
         func: callable
             This should take inputs similar to an ode, i.e. of the form
             func(y,t).  If j(y,t) is the cost function, then func
-            is a function that calculates :math:`\\partial j \\over \\partial x`.
+            is a function that calculates
+            :math:`\\partial j \\over \\partial x`.
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             output of the same length as the ode
 
         Notes
@@ -1651,11 +1652,12 @@ class DeterministicOde(BaseOdeModel):
         func: callable
             This should take inputs similar to an ode, i.e. of the form
             func(y,t).  If j(y,t) is the cost function, then func
-            is a function that calculates :math:`\\partial j \\over \\partial x`.
+            is a function that calculates
+            :math:`\\partial j \\over \\partial x`.
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             output of is a two dimensional array of size
             [number of state x number of state]
 
@@ -1702,7 +1704,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             output of is a two dimensional array of size
             [number of state x number of state]
 
@@ -1750,7 +1752,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             :math:`f(x)` of size [number of state *
             (number of parameters * number of parameters)]
 
@@ -1786,7 +1788,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             f(x) of size [number of state *
             (number of parameters * number of parameters)]
 
@@ -1819,7 +1821,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             same size as the state_param input
         '''
 
@@ -1868,7 +1870,7 @@ class DeterministicOde(BaseOdeModel):
 
         Returns
         -------
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
             size of (a,a) where a is the length of the
             state_param input
         '''

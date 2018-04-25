@@ -9,7 +9,7 @@
 
 """
 
-import scipy.stats
+import scipy.stats as st
 import numpy as np
 
 ###############################################################
@@ -26,9 +26,9 @@ def dexp(x, rate=1.0, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html
     '''
     if log:
-        return scipy.stats.expon.pdf(x, scale=1.0/rate)
+        return st.expon.logpdf(x, scale=1.0/rate)
     else:
-        return scipy.stats.expon.pdf(x, scale=1.0/rate)
+        return st.expon.pdf(x, scale=1.0/rate)
 
 def pexp(q, rate=1.0, log=False):
     '''
@@ -36,35 +36,32 @@ def pexp(q, rate=1.0, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html
     '''
     if log:
-        return scipy.stats.expon.logcdf(q, scale=1.0/rate)
+        return st.expon.logcdf(q, scale=1.0/rate)
     else:
-        return scipy.stats.expon.cdf(q, scale=1.0/rate)
+        return st.expon.cdf(q, scale=1.0/rate)
 
 def qexp(p, rate=1.0):
     '''
     See
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html
     '''
-    return scipy.stats.expon.ppf(p, scale=1.0/rate)
+    return st.expon.ppf(p, scale=1.0/rate)
 
 def rexp(n, rate=1.0, seed=None):
     '''
     See
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html
-    
+
     @param seed represent which type of seed to use.  None or False uses the
     default seed.  When seed is an integer number, it will reset the seed
-    via np.random.seed.  When seed=True, then a
-    :class:`np.random.RandomState` object will be used. If seed is an
-    object of :class:`np.random.RandomState` then it will be used directly
+    via numpy.random.seed.  When seed=True, then a
+    :class:`numpy.random.RandomState` object will be used. If seed is an
+    object of :class:`numpy.random.RandomState` then it will be used directly
     '''
-    rvs = scipy.stats.expon.rvs
-    if seed is True: 
-        rvs = np.random.RandomState().exponential
-    elif isinstance(seed, np.random.RandomState):
-        rvs = seed.exponential
-    elif isinstance(seed, int):
-        np.random.seed(seed)
+    if seed is None:
+        rvs = np.random.exponential
+    else:
+        rvs = test_seed(seed).exponential
 
     if n > 1:
         return rvs(scale=1.0/rate, size=n)
@@ -80,9 +77,9 @@ def dgamma(x, shape, rate=1.0, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html
     '''
     if log:
-        return scipy.stats.gamma.logpdf(x, a=shape, scale=1.0/rate)
+        return st.gamma.logpdf(x, a=shape, scale=1.0/rate)
     else:
-        return scipy.stats.gamma.pdf(x, a=shape, scale=1.0/rate)
+        return st.gamma.pdf(x, a=shape, scale=1.0/rate)
 
 def pgamma(q, shape, rate=1.0, log=False):
     '''
@@ -90,17 +87,17 @@ def pgamma(q, shape, rate=1.0, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html
     '''
     if log:
-        return scipy.stats.gamma.logcdf(q, a=shape, scale=1.0/rate)
+        return st.gamma.logcdf(q, a=shape, scale=1.0/rate)
     else:
-        return scipy.stats.gamma.cdf(q, a=shape, scale=1.0/rate)
+        return st.gamma.cdf(q, a=shape, scale=1.0/rate)
 
 def qgamma(q, shape, rate=1.0):
     '''
     See
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html
     '''
-    return scipy.stats.gamma.ppf(q, a=shape, scale=1.0/rate)
-    
+    return st.gamma.ppf(q, a=shape, scale=1.0/rate)
+
 def rgamma(n, shape, rate=1.0, seed=None):
     '''
     See
@@ -108,18 +105,15 @@ def rgamma(n, shape, rate=1.0, seed=None):
 
     @param seed represent which type of seed to use.  None or False uses the
     default seed.  When seed is an integer number, it will reset the seed
-    via np.random.seed.  When seed=True, then a
-    :class:`np.random.RandomState` object will be used. If seed is an
-    object of :class:`np.random.RandomState` then it will be used directly
+    via numpy.random.seed.  When seed=True, then a
+    :class:`numpy.random.RandomState` object will be used. If seed is an
+    object of :class:`numpy.random.RandomState` then it will be used directly
     '''
-    rvs = scipy.stats.gamma.rvs
-    if seed is True: 
-        rvs = np.random.RandomState().gamma
-    elif isinstance(seed, np.random.RandomState):
-        rvs = seed.gamma
-    elif isinstance(seed, int):
-        np.random.seed(seed)
-        
+    if seed is None:
+        rvs = np.random.gamma
+    else:
+        rvs = test_seed(seed).gamma
+
     if n > 1:
         return rvs(shape, scale=1.0/rate, size=n)
     else:
@@ -133,9 +127,9 @@ def dnorm(x, mean=0, sd=1, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html
     '''
     if log:
-        return scipy.stats.norm.logpdf(x, loc=mean, scale=sd)
+        return st.norm.logpdf(x, loc=mean, scale=sd)
     else:
-        return scipy.stats.norm.pdf(x, loc=mean, scale=sd)
+        return st.norm.pdf(x, loc=mean, scale=sd)
 
 def pnorm(q, mean=0, sd=1, log=False):
     '''
@@ -143,16 +137,16 @@ def pnorm(q, mean=0, sd=1, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html
     '''
     if log:
-        return scipy.stats.norm.logcdf(q, loc=mean, scale=sd)
+        return st.norm.logcdf(q, loc=mean, scale=sd)
     else:
-        return scipy.stats.norm.cdf(q, loc=mean, scale=sd)
+        return st.norm.cdf(q, loc=mean, scale=sd)
 
 def qnorm(p, mean=0, sd=1):
     '''
     See
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html
     '''
-    return scipy.stats.norm.ppf(p, loc=mean, scale=sd)
+    return st.norm.ppf(p, loc=mean, scale=sd)
     
 def rnorm(n, mean=0, sd=1, seed=None):
     '''
@@ -161,18 +155,15 @@ def rnorm(n, mean=0, sd=1, seed=None):
 
     @param seed represent which type of seed to use.  None or False uses the
     default seed.  When seed is an integer number, it will reset the seed
-    via np.random.seed.  When seed=True, then a
-    :class:`np.random.RandomState` object will be used.  If seed is an
-    object of :class:`np.random.RandomState` then it will be used directly 
+    via numpy.random.seed.  When seed=True, then a
+    :class:`numpy.random.RandomState` object will be used.  If seed is an
+    object of :class:`numpy.random.RandomState` then it will be used directly
     '''
-    rvs = scipy.stats.norm.rvs
-    if seed is True: 
-        rvs = np.random.RandomState().normal
-    elif isinstance(seed, np.random.RandomState):
-        rvs = seed.normal
-    elif isinstance(seed, int):
-        np.random.seed(seed)
-        
+    if seed is None:
+        rvs = np.random.normal
+    else:
+        rvs = test_seed(seed).normal
+
     if n > 1:
         return rvs(loc=mean, scale=sd, size=n)
     else:
@@ -186,9 +177,9 @@ def dchisq(x, df, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html
     '''
     if log:
-        return scipy.stats.chi2.logpdf(x, df=df)
+        return st.chi2.logpdf(x, df=df)
     else:
-        return scipy.stats.norm.pdf(x, df=df)
+        return st.norm.pdf(x, df=df)
 
 def pchisq(x, df, log=False):
     '''
@@ -196,36 +187,33 @@ def pchisq(x, df, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html
     '''
     if log:
-        return scipy.stats.chi2.logpdf(x, df=df)
+        return st.chi2.logpdf(x, df=df)
     else:
-        return scipy.stats.chi2.pdf(x, df=df)  
+        return st.chi2.pdf(x, df=df)
 
 def qchisq(p, df):
     '''
     See
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html
     '''
-    return scipy.stats.chi2.ppf(p, df=df)
+    return st.chi2.ppf(p, df=df)
 
 def rchisq(n, df, seed=None):
     '''
     See
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html
-    
+
     @param seed represent which type of seed to use.  None or False uses the
     default seed.  When seed is an integer number, it will reset the seed
-    via np.random.seed.  When seed=True, then a
-    :class:`np.random.RandomState` object will be used. If seed is an
-    object of :class:`np.random.RandomState` then it will be used directly
+    via numpy.random.seed.  When seed=True, then a
+    :class:`numpy.random.RandomState` object will be used. If seed is an
+    object of :class:`numpy.random.RandomState` then it will be used directly
     '''
-    rvs = scipy.stats.chi2.rvs
-    if seed is True: 
-        rvs = np.random.RandomState().chisquare
-    elif isinstance(seed, np.random.RandomState):
-        rvs = seed.chisquare
-    elif isinstance(seed, int):
-        np.random.seed(seed)
-        
+    if seed is None:
+        rvs = np.random.chisquare
+    else:
+        rvs = test_seed(seed).chisquare
+
     if n > 1:
         return rvs(df=df, size=n)
     else:
@@ -239,9 +227,9 @@ def dunif(x, min=0.0, max=1.0, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html
     '''
     if log:
-        return scipy.stats.uniform.logpdf(x, loc=min, scale=max-min)
+        return st.uniform.logpdf(x, loc=min, scale=max-min)
     else:
-        return scipy.stats.uniform.pdf(x, loc=min, scale=max-min)
+        return st.uniform.pdf(x, loc=min, scale=max-min)
 
 def punif(q, min=0.0, max=1.0, log=False):
     '''
@@ -249,40 +237,38 @@ def punif(q, min=0.0, max=1.0, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html
     '''
     if log:
-        return scipy.stats.uniform.logcdf(q, loc=min, scale=max-min)
+        return st.uniform.logcdf(q, loc=min, scale=max-min)
     else:
-        return scipy.stats.uniform.cdf(q, loc=min, scale=max-min)
-    
+        return st.uniform.cdf(q, loc=min, scale=max-min)
+
 def qunif(p, min=0.0, max=1.0):
     '''
     See
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html
     '''
-    return scipy.stats.uniform.ppf(p, loc=min, scale=max-min)    
+    return st.uniform.ppf(p, loc=min, scale=max-min)
 
 def runif(n, min=0.0, max=1.0, seed=None):
     '''
     See
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html
-    
+
     @param seed represent which type of seed to use.  None or False uses the
     default seed.  When seed is an integer number, it will reset the seed
-    via np.random.seed.  When seed=True, then a
-    :class:`np.random.RandomState` object will be used. If seed is an
-    object of :class:`np.random.RandomState` then it will be used directly
+    via numpy.random.seed.  When seed=True, then a
+    :class:`numpy.random.RandomState` object will be used. If seed is an
+    object of :class:`numpy.random.RandomState` then it will be used directly
     '''
-    if seed is True: 
-        rvs = np.random.RandomState().uniform
-    elif isinstance(seed, np.random.RandomState):
-        rvs = seed.uniform
-    elif isinstance(seed, int):
-        np.random.seed(seed)
-    
+    if seed is None:
+        rvs = np.random.uniform
+    else:
+        rvs = test_seed(seed).uniform
+
     if seed:
         if n > 1:
-            return scipy.stats.uniform.rvs(loc=min, scale=max-min, size=n)
+            return st.uniform.rvs(loc=min, scale=max-min, size=n)
         else:
-            return scipy.stats.uniform.rvs(loc=min, scale=max-min, size=n)[0]
+            return st.uniform.rvs(loc=min, scale=max-min, size=n)[0]
     else:
         if n > 1:
             return rvs(low=min, high=max, size=n)
@@ -303,9 +289,9 @@ def dpois(x, mu=1.0, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Poisson.html
     '''
     if log:
-        return scipy.stats.poisson.logpmf(x, mu=mu)
+        return st.poisson.logpmf(x, mu=mu)
     else:
-        return scipy.stats.poisson.pmf(x, mu=mu)
+        return st.poisson.pmf(x, mu=mu)
 
 def ppois(q, mu=1.0, log=False):
     '''
@@ -313,17 +299,17 @@ def ppois(q, mu=1.0, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Poisson.html
     '''
     if log:
-        return scipy.stats.poisson.logcdf(q, mu=mu)
+        return st.poisson.logcdf(q, mu=mu)
     else:
-        return scipy.stats.poisson.cdf(q, mu=mu)
+        return st.poisson.cdf(q, mu=mu)
 
 def qpois(q, mu=1.0, log=False):
     '''
     See
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Poisson.html
     '''
-    return scipy.stats.poisson.ppf(q, mu=mu)
-    
+    return st.poisson.ppf(q, mu=mu)
+
 def rpois(n, mu=1.0, seed=None):
     '''
     See
@@ -331,18 +317,15 @@ def rpois(n, mu=1.0, seed=None):
 
     @param seed represent which type of seed to use.  None or False uses the
     default seed.  When seed is an integer number, it will reset the seed
-    via np.random.seed.  When seed=True, then a
-    :class:`np.random.RandomState` object will be used. If seed is an
-    object of :class:`np.random.RandomState` then it will be used directly 
+    via numpy.random.seed.  When seed=True, then a
+    :class:`numpy.random.RandomState` object will be used. If seed is an
+    object of :class:`numpy.random.RandomState` then it will be used directly
     '''
-    rvs = scipy.stats.poisson.rvs
-    if seed is True: 
-        rvs = np.random.RandomState().poisson
-    elif isinstance(seed, np.random.RandomState):
-        rvs = seed.poisson
-    elif isinstance(seed, int):
-        np.random.seed(seed)
-        
+    if seed is None:
+        rvs = np.random.poisson
+    else:
+        rvs = test_seed(seed).poisson
+
     if n > 1:
         return rvs(mu, size=n)
     else:
@@ -356,9 +339,9 @@ def dbinom(x, size, prob, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html
     '''
     if log:
-        return scipy.stats.binom.logpmf(x, n=size, p=prob)
+        return st.binom.logpmf(x, n=size, p=prob)
     else:
-        return scipy.stats.binom.pmf(x, n=size, p=prob)
+        return st.binom.pmf(x, n=size, p=prob)
 
 def pbinom(q, size, prob, log=False):
     '''
@@ -366,17 +349,17 @@ def pbinom(q, size, prob, log=False):
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html
     '''
     if log:
-        return scipy.stats.binom.logcdf(q, n=size, p=prob)
+        return st.binom.logcdf(q, n=size, p=prob)
     else:
-        return scipy.stats.binom.cdf(q, n=size, p=prob)
+        return st.binom.cdf(q, n=size, p=prob)
 
 def qbinom(q, size, prob):
     '''
     See
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html
     '''
-    return scipy.stats.binom.ppf(q, n=size, p=prob)
-    
+    return st.ppf(q, n=size, p=prob)
+
 def rbinom(n, size, prob, seed=None):
     '''
     See
@@ -384,19 +367,50 @@ def rbinom(n, size, prob, seed=None):
 
     @param seed represent which type of seed to use.  None or False uses the
     default seed.  When seed is an integer number, it will reset the seed
-    via np.random.seed.  When seed=True, then a
-    :class:`np.random.RandomState` object will be used. If seed is an
-    object of :class:`np.random.RandomState` then it will be used directly
+    via numpy.random.seed.  When seed=True, then a
+    :class:`numpy.random.RandomState` object will be used. If seed is an
+    object of :class:`numpy.random.RandomState` then it will be used directly
     '''
-    rvs = scipy.stats.binom.rvs
-    if seed is True: 
-        rvs = np.random.RandomState().binomial
-    elif isinstance(seed, np.random.RandomState):
-        rvs = seed.binomial
-    elif isinstance(seed, int):
-        np.random.seed(seed)
-    
+    if seed is None:
+        rvs = np.random.binomial
+    else:
+        rvs = test_seed(seed).binomial
+
     if n > 1:
         return rvs(n=size, p=prob, size=n)
     else:
         return rvs(n=size, p=prob, size=n)[0]
+
+def test_seed(seed):
+    '''
+    Test the input type of `seed` and return a new random generator if
+    appropriate.
+
+    Parameters
+    ----------
+    seed:
+        If True, then a new :class:`numpy.random.RandomState` will be created.
+        If False, then a :class:`numpy.random.RandomState` with the current
+        global state of the random number generator is returned.
+        If it is an int, then the input seed is used to create a new
+        random state.
+        If it is already a :class:`numpy.random.RandomState` object then
+        the same object is returned.
+
+    Returns
+    -------
+    :class:`numpy.random.RandomState`
+    '''
+    if seed is True:
+        return np.random.RandomState()
+    elif isinstance(seed, np.random.RandomState):
+        return seed
+    elif isinstance(seed, int):
+        return np.random.RandomState(seed)
+    elif seed is False:
+        state = np.random.get_state()
+        rvs = np.random.RandomState()
+        rvs.set_state(state)
+        return rvs
+    else:
+        raise RuntimeError("seed must be (bool, int or np.random.RandomState")

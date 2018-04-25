@@ -453,7 +453,7 @@ def SEIR_Multiple(n=2, param=None):
     Examples
     --------
     Use the initial conditions that were derived from the stationary condition
-    specified in [Brauer2008].
+    specified in [Brauer2008]_.
 
     >>> paramEval = {'beta_00':0.0010107, 'beta_01':0.0010107,
     >>>              'beta_10':0.0010107, 'beta_11':0.0010107,

@@ -19,8 +19,9 @@ class TestOdeDecomposition(TestCase):
         ode2 = ode.get_unrolled_obj()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.get_ode_eqn() - ode2.get_ode_eqn()))
 
-        if numpy.any(numpy.array(list(diffEqZero)) is False):
-            raise Exception("Simple: SIR Decomposition failed")
+        self.assertTrue(numpy.all(numpy.array(list(diffEqZero)) == True))
+#         if numpy.any(numpy.array(list(diffEqZero)) is False):
+#             raise Exception("Simple: SIR Decomposition failed")
 
     def test_hard(self):
         # the SLIARD model is considered to be hard because a state can
@@ -42,8 +43,9 @@ class TestOdeDecomposition(TestCase):
         ode2 = ode.get_unrolled_obj()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.get_ode_eqn() - ode2.get_ode_eqn()))
 
-        if numpy.any(numpy.array(list(diffEqZero)) is False):
-            raise Exception("Hard: SLIARD Decomposition failed")
+        self.assertTrue(numpy.all(numpy.array(list(diffEqZero)) == True))
+#         if numpy.any(numpy.array(list(diffEqZero)) is False):
+#             raise Exception("Hard: SLIARD Decomposition failed")
 
 
     def test_bd(self):
@@ -67,8 +69,9 @@ class TestOdeDecomposition(TestCase):
         ode2 = ode.get_unrolled_obj()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.get_ode_eqn() - ode2.get_ode_eqn()))
 
-        if numpy.any(numpy.array(list(diffEqZero)) is False):
-            raise Exception("Birth Death: SIR+BD Decomposition failed")
+        self.assertTrue(numpy.all(numpy.array(list(diffEqZero)) == True))
+#         if numpy.any(numpy.array(list(diffEqZero)) is False):
+#             raise Exception("Birth Death: SIR+BD Decomposition failed")
 
     def test_derived_param(self):
         # the derived parameters are treated separately when compared to the
@@ -90,5 +93,6 @@ class TestOdeDecomposition(TestCase):
         ode2 = ode1.get_unrolled_obj()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.get_ode_eqn() - ode2.get_ode_eqn()))
 
-        if numpy.any(numpy.array(list(diffEqZero)) is False):
-            raise Exception("FAILED!")
+        self.assertTrue(numpy.all(numpy.array(list(diffEqZero)) == True))
+#         if numpy.any(numpy.array(list(diffEqZero)) is False):
+#             raise Exception("FAILED!")

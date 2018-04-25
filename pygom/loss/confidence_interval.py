@@ -176,12 +176,13 @@ def geometric(obj, alpha=0.05, theta=None,
         of the ode while 'fisher' is the fisher information found by
         :math:`cov(\\nabla_{\\theta}\\mathcal{L})`.
     geometry: string
-        the two types of geometry defined in [Moolgavkar1987]_. c geometry uses the
-        covariance at the maximum likelihood estimate :math:`\\hat{\\theta}`.
-        The 'o' geometry is the covariance defined at point :math:`\\theta`.
+        the two types of geometry defined in [Moolgavkar1987]_. c geometry uses
+        the covariance at the maximum likelihood estimate
+        :math:`\\hat{\\theta}`, while the 'o' geometry is the covariance
+        defined at point :math:`\\theta`.
     full_output: bool, optional
-        If True then both the l_path and u_path will be outputted, else only the
-        point estimates of l and u
+        If True then both the l_path and u_path will be outputted, else only
+        the point estimates of l and u
 
     Returns
     -------
@@ -190,8 +191,8 @@ def geometric(obj, alpha=0.05, theta=None,
     u: array like
         upper confidence interval
     l_path: list
-        path from :math:`\\hat{\\theta}` to the lower :math:`1 - \\alpha/2` point
-        for all parameters
+        path from :math:`\\hat{\\theta}` to the lower :math:`1 - \\alpha/2`
+        point for all parameters
     u_path: list
         same as l_path but for the upper confidence interval
 
@@ -333,8 +334,8 @@ def profile(obj, alpha, theta=None, lb=None, ub=None, full_output=False):
                                                          funcFgradient,
                                                          funcFhessian,
                                                          xhatU, lbT, ubT, True)
-        ## now we have to store the values in one go.  So we go L -> U -> U -> L
-        ## and below is not a typo
+        ## now we have to store the values in one go.
+        ## So we go L -> U -> U -> L and below is not a typo
         xLList.append(outL)
         xUList.append(outU)
 

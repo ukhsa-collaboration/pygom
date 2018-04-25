@@ -12,11 +12,11 @@ There are multiple interpretation of stochasticity of a deterministic ode.  We h
 
     In [1]: import matplotlib.pyplot as plt
 
-    In [1]: import numpy
+    In [1]: import numpy as np
 
     In [1]: x0 = [1, 1.27e-6, 0]
 
-    In [1]: t = numpy.linspace(0, 150, 100)
+    In [1]: t = np.linspace(0, 150, 100)
 
     In [1]: stateList = ['S', 'I', 'R']
 
@@ -96,6 +96,21 @@ differs from the reference solution
 
 The difference is relatively large especially for the :math:`S` state.  We can decrease this difference as we increase the number of simulation, and more sophisticated sampling method for the generation of random variables can also decrease the difference.
 
+In addition to using the built-in functions to represent stochasticity, we can also use standard frozen distributions from scipy.  Note that it must be a frozen distribution as that is the only for the parameters of the distributions to propagate through the model.
+
+.. ipython:: 
+
+    In [1]: import scipy.stats as st
+
+    In [1]: d = dict()
+
+    In [1]: d['beta'] = st.gamma(a=100.0, scale=1.0/200.0)
+
+    In [1]: d['gamma'] = st.gamma(a=100.0, scale=1.0/300.0)
+
+    In [1]: odeS.parameters = d
+
+
 Obviously, there may be scenarios where only some of the parameters are stochastic.  Let's say that the :math:`\gamma` parameter is fixed at :math:`1/3`, then simply replace the distribution information with a scalar.  A quick visual inspection at the resulting plot suggests that the system of ODE potentially has less variation when compared to the case where both parameters are stochastic.
 
 .. ipython::
@@ -172,7 +187,7 @@ Above, we see ten different simulation, again using the SIR model but without st
 
     In [1]: simX,simT = odeS.simulate_jump(t, 5, full_output=True)
 
-    In [1]: simMean = numpy.mean(simX, axis=0)
+    In [1]: simMean = np.mean(simX, axis=0)
 
     In [1]: f, axarr = plt.subplots(1,3)
 
@@ -185,4 +200,70 @@ Above, we see ten different simulation, again using the SIR model but without st
     In [1]: plt.show()
 
     In [1]: plt.close()
+
+
+Repeatable Simulation
+=====================
+
+One of the possible use of compartmental models is to generate forecasts.  Although most of the time the requirement would be to have (at least point-wise) convergence in the limit, reproducibility is also important.  For both types of interpretation explained above, we have given the package the capability to repeat the simulations by setting a seed.  When the assumption is that the parameters follows some sort of distribution, we simply set the seed which governs the global state of the random number generator.
+
+.. ipython::
+
+    In [1]: x0 = [2362206.0, 3.0, 0.0]
+    
+    In [1]: odeS = SimulateOde(stateList, paramList, transition=transitionList)
+
+    In [1]: d = {'beta': st.gamma(a=100.0, scale=1.0/200.0), 'gamma': st.gamma(a=100.0, scale=1.0/300.0), 'N': x0[0]}
+
+    In [1]: odeS.parameters = d
+
+    In [1]: odeS.initial_values = (x0, t[0])
+
+    In [1]: Ymean, Yall = odeS.simulate_param(t[1::], 10, full_output=True)
+
+    In [1]: np.random.seed(1)
+
+    In [1]: Ymean1, Yall1 = odeS.simulate_param(t[1::], 10, full_output=True)
+
+    In [1]: np.random.seed(1)
+
+    In [1]: Ymean2, Yall2 = odeS.simulate_param(t[1::], 10, full_output=True)
+
+    In [1]: sim_diff = [np.linalg.norm(Yall[i] - yi) for i, yi in enumerate(Yall1)]
+
+    In [1]: sim_diff12 = [np.linalg.norm(Yall2[i] - yi) for i, yi in enumerate(Yall1)]
+
+    In [1]: print("Different in the simulations and the mean: (%s, %s) " % (np.sum(sim_diff), np.sum(np.abs(Ymean1 - Ymean))))
+
+    In [1]: print("Different in the simulations and the mean using same seed: (%s, %s) " % (np.sum(sim_diff12), np.sum(np.abs(Ymean2 - Ymean1))))
+
+In the alternative interpretation, setting the global seed is insufficient.  Unlike simulation based on the parameters, where we can pre-generate all the parameter values and send them off to individual processes in the parallel backend, this is prohibitive here.  In a nutshell, the seed does not propagate when using a parallel backend because each *integration* requires an unknown number of random samples.  Therefore, we have an additional flag **parallel** in the function signature.  By ensuring that the computation runs in serial, we can make use of the global seed and generate identical runs.
+
+.. ipython::
+
+    In [1]: x0 = [2362206.0, 3.0, 0.0]
+    
+    In [1]: odeS = SimulateOde(stateList, paramList, transition=transitionList)
+
+    In [1]: odeS.parameters = [0.5, 1.0/3.0, x0[0]]
+
+    In [1]: odeS.initial_values = (x0, t[0])
+
+    In [1]: simX, simT = odeS.simulate_jump(t[1:10], 10, parallel=False, full_output=True)
+
+    In [1]: np.random.seed(1)
+
+    In [1]: simX1, simT1 = odeS.simulate_jump(t[1:10], 10, parallel=False, full_output=True)
+
+    In [1]: np.random.seed(1)
+
+    In [1]: simX2, simT2 = odeS.simulate_jump(t[1:10], 10, parallel=False, full_output=True)
+
+    In [1]: sim_diff = [np.linalg.norm(simX[i] - x1) for i, x1 in enumerate(simX1)]
+
+    In [1]: sim_diff12 = [np.linalg.norm(simX2[i] - x1) for i, x1 in enumerate(simX1)]
+
+    In [1]: print("Difference in simulation: %s" % np.sum(np.abs(sim_diff)))
+
+    In [1]: print("Difference in simulation using same seed: %s" % np.sum(np.abs(sim_diff12)))
 

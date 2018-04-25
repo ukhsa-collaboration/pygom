@@ -49,8 +49,6 @@ class TestJacobians(TestCase):
 
         JAnalytic = ode.jacobian(ff0, t[index])
         self.assertTrue(numpy.allclose(J, JAnalytic))
-        # if numpy.any(abs(J - JAnalytic) >= 1e-4):
-        #     raise Exception("Test Failed")
 
 
     def test_SensJacobian(self):
@@ -98,8 +96,6 @@ class TestJacobians(TestCase):
         # JAnalytic = ode.odeAndSensitivityJacobian(ff0,t[index])
 
         self.assertTrue(numpy.allclose(J, JAnalytic))
-        # if numpy.any(abs(J - JAnalytic) >= 1e-4):
-        #     raise Exception("Test Failed")
 
     def test_HessianJacobian(self):
         '''

@@ -1,7 +1,7 @@
 """
     .. moduleauthor:: Edwin Tye <Edwin.Tye@phe.gov.uk>
 
-    Functions that is used to determine the composition of the 
+    Functions that is used to determine the composition of the
     defined ode
 
 """
@@ -299,12 +299,12 @@ def _getExpression(expr, inputDict):
                 elif isinstance(ti, sympy.Pow):
                     inputDict.setdefault(ti, 0)
                     inputDict[ti] += 1
-                    
+
 def _expressionLength(expr):
     '''
     Returns the length of the expression i.e. number of terms.
     If the expression is a power term, i.e. x^2 then we assume
-    that it is one term and return 0. 
+    that it is one term and return 0.
     '''
     # print type(expr)
     if isinstance(expr, sympy.Mul):
@@ -318,14 +318,14 @@ def _findIndex(eqVec, expr):
     '''
     Given a vector of expressions, find where you will locate the
     input term.
-    
+
     Parameters
     ----------
     eqVec: :class:`sympy.Matrix`
         vector of sympy equation
     expr: sympy type
         An expression that we would like to find
-        
+
     Returns
     -------
     list:
@@ -354,7 +354,7 @@ def _hasExpression(eq, expr):
 def pureTransitionToOde(A):
     '''
     Get the ode from a pure transition matrix
-    
+
     Parameters
     ----------
     A: `sympy.Matrix`
@@ -379,7 +379,7 @@ def stripBDFromOde(fx, bdList=None):
         termInExpr = list(map(lambda x: x in fxi.expand().args, bdList))
         for j, term in enumerate(bdList):
             fxCopy[i] -= term if termInExpr[j] == True else 0
-    
+
     # simplify converts it to an ImmutableMatrix, so we make it into
     # a mutable object again because we want the expanded form
     return sympy.Matrix(sympy.simplify(fxCopy)).expand()

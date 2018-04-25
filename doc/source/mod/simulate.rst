@@ -2,7 +2,7 @@
 stochastic
 ==========
 
-.. automodule:: pygom.model.stochastic
+.. automodule:: pygom.model.simulate
     :members:
     :noindex:
    

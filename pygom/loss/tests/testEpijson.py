@@ -13,7 +13,7 @@ class TestEpijson(TestCase):
     def test_read_epijson(self):
         data = pkgutil.get_data('pygom', 'data/eg1.json')
         df = epijson_to_data_frame(data)
-        y = df.values.ravel()
+        y = df.values.flatten()
         self.assertTrue(np.all(y == np.array([1.,2.,3.,4.,5.,6.])))
 
     def test_initialize_epijson_loss(self):
