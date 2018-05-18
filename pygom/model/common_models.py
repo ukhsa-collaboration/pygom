@@ -168,7 +168,7 @@ def SIR_N(param=None):
     >>> t = numpy.linspace(0, 730, 1001)
     >>> N = 7781984.0
     >>> x0 = [1.0, 10/N, 0.0]
-    >>> ode.setInitialValue(x0, t[0])
+    >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
 
@@ -593,7 +593,7 @@ def Legrand_Ebola_SEIHFR(param=None):
     >>> x0 = [1.0, 3.0/200000.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     >>> t = numpy.linspace(0, 25, 100)
     >>> ode = common_models.Legrand_Ebola_SEIHFR([('beta_I',0.588),('beta_H',0.794),('beta_F',7.653),('omega_I',10.0/7.0),('omega_D',9.6/7.0),('omega_H',5.0/7.0),('omega_F',2.0/7.0),('alphaInv',7.0/7.0),('delta',0.81),('theta',0.80),('kappa',300.0),('interventionTime',7.0)])
-    >>> ode.parameters = (x0, t[0])
+    >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
     """

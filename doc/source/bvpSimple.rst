@@ -89,7 +89,7 @@ Setting up the second boundary condition :math:`y(4) = -2` is easy, because that
     
     In [9]: print(thetaHat)
     
-    In [9]: model = model.setInitialValue([0.0] + thetaHat['x'].tolist(), t[0])
+    In [9]: model.initial_values = ([0.0] + thetaHat['x'].tolist(), t[0])
     
     In [5]: solution = model.integrate(t[1::])
     
