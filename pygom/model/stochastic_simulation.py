@@ -6,6 +6,7 @@
 """
 
 import numpy as np
+import scipy.stats as st
 
 from pygom.utilR.distn import rexp, ppois, rpois, runif, test_seed
 
@@ -412,13 +413,15 @@ def firstReaction(x, t, state_change_mat, transition_func, seed=None):
         return(x, t, False)
     # first jump
     minIndex = np.argmin(jumpTimes)
-    # validate the jump times
-    if jumpTimes[minIndex] == np.Inf:
-        # if we cannot perform any more jumps
-        raise SimulationError("Cannot perform any more reactions")
-    else:
-        newX = _updateStateWithJump(x, minIndex, state_change_mat)
-        return _checkJump(x, newX, t, jumpTimes[minIndex])
+    newX = _updateStateWithJump(x, minIndex, state_change_mat)
+    return _checkJump(x, newX, t, jumpTimes[minIndex])
+#     # validate the jump times
+#     if jumpTimes[minIndex] == np.Inf:
+#         # if we cannot perform any more jumps
+#         raise SimulationError("Cannot perform any more reactions")
+#     else:
+#         newX = _updateStateWithJump(x, minIndex, state_change_mat)
+#         return _checkJump(x, newX, t, jumpTimes[minIndex])
 
 def nextReaction(x, t, state_change_mat, dependency_graph,
                  old_rates, jump_times, transition_func, seed=None):
@@ -504,9 +507,6 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
 
     # go through the list of transitions
     rates = transition_func(x,t)
-    totalRate = sum(rates)
-
-    safeToJump = False
 
     mu = transition_mean_func(x, t)
     sigma2 = transition_var_func(x, t)
@@ -514,7 +514,7 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
     # \min_{j \in \left[1,M\right]} \{ l,r \}
     # where l = \gamma / \abs(\mu_{j}(x)) ,
     # and r = \gamma^{2} / \sigma_{j}^{2}(x)
-    top = epsilon*totalRate
+    top = epsilon*np.sum(rates)
     try:
         l = top/abs(mu)
     except Warning:
@@ -524,7 +524,7 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
         print(t)
         print(rates)
     r = (top**2)/sigma2
-    tauScale = min(min(l), min(r))
+    tau_scale = min(min(l), min(r))
     # note that the above calculation is actually very slow, because
     # we can rewrite the conditions into
     # \min \{ \min_{j \in \left[1,M\right]} l , \min_{j \in \left[1,M\right]} r \}
@@ -534,36 +534,16 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
     # we put in an additional safety mechanism here where we also evaluate
     # the probability that a realization exceeds the observations and further
     # decrease the time step.
-#     print "tauScale Orig = %s " % tauScale
-#     print len(rates)
-#     print reactant_mat
-    while safeToJump == False:
-        exceedCDFArray = list()
-        for i, r in enumerate(rates):
-            activeX = x[reactant_mat[:,i]]
-            for xi in activeX:
-                exceedCDFArray.append(ppois(xi, tauScale*r))
-
-        # the expected probability that our jump will exceed the value
-        maxExceed = np.max(1.0 - np.array(exceedCDFArray))
-        # cannot allow it to exceed out epsilon
-        if maxExceed > epsilon:
-            tauScale /= 2.0
-        else:
-            safeToJump = True
-        if tauScale*totalRate <= 1.0:
-            return x, t, False
-    ## end while safeToJump==False
-
-    # print tauScale
-    # print rates
+    safe = _test_tau_leap_safety(x, reactant_mat, rates, tau_scale, epsilon)
+    if safe is False:
+        return x, t, False
 
     # make the jumps
     newX = x.copy()
     for i, r in enumerate(rates):
         # realization
         try:
-            jumpQuantity = rpois(1, tauScale*r, seed=seed)
+            jumpQuantity = rpois(1, tau_scale*r, seed=seed)
         except Exception as e:
 #             print tauScale, r
 #             print "l = %s " % l
@@ -580,13 +560,44 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
         # move the particles!
         newX = _updateStateWithJump(newX, i, state_change_mat, jumpQuantity)
         ## done moving
-    return _checkJump(x, newX, t, tauScale)
+    return _checkJump(x, newX, t, tau_scale)
+
+def _test_tau_leap_safety(x, reactant_mat, rates, tau_scale, epsilon):
+    '''
+    Additional safety test on :math:`\\tau`-leap, decrease the step size if
+    the original is not small enough.  Decrease a couple of times and then
+    bail out because we don't want to spend too long decreasing the
+    step size until we find a suitable one.
+    '''
+    total_rate = sum(rates)
+    safe = False
+    count = 0
+    while safe is False:
+        cdf_val = list()
+        for i, r in enumerate(rates):
+            xi = x[reactant_mat[:,i]]
+            cdf_val += ppois(xi, mu=tau_scale*r).tolist()
+
+        # the expected probability that our jump will exceed the value
+        max_cdf = np.max(1.0 - np.array(cdf_val))
+        # cannot allow it to exceed out epsilon
+        if max_cdf > epsilon:
+            tau_scale /= 2.0
+        else:
+            safe = True
+
+        if tau_scale*total_rate <= 1.0 or count > 2:
+            return False
+        count += 1
+
+    return True
 
 def _newJumpTimes(rates, seed=None):
     '''
     Generate the new jump times assuming that the rates follow an exponential
     distribution
     '''
+    
     tau = [rexp(1, r, seed=seed) if r > 0 else np.Inf for r in rates]
     return np.array(tau)
 

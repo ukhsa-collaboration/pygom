@@ -290,6 +290,7 @@ class SimulateOde(DeterministicOde):
         if parallel:
             try:
                 import dask.bag
+                print("Parallel simulation")
                 def jump_partial(final_t): return(self._jump(final_t,
                                                              exact=exact,
                                                              full_output=True,
@@ -297,13 +298,12 @@ class SimulateOde(DeterministicOde):
 
                 xtmp = dask.bag.from_sequence(np.ones(iteration)*finalT)
                 xtmp = xtmp.map(jump_partial).compute()
-                # print("Parallel simulation")
             except Exception as e:
                 # print(e)
-                # print("Revert to serial")
+                print("Revert to serial")
                 xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
         else:
-            # print("Serial computation")
+            print("Serial computation")
             xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
 
         xmat = list(zip(*xtmp))
@@ -424,6 +424,9 @@ class SimulateOde(DeterministicOde):
             A matrix of dimension [number of state x number of state]
 
         '''
+        if self._transitionMatrix is None:
+            super(SimulateOde, self)._computeTransitionMatrix()
+
         if self._transitionMatrixCompile is not None \
            or self._hasNewTransition is False:
             return self._transitionMatrix

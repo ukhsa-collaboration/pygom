@@ -116,7 +116,7 @@ def SIR(param=None):
     >>> t = numpy.linspace(0, 730, 1001)
     >>> N = 7781984.0
     >>> x0 = [1.0, 10/N, 0.0]
-    >>> ode.setInitialValue(x0, t[0])
+    >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
 
@@ -168,7 +168,7 @@ def SIR_N(param=None):
     >>> t = numpy.linspace(0, 730, 1001)
     >>> N = 7781984.0
     >>> x0 = [1.0, 10/N, 0.0]
-    >>> ode.setInitialValue(x0, t[0])
+    >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
 
@@ -181,7 +181,6 @@ def SIR_N(param=None):
     >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
-
     '''
     state = ['S', 'I', 'R']
     param_list = ['beta', 'gamma','N']
@@ -389,6 +388,7 @@ def SEIR_Birth_Death_Periodic(param=None):
     Uses the same set of parameters as the examples in
     :func:`SEIR_Birth_Death` but now we have two beta parameters instead of one.
 
+    >>> import matplotlib.pyplot as plt
     >>> params = {'beta0':1800, 'beta1':0.2, 'gamma':100, 'alpha':35.84, 'mu':0.02}
     >>> ode = common_models.SEIR_Birth_Death_Periodic(params)
     >>> t = numpy.linspace(0, 50, 1001)
@@ -396,7 +396,6 @@ def SEIR_Birth_Death_Periodic(param=None):
     >>> ode.initial_values = (x0, t[0])
     >>> solution,output = ode.integrate(t[1::], full_output=True)
     >>> ode.plot()
-    >>> import matplotlib.pyplot as plt
     >>> plt.plot(numpy.log(solution[:,0]), numpy.log(solution[:,1]))
     >>> plt.show()
     >>> plt.plot(numpy.log(solution[:,0]), numpy.log(solution[:,2]))
@@ -593,7 +592,7 @@ def Legrand_Ebola_SEIHFR(param=None):
     >>> x0 = [1.0, 3.0/200000.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     >>> t = numpy.linspace(0, 25, 100)
     >>> ode = common_models.Legrand_Ebola_SEIHFR([('beta_I',0.588),('beta_H',0.794),('beta_F',7.653),('omega_I',10.0/7.0),('omega_D',9.6/7.0),('omega_H',5.0/7.0),('omega_F',2.0/7.0),('alphaInv',7.0/7.0),('delta',0.81),('theta',0.80),('kappa',300.0),('interventionTime',7.0)])
-    >>> ode.parameters = (x0, t[0])
+    >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
     """
@@ -688,14 +687,12 @@ def Lotka_Volterra(param=None):
 
     Examples
     --------
-
     >>> params = {'alpha':1, 'delta':3, 'c':2, 'gamma':6}
     >>> ode = common_models.Lotka_Volterra(params)
     >>> ode.initial_values = ([2.0, 6.0], 0)
     >>> t = numpy.linspace(0.1, 100, 10000)
     >>> ode.integrate(t)
     >>> ode.plot()
-
     '''
 
     # our two state and four parameters
@@ -732,7 +729,6 @@ def Lotka_Volterra_4State(param=None):
 
     Examples
     --------
-
     >>> x0 = [150.0, 10.0, 10.0, 0.0]
     >>> t = numpy.linspace(0, 15, 100)
     >>> params = [0.01, 0.1, 1.0]
@@ -740,7 +736,6 @@ def Lotka_Volterra_4State(param=None):
     >>> ode.initial_values = (x0, t[0])
     >>> ode.integrate(t[1::])
     >>> ode.plot()
-
     '''
 
     # four states
@@ -786,7 +781,6 @@ def FitzHugh(param=None):
     >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
-
     '''
 
     # the two states
@@ -835,7 +829,6 @@ def Lorenz(param=None):
     >>> solution = ode.integrate(t[1::])
     >>> plt.plot(solution[:,0], solution[:,2])
     >>> plt.show()
-
     '''
 
     state = ['x', 'y', 'z']
@@ -926,7 +919,6 @@ def Robertson(param=None):
     >>> ode.initial_values = ([1.0,0.0,0.0], t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot() # note that this is not being plotted in the log scale
-
     '''
     # note how we have short handed the definition
     state = ['y1:4']

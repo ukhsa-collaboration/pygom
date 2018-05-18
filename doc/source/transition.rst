@@ -87,7 +87,7 @@ where :math:`S \rightarrow I` denotes a transition from state :math:`S` to state
        .....:                          paramList,
        .....:                          transition=[t1, t2])
 
-    In [604]: modelTrans.getOde()
+    In [604]: modelTrans.get_ode_eqn()
 
 We can see that the resulting ode is exactly the same, as expected.  The transition matrix that defines this process can easily be visualized using graphviz.  Because only certain renderer permit the use of sub and superscript, operators such as :math:`**` are left as they are in the equation.  
 
