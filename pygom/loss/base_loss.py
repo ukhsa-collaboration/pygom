@@ -190,7 +190,12 @@ class BaseLoss(object):
             raise InputError("Error without data currently not implemented")
 
     def _get_model_str(self):
-        modelStr = "(%s, %s, %s, %s, %s, %s, %s" % (self._theta.tolist(),
+        
+        if isinstance(self._theta):
+            _theta = list(self._theta.values())
+        else:
+            _theta = self._theta.tolist()
+        modelStr = "(%s, %s, %s, %s, %s, %s, %s" % (_theta,
                                                     self._ode,
                                                     self._x0.tolist(),
                                                     self._t0,
@@ -204,6 +209,7 @@ class BaseLoss(object):
         if self._targetState is not None:
             modelStr += ", %s" % self._targetState
         return modelStr+")"
+
     ############################################################
     #
     # Gradient operators

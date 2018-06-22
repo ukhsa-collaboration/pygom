@@ -9,7 +9,7 @@ from pygom.model import common_models
 
 class TestSIRStochasticModel(TestCase):
 
-    def test_simulateParam1(self):
+    def test_simulate_param_1(self):
         '''
         Stochastic ode under the interpretation that the parameters follow
         some sort of distribution.  In this case, a scipy.distn object.
@@ -55,7 +55,7 @@ class TestSIRStochasticModel(TestCase):
         # test :)
         self.assertTrue(np.any(abs(solution_diff) <= 0.2))
 
-    def test_simulateParam2(self):
+    def test_simulate_param_2(self):
         '''
         Stochastic ode under the interpretation that the parameters follow
         some sort of distribution.  In this case, a function handle which
@@ -103,7 +103,7 @@ class TestSIRStochasticModel(TestCase):
         # test :)
         self.assertTrue(np.all(abs(solution_diff) <= 0.2))
 
-    def test_simulateParam_same_seed(self):
+    def test_simulate_param_same_seed(self):
         '''
         Stochastic ode under the interpretation that the parameters follow
         some sort of distribution and simulating using the same seed
@@ -154,7 +154,7 @@ class TestSIRStochasticModel(TestCase):
             self.assertTrue(np.allclose(Yall2[i], yi))
 
 
-    def test_simulateParam_different_seed(self):
+    def test_simulate_param_different_seed(self):
         '''
         Stochastic ode under the interpretation that the parameters follow
         some sort of distribution and simulating using different seeds
@@ -204,7 +204,7 @@ class TestSIRStochasticModel(TestCase):
             self.assertFalse(np.allclose(Yall2, yi))
 
 
-    def test_SimulateCTMC(self):
+    def test_simulate_jump(self):
         '''
         Stochastic ode under the interpretation that we have a continuous
         time Markov chain as the underlying process
@@ -237,10 +237,10 @@ class TestSIRStochasticModel(TestCase):
 
         _simX, _simT = odeS.simulate_jump(250, 3, parallel=False, full_output=True)
 
-    def test_SimulateCTMC_same_seed(self):
+    def test_simulate_jump(self):
         '''
         Testing that using the same seed produces the same simulation under
-        a CTMC interpretation only under a serial simulation.  When simulting
+        a CTMC interpretation only under a serial simulation.  When simulating
         with a parallel backend, the result will be different as the seed
         does not propagate through.
         '''
@@ -289,7 +289,7 @@ class TestSIRStochasticModel(TestCase):
             self.assertTrue(np.allclose(simX2[i], xi))
 
 
-    def test_SimulateCTMC_different_seed(self):
+    def test_simulate_jump_different_seed(self):
         '''
         Testing that using a different seed produces different simulations
         under a CTMC interpretation regardless of the backend.
