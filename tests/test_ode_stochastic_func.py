@@ -23,7 +23,7 @@ class TestSIRStochasticModel(TestCase):
         ode = common_models.SIR()
         ode.parameters = [0.5, 1.0/3.0]
         ode.initial_values = (x0, t0)
-        solutionReference = ode.integrate(t[1::], full_output=False)
+        solution = ode.integrate(t[1::], full_output=False)
 
         # now we need to define our ode explicitly
         state_list = ['S', 'I', 'R']
@@ -49,10 +49,11 @@ class TestSIRStochasticModel(TestCase):
         odeS.initial_values = (x0, t0)
 
         # now we generate the solutions
-        solutionDiff = odeS.simulate_param(t[1::], 1000) - solutionReference
+        sim = odeS.simulate_param(t[1::], 1000, parallel=False)
+        solution_diff = sim - solution
 
         # test :)
-        self.assertTrue(np.any(abs(solutionDiff) <= 0.2))
+        self.assertTrue(np.any(abs(solution_diff) <= 0.2))
 
     def test_simulateParam2(self):
         '''
@@ -69,7 +70,7 @@ class TestSIRStochasticModel(TestCase):
         ode = common_models.SIR()
         ode.parameters = [0.5, 1.0/3.0]
         ode.initial_values = (x0,t0)
-        solutionReference = ode.integrate(t[1::], full_output=False)
+        solution= ode.integrate(t[1::], full_output=False)
 
         # now we need to define our ode explicitly
         state_list = ['S', 'I', 'R']
@@ -96,10 +97,11 @@ class TestSIRStochasticModel(TestCase):
         odeS.initial_values = (x0, t0)
 
         # now we generate the solutions
-        solutionDiff = odeS.simulate_param(t[1::], 1000) - solutionReference
+        sim = odeS.simulate_param(t[1::], 1000, parallel=False)
+        solution_diff = sim - solution
 
         # test :)
-        self.assertTrue(np.all(abs(solutionDiff) <= 0.2))
+        self.assertTrue(np.all(abs(solution_diff) <= 0.2))
 
     def test_simulateParam_same_seed(self):
         '''
@@ -140,9 +142,11 @@ class TestSIRStochasticModel(TestCase):
         # now we generate the solutions
         seed = np.random.randint(1000)
         np.random.seed(seed)
-        solution1, Yall1 = odeS.simulate_param(t[1::], 1000, full_output=True)
+        solution1, Yall1 = odeS.simulate_param(t[1::], 1000,
+                                               parallel=False, full_output=True)
         np.random.seed(seed)
-        solution2, Yall2 = odeS.simulate_param(t[1::], 1000, full_output=True)
+        solution2, Yall2 = odeS.simulate_param(t[1::], 1000,
+                                               parallel=False, full_output=True)
 
         self.assertTrue(np.allclose(solution1, solution2))
 
@@ -188,9 +192,11 @@ class TestSIRStochasticModel(TestCase):
 
         # now we generate the solutions
         np.random.seed(1)
-        solution1, Yall1 = odeS.simulate_param(t[1::], 1000, full_output=True)
+        solution1, Yall1 = odeS.simulate_param(t[1::], 1000,
+                                               parallel=False,full_output=True)
         np.random.seed(2)
-        solution2, Yall2 = odeS.simulate_param(t[1::], 1000, full_output=True)
+        solution2, Yall2 = odeS.simulate_param(t[1::], 1000,
+                                               parallel=False, full_output=True)
 
         self.assertFalse(np.allclose(solution1, solution2))
 
@@ -229,7 +235,7 @@ class TestSIRStochasticModel(TestCase):
         odeS.transition_mean(solution[10,:], t[10])
         odeS.transition_var(solution[10,:], t[10])
 
-        _simX, _simT = odeS.simulate_jump(250, 3, full_output=True)
+        _simX, _simT = odeS.simulate_jump(250, 3, parallel=False, full_output=True)
 
     def test_SimulateCTMC_same_seed(self):
         '''
@@ -285,8 +291,8 @@ class TestSIRStochasticModel(TestCase):
 
     def test_SimulateCTMC_different_seed(self):
         '''
-        Testing that using a different seed produces different simulations under
-        a CTMC interpretation regardless of the backend.
+        Testing that using a different seed produces different simulations
+        under a CTMC interpretation regardless of the backend.
         '''
         x0 = [2362206.0, 3.0, 0.0]
         t = np.linspace(0, 10, 10)
@@ -309,9 +315,11 @@ class TestSIRStochasticModel(TestCase):
         solution = odeS.integrate(t[1::])
 
         np.random.seed(1)
-        simX1, simT1 = odeS.simulate_jump(t[1::], 10, full_output=True)
+        simX1, simT1 = odeS.simulate_jump(t[1::], 10,
+                                          parallel=False, full_output=True)
         np.random.seed(2)
-        simX2, simT2 = odeS.simulate_jump(t[1::], 10, full_output=True)
+        simX2, simT2 = odeS.simulate_jump(t[1::], 10,
+                                          parallel=False, full_output=True)
 
         for i, xi in enumerate(simX1):
             self.assertFalse(np.allclose(simX2[i], xi))

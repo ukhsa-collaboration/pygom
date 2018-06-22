@@ -82,4 +82,4 @@ class TestModelMultipleOrigin(TestCase):
 
         ode.parameters = param_eval
         ode.initial_values = (x0, t[0])
-        _simX, _simT = ode.simulate_jump(t, 5, full_output=True)
+        _simX, _simT = ode.simulate_jump(t, 5, parallel=False, full_output=True)

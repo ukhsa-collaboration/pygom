@@ -4,9 +4,11 @@
 '''
 from setuptools import setup
 
-def readme():
-    with open('README.rst') as f:
-        return f.read()
+with open('LICENSE.txt') as f:
+    license_file = f.read()
+    
+with open('README.rst') as f:
+    readme = f.read()
 
 cmdclass = {}
 ext_modules =[]
@@ -21,14 +23,11 @@ install_requires = [
     'sympy>=1.0.0'
 ]
 
-tests_require = [
-    'nose>=1.1'
-]
-
 setup(name='pygom',
       version='0.1.2',
       description='ODE modeling in Python',
-      long_description=readme(),
+      long_description=readme,
+      license=license_file,
       url='https://github.com/PublicHealthEngland/pygom',
       author="Edwin Tye",
       author_email="Edwin.Tye@phe.gov.uk",
@@ -38,11 +37,9 @@ setup(name='pygom',
           'pygom.loss',
           'pygom.utilR'
       ],
-      license='LICENCE.txt',
       install_requires=install_requires,
       cmdclass=cmdclass,
       ext_modules=ext_modules,
-      tests_require=tests_require,
-      test_suite='nose.collector',
+      test_suite='tests.test_suite_loader',
       scripts=[]
 )
