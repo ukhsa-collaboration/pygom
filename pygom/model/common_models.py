@@ -167,7 +167,7 @@ def SIR_N(param=None):
     >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
     >>> t = numpy.linspace(0, 730, 1001)
     >>> N = 7781984.0
-    >>> x0 = [1.0, 10/N, 0.0]
+    >>> x0 = [N, 1.0, 0.0]
     >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
@@ -177,7 +177,7 @@ def SIR_N(param=None):
     >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
     >>> t = numpy.linspace(0, 730, 1001)
     >>> N = 7781984.0
-    >>> x0 = [0.065, 123*(5.0/30.0)/N, 0.0]
+    >>> x0 = [int(0.065*N), 21.0, 0.0]
     >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()

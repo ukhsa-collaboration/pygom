@@ -146,6 +146,7 @@ class TestModelEstimate(TestCase):
                               np.round(solution[1::,2]),
                               'R', target_param=['beta', 'gamma'])
 
+
         # constraints
         EPSILON = np.sqrt(np.finfo(np.float).eps)
 
@@ -182,7 +183,7 @@ class TestModelEstimate(TestCase):
         ode = DeterministicOde(state_list, param_list,
                                transition=transition_list)
         ode.parameters = param_eval
-        ode.initial_values = (x0,t[0])
+        ode.initial_values = (x0, t[0])
 
         # Standard.  Find the solution.
         solution = ode.integrate(t[1::])
@@ -255,7 +256,6 @@ class TestModelEstimate(TestCase):
 
         target = np.array([0.2, 0.2, 3.0])
         self.assertTrue(np.allclose(target, res['x'], 1e-2, 1e-2))
-
         self.assertTrue(np.allclose(target, res2['x'], 1e-2, 1e-2))
 
     def test_FH_IV(self):
