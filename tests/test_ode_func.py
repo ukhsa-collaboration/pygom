@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import main, TestCase
 
 import copy
 
@@ -23,7 +23,7 @@ class TestJacobians(TestCase):
         self.d = self.ode.num_state
         self.p = self.ode.num_param
         self.t = np.linspace(0, 150, 100)
-        self.index = np.random.randint(0, 100, 1)[0]
+        self.index = np.random.randint(100)
 
     def tearDown(self):
         self.ode = None
@@ -84,11 +84,11 @@ class TestJacobians(TestCase):
         self.assertTrue(np.allclose(J, JAnalytic))
 
     def test_HessianJacobian(self):
-        '''
+        """
         Analytic Jacobian for the forward forward sensitivity equations
         i.e. the Hessian of the objective function against
         the forward differencing numeric Jacobian
-        '''
+        """
         ff0 = np.zeros(self.d*self.p*self.p)
         s0 = np.zeros(self.d*self.p)
         ffParam = np.append(np.append(self.x0, s0), ff0)
@@ -113,6 +113,6 @@ class TestJacobians(TestCase):
                 ff_temp[j] += self.h
                 J[i,j] = (self.ode.ode_and_forwardforward(ff_temp, self.t[self.index])[i] - J0[i])/self.h
 
-        ## print(J - JAnalytic)
-        # Note that the two Jacobian above are not equivalent.  Only block
-        # diagonal is implemented in the analytic case
+
+if __name__ == '__main__':
+    main()

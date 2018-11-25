@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import main, TestCase
 
 import pkgutil
 
@@ -22,3 +22,7 @@ class TestEpijson(TestCase):
         ode.parameters = [0.5, 0.3]
         obj = EpijsonLoss([0.005, 0.03], ode, data, 'Death', 'R', [300, 2, 0])
         self.assertTrue(np.allclose(obj.cost(), 10.86559460256))
+
+
+if __name__ == '__main__':
+    main()

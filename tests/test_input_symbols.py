@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import main, TestCase
 
 from pygom.model.transition import Transition
 from pygom.model.deterministic import DeterministicOde
@@ -6,9 +6,9 @@ from pygom.model.deterministic import DeterministicOde
 class TestInputSymbols(TestCase):
 
     def test_Signs(self):
-        '''
+        """
         Making sure that the illegal symbols are catched
-        '''
+        """
         state_list = [['S+'], ['S-'], ['S*'], ['S\\'], ['_S']]
         param_list = ['beta']
         ode = DeterministicOde(['S'], param_list)
@@ -34,3 +34,7 @@ class TestInputSymbols(TestCase):
         ode = DeterministicOde(state_list, param_list, ode=odeList)
         # this should not throw an error if the model is initialized correctly
         A = ode.get_ode_eqn()
+
+
+if __name__ == '__main__':
+    main()

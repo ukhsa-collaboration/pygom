@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import main, TestCase
 
 import numpy as np
 
@@ -23,9 +23,9 @@ class TestLossTypes(TestCase):
         # initial guess
         theta = [0.5, 0.5, 0.5]
 
-        #objFH = squareLoss(theta,ode,x0,t0,t,solution[1::,1],'R')
+        # objFH = squareLoss(theta,ode,x0,t0,t,solution[1::,1],'R')
         objFH = SquareLoss(theta, ode, x0, t[0], t[1::],
-                           solution[1::,:], ['V','R'])
+                           solution[1::,:], ['V', 'R'])
 
         r = objFH.residual()
 
@@ -36,12 +36,12 @@ class TestLossTypes(TestCase):
         for i in range(2): s1 += ((r[:,i]*w[i])**2).sum()
 
         objFH1 = SquareLoss(theta, ode, x0, t[0], t[1::],
-                            solution[1::,:], ['V','R'], w)
+                            solution[1::,:], ['V', 'R'], w)
 
         # now the weight is a vector
         w = np.random.rand(29, 2)
         objFH2 = SquareLoss(theta, ode, x0, t[0], t[1::],
-                            solution[1::,:], ['V','R'], w)
+                            solution[1::,:], ['V', 'R'], w)
 
         s2 = ((r * np.array(w))**2).sum()
 
@@ -64,18 +64,18 @@ class TestLossTypes(TestCase):
         # initial guess
         theta = [0.5, 0.5, 0.5]
 
-        #objFH = squareLoss(theta,ode,x0,t0,t,solution[1::,1],'R')
+        # objFH = squareLoss(theta,ode,x0,t0,t,solution[1::,1],'R')
         objFH = NormalLoss(theta, ode, x0, t[0], t[1::],
                            solution[1::,:], ['V','R'])
 
-        w = [2.0,3.0]
+        w = [2.0, 3.0]
         objFH1 = NormalLoss(theta, ode, x0, t[0], t[1::],
-                            solution[1::,:], ['V','R'], w)
+                            solution[1::,:], ['V', 'R'], w)
 
         # now the weight is a vector
         w = np.random.rand(29, 2)
         objFH2 = NormalLoss(theta, ode, x0, t[0], t[1::],
-                            solution[1::,:], ['V','R'], w)
+                            solution[1::,:], ['V', 'R'], w)
 
         objFH.cost()
         objFH1.cost()
@@ -144,3 +144,7 @@ class TestLossTypes(TestCase):
         for w in w_list:
             self.assertRaises(AssertionError, SquareLoss, theta, ode, x0,
                              t[0], t[1::], solution[1::,:], 'R', w)
+
+
+if __name__ == '__main__':
+    main()

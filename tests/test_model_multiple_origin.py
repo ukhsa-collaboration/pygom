@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import main, TestCase
 
 import numpy as np
 
@@ -65,3 +65,7 @@ class TestModelMultipleOrigin(TestCase):
         self.birth_deaths = None
         self.x0 = None
         self.t = None
+
+
+if __name__ == '__main__':
+    main()

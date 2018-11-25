@@ -1,9 +1,10 @@
-from unittest import TestCase
+from unittest import main, TestCase
 
 import numpy
 import scipy.integrate
 
 from pygom.model import common_models
+
 
 class TestModelExisting(TestCase):
 
@@ -54,3 +55,7 @@ class TestModelExisting(TestCase):
         ode.parameters = [0.02, 35.84, 100, 1800, 0.27]
         # try to integrate to see if there is any problem
         _solution, _output = ode.integrate(t[1::], True)
+
+
+if __name__ == '__main__':
+    main()

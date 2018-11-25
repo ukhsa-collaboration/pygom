@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import main, TestCase
 
 import numpy as np
 import scipy.stats
@@ -143,3 +143,7 @@ class TestSimulateParam(TestCase):
 
         for i, yi in enumerate(Yall1):
             self.assertFalse(np.allclose(Yall2, yi))
+
+
+if __name__ == '__main__':
+    main()
