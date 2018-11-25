@@ -1,118 +1,15 @@
-from unittest import TestCase
-
-import copy
+from unittest import main, TestCase
 
 import numpy as np
 import scipy.integrate
 import scipy.optimize
 
-from pygom import SquareLoss, NormalLoss, PoissonLoss
+from pygom import SquareLoss, PoissonLoss
 from pygom import Transition, TransitionType, DeterministicOde
 from pygom.model import common_models
 
+
 class TestModelEstimate(TestCase):
-
-    def test_SIR_Estimate_SquareLoss(self):
-        # define the model and parameters
-        ode = common_models.SIR({'beta': 0.5, 'gamma': 1.0/3.0})
-
-        # the initial state, normalized to zero one
-        x0 = [1, 1.27e-6, 0]
-        # set the time sequence that we would like to observe
-        t = np.linspace(0, 150, 100)
-        # Standard.  Find the solution.
-        solution = scipy.integrate.odeint(ode.ode, x0, t)
-
-        # y = copy.copy(solution[:,1:3])
-        # initial value
-        theta = [0.2, 0.2]
-
-        # test out whether the single state function 'ok'
-        sir_obj = SquareLoss(theta, ode, x0, t[0], t[1::],
-                             solution[1::,2], 'R')
-        sir_obj.cost()
-        sir_obj.gradient()
-        sir_obj.hessian()
-
-        # now we go on the real shit
-        sir_obj = SquareLoss(theta, ode, x0, t[0], t[1::],
-                             solution[1::,1:3], ['I','R'])
-
-        # constraints
-        EPSILON = np.sqrt(np.finfo(np.float).eps)
-
-        box_bounds = [(EPSILON, 5), (EPSILON, 5)]
-
-        res_QP = scipy.optimize.minimize(fun=sir_obj.cost,
-                                         jac=sir_obj.sensitivity,
-                                         x0=theta,
-                                         method='SLSQP',
-                                         bounds=box_bounds)
-
-        target = np.array([0.5, 1.0/3.0])
-        self.assertTrue(np.allclose(res_QP['x'], target, 1e-2, 1e-2))
-
-    def test_SIR_Estimate_SquareLoss_Adjoint(self):
-        # define the model and parameters
-        ode = common_models.SIR({'beta': 0.5, 'gamma': 1.0/3.0})
-
-        # the initial state, normalized to zero one
-        x0 = [1, 1.27e-6, 0]
-        # set the time sequence that we would like to observe
-        t = np.linspace(0, 150, 100)
-        # Standard.  Find the solution.
-        solution = scipy.integrate.odeint(ode.ode, x0, t)
-
-        y = copy.copy(solution[:,1:3])
-        # initial value
-        theta = [0.2, 0.2]
-
-        sir_obj = SquareLoss(theta, ode, x0, t[0], t[1::], y[1::,:], ['I','R'])
-
-        # constraints
-        EPSILON = np.sqrt(np.finfo(np.float).eps)
-
-        box_bounds = [(EPSILON, 5),(EPSILON, 5)]
-
-        res_QP = scipy.optimize.minimize(fun=sir_obj.cost,
-                                        jac=sir_obj.adjoint,
-                                        x0=theta,
-                                        method='SLSQP',
-                                        bounds=box_bounds)
-
-        target = np.array([0.5, 1.0/3.0])
-        self.assertTrue(np.allclose(res_QP['x'], target, 1e-2, 1e-2))
-
-    def test_SIR_Estimate_NormalLoss(self):
-        # define the model and parameters
-        ode = common_models.SIR({'beta': 0.5, 'gamma': 1.0/3.0})
-
-        # the initial state, normalized to zero one
-        x0 = [1, 1.27e-6, 0]
-        # set the time sequence that we would like to observe
-        t = np.linspace(0, 150, 100)
-        # Standard.  Find the solution.
-        solution = scipy.integrate.odeint(ode.ode, x0, t)
-
-        y = copy.copy(solution[:,1:3])
-        # initial value
-        theta = [0.2, 0.2]
-
-        sir_obj = NormalLoss(theta, ode, x0, t[0], t[1::], y[1::,:], ['I','R'])
-
-        # constraints
-        EPSILON = np.sqrt(np.finfo(np.float).eps)
-
-        box_bounds = [(EPSILON, 5), (EPSILON, 5)]
-
-        res_QP = scipy.optimize.minimize(fun=sir_obj.cost,
-                                        jac=sir_obj.sensitivity,
-                                        x0=theta,
-                                        method='SLSQP',
-                                        bounds=box_bounds)
-
-        target = np.array([0.5, 1.0/3.0])
-        self.assertTrue(np.allclose(res_QP['x'], target, 1e-2, 1e-2))
 
     def test_SIR_Estimate_PoissonLoss_1TargetState(self):
         # initial values
@@ -145,7 +42,6 @@ class TestModelEstimate(TestCase):
         sir_obj = PoissonLoss(theta, ode, x0, t[0], t[1::],
                               np.round(solution[1::,2]),
                               'R', target_param=['beta', 'gamma'])
-
 
         # constraints
         EPSILON = np.sqrt(np.finfo(np.float).eps)
@@ -188,7 +84,7 @@ class TestModelEstimate(TestCase):
         # Standard.  Find the solution.
         solution = ode.integrate(t[1::])
         # initial value
-        theta = [0.4,0.3]
+        theta = [0.4, 0.3]
 
         # note that we need to round the observations to integer for it
         # to make sense
@@ -224,7 +120,7 @@ class TestModelEstimate(TestCase):
         # Find the solution which we will be used as "observations later"
         solution, _output = ode.integrate(t, full_output=True)
         # initial guess
-        theta = [0.5,0.5,0.5]
+        theta = [0.5, 0.5, 0.5]
 
         #fh_obj = squareLoss(theta,ode,x0,t0,t,solution[1::,1],'R')
         fh_obj = SquareLoss(theta, ode, x0, t0, t, solution[1::,:], ['V', 'R'])
@@ -289,9 +185,13 @@ class TestModelEstimate(TestCase):
 
         res = scipy.optimize.minimize(fun=fh_obj.costIV,
                                       jac=fh_obj.sensitivityIV,
-                                      x0=theta + [-0.5,0.5],
+                                      x0=theta + [-0.5, 0.5],
                                       bounds=box_bounds,
                                       method='L-BFGS-B')
 
         target = np.array([0.2, 0.2, 3.0, -1.0, 1.0])
         self.assertTrue(np.allclose(res['x'], target, 1e-2, 1e-2))
+
+
+if __name__ == '__main__':
+    main()
