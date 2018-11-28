@@ -28,12 +28,9 @@ before_install:
 # command to install dependencies
 install:
   # standard stuff you need for scientific computing
-  - conda create -n pygom python=$TRAVIS_PYTHON_VERSION atlas dask matplotlib nose pandas numpy scipy sympy
+  - conda create -n pygom python=$TRAVIS_PYTHON_VERSION
   - source activate pygom
-  - conda install -c http://conda.anaconda.org/bioconda python-libsbml graphviz
-  - conda install -c http://conda.anaconda.org/anaconda python-dateutil
-  - python setup.py install
-  - pip install -r requirements.txt
+  - conda env update -f conda-env.yml
   - python setup.py install
 # command to run tests
 script: python setup.py test
