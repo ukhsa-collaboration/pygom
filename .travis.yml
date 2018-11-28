@@ -1,11 +1,16 @@
 # specify the language and which version
 language: python
 python:
-  - 2.7
   - 3.4
   - 3.5
   - 3.6
-# setup miniconda
+#  - 3.7
+#matrix:
+#  include:
+#    - python: 3.7
+#      dist: xenial
+#      sudo: true
+
 before_install:
   - sudo apt-get update
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
@@ -19,7 +24,6 @@ before_install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-
   # The next couple lines fix a crash with multiprocessing on Travis and are not specific to using Miniconda
   - sudo rm -rf /dev/shm
   - sudo ln -s /run/shm /dev/shm
