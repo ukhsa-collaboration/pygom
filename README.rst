@@ -24,7 +24,13 @@ This package depends on::
     scipy
     sympy
 
-and they should be installed if not already available.  Installation can be performed via::
+and they should be installed if not already available.  Alternatively, the easier way
+to use a minimal (and isolated) setup is to use `conda <https://conda.io/docs/>`_ and
+create a new environment via::
+
+  conda env create -f conda-env.yml
+
+Installation of this package can be performed via::
 
 $ python setup.py install
 
@@ -48,4 +54,4 @@ Edwin Tye (Edwin.Tye@phe.gov.uk)
 
 Version
 =======
-0.1.2 Pythonic class and function names
+0.1.3 Defaults to python built-in unittest and more in sync with conda

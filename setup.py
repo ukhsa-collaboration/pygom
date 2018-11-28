@@ -24,7 +24,7 @@ install_requires = [
 ]
 
 setup(name='pygom',
-      version='0.1.2',
+      version='0.1.3',
       description='ODE modeling in Python',
       long_description=readme,
       license=license_file,
@@ -40,6 +40,6 @@ setup(name='pygom',
       install_requires=install_requires,
       cmdclass=cmdclass,
       ext_modules=ext_modules,
-      test_suite='tests.test_suite_loader',
+      test_suite='tests',
       scripts=[]
 )
