@@ -860,7 +860,7 @@ class BaseOdeModel(object):
         for k, eqn in enumerate(eqn):
             for i in from_list[k]:
                 for j in to[k]:
-                    self._transitionMatrix[i,j] += eqn
+                    self._transitionMatrix[i, j] += eqn
 
         return self._transitionMatrix
 
@@ -941,7 +941,7 @@ class BaseOdeModel(object):
                     self._ode[fromList[i][0]] = eqn
         else:
             raise InputError("The total number of ode is %s " +
-                             "where the number of state is %s" % \
+                             "where the number of state is %s" %
                              len(self.ode_list), self.num_state)
 
         return None
@@ -979,7 +979,7 @@ class BaseOdeModel(object):
         for j, eqn in enumerate(eqn):
             for i, state in enumerate(self._stateList):
                 if self._stateDict[state.ID] in eqn.atoms():
-                    self._lambdaMat[i,j] = 1
+                    self._lambdaMat[i, j] = 1
 
         return self._lambdaMat
 
@@ -1029,7 +1029,7 @@ class BaseOdeModel(object):
                 d = 0
                 for k in range(self.num_state):
                     d = d or (self._lambdaMat[k, i] and self._vMat[k, j])
-                self._GMat[i,j] = d
+                self._GMat[i, j] = d
 
         return self._GMat
 
@@ -1207,14 +1207,14 @@ class BaseOdeModel(object):
 
         """
         if nrow is None:
-            nrow = len(A[:,0])
+            nrow = len(A[:, 0])
 
         if ncol is None:
-            ncol = len(A[0,:])
+            ncol = len(A[0, :])
 
         B = sympy.zeros(nrow, ncol)
         for i in range(0, nrow):
             for j in range(i, ncol):
-                B[i,j] = A[i,j]
+                B[i,j] = A[i, j]
 
         return B

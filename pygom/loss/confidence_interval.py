@@ -122,9 +122,9 @@ def bootstrap(obj, alpha=0.05, theta=None, lb=None, ub=None,
         ## TODO: parallel
         obj2 = copy.deepcopy(obj)
         obj2._y = yhat.copy()
-        if m>1:
+        if m > 1:
             for j in range(m):
-                obj2._y[:,j] += np.random.choice(r[:,j], n)
+                obj2._y[:, j] += np.random.choice(r[:, j], n)
         else:
             obj2._y += np.random.choice(r, n)
 
@@ -145,7 +145,7 @@ def bootstrap(obj, alpha=0.05, theta=None, lb=None, ub=None,
     xLB, xUB = np.zeros(p), np.zeros(p)
 
     for j in range(p):
-        s = np.sort(setTheta[:,j])
+        s = np.sort(setTheta[:, j])
         xLB[j] = s[np.int(np.ceil((alpha/2.0)*iteration))]
         xUB[j] = s[np.int(np.ceil((1.0 - alpha/2.0)*iteration))]
 
@@ -364,11 +364,11 @@ def _profileGetInitialValues(theta, i, alpha, obj, approx=True,
 
     activeIndex = list(setIndex - set([i]))
     tau = np.ones(p)
-    dwdb = -np.linalg.lstsq(H[activeIndex][:,activeIndex],H[i,activeIndex])[0]
+    dwdb = -np.linalg.lstsq(H[activeIndex][:, activeIndex],H[i, activeIndex])[0]
     tau[activeIndex] = dwdb
 
     q = qchisq(1 - alpha, df=1)
-    h = np.sqrt(q/(H[i,i] + (H[i,activeIndex].T).dot(dwdb)))
+    h = np.sqrt(q/(H[i, i] + (H[i, activeIndex].T).dot(dwdb)))
 
     # we only move a half step and not a full step as a more
     # conservative approach is less likely to have shoot out of bounds

@@ -40,7 +40,7 @@ class TestJacobians(TestCase):
                                                    full_output=True)
 
         # the Jacobian of the ode itself
-        ff0 = solution[self.index,:]
+        ff0 = solution[self.index, :]
         J0 = self.ode.ode(ff0, self.t[self.index])
         J = np.zeros((self.d, self.d))
         for i in range(self.d):
@@ -67,7 +67,7 @@ class TestJacobians(TestCase):
                                                      full_output=True)
 
         # the Jacobian of the ode itself
-        ff0 = solution_sens[self.index,:]
+        ff0 = solution_sens[self.index, :]
         J0 = self.ode.ode_and_sensitivity(ff0, self.t[self.index])
         p1 = self.p + 1
         dp1 = self.d*p1
@@ -99,7 +99,7 @@ class TestJacobians(TestCase):
         numFF = len(ffParam)
         J = np.zeros((numFF, numFF))
         # get the info
-        ff0 = sol_hess[self.index,:]
+        ff0 = sol_hess[self.index, :]
         # evaluate at target point
         J0 = self.ode.ode_and_forwardforward(ff0, self.t[self.index])
         # J0 = ode.odeAndForwardforward(ff0, t[index])
