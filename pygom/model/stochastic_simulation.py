@@ -6,22 +6,22 @@
 """
 
 import numpy as np
-import scipy.stats as st
 
 from pygom.utilR.distn import rexp, ppois, rpois, runif, test_seed
 
 from ._model_errors import InputError, SimulationError
 from .ode_utils import check_array_type
 
+
 def exact(x0, t0, t1, state_change_mat, transition_func,
           output_time=False, seed=None):
-    '''
+    """
     Stochastic simulation using an exact method starting from time
     t0 to t1 with the starting state values of x0
  
     Parameters
     ----------
-    x: array like
+    x0: array like
         state vector
     t0: double
         start time
@@ -53,7 +53,7 @@ def exact(x0, t0, t1, state_change_mat, transition_func,
         state vector
     t: double
         time
-    '''
+    """
 
     x = check_array_type(x0)
     t = t0
@@ -72,10 +72,11 @@ def exact(x0, t0, t1, state_change_mat, transition_func,
     else:
         return x
 
+
 def hybrid(x0, t0, t1, state_change_mat, reactant_mat,
            transition_func, transition_mean_func, transition_var_func,
            output_time=False, seed=None):
-    '''
+    """
     Stochastic simulation using an hybrid method that uses either the
     first reaction method or the :math:`\\tau`-leap depending on the
     size of the states and transition rates.  Starting from time
@@ -83,7 +84,7 @@ def hybrid(x0, t0, t1, state_change_mat, reactant_mat,
 
     Parameters
     ----------
-    x: array like
+    x0: array like
         state vector
     t0: double
         start time
@@ -94,6 +95,10 @@ def hybrid(x0, t0, t1, state_change_mat, reactant_mat,
         state and transition respectively.  :math:`V_{i,j}` is some
         non-zero integer such that transition :math:`j` happens means
         that state :math:`i` changes by :math:`V_{i,j}` amount
+    reactant_mat:array like
+        Reactant matrix of :math:`\\lambda_{i,j}` where :math:`i,j` represents
+        the index of the state and transition respectively.
+        A value of 1 if state i is involved in transition j
     transition_func: callable
         a function that takes the input argument (x,t) and returns the vector
         of transition rates
@@ -121,7 +126,7 @@ def hybrid(x0, t0, t1, state_change_mat, reactant_mat,
         state vector
     t: double
         time
-    '''
+    """
 
     x = check_array_type(x0)
     t = t0
@@ -154,7 +159,7 @@ def hybrid(x0, t0, t1, state_change_mat, reactant_mat,
 
 def cle(x0, t0, t1, state_change_mat, transition_func,
         h=None, n=500, positive=True, output_time=False, seed=None):
-    '''
+    """
     Stochastic simulation using the CLE approximation starting from time
     t0 to t1 with the starting state values of x0.  The CLE approximation
     is performed using a simple Euler-Maruyama method with step size h.
@@ -165,7 +170,7 @@ def cle(x0, t0, t1, state_change_mat, transition_func,
 
     Parameters
     ----------
-    x: array like
+    x0: array like
         state vector
     t0: double
         start time
@@ -204,16 +209,16 @@ def cle(x0, t0, t1, state_change_mat, transition_func,
         state vector
     t: double
         time
-    '''
+    """
 
     assert isinstance(state_change_mat, np.ndarray), \
-            "state_change_mat should be a np array"
+        "state_change_mat should be a np array"
 
     if hasattr(positive, '__iter__'):
         assert len(positive) == len(x0), \
-        "an array for the input positive should have same length as x"
+            "an array for the input positive should have same length as x"
         assert all(isinstance(p, bool) for p in positive), \
-        "elements in positive should be a bool"
+            "elements in positive should be a bool"
         positive = np.array(positive)
     else:
         assert isinstance(positive, bool), "positive should be a bool"
@@ -235,7 +240,7 @@ def cle(x0, t0, t1, state_change_mat, transition_func,
         ## We might like to put a defensive line below to stop the states
         ## going below zero.  This applies only to models where each state
         ## represent a physical count
-        x[x[positive]<0] = 0
+        x[x[positive] < 0] = 0
         t += h
 
     if output_time:
@@ -243,9 +248,10 @@ def cle(x0, t0, t1, state_change_mat, transition_func,
     else:
         return x
 
+
 def sde(x0, t0, t1, drift, diffusion, state_change_mat=None,
         h=None, n=500, positive=True, output_time=False, seed=None):
-    '''
+    """
     Stochastic simulation using a SDE approximation starting from time
     t0 to t1 with the starting state values of x0.  The SDE approximation
     is performed using a simple Euler-Maruyama method with step size h.
@@ -257,7 +263,7 @@ def sde(x0, t0, t1, drift, diffusion, state_change_mat=None,
 
     Parameters
     ----------
-    x: array like
+    x0: array like
         state vector
     t0: double
         start time
@@ -299,7 +305,7 @@ def sde(x0, t0, t1, drift, diffusion, state_change_mat=None,
         state vector
     t: double
         time
-    '''
+    """
 
     if state_change_mat is not None:
         assert isinstance(state_change_mat, np.ndarray), \
@@ -310,9 +316,9 @@ def sde(x0, t0, t1, drift, diffusion, state_change_mat=None,
 
     if hasattr(positive, '__iter__'):
         assert len(positive) == len(x0), \
-        "an array for the input positive should have same length as x"
+            "an array for the input positive should have same length as x"
         assert all(isinstance(p, bool) for p in positive), \
-        "elements in positive should be a bool"
+            "elements in positive should be a bool"
         positive = np.array(positive)
     else:
         assert isinstance(positive, bool), "positive should be a bool"
@@ -344,32 +350,33 @@ def sde(x0, t0, t1, drift, diffusion, state_change_mat=None,
     else:
         return x
 
+
 def directReaction(x, t, state_change_mat, transition_func, seed=None):
-    '''
+    """
     The direct reaction method.  Same as :func:`firstReaction` for both
     input and output, only differ in internal computation
-    '''
+    """
 
-    rates = transition_func(x,t)
-    totalRate = sum(rates)
-    jumpRate = np.cumsum(rates)
+    rates = transition_func(x, t)
+    total_rate = sum(rates)
+    jump_rate = np.cumsum(rates)
 
-    if totalRate > 0:
-        jumpTime = rexp(1, totalRate, seed=seed)
+    if total_rate > 0:
+        jump_time = rexp(1, total_rate, seed=seed)
         # U \sim \UnifDist[0,1]
-        U = runif(1)
-        targetRate = totalRate*U
+        u = runif(1)
+        target_rate = total_rate*u
         # find the index that covers the probability of jump using binary search
-        transitionIndex = np.searchsorted(jumpRate, targetRate)
+        transition_index = np.searchsorted(jump_rate, target_rate)
         # we can move!! move particles
-        newX = _updateStateWithJump(x, transitionIndex, state_change_mat)
-        return _checkJump(x, newX, t, jumpTime)
+        new_x = _updateStateWithJump(x, transition_index, state_change_mat)
+        return _checkJump(x, new_x, t, jump_time)
     else:
         # we can't jump
         raise SimulationError("Cannot perform any more reactions")
 
 def firstReaction(x, t, state_change_mat, transition_func, seed=None):
-    '''
+    """
     The first reaction method
 
     Parameters
@@ -404,43 +411,38 @@ def firstReaction(x, t, state_change_mat, transition_func, seed=None):
     success:
         if the leap was successful.  A change in both x and t if it is
         successful, no change otherwise
-    '''
+    """
 
-    rates = transition_func(x,t)
+    rates = transition_func(x, t)
     # find our jump times
-    jumpTimes = _newJumpTimes(rates, seed=seed)
-    if np.all(jumpTimes == np.Inf):
-        return(x, t, False)
+    jump_times = _newJumpTimes(rates, seed=seed)
+    if np.all(jump_times == np.Inf):
+        return x, t, False
     # first jump
-    minIndex = np.argmin(jumpTimes)
-    newX = _updateStateWithJump(x, minIndex, state_change_mat)
-    return _checkJump(x, newX, t, jumpTimes[minIndex])
-#     # validate the jump times
-#     if jumpTimes[minIndex] == np.Inf:
-#         # if we cannot perform any more jumps
-#         raise SimulationError("Cannot perform any more reactions")
-#     else:
-#         newX = _updateStateWithJump(x, minIndex, state_change_mat)
-#         return _checkJump(x, newX, t, jumpTimes[minIndex])
+    min_index = np.argmin(jump_times)
+    new_x = _updateStateWithJump(x, min_index, state_change_mat)
+    return _checkJump(x, new_x, t, jump_times[min_index])
+
 
 def nextReaction(x, t, state_change_mat, dependency_graph,
                  old_rates, jump_times, transition_func, seed=None):
-    '''
+    """
     The next reaction method
-    '''
+    """
 
     # smallest time :)
     index = np.argmin(jump_times)
     # moving state and time
-    newX = _updateStateWithJump(x, index, state_change_mat)
+    new_x = _updateStateWithJump(x, index, state_change_mat)
     t = jump_times[index]
     # recalculate the new transition matrix
     if hasattr(transition_func, '__call__'):
-        rates = transition_func(x,t)
+        rates = transition_func(x, t)
         # update the jump time
         jump_times[index] = t + rexp(1, rates[index], seed=seed)
     elif hasattr(transition_func, '__iter__'):
-        jump_times[index] = t + rexp(1, transition_func[index](x, t), seed=seed)
+        rates = transition_func[index](x, t)
+        jump_times[index] = t + rexp(1, rates, seed=seed)
     else:
         raise InputError("transition_func should be a single or list of callable")
 
@@ -449,14 +451,14 @@ def nextReaction(x, t, state_change_mat, dependency_graph,
         # obviously, not the target transition as we have already fixed it
         if i != index:
             # and only if the rate has been affected by the state update
-            if dependency_graph[i,index] != 0:
+            if dependency_graph[i, index] != 0:
                 aold = old_rates[i]
                 if anew > 0:
                     jump_times[i] = (aold/anew)*(jump_times[i] - t) + t
                 else:
                     jump_times[i] = np.Inf
         # done :)
-        return newX, t, True, rates, jump_times
+        return new_x, t, True, rates, jump_times
     else:
         raise SimulationError("Cannot perform any more reactions")
 
@@ -464,7 +466,7 @@ def nextReaction(x, t, state_change_mat, dependency_graph,
 def tauLeap(x, t, state_change_mat, reactant_mat,
             transition_func, transition_mean_func, transition_var_func,
             epsilon=0.1, seed=None):
-    '''
+    """
     The Poisson :math:`\\tau`-Leap
 
     Parameters
@@ -485,14 +487,22 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
     transition_func: callable
         a function that takes the input argument (x,t) and returns the vector
         of transition rates
-    transitionMean: callable
+    transition_mean_func: callable
         a function that takes the input argument (x,t) and returns the vector
         of transition mean
-    transitionVar: callable
+    transition_var_func: callable
         a function that takes the input argument (x,t) and returns the vector
         of transition variance
     epsilon: double, optional
         tolerance of the size of the jump, defaults to 0.1
+    seed: optional
+        represents which type of seed to use.  None will defaults to the
+        current global state while False will reinitialize to the initial
+        global state. When seed is an integer number, it will reset the seed
+        via np.random.seed.  When seed=True, then a
+        :class:`np.random.RandomState` object will be used for the
+        underlying random number generating process. If seed is an object
+        of :class:`np.random.RandomState` then it will be used directly
 
     Returns
     -------
@@ -503,10 +513,10 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
     success:
         if the leap was successful.  A change in both x and t if it is
         successful, no change otherwise
-    '''
+    """
 
     # go through the list of transitions
-    rates = transition_func(x,t)
+    rates = transition_func(x, t)
 
     mu = transition_mean_func(x, t)
     sigma2 = transition_var_func(x, t)
@@ -539,7 +549,7 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
         return x, t, False
 
     # make the jumps
-    newX = x.copy()
+    new_x = x.copy()
     for i, r in enumerate(rates):
         # realization
         try:
@@ -558,24 +568,25 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
 
         # print jumpQuantity
         # move the particles!
-        newX = _updateStateWithJump(newX, i, state_change_mat, jumpQuantity)
+        new_x = _updateStateWithJump(new_x, i, state_change_mat, jumpQuantity)
         ## done moving
-    return _checkJump(x, newX, t, tau_scale)
+    return _checkJump(x, new_x, t, tau_scale)
+
 
 def _test_tau_leap_safety(x, reactant_mat, rates, tau_scale, epsilon):
-    '''
+    """
     Additional safety test on :math:`\\tau`-leap, decrease the step size if
     the original is not small enough.  Decrease a couple of times and then
     bail out because we don't want to spend too long decreasing the
     step size until we find a suitable one.
-    '''
+    """
     total_rate = sum(rates)
     safe = False
     count = 0
     while safe is False:
         cdf_val = list()
         for i, r in enumerate(rates):
-            xi = x[reactant_mat[:,i]]
+            xi = x[reactant_mat[:, i]]
             cdf_val += ppois(xi, mu=tau_scale*r).tolist()
 
         # the expected probability that our jump will exceed the value
@@ -592,27 +603,30 @@ def _test_tau_leap_safety(x, reactant_mat, rates, tau_scale, epsilon):
 
     return True
 
+
 def _newJumpTimes(rates, seed=None):
-    '''
+    """
     Generate the new jump times assuming that the rates follow an exponential
     distribution
-    '''
+    """
     
     tau = [rexp(1, r, seed=seed) if r > 0 else np.Inf for r in rates]
     return np.array(tau)
 
+
 def _updateStateWithJump(x, transition_index, state_change_mat, n=1.0):
-    '''
+    """
     Updates the states given a jump.  Makes use the state change
     matrix, and updates according to the number of times this
     transition has happened
-    '''
-    return x + state_change_mat[:,transition_index]*n
+    """
+    return x + state_change_mat[:, transition_index]*n
+
 
 def _checkJump(x, new_x, t, jump_time):
-    failedJump = np.any(new_x < 0)
+    failed_jump = np.any(new_x < 0)
 
-    if failedJump:
+    if failed_jump:
         # print "Illegal jump, x: %s, new x: %s" % (x, new_x)
         return x, t, False
     else:
