@@ -6,7 +6,8 @@ __all__ = [
     'shapeAdjust',
     'integrate',
     'integrateFuncJac',
-    'compileCode'
+    'compileCode',
+    'check_array_type'
     ]
 
 import math
@@ -159,7 +160,7 @@ def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
         the ode :math:`f(x)`
     jac: callable
         jacobian of the ode, :math:`J_{i,j} = \\nabla_{x_{j}} f_{i}(x)`
-    x0: float
+    x0: `numpy.ndarray` or list of numeric
         initial value of the states
     t0: float
         initial time

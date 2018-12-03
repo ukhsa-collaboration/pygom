@@ -218,10 +218,10 @@ class DeterministicOde(BaseOdeModel):
             be printed onto the screen.
         """
         A = self.get_ode_eqn()
-        B = sympy.zeros(A.rows,2)
+        B = sympy.zeros(A.rows, 2)
         for i in range(A.shape[0]):
-            B[i,0] = sympy.symbols('d' + str(self._stateList[i]) + '/dt=')
-            B[i,1] = A[i]
+            B[i, 0] = sympy.symbols('d' + str(self._stateList[i]) + '/dt=')
+            B[i, 1] = A[i]
 
         if latex_output:
             print(sympy.latex(B, mat_str="array", mat_delim=None,
@@ -241,11 +241,9 @@ class DeterministicOde(BaseOdeModel):
             # convert the transition matrix into the set of ode
             self._ode = sympy.zeros(self.num_state, 1)
             pureTransitionList = self._getAllTransition(pureTransitions=True)
-            fromList, \
-                to, \
-                eqn = self._unrollTransitionList(pureTransitionList)
+            from_list, to, eqn = self._unrollTransitionList(pureTransitionList)
             for i, eqn in enumerate(eqn):
-                for k in fromList[i]:
+                for k in from_list[i]:
                     self._ode[k] -= eqn
                 for k in to[i]:
                     self._ode[k] += eqn
@@ -486,9 +484,9 @@ class DeterministicOde(BaseOdeModel):
             self._Jacobian = self._ode.jacobian(states)
             for i in range(self.num_state):
                 for j in range(self.num_state):
-                    eqn = self._Jacobian[i,j]
+                    eqn = self._Jacobian[i, j]
                     if  eqn != 0:
-                        self._Jacobian[i,j], isDifficult = simplifyEquation(eqn)
+                        self._Jacobian[i, j], isDifficult = simplifyEquation(eqn)
                         self._isDifficult = self._isDifficult or isDifficult
 
         f = self._SC.compileExprAndFormat
@@ -663,7 +661,7 @@ class DeterministicOde(BaseOdeModel):
         """
         if self._diffJacobian is None:
             self.get_ode_eqn()
-            diffJac = list()
+            diff_jac = list()
 
             for eqn in self._ode:
                 J = sympy.zeros(self.num_state, self.num_state)
@@ -673,14 +671,14 @@ class DeterministicOde(BaseOdeModel):
                         J[i,j], D2 = simplifyEquation(diff(diffEqn, sj, 1))
                         self._isDifficult = self._isDifficult or D1 or D2
                 #binding.
-                diffJac.append(J)
+                diff_jac.append(J)
 
             # extract first matrix as base.  we have to get the first element
             # as base if we want to use the class method of the object
-            diffJacMatrix = diffJac[0]
-            for i in range(1, len(diffJac)):
+            diffJacMatrix = diff_jac[0]
+            for i in range(1, len(diff_jac)):
                 # sympy internal matrix joining
-                diffJacMatrix = diffJacMatrix.col_join(diffJac[i])
+                diffJacMatrix = diffJacMatrix.col_join(diff_jac[i])
 
             self._diffJacobian = copy.deepcopy(diffJacMatrix)
 
@@ -1202,7 +1200,7 @@ class DeterministicOde(BaseOdeModel):
         """
 
         if len(state_param) == self.num_state:
-            raise InputError("You have only inputed the initial condition " +
+            raise InputError("You have only inputted the initial condition " +
                              "for the states and not the sensitivity")
 
         # unrolling, assuming that we would always put the state first
@@ -1272,19 +1270,19 @@ class DeterministicOde(BaseOdeModel):
         sensJacobianOfState = GJ + self.sens_jacobian_state(state_param, t)
 
         if by_state:
-            arrangeVector = np.zeros(self.num_state * self.num_param)
+            arrange_vector = np.zeros(self.num_state * self.num_param)
             k = 0
             for j in range(0, self.num_param):
                 for i in range(0, self.num_state):
                     if i == 0:
-                        arrangeVector[k] = (i*self.num_state) + j
+                        arrange_vector[k] = (i*self.num_state) + j
                     else:
-                        arrangeVector[k] = (i*(self.num_state - 1)) + j
+                        arrange_vector[k] = (i*(self.num_state - 1)) + j
                     k += 1
 
-            outJ = outJ[np.array(arrangeVector,int),:]
-            idx = np.array(arrangeVector, int)
-            sensJacobianOfState = sensJacobianOfState[idx,:]
+            outJ = outJ[np.array(arrange_vector,int), :]
+            idx = np.array(arrange_vector, int)
+            sensJacobianOfState = sensJacobianOfState[idx, :]
         # The Jacobian of the ode, then the sensitivities w.r.t state and
         # the sensitivities. In block form.  Theoretically, only the diagonal
         # blocks are important but we output the full matrix for completeness
@@ -1827,10 +1825,10 @@ class DeterministicOde(BaseOdeModel):
         """
 
         if len(state_param) == self.num_state:
-            raise InputError("You have only inputed the initial condition " +
+            raise InputError("You have only inputted the initial condition " +
                              "for the states and not the sensitivity")
         elif len(state_param) == ((self.num_state + 1)*self.num_param):
-            raise InputError("You have only inputed the initial condition " +
+            raise InputError("You have only inputted the initial condition " +
                              "for the states and the sensitivity but not " +
                              "the forward forward condition")
 
