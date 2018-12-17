@@ -1,10 +1,11 @@
-from unittest import TestCase
+from unittest import main, TestCase
 
 import numpy
 import sympy
 
 from pygom import SimulateOde, Transition, TransitionType
 from pygom.model import common_models
+
 
 class TestOdeDecomposition(TestCase):
 
@@ -19,7 +20,7 @@ class TestOdeDecomposition(TestCase):
         ode2 = ode.get_unrolled_obj()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.get_ode_eqn() - ode2.get_ode_eqn()))
 
-        self.assertTrue(numpy.all(numpy.array(list(diffEqZero)) == True))
+        self.assertTrue(numpy.all(numpy.array(list(diffEqZero))))
 #         if numpy.any(numpy.array(list(diffEqZero)) is False):
 #             raise Exception("Simple: SIR Decomposition failed")
 
@@ -43,10 +44,7 @@ class TestOdeDecomposition(TestCase):
         ode2 = ode.get_unrolled_obj()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.get_ode_eqn() - ode2.get_ode_eqn()))
 
-        self.assertTrue(numpy.all(numpy.array(list(diffEqZero)) == True))
-#         if numpy.any(numpy.array(list(diffEqZero)) is False):
-#             raise Exception("Hard: SLIARD Decomposition failed")
-
+        self.assertTrue(numpy.all(numpy.array(list(diffEqZero))))
 
     def test_bd(self):
         state_list = ['S', 'I', 'R']
@@ -69,9 +67,7 @@ class TestOdeDecomposition(TestCase):
         ode2 = ode.get_unrolled_obj()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.get_ode_eqn() - ode2.get_ode_eqn()))
 
-        self.assertTrue(numpy.all(numpy.array(list(diffEqZero)) == True))
-#         if numpy.any(numpy.array(list(diffEqZero)) is False):
-#             raise Exception("Birth Death: SIR+BD Decomposition failed")
+        self.assertTrue(numpy.all(numpy.array(list(diffEqZero))))
 
     def test_derived_param(self):
         # the derived parameters are treated separately when compared to the
@@ -93,6 +89,8 @@ class TestOdeDecomposition(TestCase):
         ode2 = ode1.get_unrolled_obj()
         diffEqZero = map(lambda x: x==0, sympy.simplify(ode.get_ode_eqn() - ode2.get_ode_eqn()))
 
-        self.assertTrue(numpy.all(numpy.array(list(diffEqZero)) == True))
-#         if numpy.any(numpy.array(list(diffEqZero)) is False):
-#             raise Exception("FAILED!")
+        self.assertTrue(numpy.all(numpy.array(list(diffEqZero))))
+
+
+if __name__ == '__main__':
+    main()

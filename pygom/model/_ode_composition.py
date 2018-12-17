@@ -14,46 +14,47 @@ import numpy as np
 from .base_ode_model import BaseOdeModel
 from .transition import TransitionType
 
-greekLetter = ('alpha','beta','gamma','delta','epsilon','zeta','eta','theta',
-               'iota','kappa','lambda','mu','nu','xi','omicron','pi','rho',
-               'sigma','tau','upsilon','phi','chi','psi','omega')
+greekLetter = ('alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta',
+               'iota', 'kappa', 'lambda', 'mu', 'nu', 'xi', 'omicron', 'pi', 'rho',
+               'sigma', 'tau', 'upsilon', 'phi', 'chi', 'psi', 'omega')
 
-def generateTransitionGraph(odeModel, fileName=None):
-    '''
+
+def generateTransitionGraph(ode_model, file_name=None):
+    """
     Generates the transition graph in graphviz given an ode model with transitions
 
     Parameters
     ----------
-    odeModel: OperateOdeModel
+    ode_model: OperateOdeModel
         an ode model object
-    fileName: str
+    file_name: str
         location of the file, if none entered, then the default directory is used
 
     Returns
     -------
     dot: graphviz object
-    '''
-    assert isinstance(odeModel, BaseOdeModel), "An ode model object required"
+    """
+    assert isinstance(ode_model, BaseOdeModel), "An ode model object required"
 
     from graphviz import Digraph
 
-    if fileName is None:
+    if file_name is None:
         dot = Digraph(comment='ode model')
     else:
-        dot = Digraph(comment='ode model', filename=fileName)
+        dot = Digraph(comment='ode model', filename=file_name)
 
     dot.body.extend(['rankdir=LR'])
 
-    param = [str(p) for p in odeModel.param_list]
-    states = [str(s) for s in odeModel.state_list]
+    param = [str(p) for p in ode_model.param_list]
+    states = [str(s) for s in ode_model.state_list]
 
     for s in states:
         dot.node(s)
 
-    transition = odeModel.transition_list
-    bdList = odeModel.birth_death_list
+    transition = ode_model.transition_list
+    bd_list = ode_model.birth_death_list
 
-    for transition in (transition + bdList):
+    for transition in (transition + bd_list):
         s1 = transition.origin
         eq = _makeEquationPretty(transition.equation, param)
 
@@ -72,8 +73,9 @@ def generateTransitionGraph(odeModel, fileName=None):
 
     return dot
 
+
 def _makeEquationPretty(eq, param):
-    '''
+    """
     Make the equation suitable for graphviz format by converting
     beta to &beta;  and remove all the multiplication sign
 
@@ -81,7 +83,7 @@ def _makeEquationPretty(eq, param):
     it is only possible with svg (which is a real pain to convert
     back to png) and only available from graphviz versions after
     14 Oct 2011
-    '''
+    """
     for p in param:
         if p.lower() in greekLetter:
             eq = re.sub('(\\W?)(' + p + ')(\\W?)', '\\1&' + p + ';\\3', eq)
@@ -90,14 +92,15 @@ def _makeEquationPretty(eq, param):
     # eq += " blah<SUP>Yo</SUP> + ha<SUB>Boo</SUB>"
     return eq
 
-def generateDirectedDependencyGraph(odeMatrix, transition=None):
-    '''
+
+def generateDirectedDependencyGraph(ode_matrix, transition=None):
+    """
     Returns a binary matrix that contains the direction of the transition in
     a state
 
     Parameters
     ----------
-    odeMatrix: :class:`sympy.matrcies.MatrixBase`
+    ode_matrix: :class:`sympy.matrcies.MatrixBase`
         A matrix of size [number of states x 1].  Obtained by
         invoking :meth:`DeterministicOde.get_ode_eqn`
     transition: list, optional
@@ -111,32 +114,33 @@ def generateDirectedDependencyGraph(odeMatrix, transition=None):
         where each column has two entry,
         -1 and 1 to indicate the direction of the transition and the state.
         All column sum to one, i.e. transition must have a source and target.
-    '''
-    assert isinstance(odeMatrix, sympy.matrices.MatrixBase), \
+    """
+    assert isinstance(ode_matrix, sympy.matrices.MatrixBase), \
         "Expecting a vector of expressions"
 
     if transition is None:
-        transition = getMatchingExpressionVector(odeMatrix, True)
+        transition = getMatchingExpressionVector(ode_matrix, True)
     else:
         assert isinstance(transition, list), "Require a list of transitions"
 
-    B = np.zeros((len(odeMatrix), len(transition)))
-    for i, a in enumerate(odeMatrix):
+    B = np.zeros((len(ode_matrix), len(transition)))
+    for i, a in enumerate(ode_matrix):
         for j, transitionTuple in enumerate(transition):
             t1, t2 = transitionTuple
             if _hasExpression(a, t1):
-                B[i,j] += -1 # going out
+                B[i, j] += -1  # going out
             if _hasExpression(a, t2):
-                B[i,j] += 1  # coming in
+                B[i, j] += 1   # coming in
     return B
 
-def getUnmatchedExpressionVector(exprVec, full_output=False):
-    '''
+
+def getUnmatchedExpressionVector(expr_vec, full_output=False):
+    """
     Return the unmatched expressions from a vector of equations
 
     Parameters
     ----------
-    exprVec: :class:`sympy.matrices.MatrixBase`
+    expr_vec: :class:`sympy.matrices.MatrixBase`
         A matrix of size [number of states x 1].
     full_output: bool, optional
         Defaults to False, if True, also output the list of matched expressions
@@ -145,26 +149,27 @@ def getUnmatchedExpressionVector(exprVec, full_output=False):
     -------
     list:
         of unmatched expressions, i.e. birth or death processes
-    '''
-    assert isinstance(exprVec, sympy.matrices.MatrixBase), \
+    """
+    assert isinstance(expr_vec, sympy.matrices.MatrixBase), \
         "Expecting a vector of expressions"
 
-    transition = reduce(lambda x,y: x + y, map(getExpressions, exprVec))
-    matchedTransitionList = _findMatchingExpression(transition)
-    out = list(set(transition) - set(matchedTransitionList))
+    transition = reduce(lambda x, y: x + y, map(getExpressions, expr_vec))
+    matched_transition_list = _findMatchingExpression(transition)
+    out = list(set(transition) - set(matched_transition_list))
 
     if full_output:
-        return out, _transitionListToMatchedTuple(matchedTransitionList)
+        return out, _transitionListToMatchedTuple(matched_transition_list)
     else:
         return out
 
-def getMatchingExpressionVector(exprVec, outTuple=False):
-    '''
+
+def getMatchingExpressionVector(expr_vec, outTuple=False):
+    """
     Return the matched expressions from a vector of equations
 
     Parameters
     ----------
-    exprVec: :class:`sympy.matrices.MatrixBase`
+    expr_vec: :class:`sympy.matrices.MatrixBase`
         A matrix of size [number of states x 1].
     outTuple: bool, optional
         Defaults to False, if True, the output is a tuple of length two
@@ -175,12 +180,12 @@ def getMatchingExpressionVector(exprVec, outTuple=False):
     -------
     list:
         of matched expressions, i.e. transitions
-    '''
-    assert isinstance(exprVec, sympy.matrices.MatrixBase), \
+    """
+    assert isinstance(expr_vec, sympy.matrices.MatrixBase), \
         "Expecting a vector of expressions"
 
     transition = list()
-    for expr in exprVec:
+    for expr in expr_vec:
         transition += getExpressions(expr)
 
     transition = list(set(_findMatchingExpression(transition)))
@@ -190,14 +195,15 @@ def getMatchingExpressionVector(exprVec, outTuple=False):
     else:
         return transition
 
-def _findMatchingExpression(expressionList, full_output=False):
-    '''
+
+def _findMatchingExpression(expressions, full_output=False):
+    """
     Reduce a list of expressions to a list of transitions.  A transition
     is found when two expressions are identical with a change of sign.
 
     Parameters
     ----------
-    expressionList: list
+    expressions: list
         the list of expressions
     full_output: bool, optional
         If True, output the unmatched expressions as well. Defaults to False.
@@ -206,106 +212,109 @@ def _findMatchingExpression(expressionList, full_output=False):
     -------
     list:
         of expressions that was matched
-    '''
+    """
     t_list = list()
-    for i in range(len(expressionList) - 1):
-        for j in range(i + 1, len(expressionList)):
-            b = expressionList[i] + expressionList[j]
+    for i in range(len(expressions) - 1):
+        for j in range(i + 1, len(expressions)):
+            b = expressions[i] + expressions[j]
             if b == 0:
-                t_list.append(expressionList[i])
-                t_list.append(expressionList[j])
+                t_list.append(expressions[i])
+                t_list.append(expressions[j])
 
     if full_output:
-        unmatched = set(expressionList) - set(t_list)
+        unmatched = set(expressions) - set(t_list)
         return t_list, list(unmatched)
     else:
         return t_list
 
+
 def _transitionListToMatchedTuple(transition):
-    '''
+    """
     Convert a list of transitions to a list of tuple, where each tuple
     is of length 2 and contains the matched transitions. First element
     of the tuple is the positive term
-    '''
-    tTupleList = list()
+    """
+    t_tuple_list = list()
     for i in range(len(transition) - 1):
         for j in range(i + 1, len(transition)):
             b = transition[i] + transition[j]
             # the two terms cancel out
             if b == 0:
                 if sympy.Integer(-1) in getLeafs(transition[i]):
-                    tTupleList.append((transition[j], transition[i]))
+                    t_tuple_list.append((transition[j], transition[i]))
                 else:
-#                     print transition[i]
-#                     print sympy.Integer(-1) in getLeaf(transition[i])
-#                     print getLeafs(transition[i])
-                    tTupleList.append((transition[i], transition[j]))
-    return tTupleList
+                    t_tuple_list.append((transition[i], transition[j]))
+    return t_tuple_list
+
 
 def getExpressions(expr):
     input_dict = dict()
     _getExpression(expr.expand(), input_dict)
     return list(input_dict.keys())
 
+
 def getLeafs(expr):
     input_dict = dict()
     _getLeaf(expr.expand(), input_dict)
     return list(input_dict.keys())
 
-def _getLeaf(expr, inputDict):
-    '''
+
+def _getLeaf(expr, input_dict):
+    """
     Get the leafs of an expression, can probably just do
     the same with expr.atoms() with most expression but we
     do not break down power terms i.e. x**2 will be broken
     down to (x,2) in expr.atoms() but this function will
     retain (x**2)
-    '''
+    """
     t = expr.args
-    tLengths = np.array(list(map(_expressionLength, t)))
+    t_lengths = np.array(list(map(_expressionLength, t)))
 
     for i, ti in enumerate(t):
-        if tLengths[i] == 0:
-            inputDict.setdefault(ti,0)
-            inputDict[ti] += 1
+        if t_lengths[i] == 0:
+            input_dict.setdefault(ti, 0)
+            input_dict[ti] += 1
         else:
-            _getLeaf(ti, inputDict)
+            _getLeaf(ti, input_dict)
 
-def _getExpression(expr, inputDict):
-    '''
+
+def _getExpression(expr, input_dict):
+    """
     all the operations is dependent on the conditions 
     whether all the elements are leafs or only some of them.
     Only return expressions and not the individual elements
-    '''
+    """
     t = expr.args if len(expr.atoms()) > 1 else [expr]
     # print t
 
     # find out the length of the components within this node
-    tLengths = np.array(list(map(_expressionLength, t)))
+    t_lengths = np.array(list(map(_expressionLength, t)))
     # print(tLengths)
-    if np.all(tLengths == 0):
+    if np.all(t_lengths == 0):
         # if all components are leafs, then the node is an expression
-        inputDict.setdefault(expr, 0)
-        inputDict[expr] += 1
+        input_dict.setdefault(expr, 0)
+        input_dict[expr] += 1
     else:
         for i, ti in enumerate(t):
             # if the leaf is a singleton, then it is an expression
             # else, go further along the tree
-            if tLengths[i] == 0:
-                inputDict.setdefault(ti, 0)
-                inputDict[ti] += 1
+            if t_lengths[i] == 0:
+                input_dict.setdefault(ti, 0)
+                input_dict[ti] += 1
             else:
                 if isinstance(ti, sympy.Mul):
-                    _getExpression(ti, inputDict)
+                    _getExpression(ti, input_dict)
                 elif isinstance(ti, sympy.Pow):
-                    inputDict.setdefault(ti, 0)
-                    inputDict[ti] += 1
+                    input_dict.setdefault(ti, 0)
+                    input_dict[ti] += 1
+
 
 def _expressionLength(expr):
-    '''
+    """
     Returns the length of the expression i.e. number of terms.
     If the expression is a power term, i.e. x^2 then we assume
     that it is one term and return 0.
-    '''
+    """
     # print type(expr)
     if isinstance(expr, sympy.Mul):
         return len(expr.args)
@@ -314,14 +323,15 @@ def _expressionLength(expr):
     else:
         return 0
 
-def _findIndex(eqVec, expr):
-    '''
+
+def _findIndex(eq_vec, expr):
+    """
     Given a vector of expressions, find where you will locate the
     input term.
 
     Parameters
     ----------
-    eqVec: :class:`sympy.Matrix`
+    eq_vec: :class:`sympy.Matrix`
         vector of sympy equation
     expr: sympy type
         An expression that we would like to find
@@ -331,18 +341,19 @@ def _findIndex(eqVec, expr):
     list:
         of index that contains the expression.  Can be an empty list
         or with multiple integer
-    '''
+    """
     out = list()
-    for i, a in enumerate(eqVec):
+    for i, a in enumerate(eq_vec):
         j = _hasExpression(a, expr)
         if j is True:
             out.append(i)
     return out
 
+
 def _hasExpression(eq, expr):
-    '''
+    """
     Test whether the equation eq has the expression expr
-    '''
+    """
     out = False
     aExpand = eq.expand()
     if expr == aExpand:
@@ -351,8 +362,9 @@ def _hasExpression(eq, expr):
         out = True
     return out
 
+
 def pureTransitionToOde(A):
-    '''
+    """
     Get the ode from a pure transition matrix
 
     Parameters
@@ -364,70 +376,72 @@ def pureTransitionToOde(A):
     -------
     b: `sympy.Matrix`
         a matrix of size [n \times 1] which is the ode
-    '''
+    """
     nrow, ncol = A.shape
     assert nrow == ncol, "Need a square matrix"
-    B = [sum(A[:,i]) - sum(A[i,:]) for i in range(nrow)]
+    B = [sum(A[:, i]) - sum(A[i, :]) for i in range(nrow)]
     return sympy.simplify(sympy.Matrix(B))
 
-def stripBDFromOde(fx, bdList=None):
-    if bdList is None:
-        bdList = getUnmatchedExpressionVector(fx, False)
 
-    fxCopy = fx.copy()
+def stripBDFromOde(fx, bd_list=None):
+    if bd_list is None:
+        bd_list = getUnmatchedExpressionVector(fx, False)
+
+    fx_copy = fx.copy()
     for i, fxi in enumerate(fx):
-        termInExpr = list(map(lambda x: x in fxi.expand().args, bdList))
-        for j, term in enumerate(bdList):
-            fxCopy[i] -= term if termInExpr[j] == True else 0
+        term_in_expr = list(map(lambda x: x in fxi.expand().args, bd_list))
+        for j, term in enumerate(bd_list):
+            fx_copy[i] -= term if term_in_expr[j] else 0
 
     # simplify converts it to an ImmutableMatrix, so we make it into
     # a mutable object again because we want the expanded form
-    return sympy.Matrix(sympy.simplify(fxCopy)).expand()
+    return sympy.Matrix(sympy.simplify(fx_copy)).expand()
+
 
 def odeToPureTransition(fx, states, output_remain=False):
-    bdList, termList = getUnmatchedExpressionVector(fx, full_output=True)
-    fx = stripBDFromOde(fx, bdList)
+    bd_list, term_list = getUnmatchedExpressionVector(fx, full_output=True)
+    fx = stripBDFromOde(fx, bd_list)
     # we now have fx with pure transitions
-    A, remainTermList = _singleOriginTransition(fx, termList, states)
-    A, remainTermList = _odeToPureTransition(fx, remainTermList, A)
+    A, remain_terms = _singleOriginTransition(fx, term_list, states)
+    A, remain_terms = _odeToPureTransition(fx, remain_terms, A)
     # checking if our decomposition is correct
     fx1 = pureTransitionToOde(A)
-    diffOde = sympy.simplify(fx - fx1)
-    if np.all(np.array(map(lambda x: x == 0, diffOde)) == True):
+    diff_ode = sympy.simplify(fx - fx1)
+    if np.all(np.array(map(lambda x: x == 0, diff_ode)) == True):
         if output_remain:
-            return A, remainTermList
+            return A, remain_terms
         else:
             return A
     else:
-        diffTerm = sympy.Matrix(list(filter(lambda x: x != 0, diffOde)))
-        diffTermList = getMatchingExpressionVector(diffTerm, True)
-        ## diffTermList = map(lambda (x,y): (y,x), diffTermList)
-        ## If there is some single origin transition not being matched up
-        ## it is most likely because the transition originates from a
-        ## combination like (1-x) which got split into two parts - the
-        ## "1" and the "x" part.  So we try to reverse the sign to see
-        ## if it helps.
-        ## TODO: increase robustness so if it does not help, then we
-        ## either bail out or revert to the normal version
-        diffTermList = map(lambda x_y: (x_y[1], x_y[0]), diffTermList)
-        A, remainTermList = _singleOriginTransition(diffOde, diffTermList,
-                                                    states, A)
-        AA, remainTermList = _odeToPureTransition(diffOde, remainTermList, A)
-        ## fx2 = pureTransitionToOde(AA)
+        diff_term = sympy.Matrix(list(filter(lambda x: x != 0, diff_ode)))
+        diff_term_list = getMatchingExpressionVector(diff_term, True)
+        # If there is some single origin transition not being matched up
+        # it is most likely because the transition originates from a
+        # combination like (1-x) which got split into two parts - the
+        # "1" and the "x" part.  So we try to reverse the sign to see
+        # if it helps.
+        # TODO: increase robustness so if it does not help, then we
+        # either bail out or revert to the normal version
+        diff_term_list = map(lambda x_y: (x_y[1], x_y[0]), diff_term_list)
+        A, remain_terms = _singleOriginTransition(diff_ode, diff_term_list,
+                                                  states, A)
+        AA, remain_terms = _odeToPureTransition(diff_ode, remain_terms, A)
+
         if output_remain:
-            return AA, remainTermList
+            return AA, remain_terms
         else:
             return AA
 
-def _odeToPureTransition(fx, termList=None, A=None):
-    '''
+
+def _odeToPureTransition(fx, terms=None, A=None):
+    """
     Get the pure transition matrix between states
 
     Parameters
     ----------
     fx: :class:`sympy.matrices.MatrixBase`
        input ode in symbolic form, :math:`f(x)`
-    termList:
+    terms:
         list of two element tuples which contains the
         matching terms
     A:  `sympy.matricies.MatrixBase`, optional
@@ -441,48 +455,49 @@ def _odeToPureTransition(fx, termList=None, A=None):
     remain: list
         list of  which contains the unmatched
         transitions
-    '''
-    if termList is None:
-        termList = getMatchingExpressionVector(fx, True)
+    """
+    if terms is None:
+        terms = getMatchingExpressionVector(fx, True)
 
     if A is None:
         A = sympy.zeros(len(fx), len(fx))
 
-    remainTransition = list()
-    for t1, t2 in termList:
+    remain_transition = list()
+    for t1, t2 in terms:
         remain = True
         for i, aFrom in enumerate(fx):
             if _hasExpression(aFrom, t2):
                 # arriving at
                 for j, aTo in enumerate(fx):
                     if _hasExpression(aTo, t1):
-                        A[i,j] += t1 # from i to j
+                        A[i, j] += t1  # from i to j
                         remain = False
         if remain:
-            remainTransition.append((t1, t2))
+            remain_transition.append((t1, t2))
 
-    return A, remainTransition
+    return A, remain_transition
+
 
 def _singleOriginTransition(fx, term_list, states, A=None):
     if A is None:
         A = sympy.zeros(len(fx), len(fx))
 
-    remainTermList = list()
-    for k, transitionTuple in enumerate(term_list):
-        t1, t2 = transitionTuple
-        possibleOrigin = list()
+    remain_term_list = list()
+    for k, transition_tuple in enumerate(term_list):
+        t1, t2 = transition_tuple
+        possible_origin = list()
         remain = True
         for i, s in enumerate(states):
             if s in t1.atoms():
-                possibleOrigin.append(i)
-        if len(possibleOrigin) == 1:
+                possible_origin.append(i)
+        if len(possible_origin) == 1:
             for j, fxj in enumerate(fx):
                 # print(t1, fxj, possibleOrigin[0] != j, _hasExpression(fxj, t2))
-                if possibleOrigin[0] != j and _hasExpression(fxj, t1):
-                    A[possibleOrigin[0],j] += t1
+                if possible_origin[0] != j and _hasExpression(fxj, t1):
+                    A[possible_origin[0], j] += t1
                     remain = False
                     # print(t1, possibleOrigin, j, fxj, "\n")
         if remain:
-            remainTermList.append(transitionTuple)
+            remain_term_list.append(transition_tuple)
 
-    return A, remainTermList
+    return A, remain_term_list

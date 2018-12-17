@@ -1,39 +1,33 @@
 # specify the language and which version
 language: python
 python:
-  - 2.7
   - 3.4
   - 3.5
   - 3.6
-# setup miniconda
+#  - 3.7
+#matrix:
+#  include:
+#    - python: 3.7
+#      dist: xenial
+#      sudo: true
+
 before_install:
   - sudo apt-get update
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-      wget http://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
-    else
-      wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-    fi
-  - chmod +x miniconda.sh
+  - wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod u+x miniconda.sh
   - bash miniconda.sh -b -p $HOME/miniconda
-  - ./miniconda.sh -b
   - export PATH="$HOME/miniconda/bin:$PATH"
   - conda config --set always_yes yes --set changeps1 no
-  - conda update conda
+  - conda update -q conda
   - conda info -a
-
   # The next couple lines fix a crash with multiprocessing on Travis and are not specific to using Miniconda
   - sudo rm -rf /dev/shm
   - sudo ln -s /run/shm /dev/shm
 
-# command to install dependencies
 install:
-  # standard stuff you need for scientific computing
-  - conda create -n pygom python=$TRAVIS_PYTHON_VERSION atlas dask matplotlib nose pandas numpy scipy sympy
+  - conda create -n pygom python=$TRAVIS_PYTHON_VERSION
   - source activate pygom
-  - conda install -c http://conda.anaconda.org/bioconda python-libsbml graphviz
-  - conda install -c http://conda.anaconda.org/anaconda python-dateutil
-  - python setup.py install
-  - pip install -r requirements.txt
+  - conda env update -f conda-env.yml
   - python setup.py install
 # command to run tests
 script: python setup.py test

@@ -1,8 +1,9 @@
-from unittest import TestCase
+from unittest import main, TestCase
 
 import numpy
 
 from pygom import Transition, TransitionType, DeterministicOde, ODEVariable
+
 
 class TestModelVector(TestCase):
 
@@ -94,3 +95,7 @@ class TestModelVector(TestCase):
         ode.initial_values = ([1.0, 0.0, 0.0], t[0])
         # try to integrate to see if there is any problem
         solution, output = ode.integrate(t[1::], full_output=True)
+
+
+if __name__ == '__main__':
+    main()
