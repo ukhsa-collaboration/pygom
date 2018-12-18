@@ -28,8 +28,6 @@ install:
   - conda create -n pygom python=$TRAVIS_PYTHON_VERSION
   - source activate pygom
   - conda env update -f conda-env.yml
-  # Fix for Travis clone being too shallow a repository for programatic versioning
-  - git fetch --depth=1000
   - python setup.py install
 # command to run tests
 script: python setup.py test

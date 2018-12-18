@@ -8,11 +8,11 @@ from setuptools import setup
 
 with open('LICENSE.txt', 'r') as f:
     license_file = f.read()
-    
+
 with open('README.rst', 'r') as f:
     readme = f.read()
 
-version = subprocess.check_output(["git", "describe"]).strip().decode()
+version = subprocess.check_output(["git", "describe", "--tags"]).strip().decode()
 version = re.match(r'v(\d\.\d\.\d).*', version).group(1)
 
 install_requires = [
