@@ -451,6 +451,7 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
 
     # note that we can probably reduce the codes here significantly but
     # i have not thought of a good way of doing it yet.
+    return
     if numState > 9:
         numFigure = int(math.ceil(numState/9.0))
         k = 0
@@ -486,6 +487,7 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
                             idx = yStateList.index(stateList[k])
                             axarr[j].plot(t, y[:,idx], 'r')
                     axarr[j].set_xlabel('Time')
+                    axarr[j].set_xlim([min(t), max(t)])
                 k += 1
                 if k == numState:
                     last = True
@@ -504,6 +506,7 @@ def plot(solution, t, stateList=None, y=None, yStateList=None):
                                 idx = yStateList.index(stateList[k])
                                 axarr[i, j].plot(t, y[:,idx], 'r')
                         axarr[i, j].set_xlabel('Time')
+                        axarr[i, j].set_xlim([min(t), max(t)])
                     k += 1
                     if k == numState:
                         last = True
