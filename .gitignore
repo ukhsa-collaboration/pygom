@@ -1,3 +1,17 @@
+#for python
 .eggs/*
 build/*
 cover/*
+*.pyc
+__pycache__
+*.egg-info
+*.egg
+
+#for eclipse
+.project
+.pydevproject
+.settings
+
+#for built documentation
+/doc/_build*
+/doc/source/savefig/*
