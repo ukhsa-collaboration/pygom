@@ -15,7 +15,6 @@ import numpy as np
 from sympy import symbols
 from scipy.stats._distn_infrastructure import rv_frozen
 
-from .utils import CompileCanary
 from .transition import Transition, TransitionType
 from ._model_errors import InputError, OutputError
 from ._model_verification import checkEquation
@@ -28,7 +27,7 @@ re_symbol_name = re.compile('[A-Za-z_]+')
 re_symbol_index = re.compile(r'.*\[([0-9]+)\]$')
 re_split_string = re.compile(r',|\s')
 
-class HasNewTransition(CompileCanary):
+class HasNewTransition(ode_utils.CompileCanary):
     states = []
 
 class BaseOdeModel(object):

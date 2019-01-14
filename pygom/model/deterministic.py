@@ -23,13 +23,11 @@ from .base_ode_model import BaseOdeModel
 from ._model_errors import ArrayError, InputError, \
     IntegrationError, InitializeError
 from ._model_verification import simplifyEquation
-from .utils import CompileCanary
-# import ode_utils as myUtil
-# from .ode_utils import shapeAdjust, compileCode
+
 from . import ode_utils
 from . import _ode_composition
 
-class HasNewTransition(CompileCanary):
+class HasNewTransition(ode_utils.CompileCanary):
     states = ['ode', 'Jacobian', 'diffJacobian', 'grad', 'GradJacobian']
 
 class DeterministicOde(BaseOdeModel):

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from pygom.model.utils import CompileCanary
+from pygom.model.ode_utils import CompileCanary
 
 class TestCanary(CompileCanary):
     states=['a_state', 'b_state']

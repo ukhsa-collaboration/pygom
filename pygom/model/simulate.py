@@ -18,14 +18,13 @@ import scipy.stats
 from .deterministic import DeterministicOde
 from .stochastic_simulation import cle, exact, firstReaction, tauLeap, hybrid
 from .transition import TransitionType, Transition
-from .utils import CompileCanary
 from ._model_errors import InputError, SimulationError
 from ._model_verification import checkEquation, simplifyEquation
 from . import _ode_composition
 from . import ode_utils
 
 
-class HasNewTransition(CompileCanary):
+class HasNewTransition(ode_utils.CompileCanary):
     states = ['ode',
               'Jacobian',
               'diffJacobian',
@@ -997,3 +996,27 @@ class SimulateOde(DeterministicOde):
         states = [s for s in self._iterStateList()]
         M, _remain = _ode_composition.odeToPureTransition(fx, states, True)
         return M
+
+    def plot(self, sim_X, sim_T):
+        '''
+        Plot the results of a simulation
+
+        Takes the output of a function like `simulate_jump`
+
+        Parameters
+        ----------
+        sim_X: list
+            of length iteration each with (len(t),len(state)) if t is a vector,
+            else it outputs unequal shape that was record of all the jumps
+        sim_T: list or :class:`numpy.ndarray`
+            if t is a single value, it outputs unequal shape that was
+            record of all the jumps.  if t is a vector, it outputs t so that
+            it is a :class:`numpy.ndarray` instead
+
+        Notes
+        -----
+        If we have 3 states or more, it will always be arrange such
+        that it has 3 columns.  Uses the operation from
+        :mod:`odeutils`
+        '''
+        ode_utils.plot(sim_X, sim_T, self._stateList)
