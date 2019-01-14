@@ -23,10 +23,14 @@ from .base_ode_model import BaseOdeModel
 from ._model_errors import ArrayError, InputError, \
     IntegrationError, InitializeError
 from ._model_verification import simplifyEquation
+from .utils import CompileCanary
 # import ode_utils as myUtil
 # from .ode_utils import shapeAdjust, compileCode
 from . import ode_utils
 from . import _ode_composition
+
+class HasNewTransition(CompileCanary):
+    states = ['ode', 'Jacobian', 'diffJacobian', 'grad', 'GradJacobian']
 
 class DeterministicOde(BaseOdeModel):
     '''
@@ -68,6 +72,7 @@ class DeterministicOde(BaseOdeModel):
                                                birth_death,
                                                ode)
 
+        self._hasNewTransition = HasNewTransition()
         self._ode = None
         self._odeCompile = None
         # and we assume initially that we don't want the Jacobian
@@ -194,7 +199,7 @@ class DeterministicOde(BaseOdeModel):
 
         if self._ode is None:
             self._findOde()
-        elif self._hasNewTransition:
+        elif self._hasNewTransition.ode:
             self._findOde()
         else:
             pass
@@ -255,8 +260,6 @@ class DeterministicOde(BaseOdeModel):
 
         self._s = [s for s in self._iterStateList()] + [self._t]
         self._sp = self._s + [p for p in self._iterParamList()]
-        # happy!
-        self._hasNewTransition = False
 
         # tests to see whether we have an autonomous system.  Need to
         # convert a non-autonmous system into an autonomous.  Note that
@@ -281,10 +284,14 @@ class DeterministicOde(BaseOdeModel):
                                                              self._ode,
                                                              outType="vec")
         # assign None to all others because we have reset the set of equations.
+        self._hasNewTransition.trip()
         self._Grad = None
         self._Hessian = None
         self._Jacobian = None
         self._diffJacobian = None
+
+        # happy!
+        self._hasNewTransition.reset('ode')
 
         return self._ode
 
@@ -374,7 +381,7 @@ class DeterministicOde(BaseOdeModel):
         :meth:`.ode`
 
         """
-        if self._ode is None or self._hasNewTransition:
+        if self._ode is None or self._hasNewTransition.ode:
             self.get_ode_eqn()
 
         eval_param = self._getEvalParam(state, time, parameters)
@@ -499,6 +506,8 @@ class DeterministicOde(BaseOdeModel):
             self._JacobianCompile = f(self._sp,
                                       self._Jacobian)
 
+        self._hasNewTransition.reset('Jacobian')
+
         return self._Jacobian
 
     def eval_jacobian(self, parameters=None, time=None, state=None):
@@ -530,8 +539,8 @@ class DeterministicOde(BaseOdeModel):
         :meth:`.jacobian`
 
         '''
-        if self._Jacobian is None or self._hasNewTransition:
-            self.get_ode_eqn()
+        if self._Jacobian is None or self._hasNewTransition.Jacobian:
+            #self.get_ode_eqn()
             self.get_jacobian_eqn()
 
         eval_param = self._getEvalParam(state, time, parameters)
@@ -692,6 +701,8 @@ class DeterministicOde(BaseOdeModel):
             self._diffJacobianCompile = f(self._sp,
                                           self._diffJacobian)
 
+        self._hasNewTransition.reset('diffJacobian')
+
         return self._diffJacobian
 
     def eval_diff_jacobian(self, parameters=None, time=None, state=None):
@@ -724,8 +735,8 @@ class DeterministicOde(BaseOdeModel):
         :meth:`.jacobian`
 
         '''
-        if self._diffJacobian is None or self._hasNewTransition:
-            self.get_ode_eqn()
+        if self._diffJacobian is None or self._hasNewTransition.diffJacobian:
+            #self.get_ode_eqn()
             self.get_diff_jacobian_eqn()
 
         eval_param = self._getEvalParam(state, time, parameters)
@@ -770,6 +781,7 @@ class DeterministicOde(BaseOdeModel):
             self._GradCompile = self._SC.compileExprAndFormat(self._sp,
                                                               self._Grad,
                                                               outType="mat")
+        self._hasNewTransition.reset('grad')
 
         return self._Grad
 
@@ -828,8 +840,8 @@ class DeterministicOde(BaseOdeModel):
         :meth:`.grad`
 
         '''
-        if self._Grad is None or self._hasNewTransition:
-            self.get_ode_eqn()
+        if self._Grad is None or self._hasNewTransition.grad:
+            #self.get_ode_eqn()
             self.get_grad_eqn()
 
         eval_param = self._getEvalParam(state, time, parameters)
@@ -875,6 +887,8 @@ class DeterministicOde(BaseOdeModel):
         else:
             self._GradJacobianCompile = f(self._sp,
                                          self._GradJacobian)
+
+        self._hasNewTransition.reset('GradJacobian')
 
         return self._GradJacobian
 
@@ -938,8 +952,8 @@ class DeterministicOde(BaseOdeModel):
         :meth:`.grad_jacobian`, :meth:`.get_grad_jacobian_eqn`
 
         '''
-        if self._GradJacobian is None or self._hasNewTransition:
-            self.get_ode_eqn()
+        if self._GradJacobian is None or self._hasNewTransition.GradJacobian:
+            #self.get_ode_eqn()
             self.get_grad_jacobian_eqn()
 
         eval_param = self._getEvalParam(state, time, parameters)

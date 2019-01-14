@@ -15,6 +15,7 @@ import numpy as np
 from sympy import symbols
 from scipy.stats._distn_infrastructure import rv_frozen
 
+from .utils import CompileCanary
 from .transition import Transition, TransitionType
 from ._model_errors import InputError, OutputError
 from ._model_verification import checkEquation
@@ -26,6 +27,9 @@ re_underscore = re.compile('^_')
 re_symbol_name = re.compile('[A-Za-z_]+')
 re_symbol_index = re.compile(r'.*\[([0-9]+)\]$')
 re_split_string = re.compile(r',|\s')
+
+class HasNewTransition(CompileCanary):
+    states = []
 
 class BaseOdeModel(object):
     '''
@@ -86,7 +90,7 @@ class BaseOdeModel(object):
         self._parameters = None
         self._stochasticParam = None
 
-        self._hasNewTransition = False
+        self._hasNewTransition = HasNewTransition()
 
         # dictionary for mapping
         self._paramDict = dict()
@@ -435,7 +439,7 @@ class BaseOdeModel(object):
         else:
             raise InputError("Expecting a list")
 
-        self._hasNewTransition = True
+        self._hasNewTransition.trip()
 
     @property
     def param_list(self):
@@ -469,7 +473,7 @@ class BaseOdeModel(object):
         else:
             raise InputError("Expecting a list")
 
-        self._hasNewTransition = True
+        self._hasNewTransition.trip()
 
     @property
     def derived_param_list(self):
@@ -818,7 +822,7 @@ class BaseOdeModel(object):
                           self._derivedParamList,
                           self._derivedParamDict)
 
-        self._hasNewTransition = True
+        self._hasNewTransition.trip()
         self._derivedParamEqn += [(name, eqn)]
         return None
 
@@ -840,7 +844,7 @@ class BaseOdeModel(object):
         if isinstance(transition, Transition):
             if transition.transition_type is TransitionType.T:
                 self._transitionList.append(transition)
-                self._hasNewTransition = True
+                self._hasNewTransition.trip()
             else:
                 raise InputError("Input is not a transition between two states")
         else:
@@ -879,7 +883,7 @@ class BaseOdeModel(object):
             t = birth_death.transition_type
             if t is TransitionType.B or t is TransitionType.D:
                 self._birthDeathList.append(birth_death)
-                self._hasNewTransition = True
+                self._hasNewTransition.trip()
             else:
                 raise InputError("Input is not a birth death process")
         else:

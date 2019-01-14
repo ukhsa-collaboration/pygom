@@ -18,11 +18,24 @@ import scipy.stats
 from .deterministic import DeterministicOde
 from .stochastic_simulation import cle, exact, firstReaction, tauLeap, hybrid
 from .transition import TransitionType, Transition
+from .utils import CompileCanary
 from ._model_errors import InputError, SimulationError
 from ._model_verification import checkEquation, simplifyEquation
 from . import _ode_composition
 from . import ode_utils
 
+
+class HasNewTransition(CompileCanary):
+    states = ['ode',
+              'Jacobian',
+              'diffJacobian',
+              'grad',
+              'GradJacobian',
+              'transitionMatrixCompile',
+              'transitionVector',
+              'birthDeathRateCompile',
+              'computeTransitionMeanVar',
+              'transitionJacobian']
 
 class SimulateOde(DeterministicOde):
     '''
@@ -63,6 +76,8 @@ class SimulateOde(DeterministicOde):
                                           transition,
                                           birth_death,
                                           ode)
+
+        self._hasNewTransition = HasNewTransition()
 
         # need a manual override because it is possible that we
         # want to perform simulation in a parallel/distributed manner
@@ -164,7 +179,7 @@ class SimulateOde(DeterministicOde):
         iteration: int
             number of iterations you wish to simulate
         parallel: bool, optional
-            Defaults to True            
+            Defaults to True
         full_output: bool, optional
             if we want additional information, Y_all in the return,
             defaults to false
@@ -433,7 +448,7 @@ class SimulateOde(DeterministicOde):
             super(SimulateOde, self)._computeTransitionMatrix()
 
         if self._transitionMatrixCompile is not None \
-           or self._hasNewTransition is False:
+           or not self._hasNewTransition.transitionMatrixCompile:
             return self._transitionMatrix
         else:
             return super(SimulateOde, self)._computeTransitionMatrix()
@@ -449,7 +464,8 @@ class SimulateOde(DeterministicOde):
             A matrix of dimension [total number of transitions x 1]
 
         '''
-        if self._transitionVectorCompile is not None or self._hasNewTransition:
+        if self._transitionVectorCompile is not None \
+           or not self._hasNewTransition.transitionVector:
             return self._transitionVector
         else:
             return super(SimulateOde, self)._computeTransitionVector()
@@ -496,7 +512,8 @@ class SimulateOde(DeterministicOde):
             Matrix of dimension [number of state x number of state]
 
         '''
-        if self._transitionMatrixCompile is None or self._hasNewTransition:
+        if self._transitionMatrixCompile is None \
+            or self._hasNewTransition.transitionMatrixCompile:
             self._compileTransitionMatrix()
 
         eval_param = self._getEvalParam(state, time, parameters)
@@ -507,7 +524,8 @@ class SimulateOde(DeterministicOde):
         We would also need to compile the function so that
         it can be evaluated faster.
         '''
-        if self._transitionMatrix is None or self._hasNewTransition:
+        if self._transitionMatrix is None \
+            or self._hasNewTransition.transitionMatrixCompile:
             super(SimulateOde, self)._computeTransitionMatrix()
 
         f = self._SC.compileExprAndFormat
@@ -518,6 +536,8 @@ class SimulateOde(DeterministicOde):
         else:
             self._transitionMatrixCompile = f(self._sp,
                                               self._transitionMatrix)
+
+        self._hasNewTransition.reset('transitionMatrixCompile')
 
         return None
 
@@ -563,7 +583,8 @@ class SimulateOde(DeterministicOde):
             vector of dimension [total number of transitions]
 
         '''
-        if self._transitionVectorCompile is None or self._hasNewTransition:
+        if self._transitionVectorCompile is None \
+           or self._hasNewTransition.transitionVector:
             self._compileTransitionVector()
 
         eval_param = self._getEvalParam(state, time, parameters)
@@ -574,7 +595,8 @@ class SimulateOde(DeterministicOde):
         We would also need to compile the function so that
         it can be evaluated faster.
         '''
-        if self._transitionVector is None or self._hasNewTransition:
+        if self._transitionVector is None \
+            or self._hasNewTransition.transitionVector:
             super(SimulateOde, self)._computeTransitionVector()
 
         f = self._SC.compileExprAndFormat
@@ -586,7 +608,9 @@ class SimulateOde(DeterministicOde):
             self._transitionVectorCompile = f(self._sp,
                                               self._transitionVector)
 
-        return None
+        self._hasNewTransition.reset('transitionVector')
+
+        return
 
     def get_birth_death_rate(self):
         '''
@@ -643,7 +667,8 @@ class SimulateOde(DeterministicOde):
             Matrix of dimension [number of birth and death rates x 1]
 
         '''
-        if self._birthDeathRateCompile is None or self._hasNewTransition:
+        if self._birthDeathRateCompile is None \
+            or self._hasNewTransition.birthDeathRateCompile:
             self._computeBirthDeathRate()
 
         eval_param = self._getEvalParam(state, time, parameters)
@@ -678,6 +703,8 @@ class SimulateOde(DeterministicOde):
         else:
             self._birthDeathRateCompile = f(self._sp,
                                             self._birthDeathRate)
+
+        self._hasNewTransition.reset('birthDeathRateCompile')
 
         return None
 
@@ -749,7 +776,8 @@ class SimulateOde(DeterministicOde):
             Matrix of dimension [number of state x number of state]
 
         '''
-        if self._transitionMeanCompile is None or self._hasNewTransition:
+        if self._transitionMeanCompile is None \
+            or self._hasNewTransition.computeTransitionMeanVar:
             self._computeTransitionMeanVar()
 
         eval_param = self._getEvalParam(state, time, parameters)
@@ -795,7 +823,8 @@ class SimulateOde(DeterministicOde):
             Matrix of dimension [number of state x number of state]
 
         '''
-        if self._transitionVarCompile is None or self._hasNewTransition:
+        if self._transitionVarCompile is None \
+            or self._hasNewTransition.computeTransitionMeanVar:
             self._computeTransitionMeanVar()
 
         eval_param = self._getEvalParam(state, time, parameters)
@@ -815,6 +844,8 @@ class SimulateOde(DeterministicOde):
                     self._isDifficult = self._isDifficult or isDifficult
 
         self._transitionJacobian = F
+
+        self._hasNewTransition.reset('transitionJacobian')
         return F
 
     def _computeTransitionMeanVar(self):
@@ -823,7 +854,7 @@ class SimulateOde(DeterministicOde):
         for the :math:`\\tau`-Leap
         '''
 
-        if self._transitionJacobian is None or self._hasNewTransition:
+        if self._transitionJacobian is None or self._hasNewTransition.transitionJacobian:
             self._computeTransitionJacobian()
 
         F = self._transitionJacobian
@@ -851,6 +882,8 @@ class SimulateOde(DeterministicOde):
         else:
             self._transitionMeanCompile = f(self._sp, self._transitionMean)
             self._transitionVarCompile = f(self._sp, self._transitionVar)
+
+        self._hasNewTransition.reset('computeTransitionMeanVar')
 
         return None
 
