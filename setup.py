@@ -6,7 +6,7 @@ from setuptools import setup
 
 with open('LICENSE.txt') as f:
     license_file = f.read()
-    
+
 with open('README.rst') as f:
     readme = f.read()
 
@@ -24,7 +24,7 @@ install_requires = [
 ]
 
 setup(name='pygom',
-      version='0.1.2',
+      version='0.1.3',
       description='ODE modeling in Python',
       long_description=readme,
       license=license_file,
