@@ -940,7 +940,7 @@ class SimulateOde(DeterministicOde):
                 eqn = [t.equation for t in self._odeList]
                 A = sympy.Matrix(checkEquation(eqn,
                                                *self._getListOfVariablesDict(),
-                                               subsDerived=False))
+                                               subs_derived=False))
             else:
                 raise Exception("Object was not initialized using a set of ode")
             # A = super(SimulateOde, self).getOde()
@@ -988,7 +988,7 @@ class SimulateOde(DeterministicOde):
                 eqn_list = [t.equation for t in self._odeList]
                 A = sympy.Matrix(checkEquation(eqn_list,
                                                *self._getListOfVariablesDict(),
-                                               subsDerived=False))
+                                               subs_derived=False))
             else:
                 raise Exception("Object was not initialized using a set of ode")
 

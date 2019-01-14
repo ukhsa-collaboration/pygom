@@ -1,0 +1,13 @@
+name: pygom
+channels:
+  - conda-forge
+dependencies:
+  - dask
+  - matplotlib
+  - numpy
+  - pandas
+  - scipy
+  - sympy
+  - graphviz
+  - pip:
+    - python-libsbml

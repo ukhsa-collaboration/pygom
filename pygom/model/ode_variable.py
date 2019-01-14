@@ -7,8 +7,9 @@
 
 import sympy
 
+
 class ODEVariable(object):
-    '''
+    """
     A class that defines the variables in our ODE
 
     Parameters
@@ -22,7 +23,7 @@ class ODEVariable(object):
         what unit the variable takes. Defaults to None.
     real: bool, optional
         if the variable can only be a real number, defaults to True
-    '''
+    """
     def __init__(self, ID, name=None, units=None, real=True):
         self.ID = ID
         if name is None:
