@@ -1019,4 +1019,4 @@ class SimulateOde(DeterministicOde):
         that it has 3 columns.  Uses the operation from
         :mod:`odeutils`
         '''
-        ode_utils.plot(sim_X, sim_T, self._stateList)
+        ode_utils.plot_stoc(sim_X, sim_T, self)

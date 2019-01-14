@@ -2139,11 +2139,11 @@ class DeterministicOde(BaseOdeModel):
         if self._odeSolution is None:
             try:
                 self._integrate(self._odeTime)
-                ode_utils.plot(self._odeSolution, self._odeTime, self._stateList)
+                ode_utils.plot_det(self._odeSolution, self._odeTime, self._stateList)
             except:
                 raise IntegrationError("Have not performed the integration yet")
         else:
-            ode_utils.plot(self._odeSolution, self._odeTime, self._stateList)
+            ode_utils.plot_det(self._odeSolution, self._odeTime, self._stateList)
 
     ########################################################################
     # Unrolling of the information from vector to sympy
