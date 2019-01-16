@@ -5,7 +5,7 @@ from pygom.model.ode_utils import CompileCanary
 class TestCanary(CompileCanary):
     states=['a_state', 'b_state']
 
-class TestModelExisting(TestCase):
+class TestCompileCanary(TestCase):
 
     def test_canary(self):
         '''
