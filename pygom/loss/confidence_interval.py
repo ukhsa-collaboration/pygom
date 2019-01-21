@@ -241,7 +241,8 @@ def _geometricOde(obj, alpha, xhat, i, method='jtj', geometry='o'):
         H = cov(x)
         tau = np.ones(p)
         dwdb = -np.linalg.lstsq(H[activeIndex][:,activeIndex],
-                                H[i,activeIndex])[0]
+                                H[i,activeIndex],
+                                rcond=None)[0] #To silence the FutureWarning
         tau[activeIndex] = dwdb
         if geometry.lower() == 'c':
             g = tau.T.dot(H0).dot(tau)
@@ -364,7 +365,9 @@ def _profileGetInitialValues(theta, i, alpha, obj, approx=True,
 
     activeIndex = list(setIndex - set([i]))
     tau = np.ones(p)
-    dwdb = -np.linalg.lstsq(H[activeIndex][:, activeIndex],H[i, activeIndex])[0]
+    dwdb = -np.linalg.lstsq(H[activeIndex][:, activeIndex],
+                            H[i, activeIndex],
+                            rcond=None)[0] #To silence the FutureWarning)[0]
     tau[activeIndex] = dwdb
 
     q = qchisq(1 - alpha, df=1)
@@ -546,7 +549,7 @@ def _profileObtainAndVerifyBounds(f, df, ddf, x0, lb, ub, full_output=False):
                    options={'maxiter':1000})
 
     if res["success"] == False:
-        raise EstimateError("Failure in estimation of the profile " + 
+        raise EstimateError("Failure in estimation of the profile " +
                             "likelihood: " + res['message'])
     else:
         res["method"] = "Direct Minimization"
