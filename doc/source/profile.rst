@@ -7,8 +7,8 @@ Confidence Interval of Estimated Parameters
 After obtaining the *best* fit, it is natural to report both the point estimate and the confidence level at the :math:`\alpha` level.  The easiest way to do this is by invoking the normality argument and use Fisher information of the likelihood.  As explained previously at the bottom of :ref:`gradient`, we can find the Hessian, :math:`\mathbf{H}`, or the approximated Hessian for the estimated parameters.  The Cramer--Rao inequality, we know that
 
 .. math::
-	Var(\hat{\theta}) \ge \frac{1}{I(\theta)},
-	
+    Var(\hat{\theta}) \ge \frac{1}{I(\theta)},
+
 where :math:`I(\theta)` is the Fisher information, which is the Hessian subject to regularity condition.  Given the Hessian, computing the confidence intervals is trivial.  Note that this is also known as the asymptotic confidence interval where the normality comes from invoking the CLT.  There are other ways of obtaining a confidence intervals, we will the ones implemented in the package.  First, we will set up a SIR model as seen in :ref:`sir` which will be used throughout this page.
 
 .. ipython::
@@ -60,17 +60,17 @@ and we assume that we only have observed realization from the :math:`R` compartm
 Asymptotic
 ==========
 
-When the estimate is obtained say, under a square loss or a normal assumption, the corresponding likelihood can be written down easily.  In such a case, likelihood ratio test under a Chi--squared distribution is 
+When the estimate is obtained say, under a square loss or a normal assumption, the corresponding likelihood can be written down easily.  In such a case, likelihood ratio test under a Chi--squared distribution is
 
 .. math::
 
-	2 (\mathcal{L}(\hat{\boldsymbol{\theta}}) - \mathcal{L}(\boldsymbol{\theta})) \le \chi_{1 - \alpha}^{2}(k)
-	
+    2 (\mathcal{L}(\hat{\boldsymbol{\theta}}) - \mathcal{L}(\boldsymbol{\theta})) \le \chi_{1 - \alpha}^{2}(k)
+
 where :math:`1-\alpha` is the size of the confidence region and :math:`k` is the degree of freedom.  The corresponding asymptotic confidence interval for parameter :math:`j` can be derived as
 
 .. math::
 
-	\hat{\theta}_{j} \pm \sqrt{\chi_{1 - \alpha}^{2}(k) H_{i,i}}.
+    \hat{\theta}_{j} \pm \sqrt{\chi_{1 - \alpha}^{2}(k) H_{i,i}}.
 
 A pointwise confidence interval is obtained when :math:`k = 1`.  We assume in our package that a pointwise confidence interval is desired.  This can be obtained simply by
 
@@ -91,21 +91,21 @@ Note that the set of bounds here is only used for check the validity of :math:`\
 Profile Likelihood
 ==================
 
-Another approach to calculate the confidence interval is to tackle one parameter at a time, treating the rest of them as nuisance parameters, hence the term *profile*.  Let :math:`\mathcal{L}(\boldsymbol{\theta})` be our log--likelihood with parameter :math:`\boldsymbol{\theta}`.  Element :math:`\theta_{j}` is our parameter of interest and :math:`\boldsymbol{\theta}_{-j}` represents the complement such that :math:`\boldsymbol{\theta} = \theta_{j} \cup \boldsymbol{\theta}_{-j}`.  For simply models such as linear regression with only regression coefficients :math:`\boldsymbol{\beta}`, then :math:`\boldsymbol{\theta} = \boldsymbol{\beta}`.  
+Another approach to calculate the confidence interval is to tackle one parameter at a time, treating the rest of them as nuisance parameters, hence the term *profile*.  Let :math:`\mathcal{L}(\boldsymbol{\theta})` be our log--likelihood with parameter :math:`\boldsymbol{\theta}`.  Element :math:`\theta_{j}` is our parameter of interest and :math:`\boldsymbol{\theta}_{-j}` represents the complement such that :math:`\boldsymbol{\theta} = \theta_{j} \cup \boldsymbol{\theta}_{-j}`.  For simply models such as linear regression with only regression coefficients :math:`\boldsymbol{\beta}`, then :math:`\boldsymbol{\theta} = \boldsymbol{\beta}`.
 
 To shorten the notation, let
 
 .. math:: \mathcal{L}(\boldsymbol{\theta}_{-j} \mid \theta_{j}) = \max \mathcal{L}(\boldsymbol{\theta}_{-j} \mid \theta_{j})
     :label: nuisanceOptim
 
-which is the maxima of :math:`\boldsymbol{\theta}_{-j}` given :math:`\theta_{j}`.  :math:`\hat{\boldsymbol{\theta}}` denotes the MLE of the parameters as usual.  The profile--likelihood based confidence interval for :math:`\theta_{j}` is defined as 
+which is the maxima of :math:`\boldsymbol{\theta}_{-j}` given :math:`\theta_{j}`.  :math:`\hat{\boldsymbol{\theta}}` denotes the MLE of the parameters as usual.  The profile--likelihood based confidence interval for :math:`\theta_{j}` is defined as
 
 .. math::
 
     \theta_{j}^{U} &= \sup \left\{ \mathcal{L}(\hat{\boldsymbol{\theta}}) - \mathcal{L}(\boldsymbol{\theta} \mid \theta_{j}) \le \frac{1}{2} \chi_{1 - \alpha}^{2}(1) \right\} \\
     \theta_{j}^{L} &= \inf \left\{ \mathcal{L}(\hat{\boldsymbol{\theta}}) - \mathcal{L}(\boldsymbol{\theta} \mid \theta_{j}) \le \frac{1}{2} \chi_{1 - \alpha}^{2}(1) \right\}
 
-where again we have made use of the normal approximation, but without imposing symmetry.  The set of equations above automatically implies that the interval width is :math:`\theta_{j}^{U} - \theta_{j}^{L}` and 
+where again we have made use of the normal approximation, but without imposing symmetry.  The set of equations above automatically implies that the interval width is :math:`\theta_{j}^{U} - \theta_{j}^{L}` and
 
 .. math::
 
@@ -163,7 +163,7 @@ where :math:`k = \Phi(1-\alpha)` is the quantile we want to obtain under a norma
 
 Here, :math:`J_{\beta_{j}}` is the Jacobian between :math:`\beta_{j}` and :math:`\boldsymbol{\beta}_{-j}` with the term
 
-.. math:: 
+.. math::
 
     \frac{d\boldsymbol{\beta}_{-j}}{d\beta_{j}} = -\left( \frac{\partial^{2} \mathcal{L}}{\partial \boldsymbol{\beta}_{-j}\partial \boldsymbol{\beta}_{-j}^{\top} } \right)^{-1} \frac{\partial^{2} \mathcal{L}}{\partial \beta_{j} \partial \beta_{-j}^{\top}}
 
@@ -206,7 +206,7 @@ When we say semi-parametric, we mean the exchange of errors between the observat
 
     \varepsilon_{i} = y_{i} - \hat{y}_{i}
 
-where :math:`\hat{y}_{i}` will be the prediction under :math:`\hat{\boldsymbol{\theta}}` under our model.  Then we construct a new set of observations via 
+where :math:`\hat{y}_{i}` will be the prediction under :math:`\hat{\boldsymbol{\theta}}` under our model.  Then we construct a new set of observations via
 
 .. math::
 
@@ -216,7 +216,7 @@ with :math:`\mathcal{F}` being the empirical distribution of the raw errors.  A 
 
 .. ipython::
 
-    In [1]: xLBootstrap, xUBootstrap, setX = ci.bootstrap(objSIR, alpha, xhat, iteration=100, lb=boxBoundsArray[:,0], ub=boxBoundsArray[:,1], full_output=True)
+    In [1]: xLBootstrap, xUBootstrap, setX = ci.bootstrap(objSIR, alpha, xhat, iteration=10, lb=boxBoundsArray[:,0], ub=boxBoundsArray[:,1], full_output=True)
 
     In [2]: print(xLBootstrap)
 
@@ -224,7 +224,7 @@ with :math:`\mathcal{F}` being the empirical distribution of the raw errors.  A 
 
 The additional information here can be used to compute the bias, tail effects and test against the normality assumption.  If desired, a simultaneous confidence interval can also be approximated empirically.  Note however that because we are using a semi--parameter method here, if the model specification is wrong then the resulting estimates for the bias is also wrong.  The confidence interval still has the normal approximation guarantee if number of sample is large.
 
-In this case, because the error in the observation is extremely small, the confidence interval is narrow.  
+In this case, because the error in the observation is extremely small, the confidence interval is narrow.
 
 .. ipython::
 
@@ -306,7 +306,7 @@ In the plot above, the bootstrap confidence interval were so close to the MLE, i
 Furthermore, because the geometric confidence interval is the result of an integration, we can trace the path that lead to the final output that was shown previously.  Again, we are space conscious (and time constrained) so the code block below will not be run.
 
 .. ipython::
-    :verbatim: 
+    :verbatim:
 
     In [1]: fig = plt.figure()
 

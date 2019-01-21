@@ -15,13 +15,13 @@ First, we show the deterministic approach.  Then we also show the different proc
 .. ipython::
 
     In [1]: import matplotlib.pyplot as plt
-    
+
     In [1]: from pygom import Transition, TransitionType, ode_utils, SimulateOde
 
     In [1]: import numpy
 
     In [1]: stateList = ['a', 'x', 'y', 'b']
-    
+
     In [1]: paramList = ['k0', 'k1', 'k2']
 
     In [1]: transitionList = [
@@ -33,7 +33,7 @@ First, we show the deterministic approach.  Then we also show the different proc
     In [1]: ode = SimulateOde(stateList, paramList, transition=transitionList)
 
     In [1]: x0 = [150.0, 10.0, 10.0, 0.0]
-    
+
     In [1]: t = numpy.linspace(0, 15, 100)
 
     In [1]: ode.initial_values = (x0, t[0])
@@ -45,16 +45,8 @@ First, we show the deterministic approach.  Then we also show the different proc
     @savefig common_models_Lotka_Volterra_4State.png
     In [1]: ode.plot()
 
-    In [1]: simX,simT = ode.simulate_jump(t[1::], 5, full_output=True)
+    In [1]: simX, simT = ode.simulate_jump(t[1::], 5, full_output=True)
 
-    In [1]: f,axarr = plt.subplots(1,3)
-    
-    In [1]: for solution in simX:
-       ...:     axarr[0].plot(simT, solution[:,0])
-       ...:     axarr[1].plot(simT, solution[:,1])
-       ...:     axarr[2].plot(simT, solution[:,2])
+    @savefig common_models_Lotka_Volterra_Sim.png
+    In [1]: ode.plot(simX, simT)
 
-    @savefig common_models_Lotka_Volterra_Sim.png    
-    In [1]: plt.show()
-
-    In [1]: plt.close()
