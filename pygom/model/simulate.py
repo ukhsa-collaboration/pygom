@@ -997,7 +997,7 @@ class SimulateOde(DeterministicOde):
         M, _remain = _ode_composition.odeToPureTransition(fx, states, True)
         return M
 
-    def plot(self, sim_X, sim_T):
+    def plot(self, sim_X=None, sim_T=None):
         '''
         Plot the results of a simulation
 
@@ -1015,8 +1015,13 @@ class SimulateOde(DeterministicOde):
 
         Notes
         -----
+        If either sim_X or sim_T are None the this function will attempt to
+        plot the deterministic ODE
+
         If we have 3 states or more, it will always be arrange such
         that it has 3 columns.  Uses the operation from
         :mod:`odeutils`
         '''
+        if (sim_X is None) or (sim_T is None):
+            return super(SimulateOde, self).plot()
         ode_utils.plot_stoc(sim_X, sim_T, self)

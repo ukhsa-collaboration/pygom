@@ -8,6 +8,7 @@ import numpy as np
 import sympy
 
 from pygom.model._model_errors import InputError
+from .checks_and_conversions import check_array_type
 
 def plot_det(solution, t, stateList=None, y=None, yStateList=None):
     '''
