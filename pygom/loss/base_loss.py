@@ -190,7 +190,7 @@ class BaseLoss(object):
             raise InputError("Error without data currently not implemented")
 
     def _get_model_str(self):
-        
+
         if isinstance(self._theta, dict):
             _theta = list(self._theta.values())
         else:
@@ -1201,8 +1201,8 @@ class BaseLoss(object):
         Plots the solution of all the states and the observed y values
         """
         solution = self._getSolution(all_solution=True)
-        ode_utils.plot(solution, self._observeT, self._ode._stateList,
-                       self._y, self._stateName)
+        ode_utils.plot_det(solution, self._observeT, self._ode._stateList,
+                           self._y, self._stateName)
 
     def fit(self, x, lb=None, ub=None, A=None, b=None,
             disp=False, full_output=False):
