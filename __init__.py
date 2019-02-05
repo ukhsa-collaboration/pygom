@@ -1,6 +1,9 @@
-from .movement import Flow, Flux
+from .movement import Flow, Flux, Appointment
+from .patch import Patch
 
 __all__ = [
     'Flow',
-    'Flux'
+    'Flux',
+    'Appointment',
+    'Patch'
     ]
