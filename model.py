@@ -43,6 +43,20 @@ class ParameterListType(ListType):
         kwargs['field'] = ParameterType
         super().__init__(**kwargs)
 
+
+class ParameterValue(Model):
+    '''
+    A parameter and its value
+    '''
+    parameter = ParameterType(required=True)
+    parameter_value = FloatType(required=True)
+
+class ParameterValueList(Model):
+    '''
+    A list of parameters and their values
+    '''
+    parameters = ListType(ModelType(ParameterValue))
+
 # Transitions
 class TransitionTypeType(StringType):
     '''
@@ -52,6 +66,9 @@ class TransitionTypeType(StringType):
     default = 'ODE'
 
 class TransitionModel(Model):
+    '''
+    A representation of a :class:`pygom.model.Transition`
+    '''
     origin = StateType(required=True)
     equation = StringType(required=True)
     destination = StateType()
@@ -78,6 +95,9 @@ class TransitionListType(ListType):
 
 # Ode models
 class BaseOdeModel(Model):
+    '''
+    A representation of a :class:`pygom.model.BaseOdeModel`
+    '''
     state = StateListType()
     param = ParameterListType()
 #    derived_param
@@ -86,7 +106,10 @@ class BaseOdeModel(Model):
     ode = TransitionListType()
 
 class DeterministicOdeModel(BaseOdeModel):
-    model_type = StringType(default='deterministic')
+    '''
+    A representation of a :class:`pygom.model.DeterministicOde`
+    '''
+    model_type = StringType(default='DeterministicOde')
 
     def instantiate(self):
         '''
