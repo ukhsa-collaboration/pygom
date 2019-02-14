@@ -26,7 +26,15 @@ class PsudoPatchRun(Model):
     skip: The period of time a psudo-patch should skip between the end of one
       period and the beginning of the next
     '''
-    start_time = FloatType(requited=True)
+    start_time = FloatType(required=True)
     end_time = FloatType(required=True)
     stride = FloatType(required=True)
     skip = FloatType(required=True)
+
+class StateReport(Model):
+    '''
+    Used to report the values of states in a psudo_patch at a given time
+    '''
+    psudo_patch_id = UUIDType(required=True)
+    time_point = FloatType(required=True)
+    state_values = ListType(FloatType())
