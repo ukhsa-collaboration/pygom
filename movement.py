@@ -22,8 +22,10 @@ class Flux(Model):
     time_point = IntType()
     patch_id = UUIDType()
     flow_id = UUIDType()
-    origin = UUIDType()
-    destination = UUIDType()
+    origin_id = UUIDType()
+    origin_time_point = IntType()
+    destination_id = UUIDType()
+    destination_time_point = IntType()
 #    value = FloatType(min_value=0) # How big a flux?
 
 class Appointment(Model):
