@@ -1,3 +1,8 @@
 .eggs/*
 build/*
 cover/*
+*.egg-info
+*/__pycache__/
+*/*/__pycache__/
+*.egg
+*/*/*/__pycache__ 
