@@ -1,4 +1,4 @@
-#for python
+# For python
 .eggs/*
 build/*
 cover/*
@@ -7,11 +7,14 @@ __pycache__
 *.egg-info
 *.egg
 
-#for eclipse
+# For jupyter / ipython
+*/.ipynb_checkpoints
+
+# For eclipse
 .project
 .pydevproject
 .settings
 
-#for built documentation
+# For built documentation
 /doc/_build*
 /doc/source/savefig/*
