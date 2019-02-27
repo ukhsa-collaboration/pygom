@@ -122,7 +122,6 @@ def plot_det(solution, t, stateList=None, y=None, yStateList=None):
 
     # note that we can probably reduce the codes here significantly but
     # i have not thought of a good way of doing it yet.
-    return
     if numState > 9:
         numFigure = int(np.ceil(numState/9.0))
         k = 0
