@@ -12,8 +12,10 @@ with open('LICENSE.txt', 'r') as f:
 with open('README.rst', 'r') as f:
     readme = f.read()
 
-version = subprocess.check_output(["git", "describe", "--tags"]).strip().decode()
-version = re.match(r'v(\d\.\d\.\d).*', version).group(1)
+setup_requires=[
+    'setuptools-scm>=3.2.0',
+    'setuptools_scm_git_archive'
+    ]
 
 install_requires = [
     'dask>=0.13.0',
@@ -28,7 +30,7 @@ install_requires = [
 
 setup(
     name='pygom',
-    version=version,
+    use_scm_version=True,
     description='ODE modeling in Python',
     long_description=readme,
     license=license_file,
@@ -42,6 +44,7 @@ setup(
         'pygom.utilR'
     ],
     install_requires=install_requires,
+    setup_requires=setup_requires,
     test_suite='tests',
     scripts=[]
     )
