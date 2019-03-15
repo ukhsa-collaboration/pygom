@@ -2,23 +2,6 @@
 Utilities used throughout the package.
 '''
 
-__all__ = [
-    'shapeAdjust',
-    'integrate',
-    'integrateFuncJac',
-    'compileCode',
-    'CompileCanary',
-    #plots
-    'plot_det',
-    'plot_stoc',
-    #checks and conversions
-    'check_array_type',
-    'check_dimension',
-    'is_list_like',
-    'str_or_list',
-    'none_or_empty_list'
-    ]
-
 import math
 from numbers import Number
 
@@ -44,6 +27,23 @@ from .checks_and_conversions import (check_array_type,
                                      str_or_list,
                                      none_or_empty_list
                                      )
+
+__all__ = [
+    'shapeAdjust',
+    'integrate',
+    'integrateFuncJac',
+    'compileCode',
+    'CompileCanary',
+    #plots
+    'plot_det',
+    'plot_stoc',
+    #checks and conversions
+    'check_array_type',
+    'check_dimension',
+    'is_list_like',
+    'str_or_list',
+    'none_or_empty_list'
+    ]
 
 atol = 1e-10
 rtol = 1e-10
