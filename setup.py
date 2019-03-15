@@ -40,6 +40,7 @@ setup(
     packages=[
         'pygom',
         'pygom.model',
+        'pygom.model.ode_utils',
         'pygom.loss',
         'pygom.utilR'
     ],
