@@ -6,7 +6,13 @@ Created on 4 Feb 2019
 import uuid
 
 from schematics.models import Model
-from schematics.types import FloatType, UUIDType, ListType, ModelType, IntType
+from schematics.types import (FloatType,
+                              UUIDType,
+                              ListType,
+                              ModelType,
+                              IntType,
+                              StringType
+                              )
 
 class Flux(Model):
     '''
@@ -51,5 +57,6 @@ class Flow(Model):
     circad: A list of times and places that a flow visits
     '''
     id = UUIDType(default=uuid.uuid4)
-    value = FloatType(min_value=0)
+    value = ListType(FloatType(min_value=0))
     circad = ListType(ModelType(Appointment))
+    inital_state = ListType(StringType())
