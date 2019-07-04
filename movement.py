@@ -11,8 +11,12 @@ from schematics.types import (FloatType,
                               ListType,
                               ModelType,
                               IntType,
-                              StringType
+                              StringType,
+                              PolyModelType
                               )
+
+from .model import StateValue
+from bokeh.io import state
 
 class Flux(Model):
     '''
@@ -46,6 +50,29 @@ class Appointment(Model):
     patch = UUIDType()
     time_point = IntType()
 
+# class FlowValueAbsolute(Model):
+#     '''
+#     A flow value model that contains the absolute numbers for each initial
+#     state as state values
+#     '''
+#     absolute_values = ListType(ModelType(StateValue))
+#
+#     @classmethod
+#     def _claim_polymorphic(cls, data):
+#         return data.get('absolute_values') is not None
+#
+#
+# class FlowValueProportional(Model):
+#     '''
+#     A flow value model that allows the specification of a single state value and
+#     proportions that should be assigned to each state
+#     '''
+#     total_value = FloatType(min_value=0)
+#     proportion_values = ListType(FloatType(min_value=0))
+#     @classmethod
+#     def _claim_polymorphic(cls, data):
+#         return data.get('proportion_values') is not None
+
 class Flow(Model):
     '''
     A Flow is the distinct travel pattern of a group of individuals
@@ -53,10 +80,10 @@ class Flow(Model):
     Parameters
     ----------
     id: The id of the flow
-    value: The number of individuals in the flow
+    initial_state_values: The number of individuals in the flow in each state
+      at the start of the model.
     circad: A list of times and places that a flow visits
     '''
     id = UUIDType(default=uuid.uuid4)
-    value = ListType(FloatType(min_value=0))
+    initial_state_values = ListType(ModelType(StateValue))
     circad = ListType(ModelType(Appointment))
-    inital_state = ListType(StringType())

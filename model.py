@@ -29,6 +29,13 @@ class StateListType(ListType):
         kwargs['field'] = StateType
         super().__init__(**kwargs)
 
+class StateValue(Model):
+    '''
+    A state and the value associated with that state
+    '''
+    state = StateType()
+    value = FloatType(min_value=0)
+
 
 class ParameterType(StringType):
     '''
