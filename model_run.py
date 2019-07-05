@@ -12,6 +12,7 @@ from schematics.types import (StringType,
                               ModelType,
                               IntType
                               )
+from .model import StateValue
 
 class PsudoPatchRun(Model):
     '''
@@ -37,4 +38,5 @@ class StateReport(Model):
     '''
     psudo_patch_id = UUIDType(required=True)
     time_point = FloatType(required=True)
-    state_values = ListType(FloatType())
+    flow_id = UUIDType(required=True)
+    state_values = ListType(ModelType(StateValue))
