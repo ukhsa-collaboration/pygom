@@ -6,6 +6,7 @@ from .model import (DeterministicOdeModel,
                     StateValue
                     )
 from .model_run import PsudoPatchRun, StateReport
+from .metadata import MetaData
 
 __all__ = [
     'Flow',
@@ -18,4 +19,5 @@ __all__ = [
     'ParameterValue',
     'ParameterValueList',
     'StateValue'
+    'MetaData'
     ]
