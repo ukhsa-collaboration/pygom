@@ -8,18 +8,23 @@ from .model import (DeterministicOdeModel,
 from .model_run import PsudoPatchRun, StateReport
 from .metadata import MetaData
 from .results import ResultsByName
+from .patch_model import PatchModel
 
 __all__ = [
+    # Movement
+    'Appointment',
     'Flow',
     'Flux',
-    'Appointment',
     'Patch',
-    'PsudoPatchRun',
-    'StateReport',
+    # Model
     'DeterministicOdeModel',
     'ParameterValue',
     'ParameterValueList',
-    'StateValue'
-    'MetaData'
+    'PatchModel',
+    'StateValue',
+    # Run infrastructure
+    'MetaData',
+    'PsudoPatchRun',
     'ResultsByName'
+    'StateReport',
     ]
