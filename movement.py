@@ -16,7 +16,8 @@ from schematics.types import (FloatType,
                               )
 
 from .model import StateValue
-from bokeh.io import state
+
+from cached_property import cached_property
 
 class Flux(Model):
     '''
@@ -87,3 +88,12 @@ class Flow(Model):
     id = UUIDType(default=uuid.uuid4)
     initial_state_values = ListType(ModelType(StateValue))
     circad = ListType(ModelType(Appointment))
+
+    @cached_property
+    def home_patch(self):
+        '''
+        The initial patch that a flow visits
+        '''
+        return [appointment.patch
+                for appointment in self.circad
+                if appointment.time_point==0][0]
