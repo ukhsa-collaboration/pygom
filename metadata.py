@@ -9,8 +9,7 @@ import socket
 import uuid
 
 from schematics.models import Model
-from schematics.types import StringType, UUIDType, IntType
-from schematics.types.compound import ModelType, ListType
+from schematics.types import StringType, UUIDType
 
 from quilty import __version__
 from .model import ParameterListType
@@ -48,11 +47,11 @@ class MetaData(Model):
     #  Free text for additional comments.
     comment = StringType()
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         '''
         Small overload to automatically capture history if not provided
         '''
-        super().__init__(**kwargs)
+        super().__init__(*args, **kwargs)
         if self.history == '':
             self.history = '{} {} {} {} {}'.format(datetime.datetime.utcnow().isoformat(),
                                                    self.model_name,
