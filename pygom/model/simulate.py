@@ -377,6 +377,7 @@ class SimulateOde(DeterministicOde):
         # keep jumping, Whoop Whoop (put your hands up!).
         f = firstReaction
         while t < finalT:
+            # print(t)
             try:
                 if exact:
                     x, t, success = f(x, t, self._vMat,

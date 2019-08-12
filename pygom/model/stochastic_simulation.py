@@ -4,10 +4,12 @@
     Module with functions to perform stochastic simulation
 
 """
+import functools
 
 import numpy as np
+import scipy.stats as st
 
-from pygom.utilR.distn import rexp, ppois, rpois, runif, test_seed
+from pygom.utilR.distn import rexp,  rpois, runif, test_seed
 
 from ._model_errors import InputError, SimulationError
 from .ode_utils import check_array_type
@@ -18,7 +20,7 @@ def exact(x0, t0, t1, state_change_mat, transition_func,
     """
     Stochastic simulation using an exact method starting from time
     t0 to t1 with the starting state values of x0
- 
+
     Parameters
     ----------
     x0: array like
@@ -544,7 +546,11 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
     # we put in an additional safety mechanism here where we also evaluate
     # the probability that a realization exceeds the observations and further
     # decrease the time step.
-    safe = _test_tau_leap_safety(x, reactant_mat, rates, tau_scale, epsilon)
+    tau_scale, safe = _test_tau_leap_safety(x,
+                                            reactant_mat,
+                                            rates,
+                                            tau_scale,
+                                            epsilon)
     if safe is False:
         return x, t, False
 
@@ -584,32 +590,42 @@ def _test_tau_leap_safety(x, reactant_mat, rates, tau_scale, epsilon):
     safe = False
     count = 0
     while safe is False:
-        cdf_val = list()
+        cdf_val = 1.0
         for i, r in enumerate(rates):
             xi = x[reactant_mat[:, i]]
-            cdf_val += ppois(xi, mu=tau_scale*r).tolist()
+            new_cdf = _ppois(xi, mu=tau_scale*r).min()
+            if new_cdf < cdf_val:
+                cdf_val = new_cdf
+            #cdf_val[i * reactant_mat.shape[0] : (i * reactant_mat.shape[0]) + len(rates)] = _ppois(xi, mu=tau_scale*r)
 
         # the expected probability that our jump will exceed the value
-        max_cdf = np.max(1.0 - np.array(cdf_val))
+        max_cdf = 1.0 - cdf_val
         # cannot allow it to exceed out epsilon
         if max_cdf > epsilon:
             tau_scale /= 2.0
         else:
             safe = True
 
-        if tau_scale*total_rate <= 1.0 or count > 2:
+        if tau_scale*total_rate <= 1.0 or count > 256:
             return False
         count += 1
 
-    return True
+    return tau_scale, True
 
+#@functools.lru_cache(maxsize=2^12, typed=False)
+def _ppois(q, mu=1.0):
+    '''
+    A cached and slightly faster and less safe version of the pygom.utilR.ppois
+    function
+    '''
+    return st.poisson._cdf(q, mu=mu)
 
 def _newJumpTimes(rates, seed=None):
     """
     Generate the new jump times assuming that the rates follow an exponential
     distribution
     """
-    
+
     tau = [rexp(1, r, seed=seed) if r > 0 else np.Inf for r in rates]
     return np.array(tau)
 
