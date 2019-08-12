@@ -18,10 +18,12 @@ def get_rows_cols(n):
                     }
     return rows_and_cols.get(n, (int(np.ceil(n / 3)), 3))
 
-def get_subplot_num(n, cols):
+def get_subplot_num(n, rows, cols):
     '''
     Given a particular number of columns work out where a plot will go
     '''
+    if rows == 1:
+        return (n)
     return (int(np.ceil(n / cols)) - 1, #get the row
             (((n - 1) % cols) + 1) - 1) #get the col
 
@@ -77,7 +79,7 @@ def plot_stoc(solution, t, stochastic_model):
     for i, state in enumerate(stochastic_model._stateList):
         plot_state(sim_x=solution,
                    sim_t=t,
-                   sub_plot=axarr[get_subplot_num(i, cols=cols)],
+                   sub_plot=axarr[get_subplot_num(i, rows=rows, cols=cols)],
                    i=i,
                    state_name=state,
                    palette=palette)
