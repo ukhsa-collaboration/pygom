@@ -5,6 +5,38 @@
 import re
 import subprocess
 from setuptools import setup
+from setuptools.extension import Extension
+
+## For the cython parts ###
+try:
+    from Cython.Distutils import build_ext
+except ImportError:
+    use_cython = False
+else:
+    use_cython = True
+
+cmdclass = { }
+ext_modules = [ ]
+
+#For this to work the .c files are not include in GIT except in the release
+#release branch (the c files would be created using python setup.py sdist)
+if use_cython:
+    ext_modules += [
+        Extension("pygom.model._tau_leap",
+                  ["pygom/model/_tau_leap.pyx"],
+#                  extra_compile_args=['-fopenmp'],
+#                  extra_link_args=['-fopenmp']),
+)
+    ]
+    cmdclass.update({ 'build_ext': build_ext })
+else:
+    ext_modules += [
+        Extension("pygom.model._tau_leap",
+                  [ "pygom/model/_tau_leap.c" ],
+#                  extra_compile_args=['-fopenmp'],
+#                  extra_link_args=['-fopenmp']),
+)
+    ]
 
 with open('LICENSE.txt', 'r') as f:
     license_file = f.read()
@@ -44,6 +76,8 @@ setup(
         'pygom.loss',
         'pygom.utilR'
     ],
+    cmdclass = cmdclass,
+    ext_modules=ext_modules,
     install_requires=install_requires,
     setup_requires=setup_requires,
     test_suite='tests',

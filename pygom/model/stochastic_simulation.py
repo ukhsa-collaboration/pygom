@@ -14,6 +14,9 @@ from pygom.utilR.distn import rexp,  rpois, runif, test_seed
 from ._model_errors import InputError, SimulationError
 from .ode_utils import check_array_type
 
+# Code from the cython module
+from ._tau_leap import _cy_test_tau_leap_safety
+
 
 def exact(x0, t0, t1, state_change_mat, transition_func,
           output_time=False, seed=None):
@@ -546,11 +549,11 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
     # we put in an additional safety mechanism here where we also evaluate
     # the probability that a realization exceeds the observations and further
     # decrease the time step.
-    tau_scale, safe = _test_tau_leap_safety(x,
-                                            reactant_mat,
-                                            rates,
-                                            tau_scale,
-                                            epsilon)
+    tau_scale, safe = _cy_test_tau_leap_safety(x,
+                                               reactant_mat,
+                                               rates,
+                                               tau_scale,
+                                               epsilon)
     if safe is False:
         return x, t, False
 
@@ -587,6 +590,7 @@ def _test_tau_leap_safety(x, reactant_mat, rates, tau_scale, epsilon):
     step size until we find a suitable one.
     """
     total_rate = sum(rates)
+    #reactant_mat_bin = reactant_mat == 1
     safe = False
     count = 0
     while safe is False:
@@ -602,7 +606,7 @@ def _test_tau_leap_safety(x, reactant_mat, rates, tau_scale, epsilon):
         max_cdf = 1.0 - cdf_val
         # cannot allow it to exceed out epsilon
         if max_cdf > epsilon:
-            tau_scale /= 2.0
+            tau_scale /= (max_cdf / epsilon)
         else:
             safe = True
 
