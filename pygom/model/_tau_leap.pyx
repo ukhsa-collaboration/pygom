@@ -9,7 +9,7 @@ cimport cython
 @cython.wraparound(False)   # Deactivate negative indexing.
 @cython.cdivision(True)     # Deactivate the div 0 error checking
 def _cy_test_tau_leap_safety(np.ndarray[np.float64_t] x,
-                             np.ndarray[np.float64_t, ndim=2] reactant_mat,
+                             np.ndarray[np.int64_t, ndim=2] reactant_mat,
                              np.ndarray[np.float64_t] rates,
                              double tau_scale,
                              double epsilon):

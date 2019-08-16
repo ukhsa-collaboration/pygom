@@ -2175,8 +2175,8 @@ static void __pyx_memoryview_slice_assign_scalar(__Pyx_memviewslice *, int, size
 static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize_t *, int, size_t, void *); /*proto*/
 static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *, PyObject *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t = { "float64_t", NULL, sizeof(__pyx_t_5numpy_float64_t), { 0 }, 0, 'R', 0, 0 };
-static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_int64_t = { "int64_t", NULL, sizeof(__pyx_t_5numpy_int64_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_5numpy_int64_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_5numpy_int64_t), 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
 #define __Pyx_MODULE_NAME "pygom.model._tau_leap"
 extern int __pyx_module_is_main_pygom__model___tau_leap;
 int __pyx_module_is_main_pygom__model___tau_leap = 0;
@@ -2526,7 +2526,7 @@ static PyObject *__pyx_codeobj__34;
  * @cython.wraparound(False)   # Deactivate negative indexing.
  * @cython.cdivision(True)     # Deactivate the div 0 error checking
  * def _cy_test_tau_leap_safety(np.ndarray[np.float64_t] x,             # <<<<<<<<<<<<<<
- *                              np.ndarray[np.float64_t, ndim=2] reactant_mat,
+ *                              np.ndarray[np.int64_t, ndim=2] reactant_mat,
  *                              np.ndarray[np.float64_t] rates,
  */
 
@@ -2693,7 +2693,7 @@ static PyObject *__pyx_pf_5pygom_5model_9_tau_leap__cy_test_tau_leap_safety(CYTH
   __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_reactant_mat.rcbuffer->pybuffer, (PyObject*)__pyx_v_reactant_mat, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 11, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_reactant_mat.rcbuffer->pybuffer, (PyObject*)__pyx_v_reactant_mat, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 11, __pyx_L1_error)
   }
   __pyx_pybuffernd_reactant_mat.diminfo[0].strides = __pyx_pybuffernd_reactant_mat.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_reactant_mat.diminfo[0].shape = __pyx_pybuffernd_reactant_mat.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_reactant_mat.diminfo[1].strides = __pyx_pybuffernd_reactant_mat.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_reactant_mat.diminfo[1].shape = __pyx_pybuffernd_reactant_mat.rcbuffer->pybuffer.shape[1];
   {
@@ -3053,7 +3053,7 @@ static PyObject *__pyx_pf_5pygom_5model_9_tau_leap__cy_test_tau_leap_safety(CYTH
  * @cython.wraparound(False)   # Deactivate negative indexing.
  * @cython.cdivision(True)     # Deactivate the div 0 error checking
  * def _cy_test_tau_leap_safety(np.ndarray[np.float64_t] x,             # <<<<<<<<<<<<<<
- *                              np.ndarray[np.float64_t, ndim=2] reactant_mat,
+ *                              np.ndarray[np.int64_t, ndim=2] reactant_mat,
  *                              np.ndarray[np.float64_t] rates,
  */
 
@@ -19425,7 +19425,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * @cython.wraparound(False)   # Deactivate negative indexing.
  * @cython.cdivision(True)     # Deactivate the div 0 error checking
  * def _cy_test_tau_leap_safety(np.ndarray[np.float64_t] x,             # <<<<<<<<<<<<<<
- *                              np.ndarray[np.float64_t, ndim=2] reactant_mat,
+ *                              np.ndarray[np.int64_t, ndim=2] reactant_mat,
  *                              np.ndarray[np.float64_t] rates,
  */
   __pyx_tuple__26 = PyTuple_Pack(19, __pyx_n_s_x, __pyx_n_s_reactant_mat, __pyx_n_s_rates, __pyx_n_s_tau_scale, __pyx_n_s_epsilon, __pyx_n_s_rates_view, __pyx_n_s_n_rates, __pyx_n_s_x_view, __pyx_n_s_reactant_mat_view, __pyx_n_s_n_reactants, __pyx_n_s_mu, __pyx_n_s_max_cdf, __pyx_n_s_new_cdf, __pyx_n_s_total_rate, __pyx_n_s_safe, __pyx_n_s_count, __pyx_n_s_cdf_val, __pyx_n_s_i, __pyx_n_s_j); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 11, __pyx_L1_error)
@@ -19888,7 +19888,7 @@ if (!__Pyx_RefNanny) {
  * @cython.wraparound(False)   # Deactivate negative indexing.
  * @cython.cdivision(True)     # Deactivate the div 0 error checking
  * def _cy_test_tau_leap_safety(np.ndarray[np.float64_t] x,             # <<<<<<<<<<<<<<
- *                              np.ndarray[np.float64_t, ndim=2] reactant_mat,
+ *                              np.ndarray[np.int64_t, ndim=2] reactant_mat,
  *                              np.ndarray[np.float64_t] rates,
  */
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_5pygom_5model_9_tau_leap_1_cy_test_tau_leap_safety, NULL, __pyx_n_s_pygom_model__tau_leap); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
