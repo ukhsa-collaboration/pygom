@@ -3,6 +3,7 @@ Utilities used throughout the package.
 '''
 
 import math
+import logging
 from numbers import Number
 
 import numpy as np
@@ -594,6 +595,7 @@ class compileCode(object):
                                         modules='sympy')
                 compileTypeChosen = 'sympy'
 
+        logging.debug('Compiled expression as {}'.format(compileTypeChosen))
         if compileType:
             return compiledFunc, compileTypeChosen
         else:
