@@ -206,6 +206,7 @@ We can now try to find the optimal values, but because this is a difficult probl
 
 .. ipython::
     :okexcept:
+    :okwarning:
 
     In [213]: res = scipy.optimize.minimize(fun=objLegrand.cost,
        .....:                               jac=objLegrand.sensitivity,
@@ -228,7 +229,8 @@ Evidently, the estimated parameters are very much unrealistic given that a lot o
 As the estimate does not appear to provide anything sensible, we also provide a set of values previously obtained (that looks semi-reasonable) here plot the epidemic curve with the observations layered on top
 
 .. ipython::
-
+    :okexcept:
+    :okwarning:
     In [1]: theta = numpy.array([3.96915071e-02,   1.72302620e+01,   1.99749990e+01,
        ...:                      2.67759445e+01,   4.99999990e+01,   5.56122691e+00,
        ...:                      4.99999990e+01,   8.51599523e+00,   9.99999000e-01,
