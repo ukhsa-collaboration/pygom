@@ -1,4 +1,5 @@
 import numpy as np
+cimport numpy as np
 
 cimport scipy.special.cython_special as csc
 from libc.math cimport floor
@@ -7,7 +8,11 @@ cimport cython
 @cython.boundscheck(False)  # Deactivate bounds checking
 @cython.wraparound(False)   # Deactivate negative indexing.
 @cython.cdivision(True)     # Deactivate the div 0 error checking
-def _cy_test_tau_leap_safety(x, reactant_mat, rates, double tau_scale, double epsilon):
+def _cy_test_tau_leap_safety(np.ndarray[np.float64_t] x,
+                             np.ndarray[np.float64_t, ndim=2] reactant_mat,
+                             np.ndarray[np.float64_t] rates,
+                             double tau_scale,
+                             double epsilon):
     """
     Additional safety test on :math:`\\tau`-leap, decrease the step size if
     the original is not small enough.  Decrease a couple of times and then
@@ -16,10 +21,10 @@ def _cy_test_tau_leap_safety(x, reactant_mat, rates, double tau_scale, double ep
     """
     #view on arrays
     cdef double[:] rates_view = rates
-    cdef int n_rates = rates.shape[0]
+    cdef np.int64_t n_rates = rates.shape[0]
     cdef double[:] x_view = x
-    cdef int[:, :] reactant_mat_view = reactant_mat
-    cdef int n_reactants = reactant_mat.shape[0]
+    cdef np.int64_t[:, :] reactant_mat_view = reactant_mat
+    cdef np.int64_t n_reactants = reactant_mat.shape[0]
 
     cdef double mu, max_cdf, new_cdf
     cdef double total_rate = sum(rates)

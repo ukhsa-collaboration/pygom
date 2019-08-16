@@ -4,6 +4,7 @@
 """
 import re
 import subprocess
+import numpy
 from setuptools import setup
 from setuptools.extension import Extension
 
@@ -24,6 +25,7 @@ if use_cython:
     ext_modules += [
         Extension("pygom.model._tau_leap",
                   ["pygom/model/_tau_leap.pyx"],
+                  include_dirs=[numpy.get_include()],
 #                  extra_compile_args=['-fopenmp'],
 #                  extra_link_args=['-fopenmp']),
 )
@@ -33,6 +35,7 @@ else:
     ext_modules += [
         Extension("pygom.model._tau_leap",
                   [ "pygom/model/_tau_leap.c" ],
+                  include_dirs=[numpy.get_include()],
 #                  extra_compile_args=['-fopenmp'],
 #                  extra_link_args=['-fopenmp']),
 )
