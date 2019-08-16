@@ -85,6 +85,7 @@ setup(
         'pygom.utilR'
     ],
     package_data = package_data,
+    include_package_data=True,
     cmdclass = cmdclass,
     ext_modules=ext_modules,
     install_requires=install_requires,
