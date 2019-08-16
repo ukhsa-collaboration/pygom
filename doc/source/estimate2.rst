@@ -205,6 +205,7 @@ Now, it is important to set additional constraints accurately because a simply b
 We can now try to find the optimal values, but because this is a difficult problem that can take a very long time without guarantee on the quality of solution
 
 .. ipython::
+    :okexcept:
 
     In [213]: res = scipy.optimize.minimize(fun=objLegrand.cost,
        .....:                               jac=objLegrand.sensitivity,
