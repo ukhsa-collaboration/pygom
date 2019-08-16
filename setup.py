@@ -57,7 +57,8 @@ install_requires = [
     'python-libsbml>=5.0.0',
     'numpy>=1.6.0',
     'scipy>=0.10.0',
-    'sympy>=1.0.0'
+    'sympy>=1.0.0',
+    'cython>=0.29'
 ]
 
 setup(
