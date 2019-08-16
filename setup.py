@@ -40,6 +40,10 @@ else:
 #                  extra_link_args=['-fopenmp']),
 )
     ]
+package_data={
+   'pygom.data': ['eg1.json'],# An example epijson file
+   }
+
 
 with open('LICENSE.txt', 'r') as f:
     license_file = f.read()
@@ -80,6 +84,7 @@ setup(
         'pygom.loss',
         'pygom.utilR'
     ],
+    package_data = package_data,
     cmdclass = cmdclass,
     ext_modules=ext_modules,
     install_requires=install_requires,
