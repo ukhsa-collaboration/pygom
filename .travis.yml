@@ -4,7 +4,7 @@ python:
   - 3.4
   - 3.5
   - 3.6
-#  - 3.7
+  - 3.7
 #matrix:
 #  include:
 #    - python: 3.7
@@ -21,8 +21,8 @@ before_install:
   - conda update -q conda
   - conda info -a
   # The next couple lines fix a crash with multiprocessing on Travis and are not specific to using Miniconda
-  - sudo rm -rf /dev/shm
-  - sudo ln -s /run/shm /dev/shm
+#  - sudo rm -rf /dev/shm
+#  - sudo ln -s /run/shm /dev/shm
 
 install:
   - conda create -n pygom python=$TRAVIS_PYTHON_VERSION
