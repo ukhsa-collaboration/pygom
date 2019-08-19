@@ -8,7 +8,9 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import sys
+import os
+import warnings
 
 import sphinx
 if sphinx.__version__ < '1.4.1':
@@ -231,3 +233,6 @@ latex_preamble = '\\usepackage{amsmath,amssymb}'
 #latex_use_modindex = True
 
 # latex_encodings = 'utf-8'
+warnings.filterwarnings("ignore", category=UserWarning,
+                        message='Matplotlib is currently using agg, which is a'
+                                ' non-GUI backend, so cannot show the figure.')
