@@ -96,6 +96,21 @@ release = pygom.__version__
 # for source files.
 exclude_trees = ['_build']
 
+# exclude_patterns = ['common_models/*.rst',
+#                     'bvpSimple.rst',
+#                     'epi.rst',
+#                     'estimate1.rst',
+#                     'estimate2.rst',
+#                     'gradient.rst',
+#                     'epijson.rst',
+#                     'fh.rst',
+#                     'getting_started.rst',
+#                     'initialGuess.rst',
+#                     'profile.rst',
+#                     'sir.rst',
+#                     'stochastic.rst',
+#                     'transition.rst']
+
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
 
