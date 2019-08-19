@@ -3,7 +3,6 @@ Created on 14 Jan 2019
 
 @author: thomas.finnie
 '''
-
 class CompileCanary(object):
     '''
     Hold the need for (re-)compilation for various functions
@@ -47,10 +46,19 @@ class CompileCanary(object):
         '''
         self.__setattr__(name, False)
 
+    def __deepcopy__(self, memo):
+        copied = CompileCanary()
+        copied.states = list(self._states.keys())
+        copied.trip()
+        return copied
+
     def __getattr__(self, name):
         '''
         Implement a method to get the values of attributes
         '''
+        if name == '_states':
+            return self._states
+
         if name in self._states:
             return self._states[name]
         msg = "'{0}' object has no attribute '{1}'"

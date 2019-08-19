@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+from copy import deepcopy
+
 from pygom.model.ode_utils import CompileCanary
 
 class TestCanary(CompileCanary):
@@ -44,3 +46,15 @@ class TestCompileCanary(TestCase):
         self.assertTrue(test_object.a_state,
                         'Resetting a state must not alter other states')
 
+    def test_deepcopy(self):
+        '''
+        Test that CompileCanary can be deep copied without error
+        '''
+        test_object = CompileCanary()
+        test_object.states.extend(['S', 'E', 'I'])
+        test_object.trip()
+        copied_object = deepcopy(test_object)
+
+        self.assertDictEqual(test_object._states,
+                             copied_object._states,
+                             'CompileCanary must be capable of being deepcopy(ed)')
