@@ -12,6 +12,10 @@ import sys
 import os
 import warnings
 
+#slight hack for graphvis on windows to ensure conda path is correct
+if sys.platform == 'win32':
+    os.environ['PATH'] += os.pathsep + os.environ['CONDA_PREFIX'] + r'\Library\bin\graphviz'
+
 import sphinx
 if sphinx.__version__ < '1.4.1':
     raise RuntimeError("Sphinx 1.4.1 or newer required")
@@ -96,21 +100,6 @@ release = pygom.__version__
 # for source files.
 exclude_trees = ['_build']
 
-# exclude_patterns = ['common_models/*.rst',
-#                     'bvpSimple.rst',
-#                     'epi.rst',
-#                     'estimate1.rst',
-#                     'estimate2.rst',
-#                     'gradient.rst',
-#                     'epijson.rst',
-#                     'fh.rst',
-#                     'getting_started.rst',
-#                     'initialGuess.rst',
-#                     'profile.rst',
-#                     'sir.rst',
-#                     'stochastic.rst',
-#                     'transition.rst']
-
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
 
@@ -144,6 +133,25 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
     import sphinx_rtd_theme
     html_theme = 'sphinx_rtd_theme'
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+else:
+    # RTD will time out if we try to build the whole of the documentation so
+    # ignore some of the longer bits and perhaps add them later
+     exclude_patterns = ['common_models/*.rst',
+#                         'bvpSimple.rst',
+#                         'epi.rst',
+                         'estimate1.rst',
+                         'estimate2.rst',
+                         'gradient.rst',
+                         'epijson.rst',
+                         'fh.rst',
+#                         'getting_started.rst',
+#                         'initialGuess.rst',
+#                         'profile.rst',
+#                         'sir.rst',
+#                         'stochastic.rst',
+#                         'transition.rst'
+                         ]
+
 # html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
