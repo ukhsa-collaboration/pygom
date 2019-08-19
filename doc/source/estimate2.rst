@@ -231,6 +231,7 @@ As the estimate does not appear to provide anything sensible, we also provide a 
 .. ipython::
     :okexcept:
     :okwarning:
+
     In [1]: theta = numpy.array([3.96915071e-02,   1.72302620e+01,   1.99749990e+01,
        ...:                      2.67759445e+01,   4.99999990e+01,   5.56122691e+00,
        ...:                      4.99999990e+01,   8.51599523e+00,   9.99999000e-01,
