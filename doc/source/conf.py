@@ -136,19 +136,19 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
 else:
     # RTD will time out if we try to build the whole of the documentation so
     # ignore some of the longer bits and perhaps add them later
-     exclude_patterns = ['common_models/*.rst',
+    exclude_patterns = ['common_models/*.rst',
 #                         'bvpSimple.rst',
-#                         'epi.rst',
+                         'epi.rst',
                          'estimate1.rst',
                          'estimate2.rst',
                          'gradient.rst',
                          'epijson.rst',
                          'fh.rst',
 #                         'getting_started.rst',
-#                         'initialGuess.rst',
-#                         'profile.rst',
-#                         'sir.rst',
-#                         'stochastic.rst',
+                         'initialGuess.rst',
+                         'profile.rst',
+                         'sir.rst',
+                         'stochastic.rst',
 #                         'transition.rst'
                          ]
 
