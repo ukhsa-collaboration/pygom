@@ -1096,7 +1096,7 @@ class BaseLoss(object):
 
         See also
         --------
-        :meth:`costIV`,:meth:`residual`
+        :meth:`costIV`, :meth:`residual`
 
         """
         if theta is not None:

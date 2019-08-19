@@ -1208,7 +1208,7 @@ class DeterministicOde(BaseOdeModel):
 
         See Also
         --------
-        :meth:`.sensitivity` , :meth:`.ode`
+        :meth:`.sensitivity`, :meth:`.ode`
 
         '''
 
@@ -1439,7 +1439,7 @@ class DeterministicOde(BaseOdeModel):
 
         See Also
         --------
-        :meth:`.sensitivity` , :meth:`.ode`
+        :meth:`.sensitivity`, :meth:`.ode`
 
         '''
 

@@ -243,7 +243,7 @@ def SIR_Birth_Death(param=None):
 
     See also
     --------
-    :func:`SIR`
+    :func:`.SIR`
     """
     state = ['S', 'I', 'R']
     param_list = ['beta', 'gamma', 'B', 'mu']
@@ -300,7 +300,7 @@ def SEIR(param=None):
 
     See also
     --------
-    :func:`SEIR_Birth_Death`
+    :func:`.SEIR_Birth_Death`
     """
 
     state = ['S', 'E', 'I', 'R']
@@ -351,7 +351,7 @@ def SEIR_Birth_Death(param=None):
 
     See also
     --------
-    :func:`SEIR`
+    :func:`.SEIR`
     """
 
     state = ['S', 'E', 'I', 'R']
@@ -408,7 +408,7 @@ def SEIR_Birth_Death_Periodic(param=None):
     Examples
     --------
     Uses the same set of parameters as the examples in
-    :func:`SEIR_Birth_Death` but now we have two beta parameters instead of one.
+    :py:func:`.SEIR_Birth_Death` but now we have two beta parameters instead of one.
 
     >>> import matplotlib.pyplot as plt
     >>> import numpy as np
@@ -427,7 +427,7 @@ def SEIR_Birth_Death_Periodic(param=None):
 
     See also
     --------
-    :func:`SEIR`,:func:`SEIR_Birth_Death`,:func:`SIR_Periodic`
+    :func:`.SEIR`, :func:`.SEIR_Birth_Death`, :func:`.SIR_Periodic`
 
     """
     state = ['S', 'E', 'I', 'tau']
