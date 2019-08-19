@@ -549,11 +549,11 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
     # we put in an additional safety mechanism here where we also evaluate
     # the probability that a realization exceeds the observations and further
     # decrease the time step.
-    tau_scale, safe = _cy_test_tau_leap_safety(x,
-                                               reactant_mat,
-                                               rates,
-                                               tau_scale,
-                                               epsilon)
+    tau_scale, safe = _cy_test_tau_leap_safety(x.astype(np.float64, copy=False),
+                                               reactant_mat.astype(np.int64, copy=False),
+                                               rates.astype(np.float64, copy=False),
+                                               float(tau_scale),
+                                               float(epsilon))
     if safe is False:
         return x, t, False
 
