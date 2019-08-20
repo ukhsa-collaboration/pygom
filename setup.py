@@ -74,8 +74,8 @@ setup(
     long_description=readme,
     license=license_file,
     url='https://github.com/PublicHealthEngland/pygom',
-    author="Edwin Tye",
-    author_email="Edwin.Tye@phe.gov.uk",
+    author="Thomas Finnie",
+    author_email="Thomas.Finnie@phe.gov.uk",
     packages=[
         'pygom',
         'pygom.model',
