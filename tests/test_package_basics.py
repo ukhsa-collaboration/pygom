@@ -2,9 +2,9 @@ from unittest import TestCase
 
 import pygom
 
-class TestCompileCanary(TestCase):
+class TestPackageBasics(TestCase):
 
-    def test_canary(self):
+    def test_version(self):
         '''
         Test __version__ exists and does not error
         '''
