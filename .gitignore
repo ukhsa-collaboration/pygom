@@ -3,6 +3,7 @@
 build/*
 cover/*
 *.pyc
+*.pyd
 __pycache__
 *.egg-info
 *.egg
