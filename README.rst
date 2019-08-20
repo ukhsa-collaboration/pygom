@@ -63,9 +63,11 @@ under active development.
 Contributors
 ============
 Thomas Finnie (Thomas.Finnie@phe.gov.uk)
+
 Edwin Tye (Edwin.Tye@phe.gov.uk)
 
 Version
 =======
 0.1.4 Much faster Tau leap for stochastic simulations
+
 0.1.3 Defaults to python built-in unittest and more in sync with conda
