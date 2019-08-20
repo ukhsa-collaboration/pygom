@@ -3,14 +3,16 @@ pygom - ODE modelling in Python
 ===============================
 
 |pypi version|  |Build status|
- 
+
 .. |pypi version| image:: https://img.shields.io/pypi/v/pygom.svg
    :target: https://pypi.python.org/pypi/pygom
 .. |Build status| image:: https://travis-ci.org/PublicHealthEngland/pygom.svg?branch=master
    :target: https://travis-ci.org/PublicHealthEngland/pygom
-
-Development of a generic framework for ode models, more specifically, 
-aiming to solve compartmental type problems.  
+.. |Docs| image:: https://readthedocs.org/projects/pygom/badge/?version=master
+   :target: https://pygom.readthedocs.io/en/master/?badge=master
+   :alt: Documentation Status
+Development of a generic framework for ode models, more specifically,
+aiming to solve compartmental type problems.
 
 This package depends on::
 
@@ -44,7 +46,7 @@ $ doc
 
 Note that building the documentation can be extremely slow depending on the setup of the system.  Further details can be found at it's own read me::
 
-$ doc/README.rst     
+$ doc/README.rst
 
 Please be aware that there may be redundant files within the package as it is under active development.
 
