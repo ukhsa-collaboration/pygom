@@ -11,6 +11,7 @@ pygom - ODE modelling in Python
 .. |Docs| image:: https://readthedocs.org/projects/pygom/badge/?version=master
    :target: https://pygom.readthedocs.io/en/master/?badge=master
    :alt: Documentation Status
+
 Development of a generic framework for ode models, more specifically,
 aiming to solve compartmental type problems.
 
