@@ -2,7 +2,7 @@
 pygom - ODE modelling in Python
 ===============================
 
-|pypi version|  |Build status|
+|pypi version|  |Build status|  |Documentation Status|
 
 .. |pypi version| image:: https://img.shields.io/pypi/v/pygom.svg
    :target: https://pypi.python.org/pypi/pygom
@@ -40,15 +40,25 @@ and tested via::
 
 $ python setup.py test
 
-If the test fails, then the documentation for the package will not compile.  A more in depth documentation can be found in the folder::
+A reduced form of the documentation may be found on ReadTheDocs_.
+
+.. _ReadTheDocs: https://pygom.readthedocs.io/en/master/
+
+You may get the full documentation, including the lengthy examples by locally
+building the documentation found in the folder::
 
 $ doc
 
-Note that building the documentation can be extremely slow depending on the setup of the system.  Further details can be found at it's own read me::
+Note that building the documentation can be extremely slow depending on the
+setup of the system.  Further details can be found at it's own read me::
 
 $ doc/README.rst
 
-Please be aware that there may be redundant files within the package as it is under active development.
+Please be aware that if the module tests fails, then the documentation for the
+package will not compile.
+
+Please be aware that there may be redundant files within the package as it is
+under active development.
 
 Contributors
 ============
