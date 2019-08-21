@@ -45,9 +45,6 @@ package_data={
    }
 
 
-with open('LICENSE.txt', 'r') as f:
-    license_file = f.read()
-
 with open('README.rst', 'r') as f:
     readme = f.read()
 
@@ -72,7 +69,8 @@ setup(
     use_scm_version=True,
     description='ODE modeling in Python',
     long_description=readme,
-    license=license_file,
+    long_description_content_type='text/x-rst',
+    license="GPL2",
     url='https://github.com/PublicHealthEngland/pygom',
     author="Thomas Finnie",
     author_email="Thomas.Finnie@phe.gov.uk",
