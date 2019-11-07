@@ -139,7 +139,7 @@ else:
     exclude_patterns = ['common_models/*.rst',
 #                         'bvpSimple.rst',
                          'epi.rst',
-                         'estimate1.rst',
+#                         'estimate1.rst',
                          'estimate2.rst',
                          'gradient.rst',
                          'epijson.rst',
@@ -148,7 +148,7 @@ else:
                          'initialGuess.rst',
                          'profile.rst',
                          'sir.rst',
-                         'stochastic.rst',
+#                         'stochastic.rst',
 #                         'transition.rst'
                          ]
 

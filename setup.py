@@ -50,7 +50,8 @@ with open('README.rst', 'r') as f:
 
 setup_requires=[
     'setuptools-scm>=3.2.0',
-    'setuptools_scm_git_archive'
+    'setuptools_scm_git_archive',
+    'numpy>=1.12.0'
     ]
 
 install_requires = [
@@ -58,7 +59,7 @@ install_requires = [
     'matplotlib>=1.0.0',
     'pandas>=0.15.0',
     'python-dateutil>=2.0.0',
-    'numpy>=1.6.0',
+    'numpy>=1.12.0',
     'scipy>=0.10.0',
     'sympy>=1.0.0',
     'cython>=0.29'

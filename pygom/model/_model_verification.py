@@ -60,7 +60,8 @@ def simplifyEquation(input_str):
         # it is dangerous to simplify!
         return input_str, True
     else:
-        return simplify(input_str), False
+        #TODO: Removed actual simplyify (do we need it?)
+        return input_str, False
 
 
 def checkEquation(input_str, input_var, derived_var, subs_derived=True):
