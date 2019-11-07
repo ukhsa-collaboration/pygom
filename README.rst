@@ -2,7 +2,7 @@
 pygom - ODE modelling in Python
 ===============================
 
-|pypi version|  |Build status|  |Documentation Status|
+|Build status|  |Documentation Status|  |pypi version|  |licence|
 
 .. |pypi version| image:: https://img.shields.io/pypi/v/pygom.svg
    :target: https://pypi.python.org/pypi/pygom
@@ -10,6 +10,7 @@ pygom - ODE modelling in Python
    :target: https://travis-ci.org/PublicHealthEngland/pygom
 .. |Documentation Status| image:: https://readthedocs.org/projects/pygom/badge/?version=master
    :target: https://pygom.readthedocs.io/en/master/?badge=master
+.. |licence| image:: https://img.shields.io/pypi/l/pygom   :alt: PyPI - License
 
 Development of a generic framework for ode models, more specifically,
 aiming to solve compartmental type problems.
