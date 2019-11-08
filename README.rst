@@ -10,7 +10,8 @@ pygom - ODE modelling in Python
    :target: https://travis-ci.org/PublicHealthEngland/pygom
 .. |Documentation Status| image:: https://readthedocs.org/projects/pygom/badge/?version=master
    :target: https://pygom.readthedocs.io/en/master/?badge=master
-.. |licence| image:: https://img.shields.io/pypi/l/pygom   :alt: PyPI - License
+.. |licence| image:: https://img.shields.io/pypi/l/pygom.svg   :alt: PyPI - License
+   :target: https://raw.githubusercontent.com/PublicHealthEngland/pygom/master/LICENSE.txt
 
 Development of a generic framework for ode models, more specifically,
 aiming to solve compartmental type problems.
@@ -69,6 +70,8 @@ Edwin Tye (Edwin.Tye@phe.gov.uk)
 
 Version
 =======
+0.1.5 Remove auto-simplification for much faster startup
+
 0.1.4 Much faster Tau leap for stochastic simulations
 
 0.1.3 Defaults to python built-in unittest and more in sync with conda
