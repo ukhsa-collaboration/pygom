@@ -9,4 +9,5 @@ dependencies:
   - scipy
   - sympy
   - graphviz
+  - cython
  # - pip: []
