@@ -29,6 +29,7 @@ install:
   - conda create -n pygom python=$TRAVIS_PYTHON_VERSION
   - source activate pygom
   - conda env update -f conda-env.yml
+  - python setup.py build
   - python setup.py install
 # command to run tests
 script: python setup.py test
