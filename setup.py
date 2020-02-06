@@ -47,8 +47,8 @@ else:
 #                   include_dirs=[numpy.get_include()],
 #                  extra_compile_args=['-fopenmp'],
 #                  extra_link_args=['-fopenmp']),
-)
-    ]
+#)
+#    ]
 package_data={
    'pygom.data': ['eg1.json'],# An example epijson file
    }
