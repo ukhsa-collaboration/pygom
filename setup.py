@@ -4,9 +4,15 @@
 """
 import re
 import subprocess
-import numpy
 from setuptools import setup
 from setuptools.extension import Extension
+
+try:
+    import numpy
+except ImportError:
+    raise ImportError('numpy need to be installed before PyGOM can be '
+                      'installed. Try installing with "pip install numpy" '
+                      'before installing PyGOM.')
 
 ## For the cython parts ###
 try:
@@ -32,10 +38,13 @@ if use_cython:
     ]
     cmdclass.update({ 'build_ext': build_ext })
 else:
-    ext_modules += [
-        Extension("pygom.model._tau_leap",
-                  [ "pygom/model/_tau_leap.c" ],
-                  include_dirs=[numpy.get_include()],
+    raise ImportError('You will need Cython installed to create'
+                      'the c extensions. Try installing with'
+                      '"pip install cython" before installing PyGOM.')
+#     ext_modules += [
+#         Extension("pygom.model._tau_leap",
+#                   [ "pygom/model/_tau_leap.c" ],
+#                   include_dirs=[numpy.get_include()],
 #                  extra_compile_args=['-fopenmp'],
 #                  extra_link_args=['-fopenmp']),
 )
