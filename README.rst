@@ -23,7 +23,6 @@ This package depends on::
     enum34
     pandas
     python-dateutil
-    python-libsbml
     numpy
     scipy
     sympy
