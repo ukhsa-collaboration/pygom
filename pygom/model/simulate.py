@@ -7,6 +7,7 @@
 """
 
 __all__ = ['SimulateOde']
+import logging
 
 import copy
 from numbers import Number
@@ -309,7 +310,7 @@ class SimulateOde(DeterministicOde):
         if parallel:
             try:
                 import dask.bag
-                print("Parallel simulation")
+                logging.debug("Using Dask for parallel simulation")
                 def jump_partial(final_t): return(self._jump(final_t,
                                                              exact=exact,
                                                              full_output=True,
@@ -319,10 +320,10 @@ class SimulateOde(DeterministicOde):
                 xtmp = xtmp.map(jump_partial).compute()
             except Exception as e:
                 # print(e)
-                print("Revert to serial")
+                logging.warning("Parallel simulation failed reverting to serial")
                 xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
         else:
-            print("Serial computation")
+            logging.debug("Performing serial simulation")
             xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
 
         xmat = list(zip(*xtmp))
