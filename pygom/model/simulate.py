@@ -246,7 +246,7 @@ class SimulateOde(DeterministicOde):
         else:
             return Y
 
-    def simulate_jump(self, t, iteration, parallel=True,
+    def simulate_jump(self, t, iteration, parallel=False,
                       exact=False, full_output=False):
         '''
         Simulate the ode using stochastic simulation.  It switches
@@ -319,7 +319,7 @@ class SimulateOde(DeterministicOde):
                 xtmp = dask.bag.from_sequence(np.ones(iteration)*finalT)
                 xtmp = xtmp.map(jump_partial).compute()
             except Exception as e:
-                # print(e)
+                print(e)
                 logging.warning("Parallel simulation failed reverting to serial")
                 xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
         else:
