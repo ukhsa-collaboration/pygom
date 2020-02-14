@@ -24,14 +24,6 @@ class TestPickling(TestCase):
                     ]
         self.ode = SimulateOde(stateList, paramList, transition=transitionList)
 
-        #cause some compilation to happen
-        x0 = [150.0, 10.0, 10.0, 0.0]
-        t = numpy.linspace(0, 15, 100)
-        ode.initial_values = (x0, t[0])
-        self.ode.parameters = [0.01, 0.1, 1.0]
-        
-        self.ode.ode(x0,0)
-
     def test_pickle(self):
         '''
         Can we pickle and unpickle an ode object?
