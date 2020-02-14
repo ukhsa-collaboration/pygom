@@ -13,8 +13,7 @@ pygom - ODE modelling in Python
 .. |licence| image:: https://img.shields.io/pypi/l/pygom.svg   :alt: PyPI - License
    :target: https://raw.githubusercontent.com/PublicHealthEngland/pygom/master/LICENSE.txt
 
-Development of a generic framework for ode models, more specifically,
-aiming to solve compartmental type problems.
+A generic framework for ode models, specifically compartmental type problems.
 
 This package depends on::
 
