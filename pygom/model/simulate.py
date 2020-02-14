@@ -167,7 +167,7 @@ class SimulateOde(DeterministicOde):
                       self.transition_var,
                       output_time=output_time))
 
-    def simulate_param(self, t, iteration, parallel=True, full_output=False):
+    def simulate_param(self, t, iteration, parallel=False, full_output=False):
         '''
         Simulate the ode by generating new realization of the stochastic
         parameters and integrate the system deterministically.
@@ -246,7 +246,7 @@ class SimulateOde(DeterministicOde):
         else:
             return Y
 
-    def simulate_jump(self, t, iteration, parallel=True,
+    def simulate_jump(self, t, iteration, parallel=False,
                       exact=False, full_output=False):
         '''
         Simulate the ode using stochastic simulation.  It switches
