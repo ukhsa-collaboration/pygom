@@ -10,7 +10,7 @@ from setuptools.extension import Extension
 try:
     import numpy
 except ImportError:
-    raise ImportError('numpy need to be installed before PyGOM can be '
+    raise ImportError('numpy needs to be installed before PyGOM can be '
                       'installed. Try installing with "pip install numpy" '
                       'before installing PyGOM.')
 
@@ -38,17 +38,17 @@ if use_cython:
     ]
     cmdclass.update({ 'build_ext': build_ext })
 else:
-    raise ImportError('You will need Cython installed to create'
-                      'the c extensions. Try installing with'
-                      '"pip install cython" before installing PyGOM.')
-#     ext_modules += [
-#         Extension("pygom.model._tau_leap",
-#                   [ "pygom/model/_tau_leap.c" ],
-#                   include_dirs=[numpy.get_include()],
+#    raise ImportError('You will need Cython installed to create'
+#                      'the c extensions. Try installing with'
+#                      '"pip install cython" before installing PyGOM.')
+     ext_modules += [
+         Extension("pygom.model._tau_leap",
+                   [ "pygom/model/_tau_leap.c" ],
+                   include_dirs=[numpy.get_include()],
 #                  extra_compile_args=['-fopenmp'],
 #                  extra_link_args=['-fopenmp']),
-#)
-#    ]
+)
+    ]
 package_data={
    'pygom.data': ['eg1.json'],# An example epijson file
    }
@@ -69,7 +69,7 @@ install_requires = [
     'pandas>=0.15.0',
     'python-dateutil>=2.0.0',
     'numpy>=1.12.0',
-    'scipy>=0.10.0',
+    'scipy>=1.4.1',
     'sympy>=1.0.0',
     'cython>=0.29'
 ]
