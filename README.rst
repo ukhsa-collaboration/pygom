@@ -69,6 +69,8 @@ Edwin Tye (Edwin.Tye@phe.gov.uk)
 
 Version
 =======
+0.1.6 Bugfix scipy API, pickling, print to logging and simulation
+
 0.1.5 Remove auto-simplification for much faster startup
 
 0.1.4 Much faster Tau leap for stochastic simulations
