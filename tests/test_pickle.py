@@ -1,4 +1,6 @@
 import io
+import numpy
+
 from unittest import TestCase
 
 class TestPickling(TestCase):
