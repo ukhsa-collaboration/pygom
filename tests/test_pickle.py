@@ -1,14 +1,16 @@
+import pickle
 import io
 import numpy
 
 from unittest import TestCase
+from pygom.model import Transition, TransitionType, SimulateOde
 
 class TestPickling(TestCase):
     
-    def setup(self):
-        self.stateList = ['a', 'x', 'y', 'b']
-        self.paramList = ['k0', 'k1', 'k2']
-        self.transitionList = [
+    def setUp(self):
+        stateList = ['a', 'x', 'y', 'b']
+        paramList = ['k0', 'k1', 'k2']
+        transitionList = [
                     Transition(origin='a', 
                                destination='x',
                                equation='k0*a*x', 
@@ -36,10 +38,10 @@ class TestPickling(TestCase):
         
         self.ode.ode(x0,0)
         with io.BytesIO() as mem_stream:
-            pickle.dump(ode, mem_stream)
+            pickle.dump(self.ode, mem_stream)
             mem_stream.seek(0)
             ode2 = pickle.load(mem_stream)
             
-        self.assertEqual(ode,
+        self.assertEqual(self.ode,
                          ode2,
                          'Pickled and unpickled objects must be equal')
