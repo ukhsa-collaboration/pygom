@@ -131,6 +131,27 @@ class DeterministicOde(BaseOdeModel):
 
     def __repr__(self):
         return "DeterministicOde" + self._get_model_str()
+    
+    ## Funcitons  to allow pickling and unpickling
+    def __getstate__(self):
+        '''
+        Grab the class's dict and remove the compiled objects
+        '''
+        state = self.__dict__.copy()
+        
+        for state_name, value in state.items():
+            if 'compileExprAndFormat' in str(value):
+                state[state_name] = None
+        
+        return state
+    
+    def __setstate__(self, state):
+        '''
+        Restore the classes state with reset of compile status
+        '''
+        self.__dict__.update(state)
+        
+        self._hasNewTransition.trip()
 
     ########################################################################
     #

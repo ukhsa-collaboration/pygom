@@ -14,6 +14,7 @@ class CompileCanary(object):
     a direct assignment (they may not be tripped in this way).
     '''
     states = []
+    _states = {}
 
     def __init__(self):
         '''

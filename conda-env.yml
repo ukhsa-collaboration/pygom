@@ -9,5 +9,5 @@ dependencies:
   - scipy
   - sympy
   - graphviz
-  - pip:
-    - python-libsbml
+  - cython
+ # - pip: []

@@ -7,6 +7,7 @@
 """
 
 __all__ = ['SimulateOde']
+import logging
 
 import copy
 from numbers import Number
@@ -166,7 +167,7 @@ class SimulateOde(DeterministicOde):
                       self.transition_var,
                       output_time=output_time))
 
-    def simulate_param(self, t, iteration, parallel=True, full_output=False):
+    def simulate_param(self, t, iteration, parallel=False, full_output=False):
         '''
         Simulate the ode by generating new realization of the stochastic
         parameters and integrate the system deterministically.
@@ -245,7 +246,7 @@ class SimulateOde(DeterministicOde):
         else:
             return Y
 
-    def simulate_jump(self, t, iteration, parallel=True,
+    def simulate_jump(self, t, iteration, parallel=False,
                       exact=False, full_output=False):
         '''
         Simulate the ode using stochastic simulation.  It switches
@@ -309,7 +310,7 @@ class SimulateOde(DeterministicOde):
         if parallel:
             try:
                 import dask.bag
-                print("Parallel simulation")
+                logging.debug("Using Dask for parallel simulation")
                 def jump_partial(final_t): return(self._jump(final_t,
                                                              exact=exact,
                                                              full_output=True,
@@ -318,11 +319,11 @@ class SimulateOde(DeterministicOde):
                 xtmp = dask.bag.from_sequence(np.ones(iteration)*finalT)
                 xtmp = xtmp.map(jump_partial).compute()
             except Exception as e:
-                # print(e)
-                print("Revert to serial")
+                raise e
+                logging.warning("Parallel simulation failed reverting to serial")
                 xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
         else:
-            print("Serial computation")
+            logging.debug("Performing serial simulation")
             xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
 
         xmat = list(zip(*xtmp))
