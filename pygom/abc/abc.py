@@ -192,48 +192,28 @@ class ABC():
             # making copies of the parameters and weights for referencing
             res_old = self.res.copy()
             w_old = self.w.copy()/sum(self.w)
+            # Todo: place these into the dask cluster
 
             # getting the correct covariance matrix            
             if (self.M is not None):
                 mnn_sigma = [sigma_nearest_neighbours(self,res_old,k) for k in range(self.N)]
             else:
-                sigma = np.cov(self.res.T)
+                mnn_sigma = [np.cov(self.res.T)]
             
-            while i < self.N:
-                #print(i)
-                total_counter += 1
-                if g == 0: 
-                    trial_params = st.uniform.rvs(self.prior_low,self.prior_range)  # <- note the definition of st.uniform.rvs differs from numpy
-                else:
-                    random_index = np.random.choice(self.N,p=w_old)
-                    if self.M is not None:
-                        sigma = mnn_sigma[random_index]
-                    trial_params = rmvnorm(1,mean=res_old[random_index],sigma=sigma)
-                w1 = np.prod(st.uniform.pdf(trial_params, self.prior_low, self.prior_range))
-                if w1:
-                    # formatting trial_params e.g. converting from log-scale, ensuring total population size is conserved
-                    temp_trial_params = trial_params.copy()
-                    temp_trial_params = self._log_parameters(temp_trial_params)
-                    par_update(temp_trial_params)
-                    if hasattr(self,"con_state"): # i.e. if there is a total population size that needs to be conserved...
-                        # ...set the new initial condition equal to pop size minus the sum of the remaining initial conditions
-                        self.obj._x0[self.con_state] = self.pop_size - self.obj._x0[self.con_state_indices].sum() 
-                    #print(trial_params)
-                    #print(self.obj._x0)
-                    #print(self.obj._ode.parameters)
-                    
-                    cost = self.obj.cost()
-                    if cost < tolerance:
-                        self.res[i] = trial_params
-                        dist[i] = cost
-                        if g == 0:
-                            w2 = 1
-                        else:
-                            # the following definition of wk is fine if the kernel is symmetric e.g. for a normal pdf we have (x-mu)**2 = (mu-x)**2
-                            wk = dmvnorm(res_old, mean=self.res[i], sigma=sigma)  
-                            w2 = np.dot(wk, w_old)
-                        self.w[i] = w1/w2
-                        i += 1
+            total_counter = 0
+            for i in range(self.N):
+                (self.w[i], 
+                 rejections, 
+                 trial_params, 
+                 cost) = self._perform_generation(generation=g,
+                                                  mnn_sigma=mnn_sigma,
+                                                  tolerance=tolerance,
+                                                  res_old=res_old,
+                                                  w_old=w_old)
+                self.res[i] = trial_params
+                dist[i] = cost
+                total_counter += (rejections + 1)
+                
             accept_rate = 100*self.N/total_counter
             self.acceptance_rate[g-rerun] = accept_rate
             if progress: print("Generation %s \n tolerance = %.5f \n acceptance rate = %.2f%%\n" % (g+1-rerun,tolerance,accept_rate))
@@ -241,6 +221,62 @@ class ABC():
         self.final_tol = tolerance
         if q is not None:
             self.next_tol = np.quantile(dist,self.q)        
+
+    def _perform_generation(self, 
+                            generation, 
+                            mnn_sigma,
+                            tolerance, 
+                            par_update,
+                            res_old,
+                            w_old):
+        '''
+        Carry out a single generation
+        
+        Parameters
+        ----------
+        generation: The generation number
+        mnn_sigma: covariance of the M nearest neibours 
+        tolerance: Calculated tolerence for this generation
+        res_old: Previous generation parameters
+        w_old: Previous generation weights
+        '''
+        rejections = 0
+        while True: # Todo: should be some timeout on this
+            if generation == 0: 
+                trial_params = st.uniform.rvs(self.prior_low,self.prior_range)  # <- note the definition of st.uniform.rvs differs from numpy
+            else:
+                random_index = np.random.choice(self.N,p=w_old)
+                if len(mnn_sigma) == 1:
+                    sigma=mnn_sigma[0]
+                else:
+                    sigma = mnn_sigma[random_index]
+                trial_params = rmvnorm(1,
+                                       mean=res_old[random_index],
+                                       sigma=sigma)
+            w1 = np.prod(st.uniform.pdf(trial_params, self.prior_low, self.prior_range))
+            if w1:
+                # formatting trial_params e.g. converting from log-scale, ensuring total population size is conserved
+                temp_trial_params = trial_params.copy()
+                temp_trial_params = self._log_parameters(temp_trial_params)
+                par_update(temp_trial_params)
+                if hasattr(self,"con_state"): # i.e. if there is a total population size that needs to be conserved...
+                    # ...set the new initial condition equal to pop size minus the sum of the remaining initial conditions
+                    self.obj._x0[self.con_state] = self.pop_size - self.obj._x0[self.con_state_indices].sum() 
+                #print(trial_params)
+                #print(self.obj._x0)
+                #print(self.obj._ode.parameters)
+                
+                cost = self.obj.cost()
+                if cost < tolerance:
+                    if generation == 0:
+                        w2 = 1
+                    else:
+                        # the following definition of wk is fine if the kernel is symmetric e.g. for a normal pdf we have (x-mu)**2 = (mu-x)**2
+                        wk = dmvnorm(res_old, mean=self.res[i], sigma=sigma)  
+                        w2 = np.dot(wk, w_old)
+                    break # sucess so escape from the while
+            rejections += 1
+        return (w1/w2, rejections, trial_params, cost)
 
 
     def continue_posterior_sample(self, N, tol, G=1, q=None, M=None, progress=False):
