@@ -26,7 +26,7 @@ install:
 
 # Runs test with coverage
 script:
-  - coverage run python test
+  - coverage run setup.py test
 
 # Push the result to
 after_success:
