@@ -68,6 +68,7 @@ jobs:
                 }
           }
           Invoke-VSDevEnvironment
+          Get-Command rc.exe | Format-Table -AutoSize
           
       - name: Install dependencies
         run: |
