@@ -69,6 +69,7 @@ jobs:
           }
           Invoke-VSDevEnvironment
           Get-Command rc.exe | Format-Table -AutoSize
+          echo "::add-path::$(Get-Command rc.exe | Split-Path)"
           
       - name: Install dependencies
         run: |
