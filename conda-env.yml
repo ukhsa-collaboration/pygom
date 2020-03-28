@@ -2,12 +2,12 @@ name: pygom
 channels:
   - conda-forge
 dependencies:
-  - dask
-  - matplotlib
-  - numpy
-  - pandas
-  - scipy
-  - sympy
-  - graphviz
-  - cython
+  - dask>=0.13.0
+  - matplotlib>=1.0.0
+  - numpy>=1.6.0
+  - pandas>=0.15.0
+  - scipy>=1.4.1
+  - sympy>=1.0.0
+  - graphviz>=0.4.9
+  - cython>=0.29
  # - pip: []
