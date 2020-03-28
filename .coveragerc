@@ -1,0 +1,4 @@
+[run]
+branch = True
+include = */pygom/*
+disable_warnings = include-ignored
