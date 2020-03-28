@@ -39,6 +39,9 @@ jobs:
         run: |
           python setup.py build
           python setup.py install
+          pwd
+          ls -lh
+          echo "backend: TkAgg" >> ~/.matplotlib/matplotlibrc
           
       - name: Test and coverage
         run: coverage run setup.py test
