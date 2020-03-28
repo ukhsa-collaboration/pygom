@@ -21,12 +21,12 @@ install:
   - source activate pygom
   - pip install -r requirements.txt
   - pip install codecov
+  - python setup.py build
+  - python setup.py install
 
 # Runs test with coverage
 script:
-  - python setup.py build
-  - python setup.py install
-  - coverage run -m unittest discover
+  - coverage run python test
 
 # Push the result to
 after_success:
