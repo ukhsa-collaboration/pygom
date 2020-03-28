@@ -18,7 +18,7 @@ before_install:
 
 install:
   - conda create -n pygom python=$TRAVIS_PYTHON_VERSION
-  - conda activate pygom
+  - source activate pygom
   - conda env update -f conda-env.yml
   - pip install codecov
   - python setup.py build
