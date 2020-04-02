@@ -10,27 +10,8 @@ import numpy as np
 import scipy.stats as st
 import matplotlib.pyplot
 
+from pygom.utilR import dmvnorm, rmvnorm
 """ v7: - allowing us to specify a constraint on initial conditions when inferring initial conditions """
-
-# could be included within utilR/distn.py
-##### multivariate normal distribution
-def dmvnorm(x, mean=None, sigma=None):
-    """
-    See
-    https://www.rdocumentation.org/packages/mvtnorm/versions/1.0-12/topics/mvnorm
-    """
-    if mean is None:
-        mean = np.repeat(0, len(x))
-    if sigma is None:
-        sigma = np.identity(len(x))
-    return st.multivariate_normal.pdf(x, mean=mean, cov=sigma)
-
-def rmvnorm(n, mean, sigma, seed=None):
-    '''
-    See
-    https://www.rdocumentation.org/packages/mvtnorm/versions/1.0-12/topics/mvnorm
-    '''
-    return st.multivariate_normal.rvs(mean=mean, cov=sigma, size=n)
 
 
 def get_tolerance(self,g,dist):
