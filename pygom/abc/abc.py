@@ -117,7 +117,7 @@ class ABC():
                 params = 10**params
         return params
     
-    def get_posterior_sample(self, N, tol, G=1, q=None, M=None, progress=False, rerun=False):
+    def get_posterior_sample_original(self, N, tol, G=1, q=None, M=None, progress=False, rerun=False):
         """
         Parameters
         ----------
@@ -225,7 +225,7 @@ class ABC():
             self.next_tol = np.quantile(dist,self.q)        
         
 
-    def get_posterior_sample_par(self, N, tol, G=1, q=None, M=None, progress=False, rerun=False):
+    def get_posterior_sample(self, N, tol, G=1, q=None, M=None, progress=False, rerun=False):
         """
         Parameters
         ----------
@@ -294,7 +294,6 @@ class ABC():
             
             total_counter = 0
             for i in range(self.N):
-                print(i)
                 (self.w[i], 
                  rejections, 
                  self.res[i], 
