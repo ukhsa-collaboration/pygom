@@ -4,6 +4,8 @@ Created on Fri Feb 21 14:32:31 2020
 
 @author: Jonathan.Carruthers
 """
+import logging
+
 import numpy as np
 import scipy.stats as st
 import matplotlib.pyplot
@@ -133,8 +135,7 @@ class ABC():
             if self.log[0] == 1:
                 params = 10**params
         return params
-            
-
+    
     def get_posterior_sample(self, N, tol, G=1, q=None, M=None, progress=False, rerun=False):
         """
         Parameters
@@ -192,29 +193,140 @@ class ABC():
             # making copies of the parameters and weights for referencing
             res_old = self.res.copy()
             w_old = self.w.copy()/sum(self.w)
-            # Todo: place these into the dask cluster
 
             # getting the correct covariance matrix            
             if (self.M is not None):
                 mnn_sigma = [sigma_nearest_neighbours(self,res_old,k) for k in range(self.N)]
             else:
-                mnn_sigma = [np.cov(self.res.T)]
+                sigma = np.cov(self.res.T)
+            
+            while i < self.N:
+                #print(i)
+                total_counter += 1
+                if g == 0: 
+                    trial_params = st.uniform.rvs(self.prior_low,self.prior_range)  # <- note the definition of st.uniform.rvs differs from numpy
+                else:
+                    random_index = np.random.choice(self.N,p=w_old)
+                    if self.M is not None:
+                        sigma = mnn_sigma[random_index]
+                    trial_params = rmvnorm(1,mean=res_old[random_index],sigma=sigma)
+                w1 = np.prod(st.uniform.pdf(trial_params, self.prior_low, self.prior_range))
+                if w1:
+                    # formatting trial_params e.g. converting from log-scale, ensuring total population size is conserved
+                    temp_trial_params = trial_params.copy()
+                    temp_trial_params = self._log_parameters(temp_trial_params)
+                    par_update(temp_trial_params)
+                    if hasattr(self,"con_state"): # i.e. if there is a total population size that needs to be conserved...
+                        # ...set the new initial condition equal to pop size minus the sum of the remaining initial conditions
+                        self.obj._x0[self.con_state] = self.pop_size - self.obj._x0[self.con_state_indices].sum() 
+                    #print(trial_params)
+                    #print(self.obj._x0)
+                    #print(self.obj._ode.parameters)
+                    
+                    cost = self.obj.cost()
+                    if cost < tolerance:
+                        self.res[i] = trial_params
+                        dist[i] = cost
+                        if g == 0:
+                            w2 = 1
+                        else:
+                            # the following definition of wk is fine if the kernel is symmetric e.g. for a normal pdf we have (x-mu)**2 = (mu-x)**2
+                            wk = dmvnorm(res_old, mean=self.res[i], sigma=sigma)  
+                            w2 = np.dot(wk, w_old)
+                        self.w[i] = w1/w2
+                        i += 1
+            accept_rate = 100*self.N/total_counter
+            self.acceptance_rate[g-rerun] = accept_rate
+            if progress: print("Generation %s \n tolerance = %.5f \n acceptance rate = %.2f%%\n" % (g+1-rerun,tolerance,accept_rate))
+        
+        self.final_tol = tolerance
+        if q is not None:
+            self.next_tol = np.quantile(dist,self.q)        
+        
+
+    def get_posterior_sample_par(self, N, tol, G=1, q=None, M=None, progress=False, rerun=False):
+        """
+        Parameters
+        ----------
+        N: integer
+            the number of samples in each generation
+        tol: float or array like
+            the initial tolerance or sequence of decreasing tolerances
+        G: integer
+            the number of generations used in ABC SMC/ ABC SMC MNN
+        q: float (0 < q < 1)
+            the quantile used to specify the tolerance for future generations in ABC SMC/ ABC SMC MNN
+        M: integer
+            the number of nearest neighbours used in ABC SMC MNN (M < N)
+        progress: bool
+            if True, reports the generation number, acceptance rate and threshold after each generation
+        rerun: bool
+            if False, this is the first attempt to obtain the posterior sample
+        """      
+        self.N = N
+        self.tol = tol
+        self.G = G
+        self.q = q
+        self.M = M
+                       
+        if not rerun:
+            self.res = np.zeros((self.N,self.numParam))
+            self.w = np.ones(self.N)
+        self.acceptance_rate = np.zeros(self.G)
+    
+        if N < 100:
+            logging.warn('N is low this may cause errors')#Todo: why does rmvnorm give LinAlgError with low N? better test and catch needed
+        # perform some checks
+        if self.G == 1:
+            assert not hasattr(self.tol, "__len__"), "When performing rejection sampling ABC, only provide a single tolerance"
+        elif self.q is None:
+            assert hasattr(self.tol, "__len__"), "When performing ABC SMC, a list of tolerances or quantile must be provided"
+            assert len(self.tol) == self.G, "The number of tolerances specified must be equal to the number of generations"
+        else:
+            assert not hasattr(self.tol, "__len__"), "When specifying a quantile, only provide an initial tolerance"
+            
+        if self.M is not None:
+            assert (self.M < self.N), "The number of nearest neighbours must be less than the sample size (M < N). Omitting M is equivalent to M = N."
+                
+        # setting the appropriate function for updating the parameters/initial conditions
+        par_update = self._get_update_function()
+        
+        # empty array to store the values of cost
+        dist = np.empty(self.N)
+        
+        for g in range(rerun,self.G+rerun):
+            tolerance = get_tolerance(self,g-rerun,dist)
+            
+            i = 0
+            total_counter = 0
+            
+            # making copies of the parameters and weights for referencing
+            res_old = self.res.copy()
+            w_old = self.w.copy()/sum(self.w)
+            # Todo: place these into the dask cluster
+
+            # getting the correct covariance matrix            
+            if (self.M is not None):
+                mnn_sigma = [sigma_nearest_neighbours(self, res_old,k) for k in range(self.N)]
+            else:
+                mnn_sigma = np.cov(self.res.T)
             
             total_counter = 0
             for i in range(self.N):
+                print(i)
                 (self.w[i], 
                  rejections, 
-                 trial_params, 
-                 cost) = self._perform_generation(generation=g,
+                 self.res[i], 
+                 dist[i]) = self._perform_generation(generation=g,
                                                   mnn_sigma=mnn_sigma,
                                                   tolerance=tolerance,
+                                                  par_update=par_update,
                                                   res_old=res_old,
                                                   w_old=w_old)
-                self.res[i] = trial_params
-                dist[i] = cost
+
                 total_counter += (rejections + 1)
                 
-            accept_rate = 100*self.N/total_counter
+            accept_rate = 100 * self.N / total_counter
             self.acceptance_rate[g-rerun] = accept_rate
             if progress: print("Generation %s \n tolerance = %.5f \n acceptance rate = %.2f%%\n" % (g+1-rerun,tolerance,accept_rate))
         
@@ -237,6 +349,7 @@ class ABC():
         generation: The generation number
         mnn_sigma: covariance of the M nearest neibours 
         tolerance: Calculated tolerence for this generation
+        par_update: The update function
         res_old: Previous generation parameters
         w_old: Previous generation weights
         '''
@@ -246,8 +359,8 @@ class ABC():
                 trial_params = st.uniform.rvs(self.prior_low,self.prior_range)  # <- note the definition of st.uniform.rvs differs from numpy
             else:
                 random_index = np.random.choice(self.N,p=w_old)
-                if len(mnn_sigma) == 1:
-                    sigma=mnn_sigma[0]
+                if self.M is None:
+                    sigma=mnn_sigma
                 else:
                     sigma = mnn_sigma[random_index]
                 trial_params = rmvnorm(1,
@@ -272,7 +385,7 @@ class ABC():
                         w2 = 1
                     else:
                         # the following definition of wk is fine if the kernel is symmetric e.g. for a normal pdf we have (x-mu)**2 = (mu-x)**2
-                        wk = dmvnorm(res_old, mean=self.res[i], sigma=sigma)  
+                        wk = dmvnorm(res_old, mean=trial_params, sigma=sigma)  
                         w2 = np.dot(wk, w_old)
                     break # sucess so escape from the while
             rejections += 1
