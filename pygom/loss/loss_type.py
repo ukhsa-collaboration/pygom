@@ -9,14 +9,16 @@
 __all__ = [
     'Square',
     'Normal',
-    'Poisson'
+    'Poisson',
+    'Gamma',
+    'NegBinom'
     ]
 
 import numpy as np
 
 from pygom.model._model_errors import InitializeError
 from pygom.model.ode_utils import check_array_type
-from pygom.utilR.distn import dnorm, dpois
+from pygom.utilR.distn import dnorm, dpois, gamma_mu_shape, dnbinom
 
 class InputError(Exception):
     '''
@@ -253,6 +255,133 @@ class Normal(object):
             resid = self._y - yhat
 
         return resid
+    
+class Gamma(object):
+    '''
+    Gamma distribution loss object
+
+    Parameters
+    ----------
+    y: array like
+        observation
+    Shape: float 
+        shape (a in latex equations)
+    '''
+    
+    def __init__(self, y, shape=2.0):
+        err_str = "Shape is not of the correct "
+        self._y = check_array_type(y)
+        if isinstance(shape, np.ndarray):
+            if len(shape.shape) > 1:
+                if 1 in shape.shape:
+                    shape = shape.flatten()
+
+                if y.shape == shape.shape:
+                    self._shape = shape
+                else:
+                    raise InitializeError(err_str + "size")
+            else:
+                if y.shape == shape.shape:
+                    self._shape = shape
+                else:
+                    raise InitializeError(err_str + "size")
+        elif shape is None or shape == 2.0:
+            self._shape = 2*np.ones(self._y.shape)
+        else:
+            raise InitializeError(err_str + "type")
+
+        self.loss(self._y)
+        
+    def loss(self, yhat):
+        '''
+        The loss under a gamma distribution.  Defined as the negative 
+        log-likelihood of the gamma distirbution in terms of mean and shape.
+        See: Bolker, B. M. (2008). Gamma. In Ecological Models in R (pp. 131–133). Princeton University Press.
+             File "Loss function Calculations.ipnyb"
+
+        Parameters
+        ----------
+        yhat: array like
+            prediction
+            
+
+        Returns
+        -------
+        negative log-likelihood, :math:`\\mathcal{L}(\\hat{y}; y,a)`
+
+        '''
+        if len(yhat.shape) > 1:
+            if 1 in yhat.shape:
+                yhat = yhat.ravel()
+                
+        return -gamma_mu_shape(x=self._y, mu=yhat,shape=self._shape,log=True).sum()
+    
+    def diff_loss(self, yhat):
+        '''
+        Derivative of the loss function with respect to yhat which is
+        See: 
+            File "Loss function Calculations.ipnyb"
+            
+        Parameters
+        ----------
+        yhat: array like
+            prediction
+            
+
+        Returns
+        -------
+        first_deriv_yhat: array like
+            :math:`\\mathcal\\frac{a \\left(\\hat{y} - y\\right)}{\\hat{y}^{2}}`
+
+        '''
+        if len(yhat.shape) > 1:
+            if 1 in yhat.shape:
+                yhat = yhat.ravel()
+
+        return self._shape*(yhat-self._y)/yhat**2
+
+    def diff2Loss(self, yhat):
+        '''
+        Twice derivative of the loss function with respect to yhat.
+        See: 
+            Jupiter notebook "Loss function Calculations.ipnyb"
+        
+        Parameters
+        ----------
+        yhat: array like
+            observation
+            
+
+        Returns
+        -------
+        scnd_deriv_yhat: array like
+            :math:`\\mathcal\\frac{a \\left(- \\hat{y} + 2 y\\right)}{\\hat{y}^{3}}`
+
+        '''
+        y = self._y
+        shape = self._shape
+        
+        return shape*(-yhat+2*y)/yhat**3 
+    
+    def residual(self, yhat):
+        '''
+        Raw residuals
+
+        Parameters
+        ----------
+        yhat: array like
+            observation
+
+        Returns
+        -------
+        r: array like
+            residuals
+
+        '''
+        if len(yhat.shape) > 1:
+            if 1 in yhat.shape:
+                yhat = yhat.ravel()
+        return self._y - yhat
 
 class Poisson(object):
     '''
@@ -344,3 +473,139 @@ class Poisson(object):
                 yhat = yhat.ravel()
         return self._y - yhat
 
+class NegBinom(object):
+    '''
+    Negative Binomial distribution loss object
+
+    Parameters
+    ----------
+    y: array like
+        observation
+    k: float 
+        Overdispersion parameter (k=mean+mean(mean/variance))
+    '''
+    
+    def __init__(self, y, k=1.0):
+        err_str = "k (the overdispersion parameter) is not of the correct "
+        self._y = check_array_type(y)
+        if isinstance(k, np.ndarray):
+            if len(k.shape) > 1:
+                if 1 in k.shape:
+                    k = k.flatten()
+
+                if y.shape == k.shape:
+                    self._k = k
+                else:
+                    raise InitializeError(err_str + "size")
+            else:
+                if y.shape == k.shape:
+                    self._k = k
+                else:
+                    raise InitializeError(err_str + "size")
+        elif k is None or k == 1.0:
+            self._k = np.ones(self._y.shape)
+        else:
+            raise InitializeError(err_str + "type")
+
+        self.loss(self._y)
+        
+    def loss(self, yhat):
+        '''
+        The loss under a Negative Binomial distribution.  Defined as the
+        negative log-likelihood of the Negative Binomial 2 distribution.
+
+        Parameters
+        ----------
+        yhat: array like
+            observation
+
+        Returns
+        -------
+        negative log-likelihood, :math:`\\mathcal{L}(\\hat{y}; y,k)`
+
+        '''
+        if len(yhat.shape) > 1:
+            if 1 in yhat.shape:
+                yhat = yhat.ravel()
+                
+        return (-dnbinom(self._y, mu=yhat,size=self._k,log=True)).sum()
+    
+    def diff_loss(self, yhat):
+        '''
+        Derivative of the loss function with respect to yhat which is
+        See: 
+            Jupiter notebook "Loss function Calculations.ipnyb"
+            Bolker, B. M. (2008). Negative Binomial. In Ecological Models in R (pp. 124–126). Princeton University Press
+
+        Parameters
+        ----------
+        yhat: array like
+            observation
+            
+        k: array like
+            observation
+
+        Returns
+        -------
+        first_deriv_yhat: array like
+            :math:`\\frac{k(\\hat{y}-y)}{\\hat{y}(k + \\hat{y})}`
+
+        '''
+        if len(yhat.shape) > 1:
+            if 1 in yhat.shape:
+                yhat = yhat.ravel()
+                
+        y = self._y
+        k = self._k
+        first_derivs_yhat = (k*(yhat-y))/(yhat*(k+yhat))
+        return first_derivs_yhat
+
+    def diff2Loss(self, yhat):
+        '''
+        Twice derivative of the loss function with respect to yhat.
+        See: 
+            Jupiter notebook "Loss function Calculations.ipnyb"
+            Bolker, B. M. (2008). Negative Binomial. In Ecological Models in R (pp. 124–126). Princeton University Press
+
+        Parameters
+        ----------
+        yhat: array like
+            observation
+            
+        k: array like
+            observation
+
+        Returns
+        -------
+        scnd_deriv_yhat: array like
+            :math:`\\frac{k(\\hat{y}(k + \\hat{y}) + \\hat{y}(y -\\hat{y}) + (k + \\hat{y})(y - \\hat{y})}{\\hat{y}^{2}(k + \\hat{y})^{2}}`
+
+        '''
+        y = self._y
+        k = self._k
+        scnd_derivs_yhat_p1= k
+        scnd_derivs_yhat_p2= yhat**(-2)
+        scnd_derivs_yhat_p3= (k + yhat)**(-2)
+        scnd_derivs_yhat_p4= yhat*(k + yhat) - yhat*(yhat - x) - (k + yhat)*(yhat - x)
+        scnd_derivs_yhat= scnd_derivs_yhat_p1*scnd_derivs_yhat_p2*scnd_derivs_yhat_p3*scnd_derivs_yhat_p4
+        return scnd_derivs_yhat    
+    
+    def residual(self, yhat):
+        '''
+        Raw residuals
+
+        Parameters
+        ----------
+        yhat: array like
+            observation
+
+        Returns
+        -------
+        r: array like
+            residuals
+
+        '''
+        if len(yhat.shape) > 1:
+            if 1 in yhat.shape:
+                yhat = yhat.ravel()
+        return self._y - yhat

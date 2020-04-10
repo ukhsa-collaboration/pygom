@@ -10,11 +10,13 @@
 __all__ = [
     'SquareLoss',
     'NormalLoss',
-    'PoissonLoss'
+    'PoissonLoss',
+    'GammaLoss',
+    'NegBinomLoss'
     ]
 
 from pygom.loss.base_loss import BaseLoss
-from pygom.loss.loss_type import Normal, Square, Poisson
+from pygom.loss.loss_type import Normal, Square, Poisson, Gamma, NegBinom
 from pygom.model.ode_utils import check_array_type
 
 class SquareLoss(BaseLoss):
@@ -64,6 +66,22 @@ class NormalLoss(BaseLoss):
                     return Normal(self._y, 1.0/self._stateWeight)
             else:
                 return Normal(self._y, 1.0/self._stateWeight)
+            
+class GammaLoss(BaseLoss):
+    '''
+    Realizations from a Gamma distribution taking parameters mean and shape.
+    '''
+    def __init__(self, theta, ode, x0, t0, t, y, state_name,
+                 shape=2, target_param=None, target_state=None):
+        super(GammaLoss, self).__init__(theta, ode, x0, t0, t, y,
+                                             state_name, shape,
+                                             target_param, target_state)
+            
+    def __repr__(self):
+        return "GammaLoss" + self._get_model_str()
+
+    def _setLossType(self):
+        return Gamma(self._y)
 
 class PoissonLoss(BaseLoss):
     '''
@@ -78,3 +96,19 @@ class PoissonLoss(BaseLoss):
 
     def _setLossType(self):
         return Poisson(self._y)
+    
+class NegBinomLoss(BaseLoss):
+    '''
+    Realizations from a Negative Binomial distribution
+    '''
+    def __init__(self, theta, ode, x0, t0, t, y, state_name,
+                 k=1, target_param=None, target_state=None):
+        super(NegBinomLoss, self).__init__(theta, ode, x0, t0, t, y,
+                                             state_name, k,
+                                             target_param, target_state)
+            
+    def __repr__(self):
+        return "NegBinomLoss" + self._get_model_str()
+
+    def _setLossType(self):
+        return NegBinom(self._y)
