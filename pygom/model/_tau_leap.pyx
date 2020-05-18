@@ -27,7 +27,7 @@ def _cy_test_tau_leap_safety(np.ndarray[np.float64_t] x,
     cdef np.int64_t n_reactants = reactant_mat.shape[0]
 
     cdef double mu, max_cdf, new_cdf
-    cdef double total_rate = sum(rates)
+    cdef double total_rate = np.sum(rates)
     safe = False
     cdef int count = 0
     while safe is False:
