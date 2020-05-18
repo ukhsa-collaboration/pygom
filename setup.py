@@ -34,6 +34,12 @@ if use_cython:
                   include_dirs=[numpy.get_include()],
 #                  extra_compile_args=['-fopenmp'],
 #                  extra_link_args=['-fopenmp']),
+),
+        Extension("pygom.model._firstReaction",
+                  ["pygom/model/_firstReaction.pyx"],
+                  include_dirs=[numpy.get_include()],
+#                  extra_compile_args=['-fopenmp'],
+#                  extra_link_args=['-fopenmp']),
 )
     ]
     cmdclass.update({ 'build_ext': build_ext })
@@ -44,6 +50,12 @@ else:
      ext_modules += [
          Extension("pygom.model._tau_leap",
                    [ "pygom/model/_tau_leap.c" ],
+                   include_dirs=[numpy.get_include()],
+#                  extra_compile_args=['-fopenmp'],
+#                  extra_link_args=['-fopenmp']),
+),
+         Extension("pygom.model._firstReaction",
+                   [ "pygom/model/_firstReaction.c" ],
                    include_dirs=[numpy.get_include()],
 #                  extra_compile_args=['-fopenmp'],
 #                  extra_link_args=['-fopenmp']),
