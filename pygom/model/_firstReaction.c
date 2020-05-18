@@ -2161,9 +2161,8 @@ static void __pyx_memoryview_slice_assign_scalar(__Pyx_memviewslice *, int, size
 static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize_t *, int, size_t, void *); /*proto*/
 static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *, PyObject *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t = { "float64_t", NULL, sizeof(__pyx_t_5numpy_float64_t), { 0 }, 0, 'R', 0, 0 };
-static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_int64_t = { "int64_t", NULL, sizeof(__pyx_t_5numpy_int64_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_5numpy_int64_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_5numpy_int64_t), 0 };
-static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_long = { "long", NULL, sizeof(long), { 0 }, 0, IS_UNSIGNED(long) ? 'U' : 'I', IS_UNSIGNED(long), 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
 #define __Pyx_MODULE_NAME "pygom.model._firstReaction"
 extern int __pyx_module_is_main_pygom__model___firstReaction;
 int __pyx_module_is_main_pygom__model___firstReaction = 0;
@@ -3392,7 +3391,7 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_4_cy_updateStateWithJum
  * @cython.cdivision(True)     # Deactivate the div 0 error checking
  * def _cy_firstReaction(np.ndarray[np.float64_t] x_in,             # <<<<<<<<<<<<<<
  *                       double t,
- *                       np.ndarray[np.int64_t, ndim=2] state_change_mat,
+ *                       np.ndarray[long, ndim=2] state_change_mat,
  */
 
 /* Python wrapper */
@@ -3581,7 +3580,7 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
   __pyx_pybuffernd_x_in.diminfo[0].strides = __pyx_pybuffernd_x_in.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x_in.diminfo[0].shape = __pyx_pybuffernd_x_in.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_state_change_mat.rcbuffer->pybuffer, (PyObject*)__pyx_v_state_change_mat, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 79, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_state_change_mat.rcbuffer->pybuffer, (PyObject*)__pyx_v_state_change_mat, &__Pyx_TypeInfo_long, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 79, __pyx_L1_error)
   }
   __pyx_pybuffernd_state_change_mat.diminfo[0].strides = __pyx_pybuffernd_state_change_mat.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_state_change_mat.diminfo[0].shape = __pyx_pybuffernd_state_change_mat.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_state_change_mat.diminfo[1].strides = __pyx_pybuffernd_state_change_mat.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_state_change_mat.diminfo[1].shape = __pyx_pybuffernd_state_change_mat.rcbuffer->pybuffer.shape[1];
   {
@@ -4245,7 +4244,7 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
  * @cython.cdivision(True)     # Deactivate the div 0 error checking
  * def _cy_firstReaction(np.ndarray[np.float64_t] x_in,             # <<<<<<<<<<<<<<
  *                       double t,
- *                       np.ndarray[np.int64_t, ndim=2] state_change_mat,
+ *                       np.ndarray[long, ndim=2] state_change_mat,
  */
 
   /* function exit code */
@@ -20759,7 +20758,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * @cython.cdivision(True)     # Deactivate the div 0 error checking
  * def _cy_firstReaction(np.ndarray[np.float64_t] x_in,             # <<<<<<<<<<<<<<
  *                       double t,
- *                       np.ndarray[np.int64_t, ndim=2] state_change_mat,
+ *                       np.ndarray[long, ndim=2] state_change_mat,
  */
   __pyx_tuple__32 = PyTuple_Pack(22, __pyx_n_s_x_in, __pyx_n_s_t, __pyx_n_s_state_change_mat, __pyx_n_s_rates, __pyx_n_s_seed, __pyx_n_s_x, __pyx_n_s_my_view, __pyx_n_s_Nx, __pyx_n_s_my_view_2, __pyx_n_s_i, __pyx_n_s_all_inf, __pyx_n_s_smallest, __pyx_n_s_min_index, __pyx_n_s_min_index_c, __pyx_n_s_x_shape, __pyx_n_s_new_x, __pyx_n_s_new_x_view, __pyx_n_s_my_view_4, __pyx_n_s_failed_jump, __pyx_n_s_return_x, __pyx_n_s_return_t, __pyx_n_s_return_sucess); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__32);
@@ -21272,7 +21271,7 @@ if (!__Pyx_RefNanny) {
  * @cython.cdivision(True)     # Deactivate the div 0 error checking
  * def _cy_firstReaction(np.ndarray[np.float64_t] x_in,             # <<<<<<<<<<<<<<
  *                       double t,
- *                       np.ndarray[np.int64_t, ndim=2] state_change_mat,
+ *                       np.ndarray[long, ndim=2] state_change_mat,
  */
   __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_5pygom_5model_14_firstReaction_7_cy_firstReaction, NULL, __pyx_n_s_pygom_model__firstReaction); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
