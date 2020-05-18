@@ -78,7 +78,7 @@ def _cy_updateStateWithJump(x, transition_index, state_change_mat, n=1.0):
 @cython.cdivision(True)     # Deactivate the div 0 error checking
 def _cy_firstReaction(np.ndarray[np.float64_t] x_in, 
                       double t, 
-                      np.ndarray[long, ndim=2] state_change_mat,
+                      np.ndarray[np.int64_t, ndim=2] state_change_mat,
                       np.ndarray[np.float64_t] rates,
                       seed):
      

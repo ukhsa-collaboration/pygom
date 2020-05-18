@@ -419,8 +419,8 @@ def firstReaction(x, t, state_change_mat, transition_func, seed=None):
     """
 
     rates = transition_func(x, t)
-
-    return _cy_firstReaction(x, t, state_change_mat, rates, seed)
+    
+    return _cy_firstReaction(x.astype(np.float64, copy=False), float(t), state_change_mat.astype(np.int64, copy=False), rates.astype(np.float64, copy=False), seed)
 
 
 
