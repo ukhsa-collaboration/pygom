@@ -2061,7 +2061,7 @@ static int __Pyx_ValidateAndInit_memviewslice(
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_double(PyObject *, int writable_flag);
 
 /* ObjectToMemviewSlice.proto */
-static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_long(PyObject *, int writable_flag);
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_int64_t(PyObject *, int writable_flag);
 
 /* CheckBinaryVersion.proto */
 static int __Pyx_check_binary_version(void);
@@ -2163,7 +2163,6 @@ static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *, 
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t = { "float64_t", NULL, sizeof(__pyx_t_5numpy_float64_t), { 0 }, 0, 'R', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_int64_t = { "int64_t", NULL, sizeof(__pyx_t_5numpy_int64_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_5numpy_int64_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_5numpy_int64_t), 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
-static __Pyx_TypeInfo __Pyx_TypeInfo_long = { "long", NULL, sizeof(long), { 0 }, 0, IS_UNSIGNED(long) ? 'U' : 'I', IS_UNSIGNED(long), 0 };
 #define __Pyx_MODULE_NAME "pygom.model._firstReaction"
 extern int __pyx_module_is_main_pygom__model___firstReaction;
 int __pyx_module_is_main_pygom__model___firstReaction = 0;
@@ -2260,7 +2259,6 @@ static const char __pyx_k_MemoryError[] = "MemoryError";
 static const char __pyx_k_PickleError[] = "PickleError";
 static const char __pyx_k_exponential[] = "exponential";
 static const char __pyx_k_failed_jump[] = "failed_jump";
-static const char __pyx_k_min_index_c[] = "min_index_c";
 static const char __pyx_k_RuntimeError[] = "RuntimeError";
 static const char __pyx_k_cy_checkJump[] = "_cy_checkJump";
 static const char __pyx_k_pyx_checksum[] = "__pyx_checksum";
@@ -2383,7 +2381,6 @@ static PyObject *__pyx_n_s_jump_time;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_memview;
 static PyObject *__pyx_n_s_min_index;
-static PyObject *__pyx_n_s_min_index_c;
 static PyObject *__pyx_n_s_mode;
 static PyObject *__pyx_n_s_my_view;
 static PyObject *__pyx_n_s_my_view_2;
@@ -3505,8 +3502,7 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
   int __pyx_v_i;
   int __pyx_v_all_inf;
   __pyx_t_5numpy_float64_t __pyx_v_smallest;
-  int __pyx_v_min_index;
-  long __pyx_v_min_index_c;
+  long __pyx_v_min_index;
   npy_intp __pyx_v_x_shape;
   PyObject *__pyx_v_new_x = NULL;
   __Pyx_memviewslice __pyx_v_new_x_view = { 0, 0, { 0 }, { 0 }, { 0 } };
@@ -3927,13 +3923,13 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
  *     # first jump
  * 
  *     cdef np.float64_t smallest = INFINITY             # <<<<<<<<<<<<<<
- *     cdef int min_index
+ *     cdef long min_index
  * 
  */
   __pyx_v_smallest = NPY_INFINITY;
 
   /* "pygom/model/_firstReaction.pyx":125
- *     cdef int min_index
+ *     cdef long min_index
  * 
  *     for i in range(0, Nx):             # <<<<<<<<<<<<<<
  *         if my_view_2[i] < smallest:
@@ -3970,7 +3966,7 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
  *             smallest = my_view_2[i]
  *             min_index = i             # <<<<<<<<<<<<<<
  * 
- *     #min_index = np.argmin(my_view_2)
+ *     x_shape = x_in.shape[0]
  */
       __pyx_v_min_index = __pyx_v_i;
 
@@ -3984,17 +3980,8 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
     }
   }
 
-  /* "pygom/model/_firstReaction.pyx":131
- * 
- *     #min_index = np.argmin(my_view_2)
- *     cdef long min_index_c = min_index             # <<<<<<<<<<<<<<
- * 
- *     x_shape = x_in.shape[0]
- */
-  __pyx_v_min_index_c = __pyx_v_min_index;
-
-  /* "pygom/model/_firstReaction.pyx":133
- *     cdef long min_index_c = min_index
+  /* "pygom/model/_firstReaction.pyx":130
+ *             min_index = i
  * 
  *     x_shape = x_in.shape[0]             # <<<<<<<<<<<<<<
  *     new_x = np.empty([x_shape])
@@ -4002,21 +3989,21 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
  */
   __pyx_v_x_shape = (__pyx_v_x_in->dimensions[0]);
 
-  /* "pygom/model/_firstReaction.pyx":134
+  /* "pygom/model/_firstReaction.pyx":131
  * 
  *     x_shape = x_in.shape[0]
  *     new_x = np.empty([x_shape])             # <<<<<<<<<<<<<<
  * 
  *     cdef double[:] new_x_view = new_x
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 131, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_x_shape); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_x_shape); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 131, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 131, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_4);
   PyList_SET_ITEM(__pyx_t_3, 0, __pyx_t_4);
@@ -4034,41 +4021,41 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
   __pyx_t_6 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 134, __pyx_L1_error)
+  if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 131, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_new_x = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "pygom/model/_firstReaction.pyx":136
+  /* "pygom/model/_firstReaction.pyx":133
  *     new_x = np.empty([x_shape])
  * 
  *     cdef double[:] new_x_view = new_x             # <<<<<<<<<<<<<<
  * 
  *     # Inline _cy_updateStateWithJump
  */
-  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_v_new_x, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_v_new_x, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 133, __pyx_L1_error)
   __pyx_v_new_x_view = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "pygom/model/_firstReaction.pyx":140
+  /* "pygom/model/_firstReaction.pyx":137
  *     # Inline _cy_updateStateWithJump
  * 
- *     cdef long[:,:] my_view_4 = state_change_mat             # <<<<<<<<<<<<<<
+ *     cdef np.int64_t[:,:] my_view_4 = state_change_mat             # <<<<<<<<<<<<<<
  *     for i in range(0, x_shape):
- *         new_x_view[i] = x[i] + my_view_4[i, min_index_c]
+ *         new_x_view[i] = x[i] + my_view_4[i, min_index]
  */
-  __pyx_t_23 = __Pyx_PyObject_to_MemoryviewSlice_dsds_long(((PyObject *)__pyx_v_state_change_mat), PyBUF_WRITABLE); if (unlikely(!__pyx_t_23.memview)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __pyx_t_23 = __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_int64_t(((PyObject *)__pyx_v_state_change_mat), PyBUF_WRITABLE); if (unlikely(!__pyx_t_23.memview)) __PYX_ERR(0, 137, __pyx_L1_error)
   __pyx_v_my_view_4 = __pyx_t_23;
   __pyx_t_23.memview = NULL;
   __pyx_t_23.data = NULL;
 
-  /* "pygom/model/_firstReaction.pyx":141
+  /* "pygom/model/_firstReaction.pyx":138
  * 
- *     cdef long[:,:] my_view_4 = state_change_mat
+ *     cdef np.int64_t[:,:] my_view_4 = state_change_mat
  *     for i in range(0, x_shape):             # <<<<<<<<<<<<<<
- *         new_x_view[i] = x[i] + my_view_4[i, min_index_c]
+ *         new_x_view[i] = x[i] + my_view_4[i, min_index]
  * 
  */
   __pyx_t_24 = __pyx_v_x_shape;
@@ -4076,21 +4063,21 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
   for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_25; __pyx_t_10+=1) {
     __pyx_v_i = __pyx_t_10;
 
-    /* "pygom/model/_firstReaction.pyx":142
- *     cdef long[:,:] my_view_4 = state_change_mat
+    /* "pygom/model/_firstReaction.pyx":139
+ *     cdef np.int64_t[:,:] my_view_4 = state_change_mat
  *     for i in range(0, x_shape):
- *         new_x_view[i] = x[i] + my_view_4[i, min_index_c]             # <<<<<<<<<<<<<<
+ *         new_x_view[i] = x[i] + my_view_4[i, min_index]             # <<<<<<<<<<<<<<
  * 
  *     # Inline _cy_checkJump
  */
     __pyx_t_26 = __pyx_v_i;
     __pyx_t_27 = __pyx_v_i;
-    __pyx_t_28 = __pyx_v_min_index_c;
+    __pyx_t_28 = __pyx_v_min_index;
     __pyx_t_29 = __pyx_v_i;
-    *((double *) ( /* dim=0 */ (__pyx_v_new_x_view.data + __pyx_t_29 * __pyx_v_new_x_view.strides[0]) )) = ((*((double *) ( /* dim=0 */ (__pyx_v_x.data + __pyx_t_26 * __pyx_v_x.strides[0]) ))) + (*((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_my_view_4.data + __pyx_t_27 * __pyx_v_my_view_4.strides[0]) ) + __pyx_t_28 * __pyx_v_my_view_4.strides[1]) ))));
+    *((double *) ( /* dim=0 */ (__pyx_v_new_x_view.data + __pyx_t_29 * __pyx_v_new_x_view.strides[0]) )) = ((*((double *) ( /* dim=0 */ (__pyx_v_x.data + __pyx_t_26 * __pyx_v_x.strides[0]) ))) + (*((__pyx_t_5numpy_int64_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_my_view_4.data + __pyx_t_27 * __pyx_v_my_view_4.strides[0]) ) + __pyx_t_28 * __pyx_v_my_view_4.strides[1]) ))));
   }
 
-  /* "pygom/model/_firstReaction.pyx":146
+  /* "pygom/model/_firstReaction.pyx":143
  *     # Inline _cy_checkJump
  * 
  *     Nx = new_x_view.shape[0]             # <<<<<<<<<<<<<<
@@ -4099,7 +4086,7 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
  */
   __pyx_v_Nx = (__pyx_v_new_x_view.shape[0]);
 
-  /* "pygom/model/_firstReaction.pyx":148
+  /* "pygom/model/_firstReaction.pyx":145
  *     Nx = new_x_view.shape[0]
  * 
  *     failed_jump = False             # <<<<<<<<<<<<<<
@@ -4108,7 +4095,7 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
  */
   __pyx_v_failed_jump = 0;
 
-  /* "pygom/model/_firstReaction.pyx":150
+  /* "pygom/model/_firstReaction.pyx":147
  *     failed_jump = False
  * 
  *     for i in range(Nx):             # <<<<<<<<<<<<<<
@@ -4120,7 +4107,7 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
   for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
     __pyx_v_i = __pyx_t_10;
 
-    /* "pygom/model/_firstReaction.pyx":151
+    /* "pygom/model/_firstReaction.pyx":148
  * 
  *     for i in range(Nx):
  *         if new_x_view[i] < 0:             # <<<<<<<<<<<<<<
@@ -4131,7 +4118,7 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
     __pyx_t_13 = (((*((double *) ( /* dim=0 */ (__pyx_v_new_x_view.data + __pyx_t_30 * __pyx_v_new_x_view.strides[0]) ))) < 0.0) != 0);
     if (__pyx_t_13) {
 
-      /* "pygom/model/_firstReaction.pyx":152
+      /* "pygom/model/_firstReaction.pyx":149
  *     for i in range(Nx):
  *         if new_x_view[i] < 0:
  *             failed_jump = True             # <<<<<<<<<<<<<<
@@ -4140,7 +4127,7 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
  */
       __pyx_v_failed_jump = 1;
 
-      /* "pygom/model/_firstReaction.pyx":151
+      /* "pygom/model/_firstReaction.pyx":148
  * 
  *     for i in range(Nx):
  *         if new_x_view[i] < 0:             # <<<<<<<<<<<<<<
@@ -4150,7 +4137,7 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
     }
   }
 
-  /* "pygom/model/_firstReaction.pyx":154
+  /* "pygom/model/_firstReaction.pyx":151
  *             failed_jump = True
  * 
  *     if failed_jump:             # <<<<<<<<<<<<<<
@@ -4160,7 +4147,7 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
   __pyx_t_13 = (__pyx_v_failed_jump != 0);
   if (__pyx_t_13) {
 
-    /* "pygom/model/_firstReaction.pyx":155
+    /* "pygom/model/_firstReaction.pyx":152
  * 
  *     if failed_jump:
  *         return_x, return_t, return_sucess = x_in, t, False             # <<<<<<<<<<<<<<
@@ -4176,7 +4163,7 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
     __pyx_v_return_t = __pyx_t_31;
     __pyx_v_return_sucess = __pyx_t_13;
 
-    /* "pygom/model/_firstReaction.pyx":154
+    /* "pygom/model/_firstReaction.pyx":151
  *             failed_jump = True
  * 
  *     if failed_jump:             # <<<<<<<<<<<<<<
@@ -4186,20 +4173,20 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
     goto __pyx_L19;
   }
 
-  /* "pygom/model/_firstReaction.pyx":158
+  /* "pygom/model/_firstReaction.pyx":155
  *     else:
  *         #t += jump_times[min_index]
- *         t += my_view_2[min_index_c]             # <<<<<<<<<<<<<<
+ *         t += my_view_2[min_index]             # <<<<<<<<<<<<<<
  *         return_x, return_t, return_sucess =  new_x, t, True
  * 
  */
   /*else*/ {
-    __pyx_t_32 = __pyx_v_min_index_c;
+    __pyx_t_32 = __pyx_v_min_index;
     __pyx_v_t = (__pyx_v_t + (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_my_view_2.rcbuffer->pybuffer.buf, __pyx_t_32, __pyx_pybuffernd_my_view_2.diminfo[0].strides)));
 
-    /* "pygom/model/_firstReaction.pyx":159
+    /* "pygom/model/_firstReaction.pyx":156
  *         #t += jump_times[min_index]
- *         t += my_view_2[min_index_c]
+ *         t += my_view_2[min_index]
  *         return_x, return_t, return_sucess =  new_x, t, True             # <<<<<<<<<<<<<<
  * 
  *     return return_x, return_t, return_sucess
@@ -4215,17 +4202,17 @@ static PyObject *__pyx_pf_5pygom_5model_14_firstReaction_6_cy_firstReaction(CYTH
   }
   __pyx_L19:;
 
-  /* "pygom/model/_firstReaction.pyx":161
+  /* "pygom/model/_firstReaction.pyx":158
  *         return_x, return_t, return_sucess =  new_x, t, True
  * 
  *     return return_x, return_t, return_sucess             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_6 = PyFloat_FromDouble(__pyx_v_return_t); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_6 = PyFloat_FromDouble(__pyx_v_return_t); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 158, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_v_return_sucess); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_v_return_sucess); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 158, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_v_return_x);
   __Pyx_GIVEREF(__pyx_v_return_x);
@@ -20357,7 +20344,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_memview, __pyx_k_memview, sizeof(__pyx_k_memview), 0, 0, 1, 1},
   {&__pyx_n_s_min_index, __pyx_k_min_index, sizeof(__pyx_k_min_index), 0, 0, 1, 1},
-  {&__pyx_n_s_min_index_c, __pyx_k_min_index_c, sizeof(__pyx_k_min_index_c), 0, 0, 1, 1},
   {&__pyx_n_s_mode, __pyx_k_mode, sizeof(__pyx_k_mode), 0, 0, 1, 1},
   {&__pyx_n_s_my_view, __pyx_k_my_view, sizeof(__pyx_k_my_view), 0, 0, 1, 1},
   {&__pyx_n_s_my_view_2, __pyx_k_my_view_2, sizeof(__pyx_k_my_view_2), 0, 0, 1, 1},
@@ -20761,10 +20747,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *                       double t,
  *                       np.ndarray[np.int64_t, ndim=2] state_change_mat,
  */
-  __pyx_tuple__32 = PyTuple_Pack(22, __pyx_n_s_x_in, __pyx_n_s_t, __pyx_n_s_state_change_mat, __pyx_n_s_rates, __pyx_n_s_seed, __pyx_n_s_x, __pyx_n_s_my_view, __pyx_n_s_Nx, __pyx_n_s_my_view_2, __pyx_n_s_i, __pyx_n_s_all_inf, __pyx_n_s_smallest, __pyx_n_s_min_index, __pyx_n_s_min_index_c, __pyx_n_s_x_shape, __pyx_n_s_new_x, __pyx_n_s_new_x_view, __pyx_n_s_my_view_4, __pyx_n_s_failed_jump, __pyx_n_s_return_x, __pyx_n_s_return_t, __pyx_n_s_return_sucess); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_tuple__32 = PyTuple_Pack(21, __pyx_n_s_x_in, __pyx_n_s_t, __pyx_n_s_state_change_mat, __pyx_n_s_rates, __pyx_n_s_seed, __pyx_n_s_x, __pyx_n_s_my_view, __pyx_n_s_Nx, __pyx_n_s_my_view_2, __pyx_n_s_i, __pyx_n_s_all_inf, __pyx_n_s_smallest, __pyx_n_s_min_index, __pyx_n_s_x_shape, __pyx_n_s_new_x, __pyx_n_s_new_x_view, __pyx_n_s_my_view_4, __pyx_n_s_failed_jump, __pyx_n_s_return_x, __pyx_n_s_return_t, __pyx_n_s_return_sucess); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__32);
   __Pyx_GIVEREF(__pyx_tuple__32);
-  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(5, 0, 22, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pygom_model__firstReaction_pyx, __pyx_n_s_cy_firstReaction, 79, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(5, 0, 21, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pygom_model__firstReaction_pyx, __pyx_n_s_cy_firstReaction, 79, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 79, __pyx_L1_error)
 
   /* "View.MemoryView":286
  *         return self.name
@@ -25621,7 +25607,7 @@ __pyx_fail:
 }
 
 /* ObjectToMemviewSlice */
-  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_long(PyObject *obj, int writable_flag) {
+  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_int64_t(PyObject *obj, int writable_flag) {
     __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
     __Pyx_BufFmt_StackElem stack[1];
     int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
@@ -25632,7 +25618,7 @@ __pyx_fail:
     }
     retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
                                                  PyBUF_RECORDS_RO | writable_flag, 2,
-                                                 &__Pyx_TypeInfo_long, stack,
+                                                 &__Pyx_TypeInfo_nn___pyx_t_5numpy_int64_t, stack,
                                                  &result, obj);
     if (unlikely(retcode == -1))
         goto __pyx_fail;

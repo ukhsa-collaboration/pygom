@@ -120,16 +120,13 @@ def _cy_firstReaction(np.ndarray[np.float64_t] x_in,
     # first jump
 
     cdef np.float64_t smallest = INFINITY
-    cdef int min_index
+    cdef long min_index
 
     for i in range(0, Nx):
         if my_view_2[i] < smallest:
             smallest = my_view_2[i]
             min_index = i
 	   
-    #min_index = np.argmin(my_view_2)
-    cdef long min_index_c = min_index
-    
     x_shape = x_in.shape[0]
     new_x = np.empty([x_shape])
 
@@ -137,9 +134,9 @@ def _cy_firstReaction(np.ndarray[np.float64_t] x_in,
     
     # Inline _cy_updateStateWithJump
 
-    cdef long[:,:] my_view_4 = state_change_mat
+    cdef np.int64_t[:,:] my_view_4 = state_change_mat
     for i in range(0, x_shape):
-        new_x_view[i] = x[i] + my_view_4[i, min_index_c]
+        new_x_view[i] = x[i] + my_view_4[i, min_index]
 
     # Inline _cy_checkJump
   
@@ -155,7 +152,7 @@ def _cy_firstReaction(np.ndarray[np.float64_t] x_in,
         return_x, return_t, return_sucess = x_in, t, False
     else:
         #t += jump_times[min_index]
-        t += my_view_2[min_index_c]
+        t += my_view_2[min_index]
         return_x, return_t, return_sucess =  new_x, t, True
    
     return return_x, return_t, return_sucess 
