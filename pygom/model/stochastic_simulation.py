@@ -628,7 +628,7 @@ def _newJumpTimes(rates, seed=None):
     #tau = [rexp(1, r, seed=seed) if r > 0 else np.Inf for r in rates]
     #return np.array(tau)A
 
-    return _cy_newJumpTimes(rates, seed=None)
+    return _cy_newJumpTimes(rates.astype(np.float64, copy=False), seed=None)
 
 
 def _updateStateWithJump(x, transition_index, state_change_mat, n=1.0):
