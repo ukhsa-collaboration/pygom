@@ -16,7 +16,7 @@ from .ode_utils import check_array_type
 
 # Code from the cython module
 from ._tau_leap import _cy_test_tau_leap_safety
-
+from ._firstReaction import _cy_checkJump, _cy_newJumpTimes, _cy_updateStateWithJump, _cy_firstReaction
 
 def exact(x0, t0, t1, state_change_mat, transition_func,
           output_time=False, seed=None):
@@ -419,14 +419,9 @@ def firstReaction(x, t, state_change_mat, transition_func, seed=None):
     """
 
     rates = transition_func(x, t)
-    # find our jump times
-    jump_times = _newJumpTimes(rates, seed=seed)
-    if np.all(jump_times == np.Inf):
-        return x, t, False
-    # first jump
-    min_index = np.argmin(jump_times)
-    new_x = _updateStateWithJump(x, min_index, state_change_mat)
-    return _checkJump(x, new_x, t, jump_times[min_index])
+    
+    return _cy_firstReaction(x.astype(np.float64, copy=False), float(t), state_change_mat.astype(np.int64, copy=False), rates.astype(np.float64, copy=False), seed)
+
 
 
 def nextReaction(x, t, state_change_mat, dependency_graph,
@@ -630,8 +625,10 @@ def _newJumpTimes(rates, seed=None):
     distribution
     """
 
-    tau = [rexp(1, r, seed=seed) if r > 0 else np.Inf for r in rates]
-    return np.array(tau)
+    #tau = [rexp(1, r, seed=seed) if r > 0 else np.Inf for r in rates]
+    #return np.array(tau)A
+
+    return _cy_newJumpTimes(rates.astype(np.float64, copy=False), seed=None)
 
 
 def _updateStateWithJump(x, transition_index, state_change_mat, n=1.0):
@@ -644,11 +641,14 @@ def _updateStateWithJump(x, transition_index, state_change_mat, n=1.0):
 
 
 def _checkJump(x, new_x, t, jump_time):
-    failed_jump = np.any(new_x < 0)
 
-    if failed_jump:
-        # print "Illegal jump, x: %s, new x: %s" % (x, new_x)
-        return x, t, False
-    else:
-        t += jump_time
-        return new_x, t, True
+    return _cy_checkJump(x, new_x, t, jump_time)
+
+#    failed_jump = np.any(new_x < 0)
+#
+#    if failed_jump:
+#        # print "Illegal jump, x: %s, new x: %s" % (x, new_x)
+#        return x, t, False
+#    else:
+#        t += jump_time
+#        return new_x, t, True
