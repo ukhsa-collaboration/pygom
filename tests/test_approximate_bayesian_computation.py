@@ -36,7 +36,7 @@ class TestABC(TestCase):
         
         # parameters for the ABC fit
         num_samples = 500
-        generations = 20
+        generations = 30
         max_delta = 0.5
 
         # setup the fit model
@@ -75,6 +75,6 @@ class TestABC(TestCase):
         # modelabc.plot_posterior_histograms()
 
         # Test that the results are almost equal to the values given (within 20%)
-        for res, given in zip(np.median(modelabc.res, axis=0), 
+        for res, given in zip(np.mean(modelabc.res, axis=0), 
                               np.array([x[1] for x in self.param_eval])):
             self.assertAlmostEqual(res, given, delta=given * max_delta)
