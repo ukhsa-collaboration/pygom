@@ -224,8 +224,9 @@ class ABC():
         if not rerun:
             self.res = np.zeros((self.N,self.numParam))
             self.w = np.ones(self.N)
+            self.dist = np.zeros(self.N)
         self.acceptance_rate = np.zeros(self.G)
-        self.tolerance = np.zeros(self.G)
+        self.tolerances = np.zeros(self.G)
         
         # perform some checks
         if self.G == 1:
@@ -241,12 +242,9 @@ class ABC():
                 
         # setting the appropriate function for updating the parameters/initial conditions
         par_update = self._get_update_function()
-        
-        # empty array to store the values of cost
-        dist = np.empty(self.N)
-        
+                
         for g in range(rerun, self.G+rerun):
-            tolerance = self.get_tolerance(g-rerun, dist)
+            tolerance = self.get_tolerance(g-rerun)
             self.tolerances[g-rerun] = tolerance
             
             i = 0
@@ -256,21 +254,22 @@ class ABC():
             res_old = self.res.copy()
             w_old = self.w.copy()/sum(self.w)
 
-            # getting the correct covariance matrix            
+            # getting the correct covariance matrix  
             if (self.M is not None):
-                mnn_sigma = [self.sigma_nearest_neighbours(res_old,k) for k in range(self.N)]
+                sigma_list = [self.sigma_nearest_neighbours(res_old,k) for k in range(self.N)]
             else:
-                sigma = np.cov(self.res.T)
-            
+                tilde_indices = np.where(self.dist < tolerance)[0] # (this should have length self.q*self.N)
+                sum_w_tilde = sum(w_old[tilde_indices])
+                sigma_list = [sum((w_old[k]/sum_w_tilde)*self._vprod(res_old[k],res_old[i]) for k in tilde_indices) for i in range(self.N)]
+
             while i < self.N:
                 total_counter += 1
                 if g == 0: 
                     trial_params = np.array([param.random_sample() for param in self.parameters])
                 else:
                     random_index = np.random.choice(self.N, p=w_old)
-                    if self.M is not None:
-                        sigma = mnn_sigma[random_index]
-                    trial_params = rmvnorm(1,mean=res_old[random_index],sigma=sigma)
+                    sigma = sigma_list[random_index]
+                    trial_params = np.atleast_1d(rmvnorm(1,mean=res_old[random_index],sigma=sigma))
                 w1 = np.prod([self.parameters[i].density(trial_params[i]) for i in range(self.numParam)])
                 if w1:
                     # converting from log-scale and ensuring total population size is conserved
@@ -282,7 +281,7 @@ class ABC():
                     cost = self.obj.cost()
                     if cost < tolerance:
                         self.res[i] = trial_params
-                        dist[i] = cost
+                        self.dist[i] = cost
                         if g == 0:
                             w2 = 1
                         else:
@@ -296,7 +295,7 @@ class ABC():
             if progress: print("Generation %s \n tolerance = %.5f \n acceptance rate = %.2f%%\n" % (g+1-rerun,tolerance,accept_rate))
         self.final_tol = tolerance
         if q is not None:
-            self.next_tol = np.quantile(dist,self.q)        
+            self.next_tol = np.quantile(self.dist,self.q)        
         
 
     def get_posterior_sample(self, N, tol, G=1, q=None, M=None, progress=False, rerun=False):
@@ -327,6 +326,7 @@ class ABC():
         if not rerun:
             self.res = np.zeros((self.N,self.numParam))
             self.w = np.ones(self.N)
+            self.dist = np.zeros(self.N)
         self.acceptance_rate = np.zeros(self.G)
         self.tolerances = np.zeros(self.G)
     
@@ -346,12 +346,9 @@ class ABC():
                 
         # setting the appropriate function for updating the parameters/initial conditions
         par_update = self._get_update_function()
-        
-        # empty array to store the values of cost
-        dist = np.empty(self.N)
-        
+            
         for g in range(rerun,self.G+rerun):
-            tolerance = self.get_tolerance(g-rerun,dist)
+            tolerance = self.get_tolerance(g-rerun)
             self.tolerances[g-rerun] = tolerance
             
             i = 0
@@ -362,19 +359,22 @@ class ABC():
             w_old = self.w.copy()/sum(self.w)
             # Todo: place these into the dask cluster
 
-            # getting the correct covariance matrix            
+            # getting the correct covariance matrix   
             if (self.M is not None):
-                mnn_sigma = [self.sigma_nearest_neighbours(res_old,k) for k in range(self.N)]
+                sigma_list = [self.sigma_nearest_neighbours(res_old,k) for k in range(self.N)]
             else:
-                mnn_sigma = np.cov(self.res.T)
+                tilde_indices = np.where(self.dist < tolerance)[0] # (this should have length self.q*self.N)
+                sum_w_tilde = sum(w_old[tilde_indices])
+                sigma_list = [sum((w_old[k]/sum_w_tilde)*self._vprod(res_old[k],res_old[i]) for k in tilde_indices) for i in range(self.N)]
+                
             
             #total_counter = 0
             for i in range(self.N):
                 (self.w[i], 
                  rejections, 
                  self.res[i], 
-                 dist[i]) = self._perform_generation(generation=g,
-                                                  mnn_sigma=mnn_sigma,
+                 self.dist[i]) = self._perform_generation(generation=g,
+                                                  sigma_list=sigma_list,
                                                   tolerance=tolerance,
                                                   par_update=par_update,
                                                   res_old=res_old,
@@ -388,11 +388,11 @@ class ABC():
         
         self.final_tol = tolerance
         if q is not None:
-            self.next_tol = np.quantile(dist,self.q)        
+            self.next_tol = np.quantile(self.dist,self.q)        
 
     def _perform_generation(self, 
                             generation, 
-                            mnn_sigma,
+                            sigma_list,
                             tolerance, 
                             par_update,
                             res_old,
@@ -412,18 +412,13 @@ class ABC():
         rejections = 0
         while True: # Todo: should be some timeout on this
             if generation == 0: 
-                #trial_params = st.uniform.rvs(self.prior_low,self.prior_range)  # <- note the definition of st.uniform.rvs differs from numpy
                 trial_params = np.array([param.random_sample() for param in self.parameters])
             else:
                 random_index = np.random.choice(self.N,p=w_old)
-                if self.M is None:
-                    sigma=mnn_sigma
-                else:
-                    sigma = mnn_sigma[random_index]
-                trial_params = rmvnorm(1,
-                                       mean=res_old[random_index],
-                                       sigma=sigma)
-            #w1 = np.prod(st.uniform.pdf(trial_params, self.prior_low, self.prior_range))
+                sigma = sigma_list[random_index]
+                trial_params = np.atleast_1d(rmvnorm(1,
+                                                     mean=res_old[random_index],
+                                                     sigma=sigma))
             w1 = np.prod([self.parameters[i].density(trial_params[i]) for i in range(self.numParam)])
             if w1:
                 # converting from log-scale and ensuring total population size is conserved
@@ -527,7 +522,8 @@ class ABC():
                 ax.set(adjustable='box')
                 if pp == numPlotParam-1: break
         f.tight_layout()
-        f.show()                
+        f.show()      
+        return f
                 
                 
     def plot_pointwise_predictions(self,plot_states=None,new_time=None,max_ncol=3):
@@ -605,6 +601,7 @@ class ABC():
             if pp == numPlotStates-1: break
         f.tight_layout()
         f.show()
+        return f
 
 
     def plot_scatter(self,plot_params=None,logscale=True):
@@ -644,14 +641,12 @@ class ABC():
         f.show()
      
         
-    def get_tolerance(self,g,dist):
+    def get_tolerance(self,g):
         """
         Parameters
         ----------
         g: integer
            generation number of the ABC-SMC/MNN algorithm
-        dist: array like
-           array of distances from the previous generation
         """
         # choose the tolerance given the generation number and how q and tol are defined
         if g == 0:
@@ -661,7 +656,7 @@ class ABC():
                 return self.tol[0]
         else:
             if self.q is not None:
-                return np.quantile(dist,self.q)
+                return np.quantile(self.dist,self.q)
             else:
                 return self.tol[g]
         
@@ -705,3 +700,9 @@ class ABC():
             if self.log[0]:
                 params = 10**params
         return params
+    
+    
+    def _vprod(self,a1,a2):
+        diff = (a1-a2).reshape((self.numParam,1))
+        return np.dot(diff,diff.T)
+    
