@@ -66,6 +66,10 @@ def get_function(str):
     except:
         raise AttributeError("The chosen distribution is not available, please choose a different one")
 
+def _get_sigma(i,res,weights,indices):
+        diff = res[indices] - res[i]
+        return np.einsum('ij,ik,i->jk', diff, diff, weights)
+
 #%%
 """ Parameter class"""
 class Parameter():
@@ -259,9 +263,11 @@ class ABC():
                 sigma_list = [self.sigma_nearest_neighbours(res_old,k) for k in range(self.N)]
             else:
                 tilde_indices = np.where(self.dist < tolerance)[0] # (this should have length self.q*self.N)
-                sum_w_tilde = sum(w_old[tilde_indices])
-                sigma_list = [sum((w_old[k]/sum_w_tilde)*self._vprod(res_old[k],res_old[i]) for k in tilde_indices) for i in range(self.N)]
-
+                # using einsum
+                w_tilde = w_old[tilde_indices]
+                w_tilde_norm = w_tilde/sum(w_tilde)
+                sigma_list = [_get_sigma(i,res_old,w_tilde_norm,tilde_indices) for i in range(self.N)]
+                
             while i < self.N:
                 total_counter += 1
                 if g == 0: 
@@ -364,10 +370,11 @@ class ABC():
                 sigma_list = [self.sigma_nearest_neighbours(res_old,k) for k in range(self.N)]
             else:
                 tilde_indices = np.where(self.dist < tolerance)[0] # (this should have length self.q*self.N)
-                sum_w_tilde = sum(w_old[tilde_indices])
-                sigma_list = [sum((w_old[k]/sum_w_tilde)*self._vprod(res_old[k],res_old[i]) for k in tilde_indices) for i in range(self.N)]
+                # using einsum
+                w_tilde = w_old[tilde_indices]
+                w_tilde_norm = w_tilde/sum(w_tilde)
+                sigma_list = [_get_sigma(i,res_old,w_tilde_norm,tilde_indices) for i in range(self.N)]                
                 
-            
             #total_counter = 0
             for i in range(self.N):
                 (self.w[i], 
