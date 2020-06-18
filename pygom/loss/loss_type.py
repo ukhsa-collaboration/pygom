@@ -287,6 +287,8 @@ class Gamma(object):
                     raise InitializeError(err_str + "size")
         elif shape is None or shape == 2.0:
             self._shape = 2*np.ones(self._y.shape)
+        elif isinstance(shape, (int, float)) and shape !=2:
+            self._shape = shape*np.ones(self._y.shape)
         else:
             raise InitializeError(err_str + "type")
 
@@ -485,7 +487,7 @@ class NegBinom(object):
         Overdispersion parameter (k=mean+mean(mean/variance))
     '''
     
-    def __init__(self, y, k=1.0,):
+    def __init__(self, y, k=1.0):
         err_str = "k (the overdispersion parameter) is not of the correct "
         self._y = check_array_type(y)
         if isinstance(k, np.ndarray):
@@ -504,6 +506,8 @@ class NegBinom(object):
                     raise InitializeError(err_str + "size")
         elif k is None or k == 1.0:
             self._k = np.ones(self._y.shape)
+        elif isinstance(k, (int, float)) and k >1:
+            self._k = k*np.ones(self._y.shape)
         else:
             raise InitializeError(err_str + "type")
 
