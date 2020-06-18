@@ -82,13 +82,13 @@ class GammaLoss(BaseLoss):
         return "GammaLoss" + self._get_model_str()
 
     def _setLossType(self):
-        return Gamma(self._y,self._shape)
+        return Gamma(self._y,self._shape,self._state_weight))
 
 class PoissonLoss(BaseLoss):
     '''
     Realizations from a Poisson distribution
     '''
-    def __init__(self, theta, ode, x0, t0, t, y, state_name,
+    def __init__(self, theta, ode, x0, t0, t, y, state_name,state_weight=None,
                  target_param=None, target_state=None):
         super(PoissonLoss, self).__init__(theta, ode, x0, t0, t, y, state_name,
                                           None, target_param, target_state)
@@ -96,7 +96,7 @@ class PoissonLoss(BaseLoss):
         return "PoissonLoss" + self._get_model_str()
 
     def _setLossType(self):
-        return Poisson(self._y)
+        return Poisson(self._y,self._state_weight))
     
 class NegBinomLoss(BaseLoss):
     '''
@@ -113,4 +113,4 @@ class NegBinomLoss(BaseLoss):
         return "NegBinomLoss" + self._get_model_str()
 
     def _setLossType(self):
-        return NegBinom(self._y,self._k)
+        return NegBinom(self._y,self._k,self._state_weight)

@@ -154,7 +154,9 @@ class Normal(object):
         err_str = "Standard deviation not of the correct "
         self._y = check_array_type(y)
         if isinstance(sigma, np.ndarray):
-            if len(sigma.shape) > 1:
+            if np.any(sigma<0):
+                raise InitializeError('No elements in numpy array of sigma values should be negative')
+            elif len(sigma.shape) > 1:
                 if 1 in sigma.shape:
                     sigma = sigma.flatten()
 
@@ -169,6 +171,11 @@ class Normal(object):
                     raise InitializeError(err_str + "size")
         elif sigma is None or sigma == 1.0:
             self._sigma = np.ones(self._y.shape)
+        elif isinstance(sigma, (int, float)):
+            if sigma <0:
+                raise InitializeError('Sigma should not be negative')
+            else:
+                self._sigma = sigma*np.ones(self._y.shape)
         else:
             raise InitializeError(err_str + "type")
 
@@ -268,11 +275,13 @@ class Gamma(object):
         shape (a in latex equations)
     '''
     
-    def __init__(self, y, shape=2.0):
+    def __init__(self, y, shape=2.0, weights=None):
         err_str = "Shape is not of the correct "
         self._y = check_array_type(y)
         if isinstance(shape, np.ndarray):
-            if len(shape.shape) > 1:
+            if np.any(shape<0):
+                raise InitializeError('No elements in numpy array of shape values should be negative')
+            elif len(shape.shape) > 1:
                 if 1 in shape.shape:
                     shape = shape.flatten()
 
@@ -287,11 +296,27 @@ class Gamma(object):
                     raise InitializeError(err_str + "size")
         elif shape is None or shape == 2.0:
             self._shape = 2*np.ones(self._y.shape)
-        elif isinstance(shape, (int, float)) and shape !=2:
-            self._shape = shape*np.ones(self._y.shape)
+        elif isinstance(shape, (int, float)):
+            if shape <0:
+                raise InitializeError('Shape should not be negative')
+            else:
+                self._shape = shape*np.ones(self._y.shape)
         else:
             raise InitializeError(err_str + "type")
+        
+        if weights is None:
+            self._numVar = 0
+            self._w = np.ones(self._y.shape)
+        else:
+            self._w = check_array_type(weights)
 
+        if len(self._w.shape) > 1:
+            if self._w.shape[1] == 1:
+                self._w = self._w.flatten()
+
+        assert self._y.shape == self._w.shape, \
+            "Input weight not of the same size as y"
+            
         self.loss(self._y)
         
     def loss(self, yhat):
@@ -383,7 +408,24 @@ class Gamma(object):
         if len(yhat.shape) > 1:
             if 1 in yhat.shape:
                 yhat = yhat.ravel()
-        return self._y - yhat
+        return self._weightedResidual(yhat)
+
+    def _weightedResidual(self, yhat):
+        '''
+        Find the weighted residuals.
+        '''
+        # resid = self._y - yhat
+        # print "In weighted resid"
+        # print self._y.shape
+        if len(yhat.shape) > 1:
+            if 1 in yhat.shape:
+                resid = self._y - yhat.ravel()
+            else:
+                resid = self._y - yhat
+        else:
+            resid = self._y - yhat
+
+        return resid * self._w
 
 class Poisson(object):
     '''
@@ -395,8 +437,21 @@ class Poisson(object):
         observation
     '''
 
-    def __init__(self, y):
+    def __init__(self, y, weights=None):
         self._y = check_array_type(y)
+        if weights is None:
+            self._numVar = 0
+            self._w = np.ones(self._y.shape)
+        else:
+            self._w = check_array_type(weights)
+
+        if len(self._w.shape) > 1:
+            if self._w.shape[1] == 1:
+                self._w = self._w.flatten()
+
+        assert self._y.shape == self._w.shape, \
+            "Input weight not of the same size as y"
+            
         self.loss(self._y)
 
     def loss(self, yhat):
@@ -473,7 +528,24 @@ class Poisson(object):
         if len(yhat.shape) > 1:
             if 1 in yhat.shape:
                 yhat = yhat.ravel()
-        return self._y - yhat
+        return self._weightedResidual(yhat)
+
+    def _weightedResidual(self, yhat):
+        '''
+        Find the weighted residuals.
+        '''
+        # resid = self._y - yhat
+        # print "In weighted resid"
+        # print self._y.shape
+        if len(yhat.shape) > 1:
+            if 1 in yhat.shape:
+                resid = self._y - yhat.ravel()
+            else:
+                resid = self._y - yhat
+        else:
+            resid = self._y - yhat
+
+        return resid * self._w
 
 class NegBinom(object):
     '''
@@ -487,11 +559,13 @@ class NegBinom(object):
         Overdispersion parameter (k=mean+mean(mean/variance))
     '''
     
-    def __init__(self, y, k=1.0):
+    def __init__(self, y,  k=1.0, weights=None):
         err_str = "k (the overdispersion parameter) is not of the correct "
         self._y = check_array_type(y)
         if isinstance(k, np.ndarray):
-            if len(k.shape) > 1:
+            if np.any(k<0):
+                raise InitializeError('No elements in numpy array of shape values should be negative')
+            elif len(k.shape) > 1:
                 if 1 in k.shape:
                     k = k.flatten()
 
@@ -506,10 +580,26 @@ class NegBinom(object):
                     raise InitializeError(err_str + "size")
         elif k is None or k == 1.0:
             self._k = np.ones(self._y.shape)
-        elif isinstance(k, (int, float)) and k >1:
-            self._k = k*np.ones(self._y.shape)
+        elif isinstance(k, (int, float)):
+            if k <0:
+                raise InitializeError('k should not be negative')
+            else:
+                self._k = k*np.ones(self._y.shape)
         else:
             raise InitializeError(err_str + "type")
+            
+        if weights is None:
+            self._numVar = 0
+            self._w = np.ones(self._y.shape)
+        else:
+            self._w = check_array_type(weights)
+
+        if len(self._w.shape) > 1:
+            if self._w.shape[1] == 1:
+                self._w = self._w.flatten()
+
+        assert self._y.shape == self._w.shape, \
+            "Input weight not of the same size as y"
 
         self.loss(self._y)
         
@@ -612,4 +702,21 @@ class NegBinom(object):
         if len(yhat.shape) > 1:
             if 1 in yhat.shape:
                 yhat = yhat.ravel()
-        return self._y - yhat
+        return self._weightedResidual(yhat)
+
+    def _weightedResidual(self, yhat):
+        '''
+        Find the weighted residuals.
+        '''
+        # resid = self._y - yhat
+        # print "In weighted resid"
+        # print self._y.shape
+        if len(yhat.shape) > 1:
+            if 1 in yhat.shape:
+                resid = self._y - yhat.ravel()
+            else:
+                resid = self._y - yhat
+        else:
+            resid = self._y - yhat
+
+        return resid * self._w
