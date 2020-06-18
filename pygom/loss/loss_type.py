@@ -485,7 +485,7 @@ class NegBinom(object):
         Overdispersion parameter (k=mean+mean(mean/variance))
     '''
     
-    def __init__(self, y, k=1.0):
+    def __init__(self, y, k=1.0,):
         err_str = "k (the overdispersion parameter) is not of the correct "
         self._y = check_array_type(y)
         if isinstance(k, np.ndarray):
@@ -586,7 +586,7 @@ class NegBinom(object):
         scnd_derivs_yhat_p1= k
         scnd_derivs_yhat_p2= yhat**(-2)
         scnd_derivs_yhat_p3= (k + yhat)**(-2)
-        scnd_derivs_yhat_p4= yhat*(k + yhat) - yhat*(yhat - x) - (k + yhat)*(yhat - x)
+        scnd_derivs_yhat_p4= yhat*(k + yhat) - yhat*(yhat - y) - (k + yhat)*(yhat - y)
         scnd_derivs_yhat= scnd_derivs_yhat_p1*scnd_derivs_yhat_p2*scnd_derivs_yhat_p3*scnd_derivs_yhat_p4
         return scnd_derivs_yhat    
     
