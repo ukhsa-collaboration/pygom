@@ -10,7 +10,7 @@ pygom - ODE modelling in Python
    :target: https://travis-ci.org/PublicHealthEngland/pygom
 .. |Documentation Status| image:: https://readthedocs.org/projects/pygom/badge/?version=master
    :target: https://pygom.readthedocs.io/en/master/?badge=master
-.. |licence| image:: https://img.shields.io/pypi/l/pygom.svg   :alt: PyPI - License
+.. |licence| .. image:: https://img.shields.io/pypi/l/pygom?color=green   :alt: PyPI - License
    :target: https://raw.githubusercontent.com/PublicHealthEngland/pygom/master/LICENSE.txt
 .. |Github actions| image:: https://github.com/PublicHealthEngland/pygom/workflows/pygom/badge.svg
    :target: https://github.com/PublicHealthEngland/pygom/actions/
