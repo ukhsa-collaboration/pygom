@@ -274,6 +274,29 @@ def runif(n, min=0.0, max=1.0, seed=None):
             return rvs(low=min, high=max, size=n)
         else:
             return rvs(low=min, high=max, size=n)[0]
+        
+##### beta distribution
+# To do: write these in the same format as above with seeds
+def dbeta(x, shape1, shape2, log=False):
+    """
+    See
+    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Beta.html
+    """
+    return st.beta.pdf(x, shape1, shape2)
+
+def rbeta(n, shape1, shape2, seed=None):
+    """
+    See
+    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Beta.html
+    """
+    return st.beta.rvs(shape1, shape2, size=n)
+
+def qbeta(p, shape1, shape2):
+    """
+    See
+    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Beta.html
+    """
+    return st.beta.ppf(p, shape1, shape2)
 
 ##### multivariate normal distribution
 def dmvnorm(x, mean=None, sigma=None):
