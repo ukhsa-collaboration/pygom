@@ -25,9 +25,8 @@ class SquareLoss(BaseLoss):
     '''
     def __init__(self, theta, ode, x0, t0, t, y, state_name,
                  state_weight=None, target_param=None, target_state=None):
-        super(SquareLoss, self).__init__(theta, ode, x0, t0, t, y,
-                                         state_name, state_weight,
-                                         target_param, target_state)
+        super().__init__(theta, ode, x0, t0, t, y,
+                         state_name, state_weight,target_param, target_state)
 
     def __repr__(self):
         return "SquareLoss" + self._get_model_str()
@@ -40,32 +39,18 @@ class NormalLoss(BaseLoss):
     '''
     Realizations from a Normal distribution
     '''
-    def __init__(self, theta, ode, x0, t0, t, y, state_name,
-                 sigma=None, target_param=None, target_state=None):
-        if sigma is None:
-            super(NormalLoss, self).__init__(theta, ode, x0, t0, t, y,
-                                             state_name, sigma,
-                                             target_param, target_state)
-        else:
-            sigma = check_array_type(sigma)
-            super(NormalLoss, self).__init__(theta, ode, x0, t0, t, y,
-                                             state_name, 1.0/sigma,
-                                             target_param, target_state)
+    def __init__(self, theta, ode, x0, t0, t, y, state_name,state_weight=None,
+                 sigma=1.0, target_param=None, target_state=None):
+        self._sigma=sigma
+        super().__init__(theta, ode, x0, t0, t, y,
+                         state_name, state_weight,target_param, target_state)
 
     def __repr__(self):
         return "NormalLoss" + self._get_model_str()
 
     def _setLossType(self):
-        if self._stateWeight is None:
-            return Normal(self._y, 1.0)
-        else:
-            if len(self._stateWeight.shape) > 1:
-                if 1 in self._stateWeight.shape:
-                    return Normal(self._y, 1.0/self._stateWeight.flatten())
-                else:
-                    return Normal(self._y, 1.0/self._stateWeight)
-            else:
-                return Normal(self._y, 1.0/self._stateWeight)
+        self._lossObj = Normal(self._y,self._sigma, self._stateWeight)
+        return self._lossObj
             
 class GammaLoss(BaseLoss):
     '''
@@ -73,16 +58,15 @@ class GammaLoss(BaseLoss):
     '''
     def __init__(self, theta, ode, x0, t0, t, y, state_name,state_weight=None,
                  shape=2, target_param=None, target_state=None):
-        self._shape = shape
-        super(GammaLoss, self).__init__(theta, ode, x0, t0, t, y,
-                                             state_name, state_weight,
-                                             target_param, target_state)
+        self._shape=shape
+        super().__init__(theta, ode, x0, t0, t, y,
+                         state_name, state_weight,target_param, target_state)
             
     def __repr__(self):
         return "GammaLoss" + self._get_model_str()
 
     def _setLossType(self):
-        return Gamma(self._y,self._shape,self._state_weight))
+        return Gamma(self._y,self._shape,self._stateWeight))
 
 class PoissonLoss(BaseLoss):
     '''
@@ -90,13 +74,14 @@ class PoissonLoss(BaseLoss):
     '''
     def __init__(self, theta, ode, x0, t0, t, y, state_name,state_weight=None,
                  target_param=None, target_state=None):
-        super(PoissonLoss, self).__init__(theta, ode, x0, t0, t, y, state_name,
-                                          None, target_param, target_state)
+        super().__init__(theta, ode, x0, t0, t, y,
+                         state_name, state_weight,target_param, target_state)
+        
     def __repr__(self):
         return "PoissonLoss" + self._get_model_str()
 
     def _setLossType(self):
-        return Poisson(self._y,self._state_weight))
+        return Poisson(self._y,self._stateWeight))
     
 class NegBinomLoss(BaseLoss):
     '''
@@ -104,13 +89,12 @@ class NegBinomLoss(BaseLoss):
     '''
     def __init__(self, theta, ode, x0, t0, t, y, state_name,state_weight=None,
                  k=1, target_param=None, target_state=None):
-        self._k = k
-        super(NegBinomLoss, self).__init__(theta, ode, x0, t0, t, y,
-                                             state_name, state_weight,
-                                             target_param, target_state)
+        self._k=k
+        super().__init__(theta, ode, x0, t0, t, y,
+                         state_name, state_weight,target_param, target_state)
             
     def __repr__(self):
         return "NegBinomLoss" + self._get_model_str()
 
     def _setLossType(self):
-        return NegBinom(self._y,self._k,self._state_weight)
+        return NegBinom(self._y,self._k,self._stateWeight)
