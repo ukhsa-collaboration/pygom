@@ -52,6 +52,8 @@ class baseloss_type(object):
             self._w = check_array_type(weights)
         if np.any(weights<0):
             raise ValueError('No elements in numpy array of weights should be negative')
+        if np.all(weights==0.0):
+            raise ValueError('All elements in numpy array of weights should not be 0.0')
         if len(self._w.shape) > 1:
             if 1 in self._w.shape:
                 self._w = self._w.flatten()
@@ -366,7 +368,7 @@ class Gamma(baseloss_type):
         '''
         return self._shape*-self.residual(yhat,weighting_applied)/yhat**2
 
-    def diff2Loss(self, yhat):
+    def diff2Loss(self, yhat,weighting_applied=True):
         '''
         Twice derivative of the loss function with respect to yhat.
         See: 
@@ -376,6 +378,9 @@ class Gamma(baseloss_type):
         ----------
         yhat: array like
             observation
+        weighting_applied: boolean
+            If True multiplies array of residuals by weightings, else raw 
+            residuals are used.
             
 
         Returns
@@ -390,7 +395,7 @@ class Gamma(baseloss_type):
         y = self._y
         shape = self._shape
         
-        return shape*(-yhat+2*y)/yhat**3 
+        return shape*(self.residual(yhat,weighting_applied)+y)/yhat**3 
 
 class Poisson(baseloss_type):
     '''
