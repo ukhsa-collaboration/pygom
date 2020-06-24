@@ -65,7 +65,7 @@ class BaseLoss(object):
         y = ode_utils.check_array_type(y)
 
         if state_weight is None:
-            state_weight = 1.0
+            state_weight = np.ones(y.shape)
 
         if len(y) == y.size:
             y = y.flatten()

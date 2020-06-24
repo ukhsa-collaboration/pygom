@@ -18,7 +18,7 @@ import numpy as np
 
 from pygom.model._model_errors import InitializeError
 from pygom.model.ode_utils import check_array_type
-from pygom.utilR.distn import dnorm, dpois, gamma_mu_shape, dnbinom
+from pygom.utilR.distn import dpois, gamma_mu_shape, dnbinom
 
 class InputError(Exception):
     '''
@@ -50,13 +50,15 @@ class baseloss_type(object):
             self._w = np.ones(self._y.shape)
         else:
             self._w = check_array_type(weights)
-        if np.any(weights<0):
-            raise ValueError('No elements in numpy array of weights should be negative')
-        if np.all(weights==0.0):
-            raise ValueError('All elements in numpy array of weights should not be 0.0')
         if len(self._w.shape) > 1:
             if 1 in self._w.shape:
                 self._w = self._w.flatten()
+                
+        if np.any(self._w<0.0):
+            raise ValueError('No elements in numpy array of weights should be negative')
+        if np.all(self._w==0.0):
+            raise ValueError('All elements in numpy array of weights should not be 0.0')
+            
         assert self._y.shape == self._w.shape, \
             "Input weight not of the same size as y"
     
@@ -78,7 +80,7 @@ class baseloss_type(object):
         :math:`y_{i} - \\hat{y}_{i}`
 
         '''
-        if isinstance(weighting_applied,bool)=False:
+        if isinstance(weighting_applied,bool)==False:
             raise TypeError('weighting_applied should be boolean')
             
         if len(yhat.shape) > 1:
@@ -88,7 +90,7 @@ class baseloss_type(object):
                 resid = self._y - yhat
         else:
             resid = self._y - yhat
-        if weighting_applied = True:
+        if weighting_applied == True:
             resid *= self._w
             
         return resid
@@ -146,7 +148,7 @@ class Square(baseloss_type):
         -------
         :math:`-2(y_{i} - \\hat{y}_{i})`
         '''
-        return -2*self.residual(yhat,weighting_applied))
+        return -2*self.residual(yhat,weighting_applied)
 
     def diff2Loss(self, yhat):
         '''
@@ -231,13 +233,16 @@ class Normal(baseloss_type):
         if len(yhat.shape) > 1:
             if 1 in yhat.shape:
                 yhat = yhat.ravel()
-         
+        
+        r=self.residual(yhat,weighting_applied)
+        sigma=self._sigma
+        
         # Calculate negative likelihood (depending on weighting of residuals).
         logpdf_p1= -np.log(2)
         logpdf_p2= np.log(2)/2
-        logpdf_p3= -np.log(pi)/2
-        logpdf_p4= np.log(1/self._sigma)
-        logpdf_p5_alt=-self.residual(yhat,weighting_applied)**2/(2*sigma**2)
+        logpdf_p3= -np.log(np.pi)/2
+        logpdf_p4= np.log(1/sigma)
+        logpdf_p5_alt= -r**2 / (2*sigma**2)
         return (-(logpdf_p1+logpdf_p2+logpdf_p3+logpdf_p4+logpdf_p5_alt)).sum()
 
     def diff_loss(self, yhat,weighting_applied=True):
@@ -366,7 +371,9 @@ class Gamma(baseloss_type):
             :math:`\\mathcal\\frac{a \\left(\\hat{y} - y\\right)}{\\hat{y}^{2}}`
 
         '''
-        return self._shape*-self.residual(yhat,weighting_applied)/yhat**2
+        shape = self._shape
+        r = self.residual(yhat,weighting_applied)
+        return shape*-r/yhat**2
 
     def diff2Loss(self, yhat,weighting_applied=True):
         '''
@@ -394,8 +401,8 @@ class Gamma(baseloss_type):
                 yhat = yhat.ravel()
         y = self._y
         shape = self._shape
-        
-        return shape*(self.residual(yhat,weighting_applied)+y)/yhat**3 
+        r = self.residual(yhat,weighting_applied)
+        return shape*(r+y)/yhat**3 
 
 class Poisson(baseloss_type):
     '''
@@ -474,7 +481,8 @@ class Poisson(baseloss_type):
         if len(yhat.shape) > 1:
             if 1 in yhat.shape:
                 yhat = yhat.ravel()
-        return self._y/(yhat**2)
+        y=self._y
+        return y/(yhat**2)
 
 class NegBinom(baseloss_type):
     '''
@@ -568,7 +576,6 @@ class NegBinom(baseloss_type):
             if 1 in yhat.shape:
                 yhat = yhat.ravel()
                 
-        y = self._y
         k = self._k
         r = self.residual(yhat,weighting_applied)
         first_derivs_yhat = k*-r/(yhat*(k+yhat))
@@ -602,7 +609,7 @@ class NegBinom(baseloss_type):
         if len(yhat.shape) > 1:
             if 1 in yhat.shape:
                 yhat = yhat.ravel()
-        y = self._y
+
         k = self._k
         r = self.residual(yhat,weighting_applied)
         scnd_derivs_yhat_p1= k

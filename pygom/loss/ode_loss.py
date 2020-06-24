@@ -17,7 +17,6 @@ __all__ = [
 
 from pygom.loss.base_loss import BaseLoss
 from pygom.loss.loss_type import Normal, Square, Poisson, Gamma, NegBinom
-from pygom.model.ode_utils import check_array_type
 
 class SquareLoss(BaseLoss):
     '''
@@ -66,7 +65,7 @@ class GammaLoss(BaseLoss):
         return "GammaLoss" + self._get_model_str()
 
     def _setLossType(self):
-		self._lossObj = Gamma(self._y,self._shape,self._stateWeight)
+        self._lossObj = Gamma(self._y,self._shape,self._stateWeight)
         return self._lossObj
 		
 class PoissonLoss(BaseLoss):
@@ -82,7 +81,7 @@ class PoissonLoss(BaseLoss):
         return "PoissonLoss" + self._get_model_str()
 
     def _setLossType(self):
-		self._lossObj = Poisson(self._y,self._stateWeight)
+        self._lossObj = Poisson(self._y,self._stateWeight)
         return self._lossObj 
     
 class NegBinomLoss(BaseLoss):
@@ -99,5 +98,5 @@ class NegBinomLoss(BaseLoss):
         return "NegBinomLoss" + self._get_model_str()
 
     def _setLossType(self):
-		self._lossObj = NegBinom(self._y,self._k,self._stateWeight)
+        self._lossObj = NegBinom(self._y,self._k,self._stateWeight)
         return self._lossObj
