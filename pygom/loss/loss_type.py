@@ -49,29 +49,28 @@ class baseloss_type(object):
             self._numVar = 0
             self._w = np.ones(self._y.shape)
         else:
-            self._w = check_array_type(weights)
+            self._w = check_array_type(weights,accept_booleans=True)
+            if np.any(self._w<0.0):
+                raise ValueError('No elements in numpy array of weights should be negative')
+            if np.all(self._w==0.0):
+                raise ValueError('All elements in numpy array of weights should not be 0.0')
         if len(self._w.shape) > 1:
             if 1 in self._w.shape:
                 self._w = self._w.flatten()
                 
-        if np.any(self._w<0.0):
-            raise ValueError('No elements in numpy array of weights should be negative')
-        if np.all(self._w==0.0):
-            raise ValueError('All elements in numpy array of weights should not be 0.0')
-            
         assert self._y.shape == self._w.shape, \
             "Input weight not of the same size as y"
     
-    def residual(self, yhat, weighting_applied = True):
+    def residual(self, yhat, apply_weighting = True):
         '''
-        Raw residuals returned if weighting_applied = False, else
+        Raw residuals returned if apply_weighting = False, else
         the weighted residuals.
 
         Parameters
         ----------
         yhat: array like
             observation
-        weighting_applied: boolean
+        apply_weighting: boolean
             If True multiplies array of residuals by weightings, else raw 
             residuals returned.
 
@@ -80,8 +79,8 @@ class baseloss_type(object):
         :math:`y_{i} - \\hat{y}_{i}`
 
         '''
-        if isinstance(weighting_applied,bool)==False:
-            raise TypeError('weighting_applied should be boolean')
+        if isinstance(apply_weighting,bool)==False:
+            raise TypeError('apply_weighting should be boolean')
             
         if len(yhat.shape) > 1:
             if 1 in yhat.shape:
@@ -90,7 +89,7 @@ class baseloss_type(object):
                 resid = self._y - yhat
         else:
             resid = self._y - yhat
-        if weighting_applied == True:
+        if apply_weighting == True:
             resid *= self._w
             
         return resid
@@ -108,10 +107,10 @@ class Square(baseloss_type):
     '''
 
     def __init__(self, y, weights=None):
-        super().__init__(y, weights=None)
+        super().__init__(y, weights)
         self.loss(self._y)
 
-    def loss(self, yhat, weighting_applied = True):
+    def loss(self, yhat, apply_weighting = True):
         '''
         Loss under square loss.  Not really saying much here
 
@@ -119,18 +118,17 @@ class Square(baseloss_type):
         ----------
         yhat: array like
             observation
-        weighting_applied: boolean
+        apply_weighting: boolean
             If True multiplies array of residuals by weightings, else raw 
             residuals are used.
-        
 
         Returns
         -------
         :math:`\\sum_{i=1}^{n} (y-\\hat{y})^{2}`
         '''
-        return (self.residual(yhat,weighting_applied)**2).sum()
+        return (self.residual(yhat, apply_weighting)**2).sum()
 
-    def diff_loss(self, yhat,weighting_applied=True):
+    def diff_loss(self, yhat, apply_weighting=True):
         '''
         Derivative under square loss.  Assuming that we are solving
         the minimization problem i.e. our objective function is the
@@ -140,7 +138,7 @@ class Square(baseloss_type):
         ----------
         yhat: array like
             observation
-        weighting_applied: boolean
+        apply_weighting: boolean
             If True multiplies array of residuals by weightings, else raw 
             residuals are used.
 
@@ -148,9 +146,9 @@ class Square(baseloss_type):
         -------
         :math:`-2(y_{i} - \\hat{y}_{i})`
         '''
-        return -2*self.residual(yhat,weighting_applied)
+        return -2*self.residual(yhat, apply_weighting)
 
-    def diff2Loss(self, yhat):
+    def diff2Loss(self, yhat, apply_weighting=True):
         '''
         Twice derivative of the square loss.  Which is simply 2.
 
@@ -158,6 +156,11 @@ class Square(baseloss_type):
         ----------
         yhat: array like
             observations
+        apply_weighting: boolean
+            Residuals are not used in calculation, as such True or False 
+            argument makes no difference. Argument has been kept as the equivalent 
+            calculation is made with residuals for other loss functions, so 
+            without it missing arguments errors could occur.
 
         Returns
         -------
@@ -181,8 +184,8 @@ class Normal(baseloss_type):
     sigma: float
         standard deviation
     '''       
-    def __init__(self, y, sigma=1.0,weight=None):
-        super().__init__(y, weights=None)
+    def __init__(self, y, sigma=1.0, weights=None):
+        super().__init__(y, weights)
         err_str = "Standard deviation not of the correct "
         if isinstance(sigma, np.ndarray):
             if np.any(sigma<0):
@@ -212,7 +215,7 @@ class Normal(baseloss_type):
         self._sigma2 = self._sigma**2
         self.loss(self._y)
 
-    def loss(self, yhat,weighting_applied=True):
+    def loss(self, yhat, apply_weighting=True):
         '''
         The loss under a normal distribution.  Defined as the
         negative log-likelihood here.
@@ -221,7 +224,7 @@ class Normal(baseloss_type):
         ----------
         yhat: array like
             observation
-        weighting_applied: boolean
+        apply_weighting: boolean
             If True multiplies array of residuals by weightings, else raw 
             residuals are used.
 
@@ -234,7 +237,7 @@ class Normal(baseloss_type):
             if 1 in yhat.shape:
                 yhat = yhat.ravel()
         
-        r=self.residual(yhat,weighting_applied)
+        r=self.residual(yhat, apply_weighting)
         sigma=self._sigma
         
         # Calculate negative likelihood (depending on weighting of residuals).
@@ -245,7 +248,7 @@ class Normal(baseloss_type):
         logpdf_p5_alt= -r**2 / (2*sigma**2)
         return (-(logpdf_p1+logpdf_p2+logpdf_p3+logpdf_p4+logpdf_p5_alt)).sum()
 
-    def diff_loss(self, yhat,weighting_applied=True):
+    def diff_loss(self, yhat, apply_weighting=True):
         '''
         Derivative of the loss function which is
         :math:`\\sigma^{-1}(y - \\hat{y})`
@@ -254,7 +257,7 @@ class Normal(baseloss_type):
         ----------
         yhat: array like
             observation
-        weighting_applied: boolean
+        apply_weighting: boolean
             If True multiplies array of residuals by weightings, else raw 
             residuals are used.
 
@@ -264,10 +267,10 @@ class Normal(baseloss_type):
             :math:`\\nabla \\mathcal{L}(\\hat{y}, y)`
 
         '''
-        r = self.residual(yhat,weighting_applied)
+        r = self.residual(yhat, apply_weighting)
         return -r/self._sigma2
 
-    def diff2Loss(self, yhat):
+    def diff2Loss(self, yhat, apply_weighting=True):
         '''
         Twice derivative of the normal loss.
 
@@ -275,6 +278,11 @@ class Normal(baseloss_type):
         ----------
         yhat: array like
             observations
+        apply_weighting: boolean
+            Residuals are not used in calculation, as such True or False 
+            argument makes no difference. Argument has been kept as the equivalent 
+            calculation is made with residuals for other loss functions, so 
+            without it missing arguments errors could occur.
 
         Returns
         -------
@@ -299,7 +307,7 @@ class Gamma(baseloss_type):
     '''
     
     def __init__(self, y, shape=2.0, weights=None):
-        super().__init__(y, weights=None)
+        super().__init__(y, weights)
         err_str = "Shape is not of the correct "
         if isinstance(shape, np.ndarray):
             if np.any(shape<0):
@@ -327,7 +335,7 @@ class Gamma(baseloss_type):
             raise TypeError(err_str + "type")
         self.loss(self._y)
         
-    def loss(self, yhat):
+    def loss(self, yhat, apply_weighting=True):
         '''
         The loss under a gamma distribution.  Defined as the negative 
         log-likelihood of the gamma distirbution in terms of mean and shape.
@@ -338,7 +346,11 @@ class Gamma(baseloss_type):
         ----------
         yhat: array like
             prediction
-            
+        apply_weighting: boolean
+            Residuals are not used in calculation, as such True or False 
+            argument makes no difference. Argument has been kept as the equivalent 
+            calculation is made with residuals for other loss functions, so 
+            without it missing arguments errors could occur.            
 
         Returns
         -------
@@ -351,7 +363,7 @@ class Gamma(baseloss_type):
                 
         return -gamma_mu_shape(x=self._y, mu=yhat,shape=self._shape,log=True).sum()
     
-    def diff_loss(self, yhat,weighting_applied=True):
+    def diff_loss(self, yhat, apply_weighting=True):
         '''
         Derivative of the loss function with respect to yhat which is
         See: 
@@ -361,7 +373,7 @@ class Gamma(baseloss_type):
         ----------
         yhat: array like
             prediction
-        weighting_applied: boolean
+        apply_weighting: boolean
             If True multiplies array of residuals by weightings, else raw 
             residuals are used.
             
@@ -372,10 +384,10 @@ class Gamma(baseloss_type):
 
         '''
         shape = self._shape
-        r = self.residual(yhat,weighting_applied)
+        r = self.residual(yhat, apply_weighting)
         return shape*-r/yhat**2
 
-    def diff2Loss(self, yhat,weighting_applied=True):
+    def diff2Loss(self, yhat, apply_weighting=True):
         '''
         Twice derivative of the loss function with respect to yhat.
         See: 
@@ -385,7 +397,7 @@ class Gamma(baseloss_type):
         ----------
         yhat: array like
             observation
-        weighting_applied: boolean
+        apply_weighting: boolean
             If True multiplies array of residuals by weightings, else raw 
             residuals are used.
             
@@ -401,7 +413,7 @@ class Gamma(baseloss_type):
                 yhat = yhat.ravel()
         y = self._y
         shape = self._shape
-        r = self.residual(yhat,weighting_applied)
+        r = self.residual(yhat, apply_weighting)
         return shape*(r+y)/yhat**3 
 
 class Poisson(baseloss_type):
@@ -415,10 +427,10 @@ class Poisson(baseloss_type):
     '''
 
     def __init__(self, y, weights=None):
-        super().__init__(y, weights=None)
+        super().__init__(y, weights)
         self.loss(self._y)
 
-    def loss(self, yhat):
+    def loss(self, yhat,apply_weighting=True):
         '''
         The loss under a normal distribution.  Defined as the
         negative log-likelihood here.
@@ -427,6 +439,11 @@ class Poisson(baseloss_type):
         ----------
         yhat: array like
             observation
+        apply_weighting: boolean
+            Residuals are not used in calculation, as such True or False 
+            argument makes no difference. Argument has been kept as the equivalent 
+            calculation is made with residuals for other loss functions, so 
+            without it missing arguments errors could occur.
 
         Returns
         -------
@@ -439,7 +456,7 @@ class Poisson(baseloss_type):
         # note that we input the standard deviation here
         return (-dpois(self._y, yhat, True)).sum()
 
-    def diff_loss(self, yhat,weighting_applied=True):
+    def diff_loss(self, yhat, apply_weighting=True):
         '''
         Derivative of the loss function, :math:`1 - y\\hat{y}^{-1}`
 
@@ -447,7 +464,7 @@ class Poisson(baseloss_type):
         ----------
         yhat: array like
             observation
-        weighting_applied: boolean
+        apply_weighting: boolean
             If True multiplies array of residuals by weightings, else raw 
             residuals are used.
 
@@ -461,10 +478,10 @@ class Poisson(baseloss_type):
             if 1 in yhat.shape:
                 yhat = yhat.ravel()
                 
-        r = self.residual(yhat,weighting_applied)
+        r = self.residual(yhat, apply_weighting)
         return -r/yhat
 
-    def diff2Loss(self, yhat):
+    def diff2Loss(self, yhat, apply_weighting=True):
         '''
         Twice derivative of the Poisson loss.
 
@@ -472,6 +489,11 @@ class Poisson(baseloss_type):
         ----------
         yhat: array like
             observations
+        apply_weighting: boolean
+            Residuals are not used in calculation, as such True or False 
+            argument makes no difference. Argument has been kept as the equivalent 
+            calculation is made with residuals for other loss functions, so 
+            without it missing arguments errors could occur.
 
         Returns
         -------
@@ -497,7 +519,7 @@ class NegBinom(baseloss_type):
     '''
     
     def __init__(self, y,  k=1.0, weights=None):
-        super().__init__(y, weights=None)
+        super().__init__(y, weights)
         err_str = "k (the overdispersion parameter) is not of the correct "
         if isinstance(k, np.ndarray):
             if np.any(k<0):
@@ -526,7 +548,7 @@ class NegBinom(baseloss_type):
             
         self.loss(self._y)
         
-    def loss(self, yhat):
+    def loss(self, yhat, apply_weighting=True):
         '''
         The loss under a Negative Binomial distribution.  Defined as the
         negative log-likelihood of the Negative Binomial 2 distribution.
@@ -535,6 +557,11 @@ class NegBinom(baseloss_type):
         ----------
         yhat: array like
             observation
+        apply_weighting: boolean
+            Residuals are not used in calculation, as such True or False 
+            argument makes no difference. Argument has been kept as the equivalent 
+            calculation is made with residuals for other loss functions, so 
+            without it missing arguments errors could occur.
 
         Returns
         -------
@@ -547,7 +574,7 @@ class NegBinom(baseloss_type):
                 
         return (-dnbinom(self._y, mu=yhat,size=self._k,log=True)).sum()
     
-    def diff_loss(self, yhat,weighting_applied=True):
+    def diff_loss(self, yhat, apply_weighting=True):
         '''
         Derivative of the loss function with respect to yhat which is
         See: 
@@ -558,11 +585,13 @@ class NegBinom(baseloss_type):
         ----------
         yhat: array like
             observation
+        apply_weighting: boolean
+            Residuals are not used in calculation, as such True or False 
+            argument makes no difference. Argument has been kept as the equivalent 
+            calculation is made with residuals for other loss functions, so 
+            without it missing arguments errors could occur.
             
-        k: array like
-            observation
-            
-        weighting_applied: boolean
+        apply_weighting: boolean
             If True multiplies array of residuals by weightings, else raw 
             residuals are used.
 
@@ -577,11 +606,11 @@ class NegBinom(baseloss_type):
                 yhat = yhat.ravel()
                 
         k = self._k
-        r = self.residual(yhat,weighting_applied)
+        r = self.residual(yhat, apply_weighting)
         first_derivs_yhat = k*-r/(yhat*(k+yhat))
         return first_derivs_yhat
 
-    def diff2Loss(self, yhat,weighting_applied=True):
+    def diff2Loss(self, yhat, apply_weighting=True):
         '''
         Twice derivative of the loss function with respect to yhat.
         See: 
@@ -592,11 +621,13 @@ class NegBinom(baseloss_type):
         ----------
         yhat: array like
             observation
-            
-        k: array like
-            observation
+        apply_weighting: boolean
+            Residuals are not used in calculation, as such True or False 
+            argument makes no difference. Argument has been kept as the equivalent 
+            calculation is made with residuals for other loss functions, so 
+            without it missing arguments errors could occur.
         
-        weighting_applied: boolean
+        apply_weighting: boolean
             If True multiplies array of residuals by weightings, else raw 
             residuals are used.
 
@@ -611,7 +642,7 @@ class NegBinom(baseloss_type):
                 yhat = yhat.ravel()
 
         k = self._k
-        r = self.residual(yhat,weighting_applied)
+        r = self.residual(yhat, apply_weighting)
         scnd_derivs_yhat_p1= k
         scnd_derivs_yhat_p2= yhat**(-2)
         scnd_derivs_yhat_p3= (k + yhat)**(-2)

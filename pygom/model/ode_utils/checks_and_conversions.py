@@ -4,12 +4,10 @@ Created on 14 Jan 2019
 @author: edwin.tye
 '''
 import numpy as np
-from numbers import Number
-
-from pygom.model._model_errors import InputError, ArrayError
 
 
-def check_array_type(x):
+
+def check_array_type(x,accept_booleans=False):
     '''
     Check to see if the type of input is suitable.  Only operate on one
     or two dimension arrays
@@ -18,31 +16,51 @@ def check_array_type(x):
     ----------
     x: array like
         which can be either a :class:`numpy.ndarray` or list or tuple
+    accept_boolean: boolean
+        If true boolean elements are accepted, else they are not.
 
     Returns
     -------
     x: :class:`numpy.ndarray`
         checked and converted array
     '''
-
+    accepted_types = (int,float,complex)
+    if accept_booleans==True:
+        type_error_message = 'Expecting elements/sub-elements to be of type float, int, complex or boolean'
+    if accept_booleans==False:
+        type_error_message = 'Expecting elements/sub-elements to be of type float, int or complex'
+        
+        
     if isinstance(x, np.ndarray):
         pass
     elif isinstance(x, (list, tuple)):
-        if isinstance(x[0], Number):
-            x = np.array(x)
-        elif isinstance(x[0], (list, tuple, np.ndarray)):
-            if isinstance(x[0][0], Number):
+        if all(isinstance(item, accepted_types) for item in x):
+            if accept_booleans==True:
+                x = np.array(x)
+            elif accept_booleans==False and all(not isinstance(item, bool) for item in x):
                 x = np.array(x)
             else:
-                raise ArrayError("Expecting elements of float or int")
+                TypeError(type_error_message)
+        elif isinstance(x[0], (list, tuple, np.ndarray)):
+            sub_items_accepted = []
+            for item in x:
+                if accept_booleans==False:
+                    sub_items_accepted.append(all(isinstance(sub_item, accepted_types) for sub_item in item)*all(not isinstance(sub_item, bool) for sub_item in item))
+                if accept_booleans==True:
+                    sub_items_accepted.append(all(isinstance(sub_item, accepted_types) for sub_item in item))
+            if all(sub_items_accepted):
+                x = np.array(x)
+            else:
+                raise TypeError(type_error_message)
         else:
-            raise ArrayError("Expecting elements of float or int")
-    elif isinstance(x, Number):
+            raise TypeError(type_error_message)
+    elif isinstance(x, accepted_types):
         x = np.array([x])
     else:
-        raise ArrayError("Expecting an array like object, got %s" % type(x))
+        raise TypeError("Expecting an array like object, got %s" % type(x))
 
     return x
+
 
 def check_dimension(x, y):
     '''
