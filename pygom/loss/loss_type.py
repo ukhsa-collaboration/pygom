@@ -16,7 +16,6 @@ __all__ = [
 
 import numpy as np
 
-from pygom.model._model_errors import InitializeError
 from pygom.model.ode_utils import check_array_type
 from pygom.utilR.distn import dpois, gamma_mu_shape, dnbinom
 
@@ -50,16 +49,14 @@ class baseloss_type(object):
             self._w = np.ones(self._y.shape)
         else:
             self._w = check_array_type(weights,accept_booleans=True)
-            if np.any(self._w<0.0):
+            if (self._w<0).any():
                 raise ValueError('No elements in numpy array of weights should be negative')
-            if np.all(self._w==0.0):
+            if (self._w==0).all():
                 raise ValueError('All elements in numpy array of weights should not be 0.0')
         if len(self._w.shape) > 1:
             if 1 in self._w.shape:
-                self._w = self._w.flatten()
-                
-        assert self._y.shape == self._w.shape, \
-            "Input weight not of the same size as y"
+                self._w = self._w.flatten()    
+        assert self._y.shape == self._w.shape, "Input weight not of the same size as y"
     
     def residual(self, yhat, apply_weighting = True):
         '''
@@ -188,7 +185,7 @@ class Normal(baseloss_type):
         super().__init__(y, weights)
         err_str = "Standard deviation not of the correct "
         if isinstance(sigma, np.ndarray):
-            if np.any(sigma<0):
+            if (sigma<0).any():
                 raise ValueError('No elements in numpy array of sigma values should be negative')
             elif len(sigma.shape) > 1:
                 if 1 in sigma.shape:
@@ -196,12 +193,12 @@ class Normal(baseloss_type):
                 if y.shape == sigma.shape:
                     self._sigma = sigma
                 else:
-                    raise InitializeError(err_str + "size")
+                    raise AssertionError(err_str + "size")
             else:
                 if y.shape == sigma.shape:
                     self._sigma = sigma
                 else:
-                    raise InitializeError(err_str + "size")
+                    raise AssertionError(err_str + "size")
         elif sigma is None or sigma == 1.0:
             self._sigma = np.ones(self._y.shape)
         elif isinstance(sigma, (int, float)):
@@ -310,7 +307,7 @@ class Gamma(baseloss_type):
         super().__init__(y, weights)
         err_str = "Shape is not of the correct "
         if isinstance(shape, np.ndarray):
-            if np.any(shape<0):
+            if (shape<0).any():
                 raise ValueError('No elements in numpy array of shape values should be negative')
             elif len(shape.shape) > 1:
                 if 1 in shape.shape:
@@ -318,12 +315,12 @@ class Gamma(baseloss_type):
                 if y.shape == shape.shape:
                     self._shape = shape
                 else:
-                    raise InitializeError(err_str + "size")
+                    raise AssertionError(err_str + "size")
             else:
                 if y.shape == shape.shape:
                     self._shape = shape
                 else:
-                    raise InitializeError(err_str + "size")
+                    raise AssertionError(err_str + "size")
         elif shape is None or shape == 2.0:
             self._shape = 2*np.ones(self._y.shape)
         elif isinstance(shape, (int, float)):
@@ -522,20 +519,20 @@ class NegBinom(baseloss_type):
         super().__init__(y, weights)
         err_str = "k (the overdispersion parameter) is not of the correct "
         if isinstance(k, np.ndarray):
-            if np.any(k<0):
-                raise ValueError('No elements in numpy array of shape values should be negative')
+            if (k<0).any():
+                raise ValueError('No elements in numpy array of k values should be negative')
             elif len(k.shape) > 1:
                 if 1 in k.shape:
                     k = k.flatten()
                 if y.shape == k.shape:
                     self._k = k
                 else:
-                    raise InitializeError(err_str + "size")
+                    raise AssertionError(err_str + "size")
             else:
                 if y.shape == k.shape:
                     self._k = k
                 else:
-                    raise InitializeError(err_str + "size")
+                    raise AssertionError(err_str + "size")
         elif k is None or k == 1.0:
             self._k = np.ones(self._y.shape)
         elif isinstance(k, (int, float)):
