@@ -181,7 +181,7 @@ class Normal(baseloss_type):
     sigma: float
         standard deviation
     '''       
-    def __init__(self, y, sigma=1.0, weights=None):
+    def __init__(self, y, weights=None, sigma=1.0):
         super().__init__(y, weights)
         err_str = "Standard deviation not of the correct "
         if isinstance(sigma, np.ndarray):
@@ -303,7 +303,7 @@ class Gamma(baseloss_type):
         shape (a in latex equations)
     '''
     
-    def __init__(self, y, shape=2.0, weights=None):
+    def __init__(self, y, weights=None, shape=2.0):
         super().__init__(y, weights)
         err_str = "Shape is not of the correct "
         if isinstance(shape, np.ndarray):
@@ -515,7 +515,7 @@ class NegBinom(baseloss_type):
         Overdispersion parameter (k=mean+mean(mean/variance))
     '''
     
-    def __init__(self, y,  k=1.0, weights=None):
+    def __init__(self, y, weights=None,  k=1.0):
         super().__init__(y, weights)
         err_str = "k (the overdispersion parameter) is not of the correct "
         if isinstance(k, np.ndarray):

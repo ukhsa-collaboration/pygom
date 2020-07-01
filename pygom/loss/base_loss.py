@@ -44,8 +44,12 @@ class BaseLoss(object):
         observations
     state_name: str
         the state which the observations came from
-    state_weight: array like
+    state_weight: array like or none
         weight for the observations
+    spread_param: array like or none
+        spead parameter for obsevations 
+        (e.g. normal, negative binomial and gamma distributions sigma, k and 
+         shape, respectivly).
     target_param: str or array like
         parameters that are not fixed
     target_state: str or array like
@@ -55,7 +59,7 @@ class BaseLoss(object):
     def __init__(self, theta, ode,
                  x0, t0,
                  t, y,
-                 state_name, state_weight=None,
+                 state_name, state_weight=None,spread_param=None,
                  target_param=None, target_state=None):
 
         ### Execute all the checks first
@@ -136,7 +140,9 @@ class BaseLoss(object):
             # then if
             if solution.shape[1] == p:
                 state_name = [str(i) for i in self._ode._iterStateList()]
-                self._setWeight(n, p, state_weight)
+                self._weight = self._setWeight_or_spread(n, p, state_weight,is_weights= True)
+                if spread_param is not None:
+                    self._spread_param = self._setWeight_or_spread(n, p, spread_param,is_weights= False)
             else:
                 raise InputError("Expecting the name of states " +
                                  "for the observations")
@@ -145,7 +151,9 @@ class BaseLoss(object):
                 state_name = [state_name]
 
             assert p == len(state_name), "len(state_name) and len(y[0]) not equal"
-            self._setWeight(n, p, state_weight)
+            self._weight = self._setWeight_or_spread(n, p, state_weight,is_weights= True)
+            if spread_param is not None:
+                self._spread_param = self._setWeight_or_spread(n, p, spread_param,is_weights= False)
         else:
             raise InputError("State name should be str or of type list/tuple")
 
@@ -1570,37 +1578,46 @@ class BaseLoss(object):
                 theta = ode_utils.check_array_type(theta)
                 self._theta = np.copy(theta)
 
-    def _setWeight(self, n, p, w):
+    def _setWeight_or_spread(self, n, p, x,is_weights):
         # note that we NEVER scale the weights
         # also note that we can use the weights as a control
         # with normalized input
-
-        w = ode_utils.check_array_type(w)
-        if len(w) == w.size:
-            m, q = len(w), 1
+        x = ode_utils.check_array_type(x,accept_booleans=is_weights)
+        
+        if is_weights== True:
+            object_type='weights'
         else:
-            m, q = w.shape
+            object_type='spread parameter values'
+        
+        if len(x) == x.size:
+            m, q = len(x), 1
+        else:
+            m, q = x.shape
 
         if p == q:
             if n == m:
-                self._stateWeight = w
+                x = x
             elif m == 1:
-                self._stateWeight = np.ones((n, p))*w
+                x = np.ones((n, p))*x
             else:
-                raise AssertionError("Number of input weights is not equal " +
+                raise AssertionError("Number of input " + object_type + 
+                                     " is not equal " +
                                      "to the number of observations")
         elif p == m:
             if q == 1:
-                self._stateWeight = np.ones((n, p))*w
+                x = np.ones((n, p))*x
             else:
-                raise AssertionError("Number of input weights is not equal " +
+                raise AssertionError("Number of input " + object_type + 
+                                     " is not equal " +
                                      "to number of states")
         else:
             if q == 1 and m == 1:
-                self._stateWeight = np.ones((n, p))*w
+                x = np.ones((n, p))*x
             else:
-                raise AssertionError("Number of input weights differs from " +
+                raise AssertionError("Number of input " + object_type + 
+                                     " differs from " +
                                      "the number of observations")
+        return x
 
     def _setX0(self, x0):
         """

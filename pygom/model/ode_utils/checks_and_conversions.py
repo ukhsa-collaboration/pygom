@@ -55,7 +55,12 @@ def check_array_type(x,accept_booleans=False):
         else:
             raise TypeError(type_error_message)
     elif isinstance(x, accepted_types):
-        x = np.array([x])
+        if accept_booleans==True:
+            x = np.array(x)
+        elif accept_booleans==False and not isinstance(x, bool):
+            x = np.array(x)
+        else:
+            TypeError("Not expecting Boolean value")
     else:
         raise TypeError("Expecting an array like object, got %s" % type(x))
 
