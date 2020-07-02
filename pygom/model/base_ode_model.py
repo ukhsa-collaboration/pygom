@@ -1181,14 +1181,15 @@ class BaseOdeModel(object):
                         _i = int(index[0])
                         return self._vectorStateDict[sym_name.group()][_i]
                     else:
-                        raise InputError("Cannot find input state, input %s " +
-                                         "appears to be a vector that was " +
-                                         "not initialized" % sym_name)
+                        raise InputError("Cannot find input state, input {} " 
+                                         "appears to be a vector that was " 
+                                         "not initialized".format(sym_name))
                 else:
-                    raise InputError("Cannot find input state, input %s " +
-                                     "likely to be a vector" % sym_name)
+                    raise InputError("Cannot find input state, input {} " 
+                                     "likely to be a vector".format(sym_name))
             else:
-                raise InputError("Input state: %s does not exist" % input_str)
+                raise InputError("Input state: {} does not exist"
+                                 "".format(input_str))
 
     def _extractUpperTriangle(self, A, nrow=None, ncol=None):
         """

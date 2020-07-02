@@ -68,6 +68,12 @@ Thomas Finnie (Thomas.Finnie@phe.gov.uk)
 
 Edwin Tye
 
+Hannah Williams
+
+Jonty Carruthers
+
+Martin Grunnill
+
 Version
 =======
 0.1.6 Bugfix scipy API, pickling, print to logging and simulation
