@@ -207,8 +207,8 @@ class BaseLoss(object):
                                                     self._observeT.tolist(),
                                                     self._y.tolist(),
                                                     self._stateName)
-        if self._stateWeight is not None:
-            model_str += ", %s" % self._stateWeight.tolist()
+        if self._weight is not None:
+            model_str += ", %s" % self._weight.tolist()
         if self._targetParam is not None:
             model_str += ", %s" % self._targetParam
         if self._targetState is not None:
@@ -1169,7 +1169,7 @@ class BaseLoss(object):
 
         sens = np.reshape(sens, (n, num_s, num_out), 'F')
         for j in range(num_out):
-            sens[:, :, j] *= self._stateWeight
+            sens[:, :, j] *= self._weight
 
         grad = functools.reduce(np.add,map(np.dot, diff_loss, sens)).ravel()
 
@@ -1209,7 +1209,7 @@ class BaseLoss(object):
         sens = np.reshape(sens, (n, num_s, num_out), 'F')
 
         for j in range(num_out):
-            sens[:,:,j] *= self._stateWeight
+            sens[:,:,j] *= self._weight
 
         for i, s in enumerate(sens):
             if resid is None:
@@ -1581,13 +1581,12 @@ class BaseLoss(object):
     def _setWeight_or_spread(self, n, p, x,is_weights):
         # note that we NEVER scale the weights
         # also note that we can use the weights as a control
-        # with normalized input
+        # with normalized input  
         x = ode_utils.check_array_type(x,accept_booleans=is_weights)
-        
         if is_weights== True:
-            object_type='weights'
+            object_contents='weights'
         else:
-            object_type='spread parameter values'
+            object_contents='spread parameter values'
         
         if len(x) == x.size:
             m, q = len(x), 1
@@ -1600,21 +1599,21 @@ class BaseLoss(object):
             elif m == 1:
                 x = np.ones((n, p))*x
             else:
-                raise AssertionError("Number of input " + object_type + 
+                raise AssertionError("Number of input " + object_contents + 
                                      " is not equal " +
                                      "to the number of observations")
         elif p == m:
             if q == 1:
                 x = np.ones((n, p))*x
             else:
-                raise AssertionError("Number of input " + object_type + 
+                raise AssertionError("Number of input " + object_contents + 
                                      " is not equal " +
                                      "to number of states")
         else:
             if q == 1 and m == 1:
                 x = np.ones((n, p))*x
             else:
-                raise AssertionError("Number of input " + object_type + 
+                raise AssertionError("Number of input " + object_contents + 
                                      " differs from " +
                                      "the number of observations")
         return x
@@ -1633,7 +1632,7 @@ class BaseLoss(object):
         be override in the module odeLoss.  Basically, all other
         operations remains but this will change.
         """
-        self._lossObj = Square(self._y, self._stateWeight)
+        self._lossObj = Square(self._y, self._weight)
         return self._lossObj
 
     def _unrollParam(self, theta):

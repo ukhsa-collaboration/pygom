@@ -37,28 +37,26 @@ def check_array_type(x,accept_booleans=False):
         if all(isinstance(item, accepted_types) for item in x):
             if accept_booleans==True:
                 x = np.array(x)
-            elif accept_booleans==False and all(not isinstance(item, bool) for item in x):
+            elif accept_booleans==False:
+                if  any(isinstance(item, bool) for item in x):
+                    raise TypeError('No elements of array type object should be Boolean values')
                 x = np.array(x)
             else:
                 TypeError(type_error_message)
         elif isinstance(x[0], (list, tuple, np.ndarray)):
-            sub_items_accepted = []
             for item in x:
-                if accept_booleans==False:
-                    sub_items_accepted.append(all(isinstance(sub_item, accepted_types) for sub_item in item)*all(not isinstance(sub_item, bool) for sub_item in item))
-                if accept_booleans==True:
-                    sub_items_accepted.append(all(isinstance(sub_item, accepted_types) for sub_item in item))
-            if all(sub_items_accepted):
-                x = np.array(x)
-            else:
-                raise TypeError(type_error_message)
+                if any(not isinstance(sub_item, accepted_types) for sub_item in item):
+                    raise TypeError(type_error_message)
+                if accept_booleans==False and any(isinstance(sub_item, bool) for sub_item in item):
+                    raise TypeError('No elements of array type object should be Boolean values')
+            x = np.array(x)
         else:
             raise TypeError(type_error_message)
     elif isinstance(x, accepted_types):
         if accept_booleans==True:
-            x = np.array(x)
+            x = np.array([x])
         elif accept_booleans==False and not isinstance(x, bool):
-            x = np.array(x)
+            x = np.array([x])
         else:
             TypeError("Not expecting Boolean value")
     else:
@@ -91,8 +89,8 @@ def check_dimension(x, y):
     x = check_array_type(x)
 
     if len(y) != len(x):
-        raise InputError("The number of observations and time points " +
-                         "should have the same length")
+        raise AssertionError("The number of observations and time points " +
+                             "should have the same length")
 
     return (x, y)
 
@@ -137,7 +135,7 @@ def str_or_list(x):
     elif isinstance(x, str):
         return [x]
     else:
-        raise InputError("Expecting a string or list")
+        raise TypeError("Expecting a string or list")
 
 
 def none_or_empty_list(x):
