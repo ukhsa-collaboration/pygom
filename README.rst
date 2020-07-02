@@ -76,6 +76,8 @@ Martin Grunnill
 
 Version
 =======
+0.1.7 Add Approximate Bayesian Computation (ABC) as a method of fitting to data 
+
 0.1.6 Bugfix scipy API, pickling, print to logging and simulation
 
 0.1.5 Remove auto-simplification for much faster startup
