@@ -64,7 +64,13 @@ Contributors
 ============
 Thomas Finnie (Thomas.Finnie@phe.gov.uk)
 
-Edwin Tye (Edwin.Tye@phe.gov.uk)
+Edwin Tye 
+
+Hannah Williams
+
+Jonty Carruthers
+
+Martin Grunnill
 
 Version
 =======
