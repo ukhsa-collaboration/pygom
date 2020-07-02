@@ -3,7 +3,7 @@ from unittest import main, TestCase
 
 from pygom import SquareLoss, NormalLoss
 from pygom.model import common_models
-from pygom import abc
+from pygom import approximate_bayesian_computation as pgabc
 
 
 class TestABC(TestCase):
@@ -28,13 +28,13 @@ class TestABC(TestCase):
         y = self.solution[1::, 1:3]
         
         # setting the parameters in the inference
-        parameters = [abc.Parameter('beta', 'unif', 0, 3, logscale=False),
-                      abc.Parameter('gamma', 'unif', 0, 3, logscale=False)]
+        parameters = [pgabc.Parameter('beta', 'unif', 0, 3, logscale=False),
+                      pgabc.Parameter('gamma', 'unif', 0, 3, logscale=False)]
         
         # creating the loss and abc objects
-        sir_obj = abc.create_loss(SquareLoss, parameters, self.ode, self.x0, self.t[0],
+        sir_obj = pgabc.create_loss(SquareLoss, parameters, self.ode, self.x0, self.t[0],
                                   self.t[1::], y, ['I', 'R'])
-        sir_abc = abc.ABC(sir_obj, parameters)
+        sir_abc = pgabc.ABC(sir_obj, parameters)
         
         # getting the posterior sample
         sir_abc.get_posterior_sample(N=100, tol=np.inf, G=10, q=0.5)
@@ -48,11 +48,11 @@ class TestABC(TestCase):
         
     def test_SIR_abc_SquareLoss_MNN(self):
         y = self.solution[1::, 1:3]
-        parameters = [abc.Parameter('beta', 'unif', 0, 3, logscale=False),
-                      abc.Parameter('gamma', 'unif', 0, 3, logscale=False)]
-        sir_obj = abc.create_loss(SquareLoss, parameters, self.ode, self.x0, self.t[0],
+        parameters = [pgabc.Parameter('beta', 'unif', 0, 3, logscale=False),
+                      pgabc.Parameter('gamma', 'unif', 0, 3, logscale=False)]
+        sir_obj = pgabc.create_loss(SquareLoss, parameters, self.ode, self.x0, self.t[0],
                                   self.t[1::], y, ['I', 'R'])
-        sir_abc = abc.ABC(sir_obj, parameters)
+        sir_abc = pgabc.ABC(sir_obj, parameters)
         sir_abc.get_posterior_sample(N=100, tol=np.inf, G=10, q=0.5, M=50)
         sir_abc.continue_posterior_sample(N=100, tol=sir_abc.next_tol, G=10, q=0.5, M=50)
         med_est = np.median(sir_abc.res, axis=0)
@@ -61,11 +61,11 @@ class TestABC(TestCase):
         
     def test_SIR_abc_NormalLoss(self):
         y = self.solution[1::, 1:3]
-        parameters = [abc.Parameter('beta', 'unif', 0, 3, logscale=False), 
-                      abc.Parameter('gamma', 'unif', 0, 3, logscale=False)]
-        sir_obj = abc.create_loss(NormalLoss, parameters, self.ode, self.x0, self.t[0],
+        parameters = [pgabc.Parameter('beta', 'unif', 0, 3, logscale=False), 
+                      pgabc.Parameter('gamma', 'unif', 0, 3, logscale=False)]
+        sir_obj = pgabc.create_loss(NormalLoss, parameters, self.ode, self.x0, self.t[0],
                                   self.t[1::], y, ['I', 'R'])
-        sir_abc = abc.ABC(sir_obj, parameters)
+        sir_abc = pgabc.ABC(sir_obj, parameters)
         sir_abc.get_posterior_sample(N=100, tol=np.inf, G=10, q=0.5)
         sir_abc.continue_posterior_sample(N=100, tol=sir_abc.next_tol, G=10, q=0.5)
         med_est = np.median(sir_abc.res, axis=0)
