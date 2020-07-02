@@ -785,7 +785,7 @@ class BaseOdeModel(object):
         symbol_name = self._addSymbol(var_obj.ID)
 
         if isinstance(symbol_name, sympy.Symbol):
-            if symbol_name not in self._paramList:
+            if str(symbol_name) not in self._paramList:
                 self._addVariable(symbol_name, var_obj,
                                   self._stateList,
                                   self._stateDict)
@@ -796,6 +796,7 @@ class BaseOdeModel(object):
         return None
 
     def _addParamSymbol(self, input_str):
+        # turn input_str into a ODEVarialbe if required
         if isinstance(input_str, str):
             var_obj = ODEVariable(input_str, input_str)
         elif isinstance(input_str, ODEVariable):
