@@ -69,15 +69,13 @@ class Test_loss_classes(TestCase):
 
     def test_Square_and_Normal_Loss_cost_scalar_weights_for_two_states(self):
         loss_functions = [SquareLoss, NormalLoss]
-        # weight for each component
+        y=self.solution[1::,1:3].flatten()
+        yhat = self.yhat[1::,1:3].flatten()
+        residual = y-yhat
         w = [2.0, 3.0]
-        r = self.solution[1::,1:3]-self.yhat[1::,1:3]
-        residual = []
-        for i in range(2): 
-            residual.append(r[:,i]*w[i])
-        
-        residual =  np.array(residual)
-        
+        w_unraveled = np.array([w[0]*np.ones(self.solution[1::,1:3].shape[0]),
+                                w[1]*np.ones(self.solution[1::,1:3].shape[0])]).transpose().flatten()
+        residual =residual*w_unraveled        
         square_cost = (residual**2).sum()
         sigma= 1
         norm_logpdf_p1= -np.log(2)
@@ -95,15 +93,17 @@ class Test_loss_classes(TestCase):
             with self.subTest(message):
                 obj = loss_function(self.theta, self.ode, self.init_state, self.t[0],
                                     self.t[1::], self.solution[1::,1:3], ['I', 'R'], w)
-                self.assertAlmostEqual(obj.cost(), test_answers[loss_function_index],places=0)
+                self.assertAlmostEqual(obj.cost(), test_answers[loss_function_index],places=1)
 
     def test_Square_and_Normal_Loss_cost_vector_weights_for_two_states(self):
         loss_functions = [SquareLoss, NormalLoss]
-        r = self.solution[1::,1:3]-self.yhat[1::,1:3]
-        # now the weight is a vector
-        w = np.random.rand(self.solution[1::,1:3].shape[0],self.solution[1::,1:3].shape[1])
-        
-        residual = r* w
+        y=self.solution[1::,1:3].flatten()
+        yhat = self.yhat[1::,1:3].flatten()
+        residual = y-yhat
+        w = [2.0, 3.0]
+        w = np.array([w[0]*np.ones(self.solution[1::,1:3].shape[0]),
+                      w[1]*np.ones(self.solution[1::,1:3].shape[0])]).transpose()
+        residual = residual*w.flatten()
         square_cost = (residual**2).sum()
         sigma= 1
         norm_logpdf_p1= -np.log(2)
@@ -122,7 +122,7 @@ class Test_loss_classes(TestCase):
             with self.subTest(message):
                 obj = loss_function(self.theta, self.ode, self.init_state, self.t[0],
                                     self.t[1::], self.solution[1::,1:3], ['I', 'R'], w)
-                self.assertAlmostEqual(obj.cost(), test_answers[loss_function_index],places=0)
+                self.assertAlmostEqual(obj.cost(), test_answers[loss_function_index],places=1)
                 
        
     def test_All_Loss_functions_1State_weights_Failures_TypeErrors(self):
@@ -170,7 +170,7 @@ class Test_loss_classes(TestCase):
                     self.assertRaises(AssertionError, loss_function, self.theta, self.ode,
                                       self.init_state, self.t[0], self.t[1::], self.solution[1::,-1],
                                       'R', w)
-
+    
     def test_AllLoss_2State_weights_Failures_TypeErrors(self):
         loss_functions = [SquareLoss, NormalLoss, GammaLoss, PoissonLoss, NegBinomLoss]
         w_list = list()
@@ -222,25 +222,25 @@ class Test_loss_classes(TestCase):
                                       self.ode, self.init_state, self.t[0], 
                                       self.t[1::], self.solution[1::,1:3],
                                       ['I', 'R'], w)
-
+    
     def test_Applicable_Loss_functions_cost_scalar_spread_params_for_two_states(self):
         loss_functions = [NormalLoss, GammaLoss, NegBinomLoss]
-        # weight for each component
+        y=self.solution[1::,1:3].flatten()
+        yhat = self.yhat[1::,1:3].flatten()
+        residual = y-yhat
+        # spread parameter for each component
         spread_params = [0.5, 1.5]
         spread_params_unraveled = np.array([spread_params[0]*
                                             np.ones(self.solution[1::,1:3].shape[0]),
                                             spread_params[1]*
                                             np.ones(self.solution[1::,1:3].shape[0])]).transpose().flatten()
-        y=self.solution[1::,1:3].flatten()
-        yhat = self.yhat[1::,1:3].flatten()
-        residual = y-yhat
         norm_logpdf_p1= -np.log(2)
         norm_logpdf_p2= np.log(2)/2
         norm_logpdf_p3= -np.log(np.pi)/2
         norm_logpdf_p4= np.log(1/spread_params_unraveled)
         norm_logpdf_p5_alt= -residual**2 / (2*spread_params_unraveled**2)
         norm_cost = (-(norm_logpdf_p1+norm_logpdf_p2+norm_logpdf_p3+
-                       norm_logpdf_p4+norm_logpdf_p5_alt)).sum()
+                        norm_logpdf_p4+norm_logpdf_p5_alt)).sum()
         
         gamma_cost=(-gamma_mu_shape(x=y, mu=yhat,shape=spread_params_unraveled,log=True)).sum()
         NegBinom_cost=(-dnbinom(x=y, mu=yhat,size=spread_params_unraveled,log=True)).sum()
@@ -253,15 +253,19 @@ class Test_loss_classes(TestCase):
             with self.subTest(message):
                 obj = loss_function(self.theta, self.ode, self.init_state, self.t[0],
                                     self.t[1::], self.solution[1::,1:3], ['I', 'R'], None,spread_params)
-                self.assertAlmostEqual(obj.cost(), test_answers[loss_function_index],places=0)
-
+                self.assertAlmostEqual(obj.cost(), test_answers[loss_function_index],places=1)
+    
     def test_Applicable_Loss_functions_cost_vector_spread_params_for_two_states(self):
         loss_functions = [NormalLoss, GammaLoss, NegBinomLoss]
         y=self.solution[1::,1:3].flatten()
         yhat = self.yhat[1::,1:3].flatten()
         residual = y-yhat
-        # now the weight is a vector
-        spread_params =  np.random.rand(self.solution[1::,1:3].shape[0],self.solution[1::,1:3].shape[1])
+        # now the spread parameter is a vector
+        spread_params = [0.5, 1.5]
+        spread_params = np.array([spread_params[0]*
+                                  np.ones(self.solution[1::,1:3].shape[0]),
+                                  spread_params[1]*
+                                  np.ones(self.solution[1::,1:3].shape[0])]).transpose()
         spread_params_unraveled=spread_params.flatten()
         norm_logpdf_p1= -np.log(2)
         norm_logpdf_p2= np.log(2)/2
@@ -269,19 +273,19 @@ class Test_loss_classes(TestCase):
         norm_logpdf_p4= np.log(1/spread_params_unraveled)
         norm_logpdf_p5_alt= -residual**2 / (2*spread_params_unraveled**2)
         norm_cost = (-(norm_logpdf_p1+norm_logpdf_p2+norm_logpdf_p3+
-                       norm_logpdf_p4+norm_logpdf_p5_alt)).sum()
+                        norm_logpdf_p4+norm_logpdf_p5_alt)).sum()
         gamma_cost=(-gamma_mu_shape(x=y, mu=yhat,shape=spread_params_unraveled,log=True)).sum()
         NegBinom_cost=(-dnbinom(x=y, mu=yhat,size=spread_params_unraveled,log=True)).sum()
         
         test_answers=[norm_cost,gamma_cost,NegBinom_cost]
-
+    
         for loss_function_index in range(len(loss_functions)):
             loss_function= loss_functions[loss_function_index]
             message = str(loss_function)
             with self.subTest(message):
                 obj = loss_function(self.theta, self.ode, self.init_state, self.t[0],
                                     self.t[1::], self.solution[1::,1:3], ['I', 'R'], None,spread_params)
-                self.assertAlmostEqual(obj.cost(), test_answers[loss_function_index],places=0)                           
+                self.assertAlmostEqual(obj.cost(), test_answers[loss_function_index],places=1)                           
        
     def test_Applicable_Loss_functions_1State_spread_param_Failures_TypeErrors(self):
         loss_functions = [NormalLoss, GammaLoss, NegBinomLoss]
@@ -329,7 +333,7 @@ class Test_loss_classes(TestCase):
                     self.assertRaises(AssertionError, loss_function, self.theta, self.ode,
                                       self.init_state, self.t[0], self.t[1::], self.solution[1::,-1],
                                       'R', None,spread_param)
-
+    
     def test_Applicable_Loss_functions_2State_spread_param_Failures_TypeErrors(self):
         loss_functions = [NormalLoss, GammaLoss, NegBinomLoss]
         spread_param_list = list()
