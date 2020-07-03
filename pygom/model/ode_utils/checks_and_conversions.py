@@ -7,7 +7,7 @@ import numpy as np
 
 
 
-def check_array_type(x,accept_booleans=False):
+def check_array_type(x, accept_booleans=False):
     '''
     Check to see if the type of input is suitable.  Only operate on one
     or two dimension arrays
@@ -24,41 +24,35 @@ def check_array_type(x,accept_booleans=False):
     x: :class:`numpy.ndarray`
         checked and converted array
     '''
-    accepted_types = (int,float,complex)
-    if accept_booleans==True:
+    accepted_types = (int, float, complex)
+    if accept_booleans:
         type_error_message = 'Expecting elements/sub-elements to be of type float, int, complex or boolean'
-    if accept_booleans==False:
+    if not accept_booleans:
         type_error_message = 'Expecting elements/sub-elements to be of type float, int or complex'
-        
-        
+
     if isinstance(x, np.ndarray):
         pass
-    elif isinstance(x, (list, tuple)):
-        if all(isinstance(item, accepted_types) for item in x):
-            if accept_booleans==True:
-                x = np.array(x)
-            elif accept_booleans==False:
-                if  any(isinstance(item, bool) for item in x):
-                    raise TypeError('No elements of array type object should be Boolean values')
-                x = np.array(x)
-            else:
-                TypeError(type_error_message)
-        elif isinstance(x[0], (list, tuple, np.ndarray)):
+    
+    elif isinstance(x, (list, tuple)): # If list or tuple
+        if all(isinstance(item, accepted_types) for item in x):# Check for accepted types
+            if not accept_booleans and any(isinstance(item, bool) for item in x): # 
+                raise TypeError('No elements of array type object should be Boolean values')
+            x = np.array(x)
+            
+        elif isinstance(x[0], (list, tuple, np.ndarray)):# If tuple/list of tuples/lists.
             for item in x:
-                if any(not isinstance(sub_item, accepted_types) for sub_item in item):
+                if any(not isinstance(sub_item, accepted_types) for sub_item in item): # Check for accepted types
                     raise TypeError(type_error_message)
-                if accept_booleans==False and any(isinstance(sub_item, bool) for sub_item in item):
+                if not accept_booleans and any(isinstance(sub_item, bool) for sub_item in item):
                     raise TypeError('No elements of array type object should be Boolean values')
             x = np.array(x)
         else:
             raise TypeError(type_error_message)
-    elif isinstance(x, accepted_types):
-        if accept_booleans==True:
-            x = np.array([x])
-        elif accept_booleans==False and not isinstance(x, bool):
-            x = np.array([x])
-        else:
-            TypeError("Not expecting Boolean value")
+            
+    elif isinstance(x, accepted_types): # If x is a single element of accepted type.
+        if not accept_booleans and isinstance(x, bool):
+           raise TypeError("Not expecting Boolean value")
+        x = np.array([x])
     else:
         raise TypeError("Expecting an array like object, got %s" % type(x))
 

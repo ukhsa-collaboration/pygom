@@ -143,6 +143,8 @@ class BaseLoss(object):
                 self._weight = self._setWeight_or_spread(n, p, state_weight,is_weights= True)
                 if spread_param is not None:
                     self._spread_param = self._setWeight_or_spread(n, p, spread_param,is_weights= False)
+                else:
+                    self._spread_param = None
             else:
                 raise InputError("Expecting the name of states " +
                                  "for the observations")
@@ -154,6 +156,8 @@ class BaseLoss(object):
             self._weight = self._setWeight_or_spread(n, p, state_weight,is_weights= True)
             if spread_param is not None:
                 self._spread_param = self._setWeight_or_spread(n, p, spread_param,is_weights= False)
+            else:
+                self._spread_param = None
         else:
             raise InputError("State name should be str or of type list/tuple")
 
