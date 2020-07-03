@@ -44,8 +44,12 @@ class BaseLoss(object):
         observations
     state_name: str
         the state which the observations came from
-    state_weight: array like
+    state_weight: array like or none
         weight for the observations
+    spread_param: array like or none
+        spead parameter for obsevations 
+        (e.g. normal, negative binomial and gamma distributions sigma, k and 
+         shape, respectivly).
     target_param: str or array like
         parameters that are not fixed
     target_state: str or array like
@@ -55,7 +59,7 @@ class BaseLoss(object):
     def __init__(self, theta, ode,
                  x0, t0,
                  t, y,
-                 state_name, state_weight=None,
+                 state_name, state_weight=None,spread_param=None,
                  target_param=None, target_state=None):
 
         ### Execute all the checks first
@@ -136,7 +140,11 @@ class BaseLoss(object):
             # then if
             if solution.shape[1] == p:
                 state_name = [str(i) for i in self._ode._iterStateList()]
-                self._setWeight(n, p, state_weight)
+                self._weight = self._setWeight_or_spread(n, p, state_weight,is_weights= True)
+                if spread_param is not None:
+                    self._spread_param = self._setWeight_or_spread(n, p, spread_param,is_weights= False)
+                else:
+                    self._spread_param = None
             else:
                 raise InputError("Expecting the name of states " +
                                  "for the observations")
@@ -145,13 +153,14 @@ class BaseLoss(object):
                 state_name = [state_name]
 
             assert p == len(state_name), "len(state_name) and len(y[0]) not equal"
-            self._setWeight(n, p, state_weight)
+            self._weight = self._setWeight_or_spread(n, p, state_weight,is_weights= True)
+            if spread_param is not None:
+                self._spread_param = self._setWeight_or_spread(n, p, spread_param,is_weights= False)
+            else:
+                self._spread_param = None
         else:
             raise InputError("State name should be str or of type list/tuple")
 
-        # if self._stateWeight is not None:
-        if np.any(self._stateWeight <= 0):
-            raise InputError("Weights should be strictly positive")
 
         # finish ordering information
         # now get the index of target states
@@ -202,8 +211,8 @@ class BaseLoss(object):
                                                     self._observeT.tolist(),
                                                     self._y.tolist(),
                                                     self._stateName)
-        if self._stateWeight is not None:
-            model_str += ", %s" % self._stateWeight.tolist()
+        if self._weight is not None:
+            model_str += ", %s" % self._weight.tolist()
         if self._targetParam is not None:
             model_str += ", %s" % self._targetParam
         if self._targetState is not None:
@@ -918,7 +927,7 @@ class BaseLoss(object):
     #
     ############################################################
 
-    def cost(self, theta=None):
+    def cost(self, theta=None, apply_weighting = True):
         """
         Find the cost/loss given time points and the corresponding
         observations.
@@ -927,6 +936,9 @@ class BaseLoss(object):
         ----------
         theta: array like
             input value of the parameters
+        apply_weighting: boolean
+            If True multiplies array of residuals by weightings, else raw 
+            residuals are used.
 
         Returns
         -------
@@ -943,11 +955,11 @@ class BaseLoss(object):
 
         """
         yhat = self._getSolution(theta)
-        c = self._lossObj.loss(yhat)
+        c = self._lossObj.loss(yhat,apply_weighting = apply_weighting)
 
         return np.nan_to_num(c) if c == np.inf else c
 
-    def diff_loss(self, theta=None):
+    def diff_loss(self, theta=None, apply_weighting = True):
         """
         Find the derivative of the loss function given time points
         and the corresponding observations, with initial conditions
@@ -956,6 +968,9 @@ class BaseLoss(object):
         ----------
         theta: array like
             input value of the parameters
+        apply_weighting: boolean
+            If True multiplies array of residuals by weightings, else raw 
+            residuals are used.
 
         Returns
         -------
@@ -969,13 +984,13 @@ class BaseLoss(object):
         try:
             # the solution does not include the origin
             solution = self._getSolution(theta)
-            return self._lossObj.diff_loss(solution)
+            return self._lossObj.diff_loss(solution,apply_weighting = apply_weighting)
         except Exception as e:
             # print(e)
             # print("parameters = " +str(theta))
             return np.nan_to_num((np.ones(self._y.shape)*np.inf))
 
-    def residual(self, theta=None):
+    def residual(self, theta=None, apply_weighting = True):
         """
         Find the residuals given time points and the corresponding
         observations, with initial conditions
@@ -984,6 +999,9 @@ class BaseLoss(object):
         ----------
         theta: array like
             input value of the parameters
+        apply_weighting: boolean
+            If True multiplies array of residuals by weightings, else raw 
+            residuals returned.
 
         Returns
         -------
@@ -1003,7 +1021,7 @@ class BaseLoss(object):
         try:
             # the solution does not include the origin
             solution = self._getSolution(theta)
-            return self._lossObj.residual(solution)
+            return self._lossObj.residual(solution, apply_weighting = apply_weighting)
         except Exception as e:
             # print(e)
             return np.nan_to_num((np.ones(self._y.shape)*np.inf))
@@ -1014,7 +1032,7 @@ class BaseLoss(object):
     #
     ############################################################
 
-    def costIV(self, theta=None):
+    def costIV(self, theta=None, apply_weighting = True):
         """
         Find the cost/loss given the parameters. The input theta
         here is assumed to include both the parameters as well as the
@@ -1024,6 +1042,10 @@ class BaseLoss(object):
         ----------
         theta: array like
             parameters and guess of initial values of the states
+        apply_weighting: boolean
+            If True multiplies array of residuals by weightings, else raw 
+            residuals returned.
+        
 
         Returns
         -------
@@ -1039,9 +1061,9 @@ class BaseLoss(object):
             self._setParamStateInput(theta)
 
         solution = self._getSolution()
-        return self._lossObj.loss(solution)
+        return self._lossObj.loss(solution, apply_weighting = apply_weighting)
 
-    def diff_lossIV(self, theta=None):
+    def diff_lossIV(self, theta=None, apply_weighting = True):
         """
         Find the derivative of the loss function w.r.t. the parameters
         given time points and the corresponding observations, with
@@ -1051,6 +1073,9 @@ class BaseLoss(object):
         ----------
         theta: array like
             parameters and initial values of the states
+        apply_weighting: boolean
+            If True multiplies array of residuals by weightings, else raw 
+            residuals returned.
 
         Returns
         -------
@@ -1068,13 +1093,13 @@ class BaseLoss(object):
         try:
             # the solution does not include the origin
             solution = self._getSolution()
-            return self._lossObj.diff_loss(solution)
+            return self._lossObj.diff_loss(solution, apply_weighting = apply_weighting)
         except Exception as e:
             # print(e)
             # print("parameters = " + str(theta))
             return np.nan_to_num((np.ones(self._y.shape)*np.inf))
 
-    def residualIV(self, theta=None):
+    def residualIV(self, theta=None, apply_weighting = True):
         """
         Find the residuals given time points and the corresponding
         observations, with initial conditions.
@@ -1083,6 +1108,9 @@ class BaseLoss(object):
         ----------
         theta: array like
             parameters and initial values of the states
+        apply_weighting: boolean
+            If True multiplies array of residuals by weightings, else raw 
+            residuals returned.
 
         Returns
         -------
@@ -1105,7 +1133,7 @@ class BaseLoss(object):
         try:
             # the solution does not include the origin
             solution = self._getSolution()
-            return self._lossObj.residual(solution)
+            return self._lossObj.residual(solution, apply_weighting = apply_weighting)
         except Exception as e:
             # print(e)
             return np.nan_to_num((np.ones(self._y.shape)*np.inf))
@@ -1145,7 +1173,7 @@ class BaseLoss(object):
 
         sens = np.reshape(sens, (n, num_s, num_out), 'F')
         for j in range(num_out):
-            sens[:, :, j] *= self._stateWeight
+            sens[:, :, j] *= self._weight
 
         grad = functools.reduce(np.add,map(np.dot, diff_loss, sens)).ravel()
 
@@ -1185,7 +1213,7 @@ class BaseLoss(object):
         sens = np.reshape(sens, (n, num_s, num_out), 'F')
 
         for j in range(num_out):
-            sens[:,:,j] *= self._stateWeight
+            sens[:,:,j] *= self._weight
 
         for i, s in enumerate(sens):
             if resid is None:
@@ -1554,37 +1582,45 @@ class BaseLoss(object):
                 theta = ode_utils.check_array_type(theta)
                 self._theta = np.copy(theta)
 
-    def _setWeight(self, n, p, w):
+    def _setWeight_or_spread(self, n, p, x,is_weights):
         # note that we NEVER scale the weights
         # also note that we can use the weights as a control
-        # with normalized input
-
-        w = ode_utils.check_array_type(w)
-        if len(w) == w.size:
-            m, q = len(w), 1
+        # with normalized input  
+        x = ode_utils.check_array_type(x,accept_booleans=is_weights)
+        if is_weights== True:
+            object_contents='weights'
         else:
-            m, q = w.shape
+            object_contents='spread parameter values'
+        
+        if len(x) == x.size:
+            m, q = len(x), 1
+        else:
+            m, q = x.shape
 
         if p == q:
             if n == m:
-                self._stateWeight = w
+                x = x
             elif m == 1:
-                self._stateWeight = np.ones((n, p))*w
+                x = np.ones((n, p))*x
             else:
-                raise InputError("Number of input weights is not equal " +
-                                "to the number of observations")
+                raise AssertionError("Number of input " + object_contents + 
+                                     " is not equal " +
+                                     "to the number of observations")
         elif p == m:
             if q == 1:
-                self._stateWeight = np.ones((n, p))*w
+                x = np.ones((n, p))*x
             else:
-                raise InputError("Number of input weights is not equal " +
-                                 "to number of states")
+                raise AssertionError("Number of input " + object_contents + 
+                                     " is not equal " +
+                                     "to number of states")
         else:
             if q == 1 and m == 1:
-                self._stateWeight = np.ones((n, p))*w
+                x = np.ones((n, p))*x
             else:
-                raise InputError("Number of input weights differs from " +
-                                 "the number of observations")
+                raise AssertionError("Number of input " + object_contents + 
+                                     " differs from " +
+                                     "the number of observations")
+        return x
 
     def _setX0(self, x0):
         """
@@ -1600,7 +1636,7 @@ class BaseLoss(object):
         be override in the module odeLoss.  Basically, all other
         operations remains but this will change.
         """
-        self._lossObj = Square(self._y, self._stateWeight)
+        self._lossObj = Square(self._y, self._weight)
         return self._lossObj
 
     def _unrollParam(self, theta):
