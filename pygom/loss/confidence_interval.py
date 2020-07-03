@@ -14,6 +14,7 @@ __all__ = [
 ]
 
 import copy
+import logging
 
 import sympy
 import numpy as np
@@ -87,7 +88,7 @@ def bootstrap(obj, alpha=0.05, theta=None, lb=None, ub=None,
         lower bound for the parameters
     iteration: int, optional
         number of bootstrap samples, defaults to 0 which is interpreted as
-        :math:`2n` where :math:`n` is the number of data points.
+        :math:`min(2n, 100)` where :math:`n` is the number of data points.
     full_output: bool
         if the full set of estimates is required.
 
@@ -112,9 +113,10 @@ def bootstrap(obj, alpha=0.05, theta=None, lb=None, ub=None,
         n, m = r.shape
 
     if iteration == 0:
-        iteration = 2*n
+        iteration = np.min(2*n, 100)
     if iteration < 100:
-        iteration = 100
+        logging.warning('Number of iterations ({}) is low. Consider using more.'
+                        ''.format(iteration))
 
     setTheta = np.zeros((iteration, p))
 
@@ -142,12 +144,8 @@ def bootstrap(obj, alpha=0.05, theta=None, lb=None, ub=None,
 
         setTheta[i] = xhatT.copy()
 
-    xLB, xUB = np.zeros(p), np.zeros(p)
-
-    for j in range(p):
-        s = np.sort(setTheta[:, j])
-        xLB[j] = s[np.int(np.ceil((alpha/2.0)*iteration))]
-        xUB[j] = s[np.int(np.ceil((1.0 - alpha/2.0)*iteration))]
+    # calculate the upper and lower bounds 
+    xLB, xUB = np.quantile(setTheta, q=(alpha / 2.0, 1 - alpha / 2.0), axis=0)
 
     if full_output:
         return xLB, xUB, setTheta

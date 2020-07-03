@@ -785,7 +785,7 @@ class BaseOdeModel(object):
         symbol_name = self._addSymbol(var_obj.ID)
 
         if isinstance(symbol_name, sympy.Symbol):
-            if symbol_name not in self._paramList:
+            if str(symbol_name) not in self._paramList:
                 self._addVariable(symbol_name, var_obj,
                                   self._stateList,
                                   self._stateDict)
@@ -796,6 +796,7 @@ class BaseOdeModel(object):
         return None
 
     def _addParamSymbol(self, input_str):
+        # turn input_str into a ODEVarialbe if required
         if isinstance(input_str, str):
             var_obj = ODEVariable(input_str, input_str)
         elif isinstance(input_str, ODEVariable):
@@ -804,7 +805,7 @@ class BaseOdeModel(object):
         symbol_name = self._addSymbol(var_obj.ID)
 
         if isinstance(symbol_name, sympy.Symbol):
-            if symbol_name not in self._paramList:
+            if str(symbol_name) not in self._paramList:
                 self._addVariable(symbol_name, var_obj,
                                   self._paramList,
                                   self._paramDict)
@@ -812,7 +813,7 @@ class BaseOdeModel(object):
             for sym in symbol_name:
                 self._addParamSymbol(str(sym))
 
-        return None
+        return
 
     def _addDerivedParam(self, name, eqn):
         var_obj = ODEVariable(name, name)
@@ -1181,14 +1182,15 @@ class BaseOdeModel(object):
                         _i = int(index[0])
                         return self._vectorStateDict[sym_name.group()][_i]
                     else:
-                        raise InputError("Cannot find input state, input %s " +
-                                         "appears to be a vector that was " +
-                                         "not initialized" % sym_name)
+                        raise InputError("Cannot find input state, input {} " 
+                                         "appears to be a vector that was " 
+                                         "not initialized".format(sym_name))
                 else:
-                    raise InputError("Cannot find input state, input %s " +
-                                     "likely to be a vector" % sym_name)
+                    raise InputError("Cannot find input state, input {} " 
+                                     "likely to be a vector".format(sym_name))
             else:
-                raise InputError("Input state: %s does not exist" % input_str)
+                raise InputError("Input state: {} does not exist"
+                                 "".format(input_str))
 
     def _extractUpperTriangle(self, A, nrow=None, ncol=None):
         """

@@ -24,5 +24,13 @@ documentation will require the following packages if not already installed::
     ipython
 
 
-There may be cases that `ipython` require extra packages, install the full version
-using `$ pip install ipython[all]` 
+There may be cases that `ipython` require extra packages, install the full 
+version using `$ pip install ipython[all]` 
+
+============================
+Installation of requirements
+============================
+
+If you are using `conda` the requirements to build the docs can be installed 
+by `$ conda install --file requirements.txt` or similarly for those using `pip` 
+you may `$pip install -r requirements.txt` from the root of the docs directory.

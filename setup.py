@@ -36,43 +36,46 @@ if use_cython:
 #                  extra_link_args=['-fopenmp']),
 )
     ]
-    cmdclass.update({ 'build_ext': build_ext })
+    cmdclass.update({'build_ext': build_ext})
 else:
 #    raise ImportError('You will need Cython installed to create'
 #                      'the c extensions. Try installing with'
 #                      '"pip install cython" before installing PyGOM.')
-     ext_modules += [
-         Extension("pygom.model._tau_leap",
-                   [ "pygom/model/_tau_leap.c" ],
-                   include_dirs=[numpy.get_include()],
+    ext_modules += [
+        Extension("pygom.model._tau_leap",
+                  ["pygom/model/_tau_leap.c"],
+                  include_dirs=[numpy.get_include()],
 #                  extra_compile_args=['-fopenmp'],
 #                  extra_link_args=['-fopenmp']),
 )
     ]
-package_data={
+package_data = {
    'pygom.data': ['eg1.json'],# An example epijson file
    }
 
+# read the requirements file and have use that to populate install_requires
+requires = open("requirements.txt").read().strip().split("\n")
+install_requires = []
+extras_require = {}
+for r in requires:
+    if ";" in r:
+        # requirements.txt conditional dependencies need to be reformatted for wheels
+        # to the form: `'[extra_name]:condition' : ['requirements']`
+        req, cond = r.split(";", 1)
+        cond = ":" + cond
+        cond_reqs = extras_require.setdefault(cond, [])
+        cond_reqs.append(req)
+    else:
+        install_requires.append(r)
 
 with open('README.rst', 'r') as f:
     readme = f.read()
 
-setup_requires=[
+setup_requires = [
     'setuptools-scm>=3.2.0',
     'setuptools_scm_git_archive',
     'numpy>=1.12.0'
     ]
-
-install_requires = [
-    'dask>=0.13.0',
-    'matplotlib>=1.0.0',
-    'pandas>=0.15.0',
-    'python-dateutil>=2.0.0',
-    'numpy>=1.12.0',
-    'scipy>=1.4.1',
-    'sympy>=1.0.0',
-    'cython>=0.29'
-]
 
 setup(
     name='pygom',
@@ -91,11 +94,12 @@ setup(
         'pygom.loss',
         'pygom.utilR'
     ],
-    package_data = package_data,
+    package_data=package_data,
     include_package_data=True,
-    cmdclass = cmdclass,
+    cmdclass=cmdclass,
     ext_modules=ext_modules,
     install_requires=install_requires,
+    extras_require=extras_require,
     setup_requires=setup_requires,
     test_suite='tests',
     scripts=[]

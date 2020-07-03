@@ -1,38 +1,27 @@
 # specify the language and which version
 language: python
 python:
-#  - 3.4
   - 3.5
   - 3.6
   - 3.7
   - 3.8
-#matrix:
-#  include:
-#    - python: 3.7
-#      dist: xenial
-#      sudo: true
 
 before_install:
-  - sudo apt-get update
-  - wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-  - chmod u+x miniconda.sh
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  - conda info -a
-  # The next couple lines fix a crash with multiprocessing on Travis and are not specific to using Miniconda
-#  - sudo rm -rf /dev/shm
-#  - sudo ln -s /run/shm /dev/shm
+  - pip install -U pip
+  - pip install codecov
 
 install:
-  - conda create -n pygom python=$TRAVIS_PYTHON_VERSION
-  - source activate pygom
-  - conda env update -f conda-env.yml
+  - pip install -r requirements.txt
   - python setup.py build
   - python setup.py install
-# command to run tests
-script: python setup.py test
+
+# Runs test with coverage
+script:
+  - coverage run setup.py test
+
+# Push the result to
+after_success:
+  - codecov
 
 # deploy to PyPI
 deploy:

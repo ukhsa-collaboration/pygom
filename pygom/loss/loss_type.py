@@ -419,7 +419,7 @@ class Poisson(Baseloss_Type):
 
     def loss(self, yhat, apply_weighting=True):
         '''
-        The loss under a normal distribution.  Defined as the
+        The loss under a Poisson distribution.  Defined as the
         negative log-likelihood here.
 
         Parameters
