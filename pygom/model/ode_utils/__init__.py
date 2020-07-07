@@ -558,7 +558,7 @@ class compileCode(object):
             elif backend == 'lambda':
                 compiledFunc = lambdify(expr=inputExpr,
                                         args=inputSymb,
-                                        modules='np')
+                                        modules='numpy')
                 compileTypeChosen = 'np'
             elif backend.lower() in ('cython', 'np'):
                 # note that we have another test layer because of the
@@ -579,7 +579,7 @@ class compileCode(object):
                     except:
                         compiledFunc = lambdify(expr=inputExpr,
                                                 args=inputSymb,
-                                                modules='np')
+                                                modules='numpy')
                         compileTypeChosen = 'np'
             else:
                 raise ExpressionErrror("The problem is too tough")

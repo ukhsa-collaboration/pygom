@@ -14,6 +14,7 @@ from numbers import Number
 
 import numpy as np
 import sympy
+import sympy.matrices.matrices
 import scipy.stats
 
 from .deterministic import DeterministicOde

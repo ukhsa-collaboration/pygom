@@ -9,6 +9,7 @@ import re
 from functools import reduce
 
 import sympy
+from sympy.matrices import MatrixBase
 import numpy as np
 
 from .base_ode_model import BaseOdeModel
@@ -115,7 +116,7 @@ def generateDirectedDependencyGraph(ode_matrix, transition=None):
         -1 and 1 to indicate the direction of the transition and the state.
         All column sum to one, i.e. transition must have a source and target.
     """
-    assert isinstance(ode_matrix, sympy.matrices.MatrixBase), \
+    assert isinstance(ode_matrix, MatrixBase), \
         "Expecting a vector of expressions"
 
     if transition is None:
@@ -150,7 +151,7 @@ def getUnmatchedExpressionVector(expr_vec, full_output=False):
     list:
         of unmatched expressions, i.e. birth or death processes
     """
-    assert isinstance(expr_vec, sympy.matrices.MatrixBase), \
+    assert isinstance(expr_vec, MatrixBase), \
         "Expecting a vector of expressions"
 
     transition = reduce(lambda x, y: x + y, map(getExpressions, expr_vec))
@@ -181,7 +182,7 @@ def getMatchingExpressionVector(expr_vec, outTuple=False):
     list:
         of matched expressions, i.e. transitions
     """
-    assert isinstance(expr_vec, sympy.matrices.MatrixBase), \
+    assert isinstance(expr_vec, MatrixBase), \
         "Expecting a vector of expressions"
 
     transition = list()

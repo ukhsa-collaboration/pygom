@@ -274,6 +274,48 @@ def runif(n, min=0.0, max=1.0, seed=None):
             return rvs(low=min, high=max, size=n)
         else:
             return rvs(low=min, high=max, size=n)[0]
+        
+##### beta distribution
+# To do: write these in the same format as above with seeds
+def dbeta(x, shape1, shape2, log=False):
+    """
+    See
+    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Beta.html
+    """
+    return st.beta.pdf(x, shape1, shape2)
+
+def rbeta(n, shape1, shape2, seed=None):
+    """
+    See
+    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Beta.html
+    """
+    return st.beta.rvs(shape1, shape2, size=n)
+
+def qbeta(p, shape1, shape2):
+    """
+    See
+    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Beta.html
+    """
+    return st.beta.ppf(p, shape1, shape2)
+
+##### multivariate normal distribution
+def dmvnorm(x, mean=None, sigma=None):
+    """
+    See
+    https://www.rdocumentation.org/packages/mvtnorm/versions/1.0-12/topics/mvnorm
+    """
+    if mean is None:
+        mean = np.repeat(0, len(x))
+    if sigma is None:
+        sigma = np.identity(len(x))
+    return st.multivariate_normal.pdf(x, mean=mean, cov=sigma)
+
+def rmvnorm(n, mean, sigma, seed=None):
+    '''
+    See
+    https://www.rdocumentation.org/packages/mvtnorm/versions/1.0-12/topics/mvnorm
+    '''
+    return st.multivariate_normal.rvs(mean=mean, cov=sigma, size=n)
 
 ###############################################################
 #
@@ -358,7 +400,7 @@ def qbinom(q, size, prob):
     See
     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html
     '''
-    return st.ppf(q, n=size, p=prob)
+    return st.binom.ppf(q, n=size, p=prob)
 
 def rbinom(n, size, prob, seed=None):
     '''
@@ -380,6 +422,29 @@ def rbinom(n, size, prob, seed=None):
         return rvs(n=size, p=prob, size=n)
     else:
         return rvs(n=size, p=prob, size=n)[0]
+    
+##### Negitive binomial
+def dnbinom(x, size, prob, mu, log=True):
+    '''
+    See
+    https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html
+    '''
+    
+def pnbinom(q, size, prob, mu, lower_tail = True, log=True):
+    '''
+    See
+    https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html
+    '''
+    
+def qnbinom(p, size, prob, mu, lower_tail = True, log=True):
+    '''
+    See
+    https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html
+    '''
+    
+def rnbinom(n, size, prob, mu, seed=None):
+    pass
+
 
 def test_seed(seed):
     '''

@@ -270,7 +270,7 @@ class Poisson(object):
 
     def loss(self, yhat):
         '''
-        The loss under a normal distribution.  Defined as the
+        The loss under a Poisson distribution.  Defined as the
         negative log-likelihood here.
 
         Parameters

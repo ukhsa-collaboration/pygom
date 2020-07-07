@@ -100,6 +100,20 @@ class DeterministicOde(BaseOdeModel):
         self._s = self._stateList + [self._t]
         self._sp = self._s + self._paramList
 
+        # Calls to the autowrap method can't take ODEVariable class objects
+        # Better to convert the objects in self._sp back to sympy objects
+        # This code will convert any ODEVariable object in either the stateDict
+        # or paramDict dictonary
+        for i, item in enumerate(self._sp):
+            try:
+                 self._sp[i] = self._stateDict[item.ID]
+            except Exception:
+                 pass
+            try:
+                 self._sp[i] = self._paramDict[item.ID]
+            except Exception:
+                 pass
+
         # information regarding the integration.  We want an internal
         # storage so we can invoke the plot method within the same class
         self._t0 = None
