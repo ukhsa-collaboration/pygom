@@ -27,7 +27,6 @@ from pygom.loss.ode_loss import SquareLoss, NormalLoss, PoissonLoss
       selected states and plot posterior histograms/pairs plots for specific
       parameters.
 """
-print("git test")
 
 #%%
 def _log_limits(par, logscale):
