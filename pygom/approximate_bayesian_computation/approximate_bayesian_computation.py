@@ -155,14 +155,16 @@ def create_loss(loss_type, parameters, ode, x0, t0, t, y, state_name,
     target_state = _get_target(parameters, ode.state_list)
     theta = [param.random_sample() for param in parameters if param.name in target_param]
     
-    if loss_type == SquareLoss:
+    if loss_type == "SquareLoss":
         return SquareLoss(theta, ode, x0, t0, t, y, state_name, state_weight, target_param, target_state)
     
-    elif loss_type == NormalLoss:
+    elif loss_type == "NormalLoss":
         return NormalLoss(theta, ode, x0, t0, t, y, state_name, sigma, target_param, target_state)
     
-    elif loss_type == PoissonLoss:
+    elif loss_type == "PoissonLoss":
         return PoissonLoss(theta, ode, x0, t0, t, y, state_name, target_param, target_state)    
+    else:
+        raise ValueError("Please choose from the available loss functions")
 
 #%% 
 """ ABC class and methods for obtaining an approximate posterior sample/plotting the results """
