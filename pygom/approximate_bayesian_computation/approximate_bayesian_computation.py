@@ -41,10 +41,19 @@ def get_length(attr):
         return len(attr)
     else:
         return 0
-        
-def _get_target(parameters,target):
-    # used to separate target_param and target_state from a single list of parameters  
+    
+def _get_target_parameters(parameters,target):
+    # used to separate target_param from a single list of parameters  
     target_list = [param.name for param in parameters if param.name in target]
+    if len(target_list) == 0:
+        return None
+    else:
+        return target_list
+    
+def _get_target_states(parameters,target):
+    # used to separate and re-order target_state from a single list of parameters
+    parameter_names = [parameter.name for parameter in parameters]
+    target_list = [tar.name for tar in target if tar in parameter_names]
     if len(target_list) == 0:
         return None
     else:
@@ -151,8 +160,8 @@ def create_loss(loss_type, parameters, ode, x0, t0, t, y, state_name,
     assert t0 != t[0], "Make sure that the times, t, do not include t0"
     assert all(param.name in (ode.param_list+ode.state_list) for param in parameters), "Parameters have been provided that are not in the model"
     
-    target_param = _get_target(parameters, ode.param_list)
-    target_state = _get_target(parameters, ode.state_list)
+    target_param = _get_target_parameters(parameters, ode.param_list)
+    target_state = _get_target_states(parameters, ode.state_list)
     theta = [param.random_sample() for param in parameters if param.name in target_param]
     
     if loss_type == "SquareLoss":
@@ -192,6 +201,10 @@ class ABC():
     
         self.log = np.array([param.logscale for param in self.parameters])
         self.prior_range = np.array([(param.prior_high-param.prior_low) for param in self.parameters])
+        
+        ordered_parameters = (_get_target_parameters(parameters,self.obj._ode.param_list) or []) + (_get_target_states(parameters,self.obj._ode.state_list) or [])
+        parameter_names = [par.name for par in parameters]
+        self.par_order = [parameter_names.index(par) for par in ordered_parameters]
             
         if constraint is not None:
             self.pop_size = constraint[0]
@@ -282,7 +295,7 @@ class ABC():
                 if w1:
                     # converting from log-scale and ensuring total population size is conserved
                     model_params = self._log_parameters(trial_params.copy())
-                    par_update(model_params)
+                    par_update(model_params[self.par_order])
                     if hasattr(self,"con_state"):
                         self.obj._x0[self.con_state] = self.pop_size - self.obj._x0[self.con_state_indices].sum() 
                     
@@ -432,7 +445,7 @@ class ABC():
             if w1:
                 # converting from log-scale and ensuring total population size is conserved
                 model_params = self._log_parameters(trial_params.copy())
-                par_update(model_params)
+                par_update(model_params[self.par_order])
                 if hasattr(self,"con_state"): 
                     self.obj._x0[self.con_state] = self.pop_size - self.obj._x0[self.con_state_indices].sum() 
                 
@@ -580,7 +593,7 @@ class ABC():
         for i in range(self.N):
             params = self.res[i].copy()
             params = self._log_parameters(params)
-            par_update(params)
+            par_update(params[self.par_order])
             if hasattr(self,"con_state"):
                 self.obj._x0[self.con_state] = self.pop_size - self.obj._x0[self.con_state_indices].sum()
             self.obj._ode.parameters = self.obj._theta
