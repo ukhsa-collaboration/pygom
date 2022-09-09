@@ -27,6 +27,7 @@ This package depends on::
     numpy
     scipy
     sympy
+    git to be installed on conda using command 'conda install git'
 
 and they should be installed if not already available.  Alternatively, the easier way
 to use a minimal (and isolated) setup is to use `conda <https://conda.io/docs/>`_ and
