@@ -10,5 +10,4 @@ dependencies:
   - sympy
   - graphviz
   - cython
-  - git
 #  - pip: []

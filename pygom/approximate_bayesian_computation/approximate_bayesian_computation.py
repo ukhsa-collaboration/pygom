@@ -159,10 +159,10 @@ def create_loss(loss_type, parameters, ode, x0, t0, t, y, state_name,
         return SquareLoss(theta, ode, x0, t0, t, y, state_name, state_weight, target_param, target_state)
     
     elif loss_type == NormalLoss:
-        return NormalLoss(theta, ode, x0, t0, t, y, state_name, sigma, target_param, target_state)
+        return NormalLoss(theta, ode, x0, t0, t, y, state_name, state_weight, sigma, target_param, target_state)
     
     elif loss_type == PoissonLoss:
-        return PoissonLoss(theta, ode, x0, t0, t, y, state_name, target_param, target_state)    
+        return PoissonLoss(theta, ode, x0, t0, t, y, state_name, state_weight, target_param, target_state)    
 
 #%% 
 """ ABC class and methods for obtaining an approximate posterior sample/plotting the results """
