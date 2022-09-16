@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# @Author: Martin Grunnill 
+# @Date:   2020-07-03 07:28:58
+# @Last Modified by:   Martin Grunnill 
+# @Last Modified time: 2022-01-18 16:42:11
 ''' pygom
 
 .. moduleauthor:: Edwin Tye <Edwin.Tye@phe.gov.uk>

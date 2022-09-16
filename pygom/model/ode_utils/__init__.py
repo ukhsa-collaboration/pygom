@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# @Author: Martin Grunnill 
+# @Date:   2020-07-03 07:28:58
+# @Last Modified by:   Martin Grunnill 
+# @Last Modified time: 2021-12-13 16:19:57
 '''
 Utilities used throughout the package.
 '''

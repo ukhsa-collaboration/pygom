@@ -79,7 +79,7 @@ setup_requires = [
 
 setup(
     name='pygom',
-    use_scm_version=True,
+    version=0.18,
     description='ODE modeling in Python',
     long_description=readme,
     long_description_content_type='text/x-rst',

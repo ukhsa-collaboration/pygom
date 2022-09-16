@@ -11,6 +11,7 @@
 
 import scipy.stats as st
 import numpy as np
+from scipy.special import gammaln
 
 ###############################################################
 #
@@ -80,6 +81,38 @@ def dgamma(x, shape, rate=1.0, log=False):
         return st.gamma.logpdf(x, a=shape, scale=1.0/rate)
     else:
         return st.gamma.pdf(x, a=shape, scale=1.0/rate)
+
+def gamma_mu_shape(x, mu, shape, log=False):
+    '''
+    The probability density function (pdf) of gamma distrbution in terms of mean and shape.
+
+    Parameters
+    ----------
+    x: array like observation.
+    mu: mean or prediction.
+    shape: shape (a in latex equation below).
+    log: if True the natural log of the pmf is given.
+    See: Bolker, B. M. (2008). Gamma. In Ecological Models in R (pp. 131–133).
+         Princeton University Press.
+         Jupyter notebook titled "Loss function Calculations.ipnyb"
+
+
+    Returns
+    -------
+    pdf, :math:
+        `\\mathcal\\{p}(x; \\mu,a) = \\exp(- a \\ln{\\left(\\frac{\\mu}{a} \\right)} - \\frac{a x}{\\mu} + \\left(a - 1\\right) \\ln{\\left(x \\right)} - \\ln{\\left(\\Gamma\\left(a\\right) \\right)})`
+
+    '''
+    logpdf_p1 = -gammaln(shape)
+    logpdf_p2 = (shape - 1)*np.log(x)
+    logpdf_p3 = -shape*np.log(mu/shape)
+    logpdf_p4 = -shape*x/mu
+    logpdf = logpdf_p1+logpdf_p2+logpdf_p3+logpdf_p4
+    if log:
+        ans = logpdf
+    else:
+        ans = np.exp(logpdf)
+    return ans
 
 def pgamma(q, shape, rate=1.0, log=False):
     '''
@@ -424,27 +457,83 @@ def rbinom(n, size, prob, seed=None):
         return rvs(n=size, p=prob, size=n)[0]
     
 ##### Negitive binomial
-def dnbinom(x, size, prob, mu, log=True):
+def pnbinom(q, size, prob, mu, lower_tail=True, log=True):
     '''
     See
     https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html
     '''
-    
-def pnbinom(q, size, prob, mu, lower_tail = True, log=True):
-    '''
-    See
-    https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html
-    '''
-    
-def qnbinom(p, size, prob, mu, lower_tail = True, log=True):
-    '''
-    See
-    https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html
-    '''
-    
-def rnbinom(n, size, prob, mu, seed=None):
-    pass
 
+def qnbinom(p, size, prob, mu, lower_tail=True, log=True):
+    '''
+    See
+    https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html
+    '''
+
+##### Negative Binomial distribution
+def nb2pmf(x, mu, k, log=False):
+    '''
+    The probability mass function (pmf) of Negative Binomial 2 distribution.
+    This definition of the negative binomial distribution is often refered to as
+    negative binomial 2, or the ecological parameterisation. This parameterisation
+    takes the mean and k (an overdispersion parameter). The variance = mean(1+mean/k),
+    some notation uses alpha (k=1/alpha).
+    See: Bolker, B. M. (2008). Negative Binomial. In Ecological Models in R (pp. 124–126).
+         Princeton University Press.
+         Jupyter notebook titled "Loss function Calculations.ipnyb"
+
+    Parameters
+    ----------
+    x: array like observation.
+    mu: mean or prediction.
+    k: overdispersion parameter (variance = mean(1+mean/k)). Note some notation
+       uses $\alpha$, ($k=\alpha^{-1}$).
+    log: if True the natural log of the pmf is given.
+    See:
+        Bolker, B. M. (2008). Negative Binomial. In Ecological Models in R (pp. 124–126).
+        Princeton University Press.
+        File "Loss function Calculations.ipnyb"
+
+    Returns
+    -------
+    log pmf:
+    math:`\\mathcal\\p(x; \\mu,k)) = \\exp(\\ln(\\frac{\\Gamma \\left(k+x\\right)}{\\Gamma \\left(k\\right)x!}(\\frac{k}{k+\\mu})^{k}(\\frac{\\mu}{k+\\mu})^{x}))`
+
+    '''
+    logpmf_p1 = -gammaln(x+1)
+    logpmf_p2 = -gammaln(k)
+    logpmf_p3 = k*(np.log(k) - np.log(k + mu))
+    logpmf_p4 = x*(np.log(mu) - np.log(k + mu))
+    logpmf_p5 = gammaln(k+x)
+    logpmf = logpmf_p1+logpmf_p2+logpmf_p3+logpmf_p4+logpmf_p5
+    if log:
+        ans = logpmf
+    else:
+        ans = np.exp(logpmf)
+    return ans
+
+def dnbinom(x, size, prob=None, mu=None, log=False):
+    '''
+    See
+    https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html
+    '''
+    if mu is None and prob is None:
+        raise Exception("Neither 'prob' or 'mu' were specified")
+
+    if mu is not None:
+        if prob is not None:
+            raise Exception("'prob' and 'mu' both specified")
+        if log:
+            ans = nb2pmf(x=x, mu=mu, k=size, log=True)
+        else:
+            ans = nb2pmf(x=x, mu=mu, k=size, log=False)
+
+    else:
+        if log:
+            ans = st.nbinom.logpmf(x, n=size, p=prob)
+        else:
+            ans = st.nbinom.pmf(x, n=size, p=prob)
+
+    return ans
 
 def test_seed(seed):
     '''

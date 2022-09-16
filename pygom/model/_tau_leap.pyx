@@ -54,7 +54,7 @@ def _cy_test_tau_leap_safety(np.ndarray[np.float64_t] x,
             safe = True
 
         if tau_scale*total_rate <= 1.0 or count > 256:
-            return False
+            return tau_scale, False
         count += 1
 
     return tau_scale, True
