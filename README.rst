@@ -6,8 +6,6 @@ pygom - ODE modelling in Python
 
 .. |pypi version| image:: https://img.shields.io/pypi/v/pygom.svg
    :target: https://pypi.python.org/pypi/pygom
-.. |Build status| image:: https://travis-ci.org/PublicHealthEngland/pygom.svg?branch=master
-   :target: https://travis-ci.org/PublicHealthEngland/pygom
 .. |Documentation Status| image:: https://readthedocs.org/projects/pygom/badge/?version=master
    :target: https://pygom.readthedocs.io/en/master/?badge=master
 .. |licence| image:: https://img.shields.io/pypi/l/pygom?color=green   :alt: PyPI - License
