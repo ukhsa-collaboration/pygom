@@ -51,7 +51,7 @@ def check_array_type(x,accept_booleans=False):
                     raise TypeError('No elements of array type object should be Boolean values')
             x = np.array(x)
         else:
-            raise TypeError(type_error_message)
+            raise TypeError(type_error_message + ' got ' + str(type(x)))
     elif isinstance(x, accepted_types):
         if accept_booleans==True:
             x = np.array([x])
