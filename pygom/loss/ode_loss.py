@@ -40,9 +40,18 @@ class NormalLoss(BaseLoss):
     '''
     def __init__(self, theta, ode, x0, t0, t, y, state_name, state_weight=None,
                  sigma=1.0, target_param=None, target_state=None):
-        super().__init__(theta, ode, x0, t0, t, y,
-                         state_name, state_weight, sigma, target_param, target_state)
-
+        super().__init__(theta=theta, 
+                         ode=ode, 
+                         x0=x0, 
+                         t0=t0, 
+                         t=t, 
+                         y=y,
+                         state_name=state_name, 
+                         state_weight=state_weight, 
+                         spread_param=sigma, 
+                         target_param=target_param, 
+                         target_state=target_state)
+        
     def __repr__(self):
         return "NormalLoss" + self._get_model_str()
 

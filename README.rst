@@ -2,7 +2,7 @@
 pygom - ODE modelling in Python
 ===============================
 
-|Build status|  |Github actions|  |Documentation Status|  |pypi version|  |licence|
+|Github actions|  |Documentation Status|  |pypi version|  |licence|
 
 .. |pypi version| image:: https://img.shields.io/pypi/v/pygom.svg
    :target: https://pypi.python.org/pypi/pygom
