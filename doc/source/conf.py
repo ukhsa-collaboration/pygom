@@ -136,6 +136,7 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
 else:
     # RTD will time out if we try to build the whole of the documentation so
     # ignore some of the longer bits and perhaps add them later
+    # // TODO: speed up runtime for longer examples for readthedocs
     exclude_patterns = ['common_models/*.rst',
 #                         'bvpSimple.rst',
                          'epi.rst',
