@@ -6,6 +6,8 @@ pygom is a package that aims to facilitate the application of ordinary different
 
 This is an open source project hosted on `Github <https://github.com/PublicHealthEngland/pygom>`_. 
 
+Insert intro text
+
 ##################
 User Documentation
 ##################
@@ -14,20 +16,20 @@ User Documentation
    :maxdepth: 5
    
    getting_started.rst
-   sir.rst
-   transition.rst
-   stochastic.rst
-   unrollOde.rst
-   epi.rst
-   epijson.rst
-   bvpSimple.rst
-   gradient.rst
-   fh.rst
-   estimate1.rst
-   estimate2.rst
-   initialGuess.rst
-   profile.rst
-   common_models.rst
+   #sir.rst
+   #transition.rst
+   #stochastic.rst
+   #unrollOde.rst
+   #epi.rst
+   #epijson.rst
+   #bvpSimple.rst
+   #gradient.rst
+   #fh.rst
+   #estimate1.rst
+   #estimate2.rst
+   #initialGuess.rst
+   #profile.rst
+   #common_models.rst
 
 ##########################
 Code Documentation and FAQ
@@ -36,8 +38,8 @@ Code Documentation and FAQ
 .. toctree::
    :maxdepth: 5
 
-   faq.rst
-   mod/index.rst
+   #faq.rst
+   #mod/index.rst
    
 ##########
 References
@@ -45,7 +47,7 @@ References
 
 .. toctree::
 
-   ref.rst
+   #ref.rst
 
 ##################
 Indices and tables
