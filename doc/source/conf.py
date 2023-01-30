@@ -45,7 +45,8 @@ extensions = [
     'matplotlib.sphinxext.plot_directive',
     'numpydoc',
     'IPython.sphinxext.ipython_console_highlighting',
-    'IPython.sphinxext.ipython_directive'
+    'IPython.sphinxext.ipython_directive',
+    'nbsphinx'
     ]
 
 # the mapping for code in other packages
