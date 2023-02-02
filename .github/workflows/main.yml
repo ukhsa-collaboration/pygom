@@ -3,8 +3,7 @@ name: pygom-docbuild
 on: 
   push:
     branches:
-      only:
-        - install-fix-docs
+      - install-fix-docs
 
 
 jobs:
