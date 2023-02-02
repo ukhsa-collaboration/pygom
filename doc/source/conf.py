@@ -134,6 +134,7 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
     import sphinx_rtd_theme
     html_theme = 'sphinx_rtd_theme'
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+    exclude_patterns = ['doc_to_sort.*']
 else:
     # RTD will time out if we try to build the whole of the documentation so
     # ignore some of the longer bits and perhaps add them later

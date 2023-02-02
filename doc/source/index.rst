@@ -17,6 +17,7 @@ User Documentation
    
    getting_started.rst
    #sir.rst
+   #notebooks/sir.ipynb
    #transition.rst
    #stochastic.rst
    #unrollOde.rst
