@@ -20,6 +20,8 @@ jobs:
         python-version: ["3.7"]#, "3.8", "3.9", "3.10", "3.11"]
 
     steps:  
+      - uses: actions/checkout@v2
+
       - uses: actions/cache@v1
         if: startsWith(runner.os, 'Windows')
         with:
@@ -55,7 +57,9 @@ jobs:
       - name: check working directory
         run: | 
           pwd
-          find '**requirements.txt'
+      
+      - name: list files
+        run: ls
           
 
 #      - name: Install dependencies
