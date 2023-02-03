@@ -1,4 +1,4 @@
-name: pygom
+name: Test-docs
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.7"]#, "3.8", "3.9", "3.10", "3.11"]
 
     steps:  
       - uses: actions/cache@v1
@@ -55,16 +55,15 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r '**/requirements.txt'
           
       - name: Build and install package for c files
         run: |
           python setup.py build
           python setup.py install
-      - name: Fix matplotlib backend for MacOS
-        if: startsWith(runner.os, 'macOS')
+
+      - name: Test documentation
         run: |
-          mkdir ~/.matplotlib
-          echo "backend: TkAgg" >> ~/.matplotlib/matplotlibrc
-      - name: Test and coverage
-        run: python setup.py test
+          pip install doc/requirements.txt
+          make html
+      
