@@ -73,6 +73,7 @@ jobs:
       
       - name: make html documentation
         run: |
+          cd doc
           make clean
           make html
       
