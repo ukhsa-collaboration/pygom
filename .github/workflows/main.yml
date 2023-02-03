@@ -1,4 +1,4 @@
-name: Test-docs
+name: test-docs
 
 on:
   push:
@@ -55,12 +55,12 @@ jobs:
       - name: check working directory
         run: | 
           pwd
-          ls
+          
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r ../requirements.txt
           
       - name: Build and install package for c files
         run: |
@@ -69,6 +69,6 @@ jobs:
 
       - name: Test documentation
         run: |
-          pip install -r home/doc/requirements.txt
+          pip install -r ../doc/requirements.txt
           make html
       
