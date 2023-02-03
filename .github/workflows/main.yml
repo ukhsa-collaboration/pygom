@@ -21,6 +21,8 @@ jobs:
 
     steps:  
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
 
       - uses: actions/cache@v1
         if: startsWith(runner.os, 'Windows')
@@ -53,14 +55,6 @@ jobs:
           Invoke-VSDevEnvironment
           Get-Command rc.exe | Format-Table -AutoSize
           echo "::add-path::$(Get-Command rc.exe | Split-Path)"
-          
-      - name: check working directory
-        run: | 
-          pwd
-      
-      - name: list files
-        run: ls
-          
 
       - name: Install dependencies
         run: |
@@ -72,8 +66,11 @@ jobs:
           python setup.py build
           python setup.py install
 
-      - name: Test documentation
+      - name: Install documentation dependencies
         run: |
           pip install -r doc/requirements.txt
+      
+      - name: make html documentation
+        run: |
           make html
       
