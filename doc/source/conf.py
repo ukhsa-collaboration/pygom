@@ -13,8 +13,8 @@ import os
 import warnings
 
 #slight hack for graphvis on windows to ensure conda path is correct
-if sys.platform == 'win32':
-    os.environ['PATH'] += os.pathsep + os.environ['CONDA_PREFIX'] + r'\Library\bin\graphviz'
+#if sys.platform == 'win32':
+#    os.environ['PATH'] += os.pathsep + os.environ['CONDA_PREFIX'] + r'\Library\bin\graphviz'
 
 import sphinx
 if sphinx.__version__ < '1.4.1':
