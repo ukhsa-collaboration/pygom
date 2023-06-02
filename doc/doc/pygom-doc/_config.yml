@@ -1,14 +1,20 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
-title: My sample book
-author: The Jupyter Book Community
-logo: logo.png
+title: PyGOM documentation
+author: Public Health England / UK Health Security Agency
+logo: ukhsa.png
 
-# Force re-execution of notebooks on each build.
+# build files in table of contents
+# used as alternative to exclude patterns
+only_build_toc_files: true
+
+# cache notebook outputs to save time
+# TODO check what is required for readthedocs 
+# this could avoid the issue of execution timing out
 # See https://jupyterbook.org/content/execute.html
 execute:
-  execute_notebooks: force
+  execute_notebooks: cache
 
 # Define the name of the latex output file for PDF builds
 latex:
@@ -16,12 +22,16 @@ latex:
     targetname: book.tex
 
 # Add a bibtex file so that we can create citations
-bibtex_bibfiles:
-  - references.bib
+# use sphinx to specify style
+sphinx:
+  config:
+    bibtex_reference_style: author_year
+    # TODO change md to bibtex
+    bibtex_bibfiles: "ref.md"
 
 # Information about where the book exists on the web
 repository:
-  url: https://github.com/executablebooks/jupyter-book  # Online location of your book
+  url: https://github.com/ukhsa-collaboration/pygom  # Online location of your book
   path_to_book: docs  # Optional path to your book, relative to the repository root
   branch: master  # Which branch of the repository should be used when creating links (optional)
 
