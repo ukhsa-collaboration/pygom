@@ -3,7 +3,8 @@
 
 title: PyGOM documentation
 author: Public Health England / UK Health Security Agency
-logo: ukhsa.png
+#TODO change logo
+logo: logo.png
 
 # build files in table of contents
 # used as alternative to exclude patterns
@@ -14,7 +15,7 @@ only_build_toc_files: true
 # this could avoid the issue of execution timing out
 # See https://jupyterbook.org/content/execute.html
 execute:
-  execute_notebooks: cache
+  execute_notebooks: auto
 
 # Define the name of the latex output file for PDF builds
 latex:

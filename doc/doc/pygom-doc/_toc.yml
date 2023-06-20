@@ -3,7 +3,28 @@
 
 format: jb-book
 root: intro
-chapters:
-- file: markdown
-- file: notebooks
-- file: markdown-notebooks
+parts:
+  - caption: User documentation
+    chapters:
+    - file: markdown.md
+    - file: md/getting_started.md
+    - file: notebooks/sir.ipynb
+    - file: notebooks/transition.ipynb
+   #notebooks/sir.ipynb
+   #transition.rst
+   #stochastic.rst
+   #unrollOde.rst
+   #epi.rst
+   #epijson.rst
+   #bvpSimple.rst
+   #gradient.rst
+   #fh.rst
+   #estimate1.rst
+   #estimate2.rst
+   #initialGuess.rst
+   #profile.rst
+   #common_models.rst
+#  - caption: Frequently asked questions
+#  - caption: Code documentation
+#  - caption: References
+#  - caption: Indices and tables
