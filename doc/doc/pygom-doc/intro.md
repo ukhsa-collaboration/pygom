@@ -1,11 +1,24 @@
-# Welcome to your Jupyter Book
+# Welcome to the documentation for PyGOM
 
-This is a small sample book to give you a feel for how book content is
-structured.
-It shows off a few of the major file types, as well as some sample content.
-It does not go in-depth into any particular topic - check out [the Jupyter Book documentation](https://jupyterbook.org) for more information.
+PyGOM (Python Generic ODE Model) is a Python package that aims to facilitate the application of ordinary differential equations (ODEs) in the real world, 
+with a focus in epidemiology.  
+This package helps the user define their ODE system in an intuitive manner and provides convenience functions - 
+making use of various algebraic and numerical libraries in the backend - that can be used in a straight forward fashion.
 
-Check out the content pages bundled with this sample book to see more.
+This is an open source project hosted on [Github](https://github.com/PublicHealthEngland/pygom). 
+
+A manuscript containing a shortened motivation and use is hosted on [arxXiv](https://arxiv.org/abs/1803.06934).
+
+#TODO insert intro text
+
+
 
 ```{tableofcontents}
 ```
+
+# Code Documentation and FAQ
+#TODO from index.rst
+# References
+#TODO
+# Indices and tables
+#TODO
