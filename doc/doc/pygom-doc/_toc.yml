@@ -10,9 +10,7 @@ parts:
     - file: md/getting_started.md
     - file: notebooks/sir.ipynb
     - file: notebooks/transition.ipynb
-   #notebooks/sir.ipynb
-   #transition.rst
-   #stochastic.rst
+    - file: notebooks/stochastic.ipynb
    #unrollOde.rst
    #epi.rst
    #epijson.rst
