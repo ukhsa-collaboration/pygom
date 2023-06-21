@@ -2,11 +2,11 @@ name: test-docs
 
 on:
   push:
-    branches:
-      - install-fix-docs
+    paths:
+      - doc/**
   pull_request:
-    branches:
-      - install-fix-docs
+    paths:
+      - doc/**
 
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest]
-        python-version: ["3.7"]#, "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
 
     steps:  
       - uses: actions/checkout@v2
@@ -71,9 +71,8 @@ jobs:
           pip install -r doc/requirements.txt
           pip install make
       
-      - name: make html documentation
+      - name: Build the book
         run: |
-          cd doc
-          make clean
-          make html
+          cd doc/doc/pygom-doc
+          jupyter-book build .
       
