@@ -2217,3 +2217,129 @@ class DeterministicOde(BaseOdeModel):
             eval_param = [state] + [time]
 
         return eval_param + self._paramValue
+
+
+ ########################################################################
+ # The following code is for the Kalman Filter method dcm
+ ########################################################################
+ 
+    def IntegrateWithKalmanFilter( self,model, x0,t, observations, observed_states, sigmap2,sigmaw2,sigmar2,full_output=False,beta_state=None):
+        # model is assumed to be a determinisitc ode model
+        # t is a list of times for which results are required
+        # observations is th lsit of observations at these times
+        # observed_states is a list of the indices of the observed states 
+        # So, observations should be a list with the same length as t . Each entry in observations
+        # should be a list of length observed_states
+        # 
+        self.initial_values = (x0,t[0])
+        model_outputs= []
+        P = np.identity(len(x0))*sigmap2
+        
+        for i in range(len(observations)-1):
+      
+      # predict step         
+             xnew =self.integrate(t[i+1])
+  
+     # update step
+             xfilter,Pnew,KG = self.Kalman_Filter(observations[i],observed_states,model,xnew[-1],P,t[i+1],t[i+1]-t[i],sigmaw2,sigmar2,beta_state) 
+             #xfilter = xnew[-1]
+             model_outputs.append(xfilter)
+             P = Pnew
+             self.initial_values = (xfilter,t[i+1])
+             
+        return model_outputs
+    
+    
+    def IntegrateWithKalmanFilterwithVariableBeta( self,model, x0,t, observations, observed_states, sigmap2,sigmaw2,sigmar2,full_output=False,beta_state=None):
+        # model is assumed to be a determinisitc ode model
+        # t is a list of times for which results are required
+        # observations is th lsit of observations at these times
+        # observed_states is a list of the indices of the observed states 
+        # So, observations should be a list with the same length as t . Each entry in observations
+        # should be a list of length observed_states
+        # In this VariableBeta version beta is going to be moved from states to
+        # parameters, so that it will now be modified by the Kalman Filter
+        #if not 'beta' in 
+        
+        self.initial_values = (x0,t[0])
+        model_outputs= []
+        P = np.identity(len(x0))*sigmap2
+        
+        for i in range(len(observations)-1):
+      
+      # predict step         
+             xnew =self.integrate(t[i+1])
+  
+     # update step
+             xfilter,Pnew,KG = self.Kalman_Filter(observations[i],observed_states,model,xnew[-1],P,t[i+1],t[i+1]-t[i],sigmaw2,sigmar2) 
+             model_outputs.append(xfilter)
+             P = Pnew
+             self.initial_values = (xfilter,t[i+1])
+             
+        return model_outputs
+    
+    
+    
+    def Kalman_Filter(self,z,observed_states,model,x,P,time,dt,sigmaw2,sigmar2,beta_state=None):
+       # assumre that only two inputs are being measured I and R 
+       from numpy.linalg import inv
+       from numpy import dot
+       import numpy as np
+       # n_states is the total number of states
+       # m _states is the number of observed states
+       n_states =len(x)
+       if isinstance(z, list):
+           m_states = len(z)
+       else:
+           m_states =1
+       X =np.zeros((n_states,1))
+       for i in range(n_states):
+           X[i,0]=x[i]
+       
+
+    # there are now two inputs
+       H = np.zeros((m_states,n_states))
+       for i in range(len(observed_states)):
+           H[i,observed_states[i]] = 1.0
+       
+   
+       
+       Z=np.zeros((m_states,1))  
+       for i in range(m_states):
+         Z[i,0]=z
+       
+       Y=z   
+       F = self.jacobian(state=x,t=time)
+    #  jacobian retutned by Pygom idn't quite what we want - so make the
+    #  modifcation below
+       F = np.identity(n_states)+F*dt 
+    
+      
+       Q = np.identity(n_states)*sigmaw2
+    # making the same assumption about V and R in the observation equation gives:
+       R = np.identity(m_states)*sigmar2
+
+      
+       P = dot(F, dot(P, F.transpose())) + Q
+      
+       IM = dot(H, X)
+       
+       IS = R + dot(H, dot(P, H.transpose()))
+      
+       K = dot(dot(P,H.transpose()), inv(IS) )
+       
+       X = X + dot(K, (Y-IM))
+       if not beta_state is None:
+          X[beta_state,0] =max(X[beta_state,0],0)
+       Xlist=[]
+       for i in range(n_states):
+           Xlist.append(X[i,0])
+
+       # from 'Implementation of Kalman filter with Python Language'
+       #P = P - dot(K, dot(IS, K.transpose()))
+       # from Wikipedia
+      # print('K',K)
+       P = P - dot(dot(K,H),P)
+       # return Kalman gain for testing
+       return (Xlist,P,dot(K,(Y-IM)))
+        
