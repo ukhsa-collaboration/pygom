@@ -11,6 +11,11 @@ parts:
     - file: notebooks/sir.ipynb
     - file: notebooks/transition.ipynb
     - file: notebooks/stochastic.ipynb
+    - file: md/unrollOde.md
+      sections: 
+      - file: notebooks/unroll/unrollSimple.ipynb
+      - file: notebooks/unroll/unrollBD.ipynb 
+      - file: notebooks/unroll/unrollHard.ipynb
    #unrollOde.rst
    #epi.rst
    #epijson.rst
