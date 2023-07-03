@@ -9,8 +9,8 @@ on:
   push:
     branches:
     - install-fix-docs
-      paths: 
-      - doc/**
+    paths: 
+    - doc/**
 
 jobs:
     deploy-book:
