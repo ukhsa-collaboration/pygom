@@ -10,7 +10,7 @@ on:
     branches:
     - install-fix-docs
     paths: 
-    - doc/**
+    - docs/**
 
 jobs:
     deploy-book:
@@ -27,17 +27,17 @@ jobs:
             # install dependencies
             - name: Install dependencies
               run: |
-                pip install -r doc/doc/pygom-doc/requirements.txt
+                pip install -r docs/pygom-doc/requirements.txt
 
             # build the book
             - name: Build the book
               run: |
-                jupyter-book build doc/doc/pygom-doc
+                jupyter-book build docs/pygom-doc
 
             # deploy book to github-pages
             - name: GitHub Pages 
               uses: peaceiris/actions-gh-pages@v3.6.1
               with:
                 github_token: ${{ secrets.DEPLOY_BOOK }}
-                publish_dir: doc/doc/pygom-doc/_build/html
+                publish_dir: docs/pygom-doc/_build/html
 

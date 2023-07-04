@@ -1,0 +1,810 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Stochastic representation of ODEs &#8212; PyGOM documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/stochastic';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Convert ODE into transitions {#unrollOde}" href="../md/unrollOde.html" />
+    <link rel="prev" title="Transition Object" href="transition.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo_pygom.jpg" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/logo_pygom.jpg" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome to the documentation for PyGOM
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User documentation</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../markdown.html">Markdown Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../md/getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sir.html">Motivating Example: SIR Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transition.html">Transition Object</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Stochastic representation of ODEs</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../md/unrollOde.html">Convert ODE into transitions {#unrollOde}</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="unroll/unrollSimple.html">Simple Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unroll/unrollBD.html">ODE With Birth and Death Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unroll/unrollHard.html">Hard Problem</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom/issues/new?title=Issue%20on%20page%20%2Fnotebooks/stochastic.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/stochastic.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Stochastic representation of ODEs</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-parameters">Stochastic Parameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-markov-representation">Continuous Markov Representation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#repeatable-simulation">Repeatable Simulation</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="stochastic-representation-of-odes">
+<h1>Stochastic representation of ODEs<a class="headerlink" href="#stochastic-representation-of-odes" title="Permalink to this heading">#</a></h1>
+<p>There are multiple interpretations of the stochasticity of a deterministic
+ODE. We have implemented two of the most common interpretations; when the
+parameters are realizations of some underlying distribution, and when we
+have a so called chemical master equation where each transition
+represent a jump. Again, we use the standard SIR example as previously
+seen in <a class="reference internal" href="sir.html"><span class="doc">Motivating Example: SIR Model</span></a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">SimulateOde</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">TransitionType</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># initial conditions</span>
+<span class="n">Ix0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.27e-6</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># time period</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="n">stateList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">]</span>
+
+<span class="n">paramList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">]</span>
+
+<span class="n">transitionList</span> <span class="o">=</span> <span class="p">[</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> 
+                  <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)]</span>
+
+<span class="c1"># create the ODEs</span>
+<span class="n">odeS</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">stateList</span><span class="p">,</span> <span class="n">paramList</span><span class="p">,</span> <span class="n">transition</span><span class="o">=</span><span class="n">transitionList</span><span class="p">)</span>
+
+<span class="c1"># assign parameter values</span>
+<span class="n">odeS</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">]</span>
+
+<span class="c1"># assign initial values</span>
+<span class="n">odeS</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ix0</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="c1"># solve deterministic solution</span>
+<span class="n">solutionReference</span> <span class="o">=</span> <span class="n">odeS</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::],</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="stochastic-parameters">
+<h2>Stochastic Parameters<a class="headerlink" href="#stochastic-parameters" title="Permalink to this heading">#</a></h2>
+<p>In our first implementation, we assume that the parameters follow some
+underlying distribution. Given that both <span class="math notranslate nohighlight">\(\beta\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> in our SIR
+model has to be non-negative, it seems natural to use a Gamma
+distribution. We make use of the familiar syntax from
+<a class="reference external" href="http://www.r-project.org/">R</a> to define our distribution.
+Unfortunately, we have to define it via a tuple, where the first item is the
+function handle (name) and the second the parameters.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The parameters can be defined as either a dictionary or as the same sequence
+as <a class="reference external" href="http://www.r-project.org/">R</a> (without specifying the arguments), which for the <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/GammaDist.html">Gamma distribution</a> is the shape followed by the rate.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom.utilR</span> <span class="kn">import</span> <span class="n">rgamma</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+<span class="c1"># E(X) = 0.5 = shape * scale = shape / rate </span>
+<span class="n">d</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rgamma</span><span class="p">,{</span><span class="s1">&#39;shape&#39;</span><span class="p">:</span><span class="mf">100.0</span><span class="p">,</span> <span class="s1">&#39;rate&#39;</span><span class="p">:</span><span class="mf">200.0</span><span class="p">})</span>
+
+<span class="c1"># E(X) = 1.0/3.0 = shape / rate</span>
+<span class="n">d</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rgamma</span><span class="p">,(</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">300.0</span><span class="p">))</span>
+
+<span class="n">odeS</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">d</span>
+
+<span class="n">Ymean</span><span class="p">,</span> <span class="n">Yall</span> <span class="o">=</span> <span class="n">odeS</span><span class="o">.</span><span class="n">simulate_param</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::],</span> <span class="mi">10</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that a message may be printed above where PyGOM is trying to connect to an
+mpi backend, as our module has the capability to compute in parallel
+using the IPython. We have simulated a total of 10 different solutions
+using different parameters, the plots can be seen below.</p>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;constrained&#39;</span><span class="p">)</span>
+
+<span class="c1">#TODO tidy up plots</span>
+<span class="k">for</span> <span class="n">solution</span> <span class="ow">in</span> <span class="n">Yall</span><span class="p">:</span>  
+    <span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span> 
+    <span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span> 
+    <span class="n">axarr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stateList</span><span class="p">):</span>
+    <span class="n">axarr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/a2b4c66c36cd941577d5e6e1b74bf026da21420ebaaa2c33c4960b32e1325dcf.png" src="../_images/a2b4c66c36cd941577d5e6e1b74bf026da21420ebaaa2c33c4960b32e1325dcf.png" />
+</div>
+</details>
+</div>
+<p>We then see how the expected results, using the sample average of the
+simulations</p>
+<div class="math notranslate nohighlight">
+\[\tilde{x}(T) = \mathbb{E}\left[ \int_{t_{0}}^{T} f(\theta,x,t) dt \right]\]</div>
+<p>differs from the reference solution</p>
+<div class="math notranslate nohighlight">
+\[\hat{x}(T) = \int_{t_{0}}^{T} f(\mathbb{E}\left[ \theta \right],x,t) dt\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span> 
+    <span class="n">axarr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Ymean</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">solutionReference</span><span class="p">[:,</span><span class="n">i</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/e521435122381780396ee20a8582f3a46e43faa6c31200c2a2bef1fd514361f4.png" src="../_images/e521435122381780396ee20a8582f3a46e43faa6c31200c2a2bef1fd514361f4.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;constrained&#39;</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span> 
+    <span class="n">axarr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Ymean</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;sample average&#39;</span><span class="p">)</span>
+    <span class="n">axarr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solutionReference</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;reference&#39;</span><span class="p">)</span>
+
+<span class="n">axarr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/61cf086b003e645ccb1eaeebd0a201f4793ce35568e2df3fd9897fe93e8c4d57.png" src="../_images/61cf086b003e645ccb1eaeebd0a201f4793ce35568e2df3fd9897fe93e8c4d57.png" />
+</div>
+</div>
+<p>The difference is relatively large especially for the <span class="math notranslate nohighlight">\(S\)</span> state. We can
+decrease this difference as we increase the number of simulation, and
+more sophisticated sampling method for the generation of random
+variables can also decrease the difference.</p>
+<p>In addition to using the built-in functions to represent stochasticity,
+we can also use standard frozen distributions from scipy. Note that it
+must be a frozen distribution as that is the only for the parameters of
+the distributions to propagate through the model.</p>
+<p>In [1]: import scipy.stats as st</p>
+<p>In [1]: d = dict()</p>
+<p>In [1]: d[‘beta’] = st.gamma(a=100.0, scale=1.0/200.0)</p>
+<p>In [1]: d[‘gamma’] = st.gamma(a=100.0, scale=1.0/300.0)</p>
+<p>In [1]: odeS.parameters = d</p>
+<p>Obviously, there may be scenarios where only some of the parameters are
+stochastic. Let’s say that the <span class="math notranslate nohighlight">\(\gamma\)</span> parameter is fixed at <span class="math notranslate nohighlight">\(1/3\)</span>,
+then simply replace the distribution information with a scalar. A quick
+visual inspection at the resulting plot suggests that the system of ODE
+potentially has less variation when compared to the case where both
+parameters are stochastic.</p>
+<p>In [1]: d[‘gamma’] = 1.0/3.0</p>
+<p>In [1]: odeS.parameters = d</p>
+<p>In [1]: YmeanSingle, YallSingle = odeS.simulate_param(t[1::], 5,
+full_output=True)</p>
+<p>In [1]: f, axarr = plt.subplots(1,3)</p>
+<p>In [1]: for solution in YallSingle:<br />
+…: axarr[0].plot(t,solution[:,0]) …:
+axarr[1].plot(t,solution[:,1]) …:
+axarr[2].plot(t,solution[:,2])</p>
+<p>&#64;savefig stochastic_param_single.png In [1]: plt.show()</p>
+<p>In [1]: plt.close()</p>
+</section>
+<section id="continuous-markov-representation">
+<h2>Continuous Markov Representation<a class="headerlink" href="#continuous-markov-representation" title="Permalink to this heading">#</a></h2>
+<p>Another common method of introducing stochasticity into a set of ode is
+by assuming each movement in the system is a result of a jump process.
+More concretely, the probabilty of a move for transition <span class="math notranslate nohighlight">\(j\)</span> is governed
+by an exponential distribution such that</p>
+<div class="math notranslate nohighlight">
+\[\Pr(\text{process $j$ jump within time } \tau) = \lambda_{j} e^{-\lambda_{j} \tau},\]</div>
+<p>where <span class="math notranslate nohighlight">\(\lambda_{j}\)</span> is the rate of transition for process <span class="math notranslate nohighlight">\(j\)</span> and <span class="math notranslate nohighlight">\(\tau\)</span>
+the time elapsed after current time <span class="math notranslate nohighlight">\(t\)</span>.</p>
+<p>A couple of the commmon implementation for the jump process have been
+implemented where two of them are used during a normal simulation; the
+first reaction method <span class="xref myst">[Gillespie1977]</span> and the <span class="math notranslate nohighlight">\(\tau\)</span>-Leap method
+<span class="xref myst">[Cao2006]</span>. The two changes interactively depending on the size of
+the states.</p>
+<p>In [1]: x0 = [2362206.0, 3.0, 0.0]</p>
+<p>In [1]: stateList = [‘S’, ‘I’, ‘R’]</p>
+<p>In [1]: paramList = [‘beta’, ‘gamma’, ‘N’]</p>
+<p>In [1]: transitionList = [<br />
+…: Transition(origin=’S’, destination=’I’, equation=’beta*S*I/N’,
+transition_type=TransitionType.T), …: Transition(origin=’I’,
+destination=’R’, equation=’gamma*I’, transition_type=TransitionType.T)
+…: ]</p>
+<p>In [1]: odeS = SimulateOde(stateList, paramList,
+transition=transitionList)</p>
+<p>In [1]: odeS.parameters = [0.5, 1.0/3.0, x0[0]]</p>
+<p>In [1]: odeS.initial_values = (x0, t[0])</p>
+<p>In [1]: solutionReference = odeS.integrate(t[1::])</p>
+<p>In [1]: simX, simT = odeS.simulate_jump(t[1:10], 10,
+full_output=True)</p>
+<p>In [1]: f, axarr = plt.subplots(1, 3)</p>
+<p>In [1]: for solution in simX:<br />
+…: axarr[0].plot(t[:9], solution[:,0]) …:
+axarr[1].plot(t[:9], solution[:,1]) …: axarr[2].plot(t[:9],
+solution[:,2])</p>
+<p>&#64;savefig stochastic_process.png In [1]: plt.show()</p>
+<p>In [1]: plt.close()</p>
+<p>Above, we see ten different simulation, again using the SIR model but
+without standardization of the initial conditions. We restrict our time
+frame to be only the first 10 time points so that the individual changes
+can be seen more clearly above. If we use the same time frame as the one
+used previously for the deterministic system (as shown below), the
+trajectories are smoothed out and we no longer observe the <em>jumps</em>.
+Looking at the raw trajectories of the ODE below, it is obvious that the
+mean from a jump process is very different to the deterministic
+solution. The reason behind this is that the jump process above was able
+to fully remove all the initial infected individuals before any new
+ones.</p>
+<p>In [1]: simX,simT = odeS.simulate_jump(t, 5, full_output=True)</p>
+<p>In [1]: simMean = np.mean(simX, axis=0)</p>
+<p>In [1]: f, axarr = plt.subplots(1,3)</p>
+<p>In [1]: for solution in simX:<br />
+…: axarr[0].plot(t, solution[:,0]) …: axarr[1].plot(t,
+solution[:,1]) …: axarr[2].plot(t, solution[:,2])</p>
+<p>&#64;savefig stochastic_process_compare_large_n_curves.png In [1]:
+plt.show()</p>
+<p>In [1]: plt.close()</p>
+</section>
+<section id="repeatable-simulation">
+<h2>Repeatable Simulation<a class="headerlink" href="#repeatable-simulation" title="Permalink to this heading">#</a></h2>
+<p>One of the possible use of compartmental models is to generate
+forecasts. Although most of the time the requirement would be to have
+(at least point-wise) convergence in the limit, reproducibility is also
+important. For both types of interpretation explained above, we have
+given the package the capability to repeat the simulations by setting a
+seed. When the assumption is that the parameters follows some sort of
+distribution, we simply set the seed which governs the global state of
+the random number generator.</p>
+<p>In [1]: x0 = [2362206.0, 3.0, 0.0]</p>
+<p>In [1]: odeS = SimulateOde(stateList, paramList,
+transition=transitionList)</p>
+<p>In [1]: d = {‘beta’: st.gamma(a=100.0, scale=1.0/200.0), ‘gamma’:
+st.gamma(a=100.0, scale=1.0/300.0), ‘N’: x0[0]}</p>
+<p>In [1]: odeS.parameters = d</p>
+<p>In [1]: odeS.initial_values = (x0, t[0])</p>
+<p>In [1]: Ymean, Yall = odeS.simulate_param(t[1::], 10,
+full_output=True)</p>
+<p>In [1]: np.random.seed(1)</p>
+<p>In [1]: Ymean1, Yall1 = odeS.simulate_param(t[1::], 10,
+full_output=True)</p>
+<p>In [1]: np.random.seed(1)</p>
+<p>In [1]: Ymean2, Yall2 = odeS.simulate_param(t[1::], 10,
+full_output=True)</p>
+<p>In [1]: sim_diff = [np.linalg.norm(Yall[i] - yi) for i, yi in
+enumerate(Yall1)]</p>
+<p>In [1]: sim_diff12 = [np.linalg.norm(Yall2[i] - yi) for i, yi in
+enumerate(Yall1)]</p>
+<p>In [1]: print(“Different in the simulations and the mean: (%s, %s) ” %
+(np.sum(sim_diff), np.sum(np.abs(Ymean1 - Ymean))))</p>
+<p>In [1]: print(“Different in the simulations and the mean using same
+seed: (%s, %s) ” % (np.sum(sim_diff12), np.sum(np.abs(Ymean2 -
+Ymean1))))</p>
+<p>In the alternative interpretation, setting the global seed is
+insufficient. Unlike simulation based on the parameters, where we can
+pre-generate all the parameter values and send them off to individual
+processes in the parallel backend, this is prohibitive here. In a
+nutshell, the seed does not propagate when using a parallel backend
+because each <em>integration</em> requires an unknown number of random samples.
+Therefore, we have an additional flag <strong>parallel</strong> in the function
+signature. By ensuring that the computation runs in serial, we can make
+use of the global seed and generate identical runs.</p>
+<p>In [1]: x0 = [2362206.0, 3.0, 0.0]</p>
+<p>In [1]: odeS = SimulateOde(stateList, paramList,
+transition=transitionList)</p>
+<p>In [1]: odeS.parameters = [0.5, 1.0/3.0, x0[0]]</p>
+<p>In [1]: odeS.initial_values = (x0, t[0])</p>
+<p>In [1]: simX, simT = odeS.simulate_jump(t[1:10], 10, parallel=False,
+full_output=True)</p>
+<p>In [1]: np.random.seed(1)</p>
+<p>In [1]: simX1, simT1 = odeS.simulate_jump(t[1:10], 10,
+parallel=False, full_output=True)</p>
+<p>In [1]: np.random.seed(1)</p>
+<p>In [1]: simX2, simT2 = odeS.simulate_jump(t[1:10], 10,
+parallel=False, full_output=True)</p>
+<p>In [1]: sim_diff = [np.linalg.norm(simX[i] - x1) for i, x1 in
+enumerate(simX1)]</p>
+<p>In [1]: sim_diff12 = [np.linalg.norm(simX2[i] - x1) for i, x1 in
+enumerate(simX1)]</p>
+<p>In [1]: print(“Difference in simulation: %s” %
+np.sum(np.abs(sim_diff)))</p>
+<p>In [1]: print(“Difference in simulation using same seed: %s” %
+np.sum(np.abs(sim_diff12)))</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="transition.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Transition Object</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../md/unrollOde.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Convert ODE into transitions {#unrollOde}</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-parameters">Stochastic Parameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-markov-representation">Continuous Markov Representation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#repeatable-simulation">Repeatable Simulation</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Public Health England / UK Health Security Agency
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
