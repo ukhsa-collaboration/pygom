@@ -38,6 +38,6 @@ jobs:
             - name: GitHub Pages 
               uses: peaceiris/actions-gh-pages@v3.6.1
               with:
-                github_token: ${{ secrets.GITHUB_TOKEN }}
+                github_token: ${{ secrets.DEPLOY_BOOK }}
                 publish_dir: doc/doc/pygom-doc/_build/html
 
