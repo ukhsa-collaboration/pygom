@@ -14,6 +14,8 @@ pygom - ODE modelling in Python
    :target: https://raw.githubusercontent.com/PublicHealthEngland/pygom/master/LICENSE.txt
 .. |Github actions| image:: https://github.com/PublicHealthEngland/pygom/workflows/pygom/badge.svg
    :target: https://github.com/PublicHealthEngland/pygom/actions/
+   
+[![pages-build-deployment](https://github.com/HWilliams-PHE/pygom/actions/workflows/pages/pages-build-deployment/badge.svg?branch=install-fix-docs&event=page_build)](https://github.com/HWilliams-PHE/pygom/actions/workflows/pages/pages-build-deployment)
 
 A generic framework for ode models, specifically compartmental type problems.
 
