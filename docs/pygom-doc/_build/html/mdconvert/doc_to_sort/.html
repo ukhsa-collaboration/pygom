@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Solving Boundary Value Problems {#bvpSimple} &#8212; PyGOM documentation</title>
   
@@ -163,12 +163,17 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/sir.html">Motivating Example: SIR Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/transition.html">Transition Object</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/stochastic.html">Stochastic representation of ODEs</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../md/unrollOde.html">Convert ODE into transitions {#unrollOde}</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../md/unrollOde.html">Convert ODE into transitions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/unroll/unrollSimple.html">Simple Problem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/unroll/unrollBD.html">ODE With Birth and Death Process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/unroll/unrollHard.html">Hard Problem</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/epi.html">Simple Epidemic Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/epijson.html">Reading and using EpiJSON data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/bvpSimple.html">Solving Boundary Value Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/gradient.html">Gradient estimation under square loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/fh.html">Example: Fitz Hugh</a></li>
 </ul>
 
     </div>
@@ -383,7 +388,7 @@ of imagination. Here, we are going to show how a BVP can be solved by
 treating it as a parameter estimation problem. Essentially, a shooting
 method where the first boundary condition defines the initial condition
 of an IVP and the second boundary condition is an observation. Two
-examples, both from MATLAB<a class="footnote-reference brackets" href="#id2" id="id1">1</a>, will be shown here.</p>
+examples, both from MATLAB<a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, will be shown here.</p>
 <section id="simple-model-1">
 <h2>Simple model 1<a class="headerlink" href="#simple-model-1" title="Permalink to this heading">#</a></h2>
 <p>We are trying to find the solution to the second order differential
@@ -438,11 +443,10 @@ achieved through the use of derivative information or via root finding
 method that tackles the gradient directly, instead of the cost function.</p>
 <p><strong>Reference</strong></p>
 <hr class="footnotes docutils" />
-<dl class="footnote brackets">
-<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p><a class="reference external" href="http://uk.mathworks.com/help/matlab/ref/bvp4c.html">http://uk.mathworks.com/help/matlab/ref/bvp4c.html</a></p>
-</dd>
-</dl>
+<aside class="footnote brackets" id="id2" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="http://uk.mathworks.com/help/matlab/ref/bvp4c.html">http://uk.mathworks.com/help/matlab/ref/bvp4c.html</a></p>
+</aside>
 </section>
 </section>
 

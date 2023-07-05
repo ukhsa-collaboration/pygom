@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Transition Object &#8212; PyGOM documentation</title>
   
@@ -165,12 +165,17 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="sir.html">Motivating Example: SIR Model</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Transition Object</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stochastic.html">Stochastic representation of ODEs</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../md/unrollOde.html">Convert ODE into transitions {#unrollOde}</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../md/unrollOde.html">Convert ODE into transitions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="unroll/unrollSimple.html">Simple Problem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unroll/unrollBD.html">ODE With Birth and Death Process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unroll/unrollHard.html">Hard Problem</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="epi.html">Simple Epidemic Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="epijson.html">Reading and using EpiJSON data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bvpSimple.html">Solving Boundary Value Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradient.html">Gradient estimation under square loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fh.html">Example: Fitz Hugh</a></li>
 </ul>
 
     </div>
@@ -380,7 +385,6 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="transition-object">
 <h1>Transition Object<a class="headerlink" href="#transition-object" title="Permalink to this heading">#</a></h1>
-<p><a class="reference download internal" download="" href="../_downloads/c78f2e88b6a97c6b5b77ae96e28c2fa2/transition.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">this</span> <span class="pre">notebook</span></code></a></p>
 <p>The most important part of setting up the model is to correctly define the set ODEs, which is based solely on the classes defined in <code class="docutils literal notranslate"><span class="pre">transition</span></code>. These transitions describe how members of one state can move into another state. We choose to define the models using transitions because it enables the computer to do our bookeeping, therefore reducing the error of, for example, including a flow out of one state, but forgetting to include it in the recipient state. (This does not apply to birth and death processes.)</p>
 <p>All transitions that get fed into the ODE system need to be defined as a transition object, <code class="docutils literal notranslate"><span class="pre">Transition</span></code>. It takes a total of four input arguments:</p>
 <ol class="arabic simple">
@@ -399,13 +403,25 @@ document.write(`
 <p>We can define the set of ODEs, as seen previously, via</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">TransitionType</span><span class="p">,</span> <span class="n">common_models</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pygom import Transition, TransitionType, common_models
 
-<span class="n">ode1</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;-beta*S*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
+ode1 = Transition(origin=&#39;S&#39;, equation=&#39;-beta*S*I&#39;, transition_type=TransitionType.ODE)
 
-<span class="n">ode2</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I - gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
+ode2 = Transition(origin=&#39;I&#39;, equation=&#39;beta*S*I - gamma*I&#39;, transition_type=TransitionType.ODE)
 
-<span class="n">ode3</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
+ode3 = Transition(origin=&#39;R&#39;, equation=&#39;gamma*I&#39;, transition_type=TransitionType.ODE)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">TransitionType</span><span class="p">,</span> <span class="n">common_models</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">ode1</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;-beta*S*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">ode2</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I - gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;pygom&#39;
 </pre></div>
 </div>
 </div>
@@ -415,13 +431,13 @@ inputting, which is simply of type <strong>ODE</strong> in this case. We can con
 this has been entered correctly by putting it into <code class="docutils literal notranslate"><span class="pre">DeterministicOde</span></code>,</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">DeterministicOde</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pygom import DeterministicOde
 
-<span class="n">stateList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">]</span>
+stateList = [&#39;S&#39;, &#39;I&#39;, &#39;R&#39;]
 
-<span class="n">paramList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">]</span>
+paramList = [&#39;beta&#39;, &#39;gamma&#39;]
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">DeterministicOde</span><span class="p">(</span><span class="n">stateList</span><span class="p">,</span> <span class="n">paramList</span><span class="p">,</span> <span class="n">ode</span><span class="o">=</span><span class="p">[</span><span class="n">ode1</span><span class="p">,</span> <span class="n">ode2</span><span class="p">,</span> <span class="n">ode3</span><span class="p">])</span>
+model = DeterministicOde(stateList, paramList, ode=[ode1, ode2, ode3])
 </pre></div>
 </div>
 </div>
@@ -429,13 +445,9 @@ this has been entered correctly by putting it into <code class="docutils literal
 <p>and then checking it.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.get_ode_eqn()
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\begin{split}\displaystyle \left[\begin{matrix}- I S \beta\\I S \beta - I \gamma\\I \gamma\end{matrix}\right]\end{split}\]</div>
 </div>
 </div>
 <p>Now we are going to show the different ways of defining the same set of
@@ -459,21 +471,17 @@ argument instead of the <code class="docutils literal notranslate"><span class="
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">SimulateOde</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pygom import SimulateOde
 
-<span class="n">t1</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+t1 = Transition(origin=&#39;S&#39;, destination=&#39;I&#39;, equation=&#39;beta*S*I&#39;, transition_type=TransitionType.T)
 
-<span class="n">t2</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+t2 = Transition(origin=&#39;I&#39;, destination=&#39;R&#39;, equation=&#39;gamma*I&#39;, transition_type=TransitionType.T)
 
-<span class="n">modelTrans</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">stateList</span><span class="p">,</span> <span class="n">paramList</span><span class="p">,</span> <span class="n">transition</span><span class="o">=</span><span class="p">[</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">])</span>
+modelTrans = SimulateOde(stateList, paramList, transition=[t1, t2])
 
-<span class="n">modelTrans</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
+modelTrans.get_ode_eqn()
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\begin{split}\displaystyle \left[\begin{matrix}- I S \beta\\I S \beta - I \gamma\\I \gamma\end{matrix}\right]\end{split}\]</div>
 </div>
 </div>
 <p>We can see that the resulting ODE is exactly the same, as expected. The
@@ -483,7 +491,7 @@ superscript, operators such as <span class="math notranslate nohighlight">\(**\)
 equation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">modelTrans</span><span class="o">.</span><span class="n">get_transition_matrix</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>modelTrans.get_transition_matrix()
 </pre></div>
 </div>
 </div>
@@ -494,9 +502,9 @@ equation.</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="c1"># TODO why are two images produced? issue #75</span>
-<span class="n">modelTrans</span><span class="o">.</span><span class="n">get_transition_graph</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+# TODO why are two images produced? issue #75
+modelTrans.get_transition_graph(show=False)
 </pre></div>
 </div>
 </div>
@@ -514,15 +522,15 @@ equation.</p>
 <p>The third option is to reframe the system as a set of birth processes, using <code class="docutils literal notranslate"><span class="pre">transition_type=TransitionType.B</span></code>. For this simple example, this formulation takes a similar form to defining using ODE equations.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">birth1</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;-beta*S*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">B</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>birth1 = Transition(origin=&#39;S&#39;, equation=&#39;-beta*S*I&#39;, transition_type=TransitionType.B)
 
-<span class="n">birth2</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I - gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">B</span><span class="p">)</span>
+birth2 = Transition(origin=&#39;I&#39;, equation=&#39;beta*S*I - gamma*I&#39;, transition_type=TransitionType.B)
 
-<span class="n">birth3</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">B</span><span class="p">)</span>
+birth3 = Transition(origin=&#39;R&#39;, equation=&#39;gamma*I&#39;, transition_type=TransitionType.B)
 
-<span class="n">modelBirth</span> <span class="o">=</span> <span class="n">DeterministicOde</span><span class="p">(</span><span class="n">stateList</span><span class="p">,</span> <span class="n">paramList</span><span class="p">,</span> <span class="n">birth_death</span><span class="o">=</span><span class="p">[</span><span class="n">birth1</span><span class="p">,</span> <span class="n">birth2</span><span class="p">,</span> <span class="n">birth3</span><span class="p">])</span>
+modelBirth = DeterministicOde(stateList, paramList, birth_death=[birth1, birth2, birth3])
 
-<span class="n">modelBirth</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
+modelBirth.get_ode_eqn()
 </pre></div>
 </div>
 </div>
@@ -534,15 +542,15 @@ equation.</p>
 <p>Alternatively, we can use the negative of the equation to configure the ODEs to represent death processes. Since the death process is the removal of a flow, we take the negative of the birth process alongside using <code class="docutils literal notranslate"><span class="pre">transition_type=TransitionType.D</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">death1</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>death1 = Transition(origin=&#39;S&#39;, equation=&#39;beta*S*I&#39;, transition_type=TransitionType.D)
 
-<span class="n">birth2</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I - gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">B</span><span class="p">)</span>
+birth2 = Transition(origin=&#39;I&#39;, equation=&#39;beta*S*I - gamma*I&#39;, transition_type=TransitionType.B)
 
-<span class="n">death3</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;-gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">)</span>
+death3 = Transition(origin=&#39;R&#39;, equation=&#39;-gamma*I&#39;, transition_type=TransitionType.D)
 
-<span class="n">modelBD</span> <span class="o">=</span> <span class="n">DeterministicOde</span><span class="p">(</span><span class="n">stateList</span><span class="p">,</span> <span class="n">paramList</span><span class="p">,</span> <span class="n">birth_death</span><span class="o">=</span><span class="p">[</span><span class="n">death1</span><span class="p">,</span> <span class="n">birth2</span><span class="p">,</span> <span class="n">death3</span><span class="p">])</span>
+modelBD = DeterministicOde(stateList, paramList, birth_death=[death1, birth2, death3])
 
-<span class="n">modelBD</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
+modelBD.get_ode_eqn()
 </pre></div>
 </div>
 </div>
@@ -558,18 +566,18 @@ equation.</p>
 <p>Because we allow the separation of transitions between states and birth/death processes, the birth/death processes can be added later on. The following example takes the model that was defined using transitions (<code class="docutils literal notranslate"><span class="pre">modelTrans</span></code>) and includes a birth process to the <span class="math notranslate nohighlight">\(S\)</span> state, and death processes to the <span class="math notranslate nohighlight">\(S\)</span> and <span class="math notranslate nohighlight">\(I\)</span> states.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">modelBD2</span> <span class="o">=</span> <span class="n">modelTrans</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>modelBD2 = modelTrans
 
-<span class="n">modelBD2</span><span class="o">.</span><span class="n">param_list</span> <span class="o">=</span> <span class="n">paramList</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;mu&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">]</span>
+modelBD2.param_list = paramList + [&#39;mu&#39;, &#39;B&#39;]
 
-<span class="n">birthDeathList</span> <span class="o">=</span> <span class="p">[</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">B</span><span class="p">),</span>  
-                  <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu*S&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">),</span> 
-                  <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">)</span>
-                  <span class="p">]</span>
+birthDeathList = [Transition(origin=&#39;S&#39;, equation=&#39;B&#39;, transition_type=TransitionType.B),  
+                  Transition(origin=&#39;S&#39;, equation=&#39;mu*S&#39;, transition_type=TransitionType.D), 
+                  Transition(origin=&#39;I&#39;, equation=&#39;mu*I&#39;, transition_type=TransitionType.D)
+                  ]
 
-<span class="n">modelBD2</span><span class="o">.</span><span class="n">birth_death_list</span> <span class="o">=</span> <span class="n">birthDeathList</span>
+modelBD2.birth_death_list = birthDeathList
 
-<span class="n">modelBD2</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
+modelBD2.get_ode_eqn()
 </pre></div>
 </div>
 </div>
@@ -585,10 +593,10 @@ equation.</p>
 <p>In summary, there are four different types of transitions allowed. These are B, D, ODE and T, which are defined in an enum class also located in <code class="docutils literal notranslate"><span class="pre">transition</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">transition</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pygom import transition
 
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">transition</span><span class="o">.</span><span class="n">TransitionType</span><span class="p">:</span>  
-    <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; = &quot;</span> <span class="o">+</span> <span class="n">i</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+for i in transition.TransitionType:  
+    print(str(i) + &quot; = &quot; + i.value)
 </pre></div>
 </div>
 </div>

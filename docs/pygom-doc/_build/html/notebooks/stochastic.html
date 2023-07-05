@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Stochastic representation of ODEs &#8212; PyGOM documentation</title>
   
@@ -66,7 +66,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/stochastic';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Convert ODE into transitions {#unrollOde}" href="../md/unrollOde.html" />
+    <link rel="next" title="Convert ODE into transitions" href="../md/unrollOde.html" />
     <link rel="prev" title="Transition Object" href="transition.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -165,12 +165,17 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="sir.html">Motivating Example: SIR Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="transition.html">Transition Object</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Stochastic representation of ODEs</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../md/unrollOde.html">Convert ODE into transitions {#unrollOde}</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../md/unrollOde.html">Convert ODE into transitions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="unroll/unrollSimple.html">Simple Problem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unroll/unrollBD.html">ODE With Birth and Death Process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unroll/unrollHard.html">Hard Problem</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="epi.html">Simple Epidemic Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="epijson.html">Reading and using EpiJSON data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bvpSimple.html">Solving Boundary Value Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradient.html">Gradient estimation under square loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fh.html">Example: Fitz Hugh</a></li>
 </ul>
 
     </div>
@@ -386,38 +391,51 @@ parameters are realizations of some underlying distribution, and when we
 have a so called chemical master equation where each transition
 represent a jump. Again, we use the standard SIR example as previously
 seen in <a class="reference internal" href="sir.html"><span class="doc">Motivating Example: SIR Model</span></a>.</p>
+<p>#TODO add comment about using a density or frequency formulation (use of population size) - currently unexplained</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">SimulateOde</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">TransitionType</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pygom import SimulateOde, Transition, TransitionType
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+import matplotlib.pyplot as plt
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+import numpy as np
 
-<span class="c1"># initial conditions</span>
-<span class="n">Ix0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.27e-6</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+# initial conditions
+Ix0 = [1, 1.27e-6, 0]
 
-<span class="c1"># time period</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+# time period
+t = np.linspace(0, 150, 100)
 
-<span class="n">stateList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">]</span>
+stateList = [&#39;S&#39;, &#39;I&#39;, &#39;R&#39;]
 
-<span class="n">paramList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">]</span>
+paramList = [&#39;beta&#39;, &#39;gamma&#39;]
 
-<span class="n">transitionList</span> <span class="o">=</span> <span class="p">[</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> 
-                  <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)]</span>
+transitionList = [Transition(origin=&#39;S&#39;, destination=&#39;I&#39;, equation=&#39;beta*S*I&#39;, transition_type=TransitionType.T), 
+                  Transition(origin=&#39;I&#39;, destination=&#39;R&#39;, equation=&#39;gamma*I&#39;, transition_type=TransitionType.T)]
 
-<span class="c1"># create the ODEs</span>
-<span class="n">odeS</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">stateList</span><span class="p">,</span> <span class="n">paramList</span><span class="p">,</span> <span class="n">transition</span><span class="o">=</span><span class="n">transitionList</span><span class="p">)</span>
+# create the ODEs
+odeS = SimulateOde(stateList, paramList, transition=transitionList)
 
-<span class="c1"># assign parameter values</span>
-<span class="n">odeS</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">]</span>
+# assign parameter values
+odeS.parameters = [0.5, 1.0/3.0]
 
-<span class="c1"># assign initial values</span>
-<span class="n">odeS</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ix0</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+# assign initial values
+odeS.initial_values = (Ix0, t[0])
 
-<span class="c1"># solve deterministic solution</span>
-<span class="n">solutionReference</span> <span class="o">=</span> <span class="n">odeS</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::],</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+# solve deterministic solution
+solutionReference = odeS.integrate(t[1::], full_output=False)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">SimulateOde</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">TransitionType</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;pygom&#39;
 </pre></div>
 </div>
 </div>
@@ -438,19 +456,19 @@ as <a class="reference external" href="http://www.r-project.org/">R</a> (without
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom.utilR</span> <span class="kn">import</span> <span class="n">rgamma</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pygom.utilR import rgamma
 
-<span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+d = dict()
 
-<span class="c1"># E(X) = 0.5 = shape * scale = shape / rate </span>
-<span class="n">d</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rgamma</span><span class="p">,{</span><span class="s1">&#39;shape&#39;</span><span class="p">:</span><span class="mf">100.0</span><span class="p">,</span> <span class="s1">&#39;rate&#39;</span><span class="p">:</span><span class="mf">200.0</span><span class="p">})</span>
+# E(X) = 0.5 = shape * scale = shape / rate 
+d[&#39;beta&#39;] = (rgamma,{&#39;shape&#39;:100.0, &#39;rate&#39;:200.0})
 
-<span class="c1"># E(X) = 1.0/3.0 = shape / rate</span>
-<span class="n">d</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rgamma</span><span class="p">,(</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">300.0</span><span class="p">))</span>
+# E(X) = 1.0/3.0 = shape / rate
+d[&#39;gamma&#39;] = (rgamma,(100.0, 300.0))
 
-<span class="n">odeS</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">d</span>
+odeS.parameters = d
 
-<span class="n">Ymean</span><span class="p">,</span> <span class="n">Yall</span> <span class="o">=</span> <span class="n">odeS</span><span class="o">.</span><span class="n">simulate_param</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::],</span> <span class="mi">10</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+Ymean, Yall = odeS.simulate_param(t[1::], 10, full_output=True)
 </pre></div>
 </div>
 </div>
@@ -462,32 +480,32 @@ mpi backend, as our module has the capability to compute in parallel
 using the IPython. We have simulated a total of 10 different solutions
 using different parameters, the plots can be seen below.</p>
 </div>
-<div class="cell tag_hide-cell docutils container">
+<div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
 <summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell content</span>
-<span class="expanded">Hide code cell content</span>
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
 </summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;constrained&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, axarr = plt.subplots(1,3, layout=&#39;constrained&#39;)
 
-<span class="c1">#TODO tidy up plots</span>
-<span class="k">for</span> <span class="n">solution</span> <span class="ow">in</span> <span class="n">Yall</span><span class="p">:</span>  
-    <span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span> 
-    <span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span> 
-    <span class="n">axarr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
+#TODO tidy up plots
+for solution in Yall:  
+    axarr[0].plot(t, solution[:,0]) 
+    axarr[1].plot(t, solution[:,1]) 
+    axarr[2].plot(t, solution[:,2])
 
-<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stateList</span><span class="p">):</span>
-    <span class="n">axarr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+for idx, state in enumerate(stateList):
+    axarr[idx].set_title(state)
 
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+plt.show()
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/a2b4c66c36cd941577d5e6e1b74bf026da21420ebaaa2c33c4960b32e1325dcf.png" src="../_images/a2b4c66c36cd941577d5e6e1b74bf026da21420ebaaa2c33c4960b32e1325dcf.png" />
-</div>
 </details>
+<div class="cell_output docutils container">
+<img alt="../_images/ab20c75bd7c6ee640cf34904982a63506772e03a04c4b1616eab4e0c779b74f2.png" src="../_images/ab20c75bd7c6ee640cf34904982a63506772e03a04c4b1616eab4e0c779b74f2.png" />
+</div>
 </div>
 <p>We then see how the expected results, using the sample average of the
 simulations</p>
@@ -496,72 +514,122 @@ simulations</p>
 <p>differs from the reference solution</p>
 <div class="math notranslate nohighlight">
 \[\hat{x}(T) = \int_{t_{0}}^{T} f(\mathbb{E}\left[ \theta \right],x,t) dt\]</div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, axarr = plt.subplots(1,3, layout=&#39;constrained&#39;)
 
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span> 
-    <span class="n">axarr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Ymean</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">solutionReference</span><span class="p">[:,</span><span class="n">i</span><span class="p">])</span>
+for i in range(3): 
+    axarr[i].plot(t, Ymean[:,i] - solutionReference[:,i])
+    axarr[i].set_title(stateList[i])
 
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+plt.show()
+
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="../_images/e521435122381780396ee20a8582f3a46e43faa6c31200c2a2bef1fd514361f4.png" src="../_images/e521435122381780396ee20a8582f3a46e43faa6c31200c2a2bef1fd514361f4.png" />
+<img alt="../_images/edaf46c89c79b126b3212a4b236b512c0c1cc9a324dc2ba7c19d035ea3da00a0.png" src="../_images/edaf46c89c79b126b3212a4b236b512c0c1cc9a324dc2ba7c19d035ea3da00a0.png" />
 </div>
 </div>
-<div class="cell docutils container">
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;constrained&#39;</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, axarr = plt.subplots(1,3, layout=&#39;constrained&#39;, sharey=False)
 
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span> 
-    <span class="n">axarr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Ymean</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;sample average&#39;</span><span class="p">)</span>
-    <span class="n">axarr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solutionReference</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;reference&#39;</span><span class="p">)</span>
+for i in range(3): 
+    axarr[i].plot(t, Ymean[:,i], label=&#39;sample average&#39;)
+    axarr[i].plot(t, solutionReference[:,i], label=&#39;reference&#39;)
+    axarr[i].set_title(stateList[i])
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+axarr[2].legend()
+plt.show()
 </pre></div>
 </div>
 </div>
+</details>
 <div class="cell_output docutils container">
-<img alt="../_images/61cf086b003e645ccb1eaeebd0a201f4793ce35568e2df3fd9897fe93e8c4d57.png" src="../_images/61cf086b003e645ccb1eaeebd0a201f4793ce35568e2df3fd9897fe93e8c4d57.png" />
+<img alt="../_images/5bc73ee726871a07756efbfcc86834065460905c685c115099ea1ec6c422183c.png" src="../_images/5bc73ee726871a07756efbfcc86834065460905c685c115099ea1ec6c422183c.png" />
 </div>
 </div>
-<p>The difference is relatively large especially for the <span class="math notranslate nohighlight">\(S\)</span> state. We can
-decrease this difference as we increase the number of simulation, and
-more sophisticated sampling method for the generation of random
-variables can also decrease the difference.</p>
+<p>The difference between the deterministic reference and averaged solutions is relatively large, especially for the <span class="math notranslate nohighlight">\(S\)</span> state.
+We can decrease this difference as we increase the number of simulations, and also by using more sophisticated sampling methods for the generation of random
+variables.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
 <p>In addition to using the built-in functions to represent stochasticity,
 we can also use standard frozen distributions from scipy. Note that it
 must be a frozen distribution as that is the only for the parameters of
 the distributions to propagate through the model.</p>
-<p>In [1]: import scipy.stats as st</p>
-<p>In [1]: d = dict()</p>
-<p>In [1]: d[‘beta’] = st.gamma(a=100.0, scale=1.0/200.0)</p>
-<p>In [1]: d[‘gamma’] = st.gamma(a=100.0, scale=1.0/300.0)</p>
-<p>In [1]: odeS.parameters = d</p>
-<p>Obviously, there may be scenarios where only some of the parameters are
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import scipy.stats as st
+
+d = dict()
+
+d[&#39;beta&#39;] = st.gamma(a=100.0, scale=1.0/200.0)
+
+d[&#39;gamma&#39;] = st.gamma(a=100.0, scale=1.0/300.0)
+
+odeS.parameters = d
+</pre></div>
+</div>
+</div>
+</div>
+<p>There may be scenarios where only some of the parameters are
 stochastic. Let’s say that the <span class="math notranslate nohighlight">\(\gamma\)</span> parameter is fixed at <span class="math notranslate nohighlight">\(1/3\)</span>,
-then simply replace the distribution information with a scalar. A quick
-visual inspection at the resulting plot suggests that the system of ODE
+then we can replace the distribution information with a scalar. A quick
+visual inspection at the resulting plot suggests that the system of ODEs
 potentially has less variation when compared to the case where both
 parameters are stochastic.</p>
-<p>In [1]: d[‘gamma’] = 1.0/3.0</p>
-<p>In [1]: odeS.parameters = d</p>
-<p>In [1]: YmeanSingle, YallSingle = odeS.simulate_param(t[1::], 5,
-full_output=True)</p>
-<p>In [1]: f, axarr = plt.subplots(1,3)</p>
-<p>In [1]: for solution in YallSingle:<br />
-…: axarr[0].plot(t,solution[:,0]) …:
-axarr[1].plot(t,solution[:,1]) …:
-axarr[2].plot(t,solution[:,2])</p>
-<p>&#64;savefig stochastic_param_single.png In [1]: plt.show()</p>
-<p>In [1]: plt.close()</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>d[&#39;gamma&#39;] = 1.0/3.0
+
+odeS.parameters = d
+
+YmeanSingle, YallSingle = odeS.simulate_param(t[1::], 5, full_output=True)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, axarr = plt.subplots(1,3)
+
+for solution in YallSingle:  
+    axarr[0].plot(t,solution[:,0]) 
+    axarr[1].plot(t,solution[:,1]) 
+    axarr[2].plot(t,solution[:,2])
+
+plt.show()
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../_images/c0aa142200428595aa44bb6588be6a7a4160105ee4702528ae9560e29d955782.png" src="../_images/c0aa142200428595aa44bb6588be6a7a4160105ee4702528ae9560e29d955782.png" />
+</div>
+</div>
 </section>
 <section id="continuous-markov-representation">
 <h2>Continuous Markov Representation<a class="headerlink" href="#continuous-markov-representation" title="Permalink to this heading">#</a></h2>
-<p>Another common method of introducing stochasticity into a set of ode is
+<p>Another common method of introducing stochasticity into a set of ODEs is
 by assuming each movement in the system is a result of a jump process.
 More concretely, the probabilty of a move for transition <span class="math notranslate nohighlight">\(j\)</span> is governed
 by an exponential distribution such that</p>
@@ -569,88 +637,135 @@ by an exponential distribution such that</p>
 \[\Pr(\text{process $j$ jump within time } \tau) = \lambda_{j} e^{-\lambda_{j} \tau},\]</div>
 <p>where <span class="math notranslate nohighlight">\(\lambda_{j}\)</span> is the rate of transition for process <span class="math notranslate nohighlight">\(j\)</span> and <span class="math notranslate nohighlight">\(\tau\)</span>
 the time elapsed after current time <span class="math notranslate nohighlight">\(t\)</span>.</p>
-<p>A couple of the commmon implementation for the jump process have been
-implemented where two of them are used during a normal simulation; the
-first reaction method <span class="xref myst">[Gillespie1977]</span> and the <span class="math notranslate nohighlight">\(\tau\)</span>-Leap method
-<span class="xref myst">[Cao2006]</span>. The two changes interactively depending on the size of
-the states.</p>
-<p>In [1]: x0 = [2362206.0, 3.0, 0.0]</p>
-<p>In [1]: stateList = [‘S’, ‘I’, ‘R’]</p>
-<p>In [1]: paramList = [‘beta’, ‘gamma’, ‘N’]</p>
-<p>In [1]: transitionList = [<br />
-…: Transition(origin=’S’, destination=’I’, equation=’beta*S*I/N’,
-transition_type=TransitionType.T), …: Transition(origin=’I’,
-destination=’R’, equation=’gamma*I’, transition_type=TransitionType.T)
-…: ]</p>
-<p>In [1]: odeS = SimulateOde(stateList, paramList,
-transition=transitionList)</p>
-<p>In [1]: odeS.parameters = [0.5, 1.0/3.0, x0[0]]</p>
-<p>In [1]: odeS.initial_values = (x0, t[0])</p>
-<p>In [1]: solutionReference = odeS.integrate(t[1::])</p>
-<p>In [1]: simX, simT = odeS.simulate_jump(t[1:10], 10,
-full_output=True)</p>
-<p>In [1]: f, axarr = plt.subplots(1, 3)</p>
-<p>In [1]: for solution in simX:<br />
-…: axarr[0].plot(t[:9], solution[:,0]) …:
-axarr[1].plot(t[:9], solution[:,1]) …: axarr[2].plot(t[:9],
-solution[:,2])</p>
-<p>&#64;savefig stochastic_process.png In [1]: plt.show()</p>
-<p>In [1]: plt.close()</p>
-<p>Above, we see ten different simulation, again using the SIR model but
-without standardization of the initial conditions. We restrict our time
-frame to be only the first 10 time points so that the individual changes
-can be seen more clearly above. If we use the same time frame as the one
+<p>Two of the commmon algorithms for the jump process have been
+implemented for use during simulation; the reaction method <span class="xref myst">[Gillespie1977]</span> and the <span class="math notranslate nohighlight">\(\tau\)</span>-Leap method
+<span class="xref myst">[Cao2006]</span>. The two change interactively depending on the size of the states.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>x0 = [2362206.0, 3.0, 0.0]
+
+stateList = [&#39;S&#39;, &#39;I&#39;, &#39;R&#39;]
+
+paramList = [&#39;beta&#39;, &#39;gamma&#39;, &#39;N&#39;]
+
+transitionList = [Transition(origin=&#39;S&#39;, destination=&#39;I&#39;, equation=&#39;beta*S*I/N&#39;, transition_type=TransitionType.T),
+                  Transition(origin=&#39;I&#39;, destination=&#39;R&#39;, equation=&#39;gamma*I&#39;, transition_type=TransitionType.T)
+                  ]
+
+odeS = SimulateOde(stateList, paramList, transition=transitionList)
+
+odeS.parameters = [0.5, 1.0/3.0, x0[0]]
+
+odeS.initial_values = (x0, t[0])
+
+solutionReference = odeS.integrate(t[1::])
+
+simX, simT = odeS.simulate_jump(t[1:10], 10, full_output=True)
+
+f, axarr = plt.subplots(1, 3)
+
+for solution in simX:  
+    axarr[0].plot(t[:9], solution[:,0])
+    axarr[1].plot(t[:9], solution[:,1]) 
+    axarr[2].plot(t[:9], solution[:,2])
+
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/a41ee48b4c02f2ffb96d803d748a3fd307285265d95928863ec35ca238282231.png" src="../_images/a41ee48b4c02f2ffb96d803d748a3fd307285265d95928863ec35ca238282231.png" />
+</div>
+</div>
+<p>Above, we see 10 different simulations, again using the SIR model but
+without standardization of the initial conditions (we include <span class="math notranslate nohighlight">\(N\)</span> as a parameter in our model).
+For demonstration purposes, we restrict our time
+frame to be only the first 10 time points so that the individual changes or stochasticity
+can be seen more clearly. If we use the same time frame as the one
 used previously for the deterministic system (as shown below), the
 trajectories are smoothed out and we no longer observe the <em>jumps</em>.
-Looking at the raw trajectories of the ODE below, it is obvious that the
+Looking at the raw trajectories of the ODEs below, we see that the
 mean from a jump process is very different to the deterministic
-solution. The reason behind this is that the jump process above was able
+solution. This occurs because the jump process above was able
 to fully remove all the initial infected individuals before any new
-ones.</p>
-<p>In [1]: simX,simT = odeS.simulate_jump(t, 5, full_output=True)</p>
-<p>In [1]: simMean = np.mean(simX, axis=0)</p>
-<p>In [1]: f, axarr = plt.subplots(1,3)</p>
-<p>In [1]: for solution in simX:<br />
-…: axarr[0].plot(t, solution[:,0]) …: axarr[1].plot(t,
-solution[:,1]) …: axarr[2].plot(t, solution[:,2])</p>
-<p>&#64;savefig stochastic_process_compare_large_n_curves.png In [1]:
-plt.show()</p>
-<p>In [1]: plt.close()</p>
+ones occured.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>simX,simT = odeS.simulate_jump(t, 5, full_output=True)
+
+simMean = np.mean(simX, axis=0)
+
+f, axarr = plt.subplots(1,3)
+
+for solution in simX:  
+    axarr[0].plot(t, solution[:,0]) 
+    axarr[1].plot(t, solution[:,1]) 
+    axarr[2].plot(t, solution[:,2])
+
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/77d7df2c54dad550496302d8c6230ce9bfb40c9f05977928aaf8c36881d21523.png" src="../_images/77d7df2c54dad550496302d8c6230ce9bfb40c9f05977928aaf8c36881d21523.png" />
+</div>
+</div>
 </section>
 <section id="repeatable-simulation">
 <h2>Repeatable Simulation<a class="headerlink" href="#repeatable-simulation" title="Permalink to this heading">#</a></h2>
-<p>One of the possible use of compartmental models is to generate
+<p>One of the possible uses of compartmental models is to generate
 forecasts. Although most of the time the requirement would be to have
 (at least point-wise) convergence in the limit, reproducibility is also
 important. For both types of interpretation explained above, we have
 given the package the capability to repeat the simulations by setting a
 seed. When the assumption is that the parameters follows some sort of
-distribution, we simply set the seed which governs the global state of
+distribution, we can set the seed which governs the global state of
 the random number generator.</p>
-<p>In [1]: x0 = [2362206.0, 3.0, 0.0]</p>
-<p>In [1]: odeS = SimulateOde(stateList, paramList,
-transition=transitionList)</p>
-<p>In [1]: d = {‘beta’: st.gamma(a=100.0, scale=1.0/200.0), ‘gamma’:
-st.gamma(a=100.0, scale=1.0/300.0), ‘N’: x0[0]}</p>
-<p>In [1]: odeS.parameters = d</p>
-<p>In [1]: odeS.initial_values = (x0, t[0])</p>
-<p>In [1]: Ymean, Yall = odeS.simulate_param(t[1::], 10,
-full_output=True)</p>
-<p>In [1]: np.random.seed(1)</p>
-<p>In [1]: Ymean1, Yall1 = odeS.simulate_param(t[1::], 10,
-full_output=True)</p>
-<p>In [1]: np.random.seed(1)</p>
-<p>In [1]: Ymean2, Yall2 = odeS.simulate_param(t[1::], 10,
-full_output=True)</p>
-<p>In [1]: sim_diff = [np.linalg.norm(Yall[i] - yi) for i, yi in
-enumerate(Yall1)]</p>
-<p>In [1]: sim_diff12 = [np.linalg.norm(Yall2[i] - yi) for i, yi in
-enumerate(Yall1)]</p>
-<p>In [1]: print(“Different in the simulations and the mean: (%s, %s) ” %
-(np.sum(sim_diff), np.sum(np.abs(Ymean1 - Ymean))))</p>
-<p>In [1]: print(“Different in the simulations and the mean using same
-seed: (%s, %s) ” % (np.sum(sim_diff12), np.sum(np.abs(Ymean2 -
-Ymean1))))</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>x0 = [2362206.0, 3.0, 0.0]
+
+odeS = SimulateOde(stateList, paramList, transition=transitionList)
+
+d = {&#39;beta&#39;: st.gamma(a=100.0, scale=1.0/200.0), &#39;gamma&#39;:st.gamma(a=100.0, scale=1.0/300.0), &#39;N&#39;: x0[0]}
+
+odeS.parameters = d
+
+odeS.initial_values = (x0, t[0])
+
+Ymean, Yall = odeS.simulate_param(t[1::], 10, full_output=True)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+np.random.seed(1)
+
+Ymean1, Yall1 = odeS.simulate_param(t[1::], 10, full_output=True)
+
+np.random.seed(1)
+
+Ymean2, Yall2 = odeS.simulate_param(t[1::], 10, full_output=True)
+
+sim_diff = [np.linalg.norm(Yall[i] - yi) for i, yi in enumerate(Yall1)]
+
+sim_diff12 = [np.linalg.norm(Yall2[i] - yi) for i, yi in enumerate(Yall1)]
+
+print(&quot;Different in the simulations and the mean: (%s, %s) &quot; %(np.sum(sim_diff), np.sum(np.abs(Ymean1 - Ymean))))
+
+print(&quot;Different in the simulations and the mean using same seed: (%s, %s) &quot; % (np.sum(sim_diff12), np.sum(np.abs(Ymean2 - Ymean1))))
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Different in the simulations and the mean: (81103473.8935847, 52437230.37979218) 
+Different in the simulations and the mean using same seed: (0.0, 0.0) 
+</pre></div>
+</div>
+</div>
+</div>
 <p>In the alternative interpretation, setting the global seed is
 insufficient. Unlike simulation based on the parameters, where we can
 pre-generate all the parameter values and send them off to individual
@@ -660,27 +775,43 @@ because each <em>integration</em> requires an unknown number of random samples.
 Therefore, we have an additional flag <strong>parallel</strong> in the function
 signature. By ensuring that the computation runs in serial, we can make
 use of the global seed and generate identical runs.</p>
-<p>In [1]: x0 = [2362206.0, 3.0, 0.0]</p>
-<p>In [1]: odeS = SimulateOde(stateList, paramList,
-transition=transitionList)</p>
-<p>In [1]: odeS.parameters = [0.5, 1.0/3.0, x0[0]]</p>
-<p>In [1]: odeS.initial_values = (x0, t[0])</p>
-<p>In [1]: simX, simT = odeS.simulate_jump(t[1:10], 10, parallel=False,
-full_output=True)</p>
-<p>In [1]: np.random.seed(1)</p>
-<p>In [1]: simX1, simT1 = odeS.simulate_jump(t[1:10], 10,
-parallel=False, full_output=True)</p>
-<p>In [1]: np.random.seed(1)</p>
-<p>In [1]: simX2, simT2 = odeS.simulate_jump(t[1:10], 10,
-parallel=False, full_output=True)</p>
-<p>In [1]: sim_diff = [np.linalg.norm(simX[i] - x1) for i, x1 in
-enumerate(simX1)]</p>
-<p>In [1]: sim_diff12 = [np.linalg.norm(simX2[i] - x1) for i, x1 in
-enumerate(simX1)]</p>
-<p>In [1]: print(“Difference in simulation: %s” %
-np.sum(np.abs(sim_diff)))</p>
-<p>In [1]: print(“Difference in simulation using same seed: %s” %
-np.sum(np.abs(sim_diff12)))</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>x0 = [2362206.0, 3.0, 0.0]
+
+odeS = SimulateOde(stateList, paramList, transition=transitionList)
+
+odeS.parameters = [0.5, 1.0/3.0, x0[0]]
+
+odeS.initial_values = (x0, t[0])
+
+simX, simT = odeS.simulate_jump(t[1:10], 10, parallel=False, full_output=True)
+
+np.random.seed(1)
+
+simX1, simT1 = odeS.simulate_jump(t[1:10], 10, parallel=False, full_output=True)
+
+np.random.seed(1)
+
+simX2, simT2 = odeS.simulate_jump(t[1:10], 10, parallel=False, full_output=True)
+
+sim_diff = [np.linalg.norm(simX[i] - x1) for i, x1 in enumerate(simX1)]
+
+sim_diff12 = [np.linalg.norm(simX2[i] - x1) for i, x1 in enumerate(simX1)]
+
+print(&quot;Difference in simulation: %s&quot; %np.sum(np.abs(sim_diff)))
+
+print(&quot;Difference in simulation using same seed: %s&quot; %np.sum(np.abs(sim_diff12)))
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Difference in simulation: 2534.4614923250074
+Difference in simulation using same seed: 0.0
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 </section>
 
@@ -729,7 +860,7 @@ np.sum(np.abs(sim_diff12)))</p>
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Convert ODE into transitions {#unrollOde}</p>
+        <p class="prev-next-title">Convert ODE into transitions</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

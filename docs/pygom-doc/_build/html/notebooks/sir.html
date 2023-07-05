@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Motivating Example: SIR Model &#8212; PyGOM documentation</title>
   
@@ -165,12 +165,17 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Motivating Example: SIR Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="transition.html">Transition Object</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stochastic.html">Stochastic representation of ODEs</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../md/unrollOde.html">Convert ODE into transitions {#unrollOde}</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../md/unrollOde.html">Convert ODE into transitions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="unroll/unrollSimple.html">Simple Problem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unroll/unrollBD.html">ODE With Birth and Death Process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unroll/unrollHard.html">Hard Problem</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="epi.html">Simple Epidemic Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="epijson.html">Reading and using EpiJSON data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bvpSimple.html">Solving Boundary Value Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradient.html">Gradient estimation under square loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fh.html">Example: Fitz Hugh</a></li>
 </ul>
 
     </div>
@@ -381,7 +386,6 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="motivating-example-sir-model">
 <h1>Motivating Example: SIR Model<a class="headerlink" href="#motivating-example-sir-model" title="Permalink to this heading">#</a></h1>
-<p><a class="reference download internal" download="" href="../_downloads/289ac28c9b7c69b5b79db17a12b844bf/sir.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">this</span> <span class="pre">notebook</span></code></a></p>
 <section id="defining-the-model">
 <h2>Defining the model<a class="headerlink" href="#defining-the-model" title="Permalink to this heading">#</a></h2>
 <p>First, we are going to go through an SIR model to show the functionality
@@ -398,7 +402,17 @@ of the package. The SIR model is defined by the following equations</p>
 </ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">TransitionType</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pygom import Transition, TransitionType
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">TransitionType</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;pygom&#39;
 </pre></div>
 </div>
 </div>
@@ -408,7 +422,7 @@ of the package. The SIR model is defined by the following equations</p>
 </ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stateList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>stateList = [&#39;S&#39;, &#39;I&#39;, &#39;R&#39;]
 </pre></div>
 </div>
 </div>
@@ -418,7 +432,7 @@ of the package. The SIR model is defined by the following equations</p>
 </ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">paramList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>paramList = [&#39;beta&#39;, &#39;gamma&#39;]
 </pre></div>
 </div>
 </div>
@@ -428,11 +442,11 @@ of the package. The SIR model is defined by the following equations</p>
 </ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">odeList</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;-beta*S*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">),</span>
-    <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span><span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I - gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">),</span>
-    <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span> 
-    <span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>odeList = [
+    Transition(origin=&#39;S&#39;, equation=&#39;-beta*S*I&#39;, transition_type=TransitionType.ODE),
+    Transition(origin=&#39;I&#39;,equation=&#39;beta*S*I - gamma*I&#39;, transition_type=TransitionType.ODE),
+    Transition(origin=&#39;R&#39;, equation=&#39;gamma*I&#39;, transition_type=TransitionType.ODE) 
+    ]
 </pre></div>
 </div>
 </div>
@@ -446,7 +460,7 @@ of the package. The SIR model is defined by the following equations</p>
 </ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">DeterministicOde</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pygom import DeterministicOde
 </pre></div>
 </div>
 </div>
@@ -456,7 +470,7 @@ of the package. The SIR model is defined by the following equations</p>
 </ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">DeterministicOde</span><span class="p">(</span><span class="n">stateList</span><span class="p">,</span> <span class="n">paramList</span><span class="p">,</span> <span class="n">ode</span><span class="o">=</span><span class="n">odeList</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = DeterministicOde(stateList, paramList, ode=odeList)
 </pre></div>
 </div>
 </div>
@@ -464,7 +478,7 @@ of the package. The SIR model is defined by the following equations</p>
 <p>That is all the information required to define a simple SIR model. We can verify the model using</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.get_ode_eqn()
 </pre></div>
 </div>
 </div>
@@ -481,12 +495,12 @@ of the package. The SIR model is defined by the following equations</p>
 <p>We can rearrange the state list,</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># now we are going to define in a different order. note that the output ode changed with the input state</span>
-<span class="n">stateList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># now we are going to define in a different order. note that the output ode changed with the input state
+stateList = [&#39;R&#39;, &#39;S&#39;, &#39;I&#39;]
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">DeterministicOde</span><span class="p">(</span><span class="n">stateList</span><span class="p">,</span> <span class="n">paramList</span><span class="p">,</span> <span class="n">ode</span><span class="o">=</span><span class="n">odeList</span><span class="p">)</span>
+model = DeterministicOde(stateList, paramList, ode=odeList)
 
-<span class="n">model</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
+model.get_ode_eqn()
 </pre></div>
 </div>
 </div>
@@ -502,7 +516,7 @@ of the package. The SIR model is defined by the following equations</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">print_ode</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.print_ode()
 </pre></div>
 </div>
 </div>
@@ -518,7 +532,7 @@ of the package. The SIR model is defined by the following equations</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">print_ode</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.print_ode(True)
 </pre></div>
 </div>
 </div>
@@ -537,7 +551,7 @@ We have also provided the capability to obtain a <em>best guess</em> transition 
 <p>We may wish to determine if the set of ODEs are linear.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">linear_ode</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.linear_ode()
 </pre></div>
 </div>
 </div>
@@ -550,7 +564,7 @@ We have also provided the capability to obtain a <em>best guess</em> transition 
 <p>Since we know that the SIR model is not linear, we may want to have a look at the Jacobian.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">get_jacobian_eqn</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.get_jacobian_eqn()
 </pre></div>
 </div>
 </div>
@@ -562,7 +576,7 @@ We have also provided the capability to obtain a <em>best guess</em> transition 
 <p>Or maybe we want to know the gradient.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">get_grad_eqn</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.get_grad_eqn()
 </pre></div>
 </div>
 </div>
@@ -579,7 +593,7 @@ We have also provided the capability to obtain a <em>best guess</em> transition 
 <p>For setting initial conditions, the numeric values of the states <strong>must</strong> be set in the same order that list of states appear. We can use the following to check the state ordering, as well as displaying all of the states that we have included.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">state_list</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.state_list
 </pre></div>
 </div>
 </div>
@@ -602,18 +616,18 @@ There is currently no mechanism to set the numeric initial conditions the states
 </ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.parameters
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">paramEval</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span><span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>paramEval = [(&#39;beta&#39;,0.5), (&#39;gamma&#39;,1.0/3.0)]
 
-<span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">paramEval</span>
+model.parameters = paramEval
 
-<span class="n">model</span><span class="o">.</span><span class="n">parameters</span>
+model.parameters
 </pre></div>
 </div>
 </div>
@@ -628,9 +642,9 @@ There is currently no mechanism to set the numeric initial conditions the states
 </ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">initialState</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.27e-6</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>initialState = [0, 1, 1.27e-6]
     
-<span class="n">model</span><span class="o">.</span><span class="n">ode</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">initialState</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+model.ode(state=initialState, t=1)
 </pre></div>
 </div>
 </div>
@@ -646,12 +660,12 @@ There is currently no mechanism to set the numeric initial conditions the states
 <p>We are well equipped to solve an initial value problem, using the standard numerical integrator such as <code class="docutils literal notranslate"><span class="pre">odeint</span> <span class="pre">&lt;scipy.integrate.odeint&gt;</span></code> from <code class="docutils literal notranslate"><span class="pre">scipy.integrate</span></code>. We also used <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot</span></code> for plotting and <code class="docutils literal notranslate"><span class="pre">linspace</span> <span class="pre">&lt;numpy.linspace&gt;</span></code> to create the time vector.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy.integrate</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import scipy.integrate
+import numpy
 
-<span class="n">t</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+t = numpy.linspace(0, 150, 100)
 
-<span class="n">solution</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">odeint</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">ode</span><span class="p">,</span> <span class="n">initialState</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+solution = scipy.integrate.odeint(model.ode, initialState, t)
 </pre></div>
 </div>
 </div>
@@ -659,29 +673,29 @@ There is currently no mechanism to set the numeric initial conditions the states
 <p>We can plot our solution to observe a standard SIR shape.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
 
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+plt.figure()
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">)</span>
+plt.plot(t, solution[:,0], label=&#39;R&#39;)
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">)</span>
+plt.plot(t, solution[:,1], label=&#39;S&#39;)
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">)</span>
+plt.plot(t, solution[:,2], label=&#39;I&#39;)
 
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time&#39;</span><span class="p">)</span>
+plt.xlabel(&#39;Time&#39;)
 
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Population proportion&#39;</span><span class="p">)</span>
+plt.ylabel(&#39;Population proportion&#39;)
 
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Standard SIR model&#39;</span><span class="p">)</span>
+plt.title(&#39;Standard SIR model&#39;)
 
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+plt.legend(loc=0)
 
-<span class="c1">#@savefig sir_plot.png In </span>
+#@savefig sir_plot.png In 
 
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+plt.show()
 
-<span class="c1">#plt.close()</span>
+#plt.close()
 </pre></div>
 </div>
 </div>
@@ -692,13 +706,13 @@ There is currently no mechanism to set the numeric initial conditions the states
 <p>Alternatively, we can integrate and plot via the <strong>ode</strong> object which we initialized earlier.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">initialState</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.initial_values = (initialState, t[0])
 
-<span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">paramEval</span>
+model.parameters = paramEval
 
-<span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::])</span>
+solution = model.integrate(t[1::])
 
-<span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+model.plot()
 </pre></div>
 </div>
 </div>
@@ -709,38 +723,39 @@ There is currently no mechanism to set the numeric initial conditions the states
 <p>We could solve the ODEs above using the Jacobian as well. Unfortunately, it does not help because the number of times the Jacobian was evaluated was zero, as expected given that our set of equations are not stiff.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#TODO what does this show?</span>
-<span class="o">%</span><span class="k">timeit</span> solution1, output1 = scipy.integrate.odeint(model.ode, initialState, t, full_output=True)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#TODO what does this show?
+%timeit solution1, output1 = scipy.integrate.odeint(model.ode, initialState, t, full_output=True)
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.11 ms ± 45.4 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.58 ms ± 396 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">timeit</span> solution2, output2 = scipy.integrate.odeint(model.ode, initialState, t, Dfun=model.jacobian, mu=None, ml=None, full_output=True)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+%timeit solution2, output2 = scipy.integrate.odeint(model.ode, initialState, t, Dfun=model.jacobian, mu=None, ml=None, full_output=True)
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.2 ms ± 89 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.84 ms ± 227 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">timeit</span> solution3, output3 = model.integrate(t, full_output=True)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+%timeit solution3, output3 = model.integrate(t, full_output=True)
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The slowest run took 4.46 times longer than the fastest. This could mean that an intermediate result is being cached.
-2.2 ms ± 1.28 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.68 ms ± 161 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </pre></div>
 </div>
 </div>
@@ -752,71 +767,71 @@ There is currently no mechanism to set the numeric initial conditions the states
 <p>The sensitivity equations are also solved as an initial value problem. Let us redefine the model in the standard SIR order and we solve it with the sensitivity all set at zero, i.e. we do not wish to infer the initial value of the states.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stateList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>stateList = [&#39;S&#39;, &#39;I&#39;, &#39;R&#39;]
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">DeterministicOde</span><span class="p">(</span><span class="n">stateList</span><span class="p">,</span> <span class="n">paramList</span><span class="p">,</span> <span class="n">ode</span><span class="o">=</span><span class="n">odeList</span><span class="p">)</span>
+model = DeterministicOde(stateList, paramList, ode=odeList)
 
-<span class="n">initialState</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.27e-6</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+initialState = [1, 1.27e-6, 0]
 
-<span class="n">paramEval</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)]</span>
+paramEval = [(&#39;beta&#39;, 0.5), (&#39;gamma&#39;, 1.0/3.0)]
 
-<span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">paramEval</span>
+model.parameters = paramEval
 
-<span class="n">solution</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">odeint</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">ode_and_sensitivity</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">initialState</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)),</span> <span class="n">t</span><span class="p">)</span>
+solution = scipy.integrate.odeint(model.ode_and_sensitivity, numpy.append(initialState, numpy.zeros(6)), t)
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input above-output-prompt docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;hide-input&quot;</span><span class="p">,</span>
-    <span class="p">]</span>
-<span class="p">}</span>
-<span class="n">f</span><span class="p">,</span><span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">);</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>{
+    &quot;tags&quot;: [
+        &quot;hide-input&quot;,
+    ]
+}
+f,axarr = plt.subplots(3,3);
 
-<span class="n">f</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.975</span><span class="p">,</span><span class="s1">&#39;SIR with forward sensitivity solved via ode&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span><span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span><span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">)</span>
+f.text(0.5,0.975,&#39;SIR with forward sensitivity solved via ode&#39;,fontsize=16,horizontalalignment=&#39;center&#39;,verticalalignment=&#39;top&#39;)
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+axarr[0,0].plot(t, solution[:,0])
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">)</span>
+axarr[0,0].set_title(&#39;S&#39;)
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+axarr[0,1].plot(t, solution[:,1])
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">)</span>
+axarr[0,1].set_title(&#39;I&#39;)
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]);</span>
+axarr[0,2].plot(t, solution[:,2]);
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">)</span>
+axarr[0,2].set_title(&#39;R&#39;)
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span>
+axarr[1,0].plot(t, solution[:,3])
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;state S parameter $beta$&#39;</span><span class="p">)</span>
+axarr[1,0].set_title(r&#39;state S parameter $beta$&#39;)
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">4</span><span class="p">])</span>
+axarr[2,0].plot(t, solution[:,4])
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;state S parameter $gamma$&#39;</span><span class="p">)</span>
+axarr[2,0].set_title(r&#39;state S parameter $gamma$&#39;)
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">5</span><span class="p">])</span>
+axarr[1,1].plot(t, solution[:,5])
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;state I parameter $beta$&#39;</span><span class="p">)</span>
+axarr[1,1].set_title(r&#39;state I parameter $beta$&#39;)
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">6</span><span class="p">])</span>
+axarr[2,1].plot(t, solution[:,6])
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;state I parameter $gamma$&#39;</span><span class="p">)</span>
+axarr[2,1].set_title(r&#39;state I parameter $gamma$&#39;)
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">7</span><span class="p">])</span>
+axarr[1,2].plot(t, solution[:,7])
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;state R parameter $beta$&#39;</span><span class="p">)</span>
+axarr[1,2].set_title(r&#39;state R parameter $beta$&#39;)
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">8</span><span class="p">])</span>
+axarr[2,2].plot(t, solution[:,8])
 
-<span class="n">axarr</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;state R parameter $gamma$&#39;</span><span class="p">)</span>
+axarr[2,2].set_title(r&#39;state R parameter $gamma$&#39;)
 
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+plt.tight_layout()
 
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+plt.show()
 </pre></div>
 </div>
 </div>
