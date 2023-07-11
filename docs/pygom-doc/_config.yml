@@ -29,6 +29,8 @@ sphinx:
     bibtex_reference_style: author_year
     # TODO change md to bibtex
     bibtex_bibfiles: "ref.md"
+  extra_extensions:
+    - 'sphinx.ext.autodoc'
 
 # Information about where the book exists on the web
 repository:
