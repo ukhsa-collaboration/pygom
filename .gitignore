@@ -19,4 +19,4 @@ __pycache__
 # For built documentation
 /docs/pygom-doc/_build*
 /doc/_build
-/docs/source/savefig/*
+/doc/source/savefig/*
