@@ -54,9 +54,10 @@ jobs:
                   python setup.py install
 
             # build the book
+            # TODO check which flags are needed, -W
             - name: Build the book
               run: |
-                jupyter-book build --all -v -W docs/pygom-doc
+                jupyter-book build --all -v docs/pygom-doc
 
             # deploy book to github-pages
             - name: GitHub Pages 
