@@ -24,17 +24,13 @@ jobs:
                 key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
                 restore-keys: |
                   ${{ runner.os }}-pip-
-        
-
-        
-            - name: Set up Python
-              uses: actions/setup-python@v1
-              with:
-                python-version: ${{ matrix.python-version }}
-        
-            - name: Check python version
-              run: python -c "import sys; print(sys.version)"
-
+                    steps:
+            
+            - uses: actions/checkout@v3
+            
+            - name: Setup Graphviz
+              uses: ts-graphviz/setup-graphviz@v1
+      
             # install python
             - name: Set up Python 3.8
               uses: actions/setup-python@v2
