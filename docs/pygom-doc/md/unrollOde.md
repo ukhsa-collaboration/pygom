@@ -1,4 +1,4 @@
-# Convert ODE into transitions
+# Converting equations into transitions
 
 As seen previously in `transition`{.interpreted-text role="ref"}, we can
 define the model via the transitions or explicitly as ODEs. There are

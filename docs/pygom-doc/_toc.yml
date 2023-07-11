@@ -6,7 +6,6 @@ root: intro
 parts:
   - caption: User documentation
     chapters:
-    - file: markdown.md
     - file: md/getting_started.md
     - file: notebooks/sir.ipynb
     - file: notebooks/transition.ipynb
