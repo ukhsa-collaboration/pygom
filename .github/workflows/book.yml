@@ -27,7 +27,7 @@ jobs:
             # install dependencies
             - name: Install dependencies
               run: |
-                pip install -r docs/pygom-doc/requirements.txt
+                pip install -r requirements.txt
 
             # build the book
             - name: Build the book
