@@ -32,7 +32,7 @@ jobs:
             # build the book
             - name: Build the book
               run: |
-                jupyter-book build --all -v docs/pygom-doc
+                jupyter-book build --all -v -W docs/pygom-doc
 
             # deploy book to github-pages
             - name: GitHub Pages 
