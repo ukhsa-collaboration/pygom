@@ -1,4 +1,4 @@
-name: deploy-book
+name: build-book
 
 # only run when specific files change
 # only run on install-fix-docs branch 
@@ -28,6 +28,12 @@ jobs:
             - name: Install dependencies
               run: |
                 pip install -r requirements.txt
+
+            # set up pygom
+            - name: Build and install pygom
+              run: |
+                  python setup.py build
+                  python setup.py install
 
             # build the book
             - name: Build the book
