@@ -17,13 +17,15 @@ parts:
       - file: notebooks/unroll/unrollHard.ipynb
     - file: notebooks/epi.ipynb
     - file: notebooks/epijson.ipynb
-    - file: notebooks/bvpSimple.ipynb
-    - file: notebooks/gradient.ipynb
-    - file: notebooks/fh.ipynb
-    - file: notebooks/estimate1.ipynb
-    - file: notebooks/estimate2.ipynb
-    - file: notebooks/initialGuess.ipynb
-    - file: notebooks/profile.ipynb
+    - file: md/parameter_fitting.md
+      sections:
+      - file: notebooks/paramfit/bvpSimple.ipynb
+      - file: notebooks/paramfit/gradient.ipynb
+      - file: notebooks/paramfit/fh.ipynb
+      - file: notebooks/paramfit/estimate1.ipynb
+      - file: notebooks/paramfit/estimate2.ipynb
+      - file: notebooks/paramfit/initialGuess.ipynb
+      - file: notebooks/paramfit/profile.ipynb
   - caption: Common biological compartmental models
     chapters:
     - file: md/common_models.md
@@ -46,10 +48,12 @@ parts:
 #  - caption: Frequently asked questions
 #    chapters: 
 #    - file: md/faq.md
-##  - caption: Code documentation
-##    chapters:
-##    - file:
+  - caption: Code documentation
+    chapters:
+    - file: autodoc-model.rst
+    - file: autodoc-loss.rst
 #  - caption: References
+# https://jupyterbook.org/en/stable/content/citations.html#id6
 #    chapters: 
 #    - file: md/ref.md
 ##  - caption: Indices and tables
