@@ -52,9 +52,9 @@ parts:
     chapters:
     - file: autodoc-model.rst
     - file: autodoc-loss.rst
-#  - caption: References
-#    chapters: 
-#    - file: md/bib.md
+  - caption: References
+    chapters: 
+    - file: md/bib.md
 # https://jupyterbook.org/en/stable/content/citations.html#id6
 ##  - caption: Indices and tables
 ##    chapters:

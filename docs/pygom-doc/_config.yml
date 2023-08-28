@@ -15,22 +15,50 @@ only_build_toc_files: true
 # this could avoid the issue of execution timing out
 # See https://jupyterbook.org/content/execute.html
 execute:
-  execute_notebooks: force
+  execute_notebooks: cache
 
 # Define the name of the latex output file for PDF builds
 latex:
   latex_documents:
-    targetname: book.tex
+    targetname: pygom-book.tex
 
 # Add a bibtex file so that we can create citations
 # use sphinx to specify style
+
+sphinx:
+  extra_extensions:
+  - 'sphinxcontrib.bibtex'
+
 sphinx:
   config:
     bibtex_reference_style: author_year
     # TODO change md to bibtex
-    bibtex_bibfiles: "ref.md"
+    bibtex_bibfiles: ref.bib
+
+#bibtex_bibfiles: 
+#  - ref.bib
+
+sphinx:  
   extra_extensions:
-    - 'sphinx.ext.autodoc'
+  #- 'sphinx.ext.doctest'
+  - 'sphinx.ext.autodoc'    
+  - 'sphinx.ext.napoleon'
+  - 'sphinx.ext.viewcode'
+  - 'sphinx.ext.autosummary'
+  config:
+    add_module_names: True 
+    autosummary_generate: True
+
+#sphinx:
+#  extra_extensions:
+#  - 'sphinx.ext.autosummary'
+#  config:
+#    autosummary_generate: True
+
+#sphinx:
+#  extra_extensions:
+#  - 'sphinx.ext.graphvizconfig'
+  
 
 # Information about where the book exists on the web
 repository:
