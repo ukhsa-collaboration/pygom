@@ -32,19 +32,19 @@ parts:
       sections:
       - file: notebooks/common_models/SIS.ipynb
       - file: notebooks/common_models/SIS_Periodic.ipynb
-      - file: notebooks/common_models/SIR.rst 
-      - file: notebooks/common_models/SIR_Birth_Death.rst
-      - file: notebooks/common_models/SEIR.rst 
-      - file: notebooks/common_models/SEIR_Multiple.rst
-      - file: notebooks/common_models/SEIR_Birth_Death.rst
-      - file: notebooks/common_models/SEIR_Birth_Death_Periodic.rst
-      - file: notebooks/common_models/Legrand_Ebola_SEIHFR.rst 
-      - file: notebooks/common_models/Lotka_Volterra.rst
-      - file: notebooks/common_models/Lotka_Volterra_4State.rst 
-      - file: notebooks/common_models/FitzHugh.rst
-      - file: notebooks/common_models/Lorenz.rst 
-      - file: notebooks/common_models/vanDelPol.rst
-      - file: notebooks/common_models/Robertson.rst
+      - file: notebooks/common_models/SIR.ipynb 
+      - file: notebooks/common_models/SIR_Birth_Death.ipynb 
+      - file: notebooks/common_models/SEIR.ipynb 
+      - file: notebooks/common_models/SEIR_Multiple.ipynb 
+      - file: notebooks/common_models/SEIR_Birth_Death.ipynb 
+      - file: notebooks/common_models/SEIR_Birth_Death_Periodic.ipynb 
+      - file: notebooks/common_models/Legrand_Ebola_SEIHFR.ipynb 
+      - file: notebooks/common_models/Lotka_Volterra.ipynb 
+      - file: notebooks/common_models/Lotka_Volterra_4State.ipynb  
+      - file: notebooks/common_models/FitzHugh.ipynb 
+      - file: notebooks/common_models/Lorenz.ipynb  
+      - file: notebooks/common_models/vanDelPol.ipynb 
+      - file: notebooks/common_models/Robertson.ipynb 
 #  - caption: Frequently asked questions
 #    chapters: 
 #    - file: md/faq.md
@@ -53,9 +53,9 @@ parts:
     - file: autodoc-model.rst
     - file: autodoc-loss.rst
 #  - caption: References
-# https://jupyterbook.org/en/stable/content/citations.html#id6
 #    chapters: 
-#    - file: md/ref.md
+#    - file: md/bib.md
+# https://jupyterbook.org/en/stable/content/citations.html#id6
 ##  - caption: Indices and tables
 ##    chapters:
 ##    - file: 
