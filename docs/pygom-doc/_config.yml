@@ -25,18 +25,16 @@ latex:
 # Add a bibtex file so that we can create citations
 # use sphinx to specify style
 
-sphinx:
-  extra_extensions:
-  - 'sphinxcontrib.bibtex'
+bibtex_bibfiles: 
+  - 'ref.bib'
 
-sphinx:
-  config:
-    bibtex_reference_style: author_year
-    # TODO change md to bibtex
-    bibtex_bibfiles: ref.bib
+#sphinx:
+#  extra_extensions:
+#  - 'sphinxcontrib.bibtex'
+#  config:
+#    bibtex_reference_style: super
 
-#bibtex_bibfiles: 
-#  - ref.bib
+
 
 sphinx:  
   extra_extensions:
@@ -48,6 +46,7 @@ sphinx:
   config:
     add_module_names: True 
     autosummary_generate: True
+    bibtex_reference_style: super
 
 #sphinx:
 #  extra_extensions:

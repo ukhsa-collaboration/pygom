@@ -48,10 +48,12 @@ parts:
 #  - caption: Frequently asked questions
 #    chapters: 
 #    - file: md/faq.md
-  - caption: Code documentation
-    chapters:
-    - file: autodoc-model.rst
-    - file: autodoc-loss.rst
+#  - caption: Code documentation
+#    chapters:
+#    - file: autodoc-model.rst
+#    - file: autodoc-loss.rst
+    # add utils
+    # add abc
   - caption: References
     chapters: 
     - file: md/bib.md
