@@ -1,9 +1,8 @@
 # Book settings
-# Learn more at https://jupyterbook.org/customize/config.html
+# see https://jupyterbook.org/customize/config.html
 
 title: PyGOM documentation
 author: Public Health England / UK Health Security Agency
-#TODO change logo
 logo: logo_pygom.jpg
 
 # build files in table of contents
@@ -24,16 +23,8 @@ latex:
 
 # Add a bibtex file so that we can create citations
 # use sphinx to specify style
-
 bibtex_bibfiles: 
   - 'ref.bib'
-
-#sphinx:
-#  extra_extensions:
-#  - 'sphinxcontrib.bibtex'
-#  config:
-#    bibtex_reference_style: super
-
 
 
 sphinx:  
@@ -41,6 +32,7 @@ sphinx:
   #- 'sphinx.ext.doctest'
   - 'sphinx.ext.autodoc'    
   - 'sphinx.ext.napoleon'
+#  - 'sphinx.ext.graphvizconfig'
   - 'sphinx.ext.viewcode'
   - 'sphinx.ext.autosummary'
   config:
@@ -48,11 +40,6 @@ sphinx:
     autosummary_generate: True
     bibtex_reference_style: super
 
-#sphinx:
-#  extra_extensions:
-#  - 'sphinx.ext.autosummary'
-#  config:
-#    autosummary_generate: True
 
 #sphinx:
 #  extra_extensions:

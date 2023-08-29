@@ -1,4 +1,4 @@
-Module: approximate_bayesian_computation
+approximate_bayesian_computation
 =============
 
 .. automodule:: pygom.approximate_bayesian_computation

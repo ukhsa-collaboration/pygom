@@ -1,11 +1,9 @@
-Module: model
+utilR
 =============
 
-.. automodule:: pygom.model
+.. automodule:: pygom.utilR
     :members:
 
 .. autosummary::
    :toctree: _autosummary
    :recursive:
-
-   
