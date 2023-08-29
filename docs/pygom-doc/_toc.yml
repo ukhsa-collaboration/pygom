@@ -50,12 +50,10 @@ parts:
 #    - file: md/faq.md
   - caption: Code documentation
     chapters:
-      - file: module-documentation.md
-      sections:
-      - file: autodoc-model.rst
-      - file: autodoc-loss.rst
-      - file: autodoc-abc.rst
-      - file: autodoc-utilR.rst
+    - file: rst/autodoc-model.rst 
+    - file: rst/autodoc-loss.rst
+    - file: rst/autodoc-abc.rst
+    - file: rst/autodoc-utilR.rst
     # add utils
     # add abc
   - caption: References
