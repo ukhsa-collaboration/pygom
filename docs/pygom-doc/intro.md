@@ -15,10 +15,3 @@ A manuscript containing a shortened motivation and use is hosted on [arxXiv](htt
 
 ```{tableofcontents}
 ```
-
-# Code Documentation and FAQ
-#TODO from index.rst
-# References
-#TODO
-# Indices and tables
-#TODO
