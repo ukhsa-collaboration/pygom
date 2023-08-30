@@ -1,4 +1,4 @@
-# Pre-defined Example common_models {#common_models}
+# Pre-defined examples - common epi models 
 
 We have defined a set of models {mod}`common_models`, most of them commonly used in epidemiology. They are there
 as examples and also to save time for users. Most of them are of the
