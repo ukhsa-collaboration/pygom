@@ -1,4 +1,5 @@
-# loss
+=============
+loss
 =============
 
 .. automodule:: pygom.loss

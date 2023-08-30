@@ -1,4 +1,5 @@
-# model
+=============
+model
 =============
 
 .. automodule:: pygom.model
