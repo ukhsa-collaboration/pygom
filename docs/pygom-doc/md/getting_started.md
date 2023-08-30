@@ -71,3 +71,15 @@ in the command line:
     python setup.py test
 
 which can be performed prior to installing the package if desired.
+
+## Using this documentation
+To use a notebook as a starting point, you can download any of the source code within this jupyterbook by using the download icon that is located at the top of each page of the documentation.
+![download file](../images/download.png)
+
+## Contributing to PyGOM
+
+Please see the (contribution guidance)[../../CONTRIBUTING.md] which outlines:
+- required information for raising issues;
+- the process by which code contributions should be incorporated;
+- what is required by additions to PyGOM, including how to add to the jupyterbook;
+- expectations for acknowledgements from contributions.
