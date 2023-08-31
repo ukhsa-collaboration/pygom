@@ -26,25 +26,7 @@ The location of the package is current on GitHub and can be obtained from:
 
 https://github.com/PublicHealthEngland/pygom.git
 
-#TODO required?
-The package is currently as follows:
-
-    pygom/
-        bin/
-        doc/
-        pygom/
-            loss/
-                tests/
-            model/
-                tests/
-            sbml_translate/
-            utilR/
-        LICENSE.txt
-        README.rst
-        requirements.txt
-        setup.py
-
-with files in each of the three main folders not shown. You can install
+You can install
 the package via command line:
 
     python setup.py install
