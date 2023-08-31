@@ -15,15 +15,12 @@ dimension. Currently, this package allows the user to find the algebraic
 expression of the ODE, Jacobian, gradient and forward sensitivity of the
 ODE. A numerical output is given when all the state and parameter values
 are provided. Note that the only important class is
-`DeterministicOde`{.interpreted-text role="file"} where all the
+{class}`.DeterministicOde` where all the
 functionality described previously are exposed.
 
-#TODO do we want this updating or referencing issue board?
-The current plan is to extend the functionality to include
+Plans for further development can be found, and proposed, on the repository's [issue board](https://github.com/ukhsa-collaboration/pygom/issues).
 
--   Solving the ode analytically when it is linear
--   Analysis of the system via eigenvalues during the integration
--   Detection of DAE
+#TODO do we want this updating or referencing issue board?
 
 ## Obtaining the package 
 
