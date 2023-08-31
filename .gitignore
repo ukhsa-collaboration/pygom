@@ -7,6 +7,7 @@ cover/*
 __pycache__
 *.egg-info
 *.egg
+.vscode/
 
 # For jupyter / ipython
 */.ipynb_checkpoints
@@ -20,3 +21,4 @@ __pycache__
 /docs/pygom-doc/_build/*
 /doc/_build/
 /doc/source/savefig/*
+/docs/pygom-doc/_autosummary/
