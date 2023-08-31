@@ -14,12 +14,14 @@ Full instructions on reviewing work can be found at Confluence on the [ONS QA of
 - [ ] It runs
   - Can you get the code run to completion in a new instance and from top to bottom in the case of notebooks, or in a new R session?
   - Can original analysis results be accurately & easily reproduced from the code?
+- [] tests pass
+- [] CI is successful
 This is a basic form of Smoke Testing
 - [ ]  Data and security
   - Use nbstripout to prevent Jupyter notebook output being committed to git repositories
   - Files containing individual user's secret files and config files are not in repo, however examples of these files and setup instructions are included in the repo.
   - Secrets include s3 bucket names, login credentials, and organisation information. These can be handled using secrets.yml
-  - If you are unsure whether an item should be secret please raise with qa.datascience@ukhsa.gov.uk
+  - If you are unsure whether an item should be secret please discuss with repo owner
   - The changes do not include unreleased policy or official information.
 - [ ] Sensible
   - Does the code execute the task accurately?  This is a subjective challenge.
