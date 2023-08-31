@@ -20,14 +20,11 @@ functionality described previously are exposed.
 
 Plans for further development can be found, and proposed, on the repository's [issue board](https://github.com/ukhsa-collaboration/pygom/issues).
 
-#TODO do we want this updating or referencing issue board?
-
 ## Obtaining the package 
 
-The location of the package is current on GitHub and can be pulled via
-https from:
+The location of the package is current on GitHub and can be obtained from:
 
-    https://github.com/PublicHealthEngland/pygom.git
+https://github.com/PublicHealthEngland/pygom.git
 
 #TODO required?
 The package is currently as follows:
