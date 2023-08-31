@@ -2,7 +2,7 @@
 # see https://jupyterbook.org/customize/config.html
 
 title: PyGOM documentation
-author: Public Health England / UK Health Security Agency
+author: UK Health Security Agency (previously Public Health England)
 logo: images/logo_pygom.jpg
 
 # build files in table of contents
@@ -14,7 +14,7 @@ only_build_toc_files: true
 # this could avoid the issue of execution timing out
 # See https://jupyterbook.org/content/execute.html
 execute:
-  execute_notebooks: cache
+  execute_notebooks: force
 
 # Define the name of the latex output file for PDF builds
 latex:
@@ -24,9 +24,9 @@ latex:
 # Add a bibtex file so that we can create citations
 # use sphinx to specify style
 bibtex_bibfiles: 
-  - 'ref.bib'
+  - 'bib/ref.bib'
 
-
+# additional sphinx libraries
 sphinx:  
   extra_extensions:
   #- 'sphinx.ext.doctest'
@@ -40,12 +40,6 @@ sphinx:
     autosummary_generate: True
     bibtex_reference_style: super
 
-
-#sphinx:
-#  extra_extensions:
-#  - 'sphinx.ext.graphvizconfig'
-  
-
 # Information about where the book exists on the web
 repository:
   url: https://github.com/ukhsa-collaboration/pygom  # Online location of your book
@@ -57,3 +51,5 @@ repository:
 html:
   use_issues_button: true
   use_repository_button: true
+
+# add a fail-on-warning: true
