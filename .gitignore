@@ -17,6 +17,6 @@ __pycache__
 .settings
 
 # For built documentation
-/docs/pygom-doc/_build
-/doc/_build
+/docs/pygom-doc/_build/*
+/doc/_build/
 /doc/source/savefig/*
