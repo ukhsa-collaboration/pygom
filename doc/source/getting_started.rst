@@ -10,8 +10,8 @@ What this package does
 ======================
 
 The purpose of this package is to allow the end user to easily define a set of
-ordinary differential equations (ode) and obtain information about the ode by
-simply invoking the the appropriate methods.  Here, we define the set of ode's
+ordinary differential equations (ODE) and obtain information about the ODE by
+invoking the the appropriate methods.  Here, we define the set of ODE's
 as
 
 .. math::
@@ -19,11 +19,11 @@ as
 
 where :math:`\mathbf{x} = \left(x_{1},x_{2},\ldots,x_{n}\right)` is the state
 vector with :math:`d` state and :math:`\boldsymbol{\theta}` the parameters of
-:math:`p` dimension.  Currently, this package allows the end user to find the
-algebraic expression of the ode, Jacobian, gradient and forward sensitivity of
-the ode.  A numerical output is given when all the state and parameter values
-are provided.   Note that the only important class is :file:`DeterministicOde`
-all the functionality described previously are exposed.
+:math:`p` dimension.  Currently, this package allows the user to find the
+algebraic expression of the ODE, Jacobian, gradient and forward sensitivity of
+the ODE.  A numerical output is given when all the state and parameter values
+are provided.   Note that the only important class is :file:`DeterministicOde` 
+where all the functionality described previously are exposed.
 
 The current plan is to extend the functionality to include
 
@@ -61,7 +61,7 @@ The package is currently as follows::
       requirements.txt
       setup.py
 
-with files in each of the three main folder not shown.  You can install the
+with files in each of the three main folders not shown.  You can install the
 package via command line::
 
     python setup.py install

@@ -1,0 +1,66 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: md/intro
+parts:
+  - caption: User documentation
+    chapters:
+    - file: md/getting_started
+    - file: notebooks/sir
+    - file: notebooks/transition
+    - file: notebooks/stochastic
+    - file: md/unrollOde.
+      sections: 
+      - file: notebooks/unroll/unrollSimple
+      - file: notebooks/unroll/unrollBD
+      - file: notebooks/unroll/unrollHard
+    - file: notebooks/epi
+    - file: notebooks/epijson
+    - file: md/parameter_fitting
+      sections:
+      - file: notebooks/paramfit/bvpSimple
+      - file: notebooks/paramfit/gradient
+      - file: notebooks/paramfit/fh
+      - file: notebooks/paramfit/estimate1
+      - file: notebooks/paramfit/estimate2
+      - file: notebooks/paramfit/initialGuess
+      - file: notebooks/paramfit/profile
+  - caption: Common biological compartmental models
+    chapters:
+    - file: md/common_models
+      sections:
+      - file: notebooks/common_models/SIS
+      - file: notebooks/common_models/SIS_Periodic
+      - file: notebooks/common_models/SIR 
+      - file: notebooks/common_models/SIR_Birth_Death 
+      - file: notebooks/common_models/SEIR 
+      - file: notebooks/common_models/SEIR_Multiple 
+      - file: notebooks/common_models/SEIR_Birth_Death
+      - file: notebooks/common_models/SEIR_Birth_Death_Periodic 
+      - file: notebooks/common_models/Legrand_Ebola_SEIHFR 
+      - file: notebooks/common_models/Lotka_Volterra 
+      - file: notebooks/common_models/Lotka_Volterra_4State  
+      - file: notebooks/common_models/FitzHugh 
+      - file: notebooks/common_models/Lorenz  
+      - file: notebooks/common_models/vanDelPol
+      - file: notebooks/common_models/Robertson
+  - caption: Frequently asked questions
+    chapters: 
+    - file: md/faq
+  - caption: Code documentation
+    chapters:
+    - file: rst/autodoc-model 
+    - file: rst/autodoc-loss
+    - file: rst/autodoc-abc
+    - file: rst/autodoc-utilR
+  - caption: References
+    chapters: 
+    - file: md/bib
+# https://jupyterbook.org/en/stable/content/citations.html#id6
+##  - caption: Indices and tables
+##    chapters:
+##    - file: 
+##  - caption: Glossary
+##    chapters:
+##    - file: 

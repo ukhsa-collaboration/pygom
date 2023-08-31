@@ -7,5 +7,7 @@ python-dateutil>=2.0.0
 scipy>=0.10.0
 sympy>=1.0.0
 numpydoc>=0.6.0
-sphinx>=1.4.1sphinx_rtd_theme>=0.2.0
-ipython>=7.1.1
+#sphinx>=1.4.1
+#sphinx_rtd_theme>=0.2.0
+#ipython>=7.1.1
+jupyter-book
