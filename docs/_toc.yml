@@ -6,59 +6,57 @@ root: md/intro
 parts:
   - caption: User documentation
     chapters:
-    - file: md/getting_started.md
-    - file: notebooks/sir.ipynb
-    - file: notebooks/transition.ipynb
-    - file: notebooks/stochastic.ipynb
-    - file: md/unrollOde.md
+    - file: md/getting_started
+    - file: notebooks/sir
+    - file: notebooks/transition
+    - file: notebooks/stochastic
+    - file: md/unrollOde.
       sections: 
-      - file: notebooks/unroll/unrollSimple.ipynb
-      - file: notebooks/unroll/unrollBD.ipynb 
-      - file: notebooks/unroll/unrollHard.ipynb
-    - file: notebooks/epi.ipynb
-    - file: notebooks/epijson.ipynb
-    - file: md/parameter_fitting.md
+      - file: notebooks/unroll/unrollSimple
+      - file: notebooks/unroll/unrollBD
+      - file: notebooks/unroll/unrollHard
+    - file: notebooks/epi
+    - file: notebooks/epijson
+    - file: md/parameter_fitting
       sections:
-      - file: notebooks/paramfit/bvpSimple.ipynb
-      - file: notebooks/paramfit/gradient.ipynb
-      - file: notebooks/paramfit/fh.ipynb
-      - file: notebooks/paramfit/estimate1.ipynb
-      - file: notebooks/paramfit/estimate2.ipynb
-      - file: notebooks/paramfit/initialGuess.ipynb
-      - file: notebooks/paramfit/profile.ipynb
+      - file: notebooks/paramfit/bvpSimple
+      - file: notebooks/paramfit/gradient
+      - file: notebooks/paramfit/fh
+      - file: notebooks/paramfit/estimate1
+      - file: notebooks/paramfit/estimate2
+      - file: notebooks/paramfit/initialGuess
+      - file: notebooks/paramfit/profile
   - caption: Common biological compartmental models
     chapters:
-    - file: md/common_models.md
+    - file: md/common_models
       sections:
-      - file: notebooks/common_models/SIS.ipynb
-      - file: notebooks/common_models/SIS_Periodic.ipynb
-      - file: notebooks/common_models/SIR.ipynb 
-      - file: notebooks/common_models/SIR_Birth_Death.ipynb 
-      - file: notebooks/common_models/SEIR.ipynb 
-      - file: notebooks/common_models/SEIR_Multiple.ipynb 
-      - file: notebooks/common_models/SEIR_Birth_Death.ipynb 
-      - file: notebooks/common_models/SEIR_Birth_Death_Periodic.ipynb 
-      - file: notebooks/common_models/Legrand_Ebola_SEIHFR.ipynb 
-      - file: notebooks/common_models/Lotka_Volterra.ipynb 
-      - file: notebooks/common_models/Lotka_Volterra_4State.ipynb  
-      - file: notebooks/common_models/FitzHugh.ipynb 
-      - file: notebooks/common_models/Lorenz.ipynb  
-      - file: notebooks/common_models/vanDelPol.ipynb 
-      - file: notebooks/common_models/Robertson.ipynb 
-#  - caption: Frequently asked questions
-#    chapters: 
-#    - file: md/faq.md
+      - file: notebooks/common_models/SIS
+      - file: notebooks/common_models/SIS_Periodic
+      - file: notebooks/common_models/SIR 
+      - file: notebooks/common_models/SIR_Birth_Death 
+      - file: notebooks/common_models/SEIR 
+      - file: notebooks/common_models/SEIR_Multiple 
+      - file: notebooks/common_models/SEIR_Birth_Death
+      - file: notebooks/common_models/SEIR_Birth_Death_Periodic 
+      - file: notebooks/common_models/Legrand_Ebola_SEIHFR 
+      - file: notebooks/common_models/Lotka_Volterra 
+      - file: notebooks/common_models/Lotka_Volterra_4State  
+      - file: notebooks/common_models/FitzHugh 
+      - file: notebooks/common_models/Lorenz  
+      - file: notebooks/common_models/vanDelPol
+      - file: notebooks/common_models/Robertson
+  - caption: Frequently asked questions
+    chapters: 
+    - file: md/faq
   - caption: Code documentation
     chapters:
-    - file: rst/autodoc-model.rst 
-    - file: rst/autodoc-loss.rst
-    - file: rst/autodoc-abc.rst
-    - file: rst/autodoc-utilR.rst
-    # add utils
-    # add abc
+    - file: rst/autodoc-model 
+    - file: rst/autodoc-loss
+    - file: rst/autodoc-abc
+    - file: rst/autodoc-utilR
   - caption: References
     chapters: 
-    - file: md/bib.md
+    - file: md/bib
 # https://jupyterbook.org/en/stable/content/citations.html#id6
 ##  - caption: Indices and tables
 ##    chapters:
