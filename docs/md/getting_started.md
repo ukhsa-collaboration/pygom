@@ -20,14 +20,22 @@ functionality described previously are exposed.
 
 Plans for further development can be found, and proposed, on the repository's [issue board](https://github.com/ukhsa-collaboration/pygom/issues).
 
-## Obtaining the package 
+## Installing the package 
 
-The location of the package is current on GitHub and can be obtained from:
+PyGOM can be downloaded from the GitHub repository.
 
 https://github.com/PublicHealthEngland/pygom.git
 
-You can install
-the package via command line:
+You will need to create an environment, for example using conda. 
+
+    conda create -f requirements.txt
+
+If you are working on a Windows machine you will also need to install:
+- (Graphviz)[https://graphviz.org/]
+- (Visual C++)[https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0]
+- (Visual C++ Build Tools)[https://go.microsoft.com/fwlink/?LinkId=691126]
+
+You can install the package via command line:
 
     python setup.py install
 
@@ -35,21 +43,41 @@ or locally on a user level:
 
     python setup.py install --user
 
-Please note that there are current redundant file are kept for
-development purposes for the time being.
+```{note}
+The latest fully reviewed version of PyGOM will be on master branch. We recommend that users install the version from this branch.
+```
+
+Alternatively the latest release can be installed from (PyPI)[https://pypi.org/project/pygom/]:
+
+    pip install pygom
+
+Please note that there are some redundant files that are being kept for
+development purposes.
 
 ## Testing the package
 
-Testing can be performed prior or after the installation. Some standard
-test files can be found in their respective folder and they can be run
-in the command line:
+Test files can be run from the command line prior to or after installation.
 
     python setup.py test
 
-which can be performed prior to installing the package if desired.
+## Building the documentation locally
+
+Install additional packages:
+
+    pip install -r docs/requirements.txt
+
+Build the documentation:
+
+    jupyter-book build docs/
+
+The html files will be saved in the local copy of your repository under:
+
+    pygom/docs/_build/html
+
 
 ## Using this documentation
-To use a notebook as a starting point, you can download any of the source code within this jupyterbook by using the download icon that is located at the top of each page of the documentation.
+This documentation is built using (JupyterBook)[https://jupyterbook.org/en/stable/intro.html]. To use the contents of a notebook as a starting point for trialing or developing your own models and analyses, you can download any of the examples within this documentation by using the download icon on the desired page (located at the top right).
+
 ![download file](../images/download.png)
 
 ## Contributing to PyGOM
@@ -57,5 +85,5 @@ To use a notebook as a starting point, you can download any of the source code w
 Please see the (contribution guidance)[../../CONTRIBUTING.md] which outlines:
 - required information for raising issues;
 - the process by which code contributions should be incorporated;
-- what is required by additions to PyGOM, including how to add to the jupyterbook;
-- expectations for acknowledgements from contributions.
+- what is required by pull requests to PyGOM, including how to add to the documentation;
+- how we will acknowledge your contributions.
