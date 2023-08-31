@@ -8,8 +8,10 @@ on:
   push:
     branches:
     - install-fix-docs
-    paths: 
-    - docs/**
+# we now want this to build on all pushes to check that edits to functions/classes 
+# do not break the documentation
+    #    paths: 
+#    - docs/**
 
 jobs:
     build-book:
