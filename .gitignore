@@ -22,3 +22,4 @@ __pycache__
 /doc/_build/
 /doc/source/savefig/*
 /docs/pygom-doc/_autosummary/
+*/_build/*
