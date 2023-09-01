@@ -7,11 +7,7 @@ name: build-book
 on:
   push:
     branches:
-    - install-fix-docs
-# we now want this to build on all pushes to check that edits to functions/classes 
-# do not break the documentation
-    #    paths: 
-#    - docs/**
+    - master
 
 jobs:
     build-book:
