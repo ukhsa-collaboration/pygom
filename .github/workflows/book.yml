@@ -8,9 +8,7 @@ name: build-book
 on:
   push:
     branches:
-    - install-fix-docs
-    paths: 
-    - docs/**
+    - master
 
 jobs:
     build-book:
