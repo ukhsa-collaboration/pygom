@@ -1,5 +1,7 @@
 # Contributor guidance 
 
+By contributing to PyGOM, you acknowledge that you are assigning copyright to us so we can continue to maintain package. PyGOM is licensed under (GPL2)[https://raw.githubusercontent.com/PublicHealthEngland/pygom/master/LICENSE.txt].
+
 ## suggested information for raising issues
 - is it possible to produce a template for a new issue?
 
@@ -22,6 +24,11 @@
 - code reviewer should use the template to work through requirements (e.g. confirming tests have been added, documentation is appropriate, added to contributor file)
 
 ## adding to the documentation how to add to the jupyterbook;
+The documentation directory (docs)[docs/] contains folders for each filetype used to build the documentation. Folders that exist under these are associated with sections (defined by [docs/_toc.yml]()). The basic steps for adding pages to the Jupyter Book are here, and for more detailed configuration see comments in the config file)[docs/_config.yml], Jupyter Book documentation, or Sphinx documentation.
+- save your ipynb, md, or rst file to the appropriate folder
+- update the (table of contents file)[docs/_toc.yml] so that the file is incorporated 
+- from the root of the repository run `jupyter-book build docs/' to build the html files
+- check for build errors or warnings, and view your additions in `docs/_build/html`
 
 ## acknowledgements from contributors
 - what counts as a contribution?
@@ -29,4 +36,4 @@
 - how are contributors acknowledged?
     - contributor md file?
     - who adds the name to the contributor? suggest code reviewer on approval of MR/PR
-- provide citable repo link
+- #TODO provide citable repo link?

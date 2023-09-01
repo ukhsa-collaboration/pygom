@@ -3,7 +3,6 @@ name: build-book
 # only run when specific files change
 # only run on install-fix-docs branch 
 # TODO change this to dev/main branch once integrated
-# TODO edit filepath once filepath levels are corrected
 
 on:
   push:
@@ -14,9 +13,9 @@ jobs:
     build-book:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
 
-            - uses: actions/cache@v1
+            - uses: actions/cache@v3
               with:
                 path: ~/.cache/pip
                 key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
@@ -31,7 +30,7 @@ jobs:
       
             # install python
             - name: Set up Python 3.8
-              uses: actions/setup-python@v2
+              uses: actions/setup-python@v4
               with:
                 python-version: 3.8
 
@@ -40,6 +39,7 @@ jobs:
               run: |
                 python -m pip install --upgrade pip
                 pip install -r requirements.txt
+                pip install -r docs/requirements.txt
 
             # set up pygom
             - name: Build and install pygom
@@ -51,12 +51,12 @@ jobs:
             # TODO check which flags are needed, -W
             - name: Build the book
               run: |
-                jupyter-book build --all -v docs/pygom-doc
+                jupyter-book build --all -v docs/
 
             # deploy book to github-pages
             - name: GitHub Pages 
               uses: peaceiris/actions-gh-pages@v3.6.1
               with:
                 github_token: ${{ secrets.GITHUB_TOKEN }}
-                publish_dir: docs/pygom-doc/_build/html
+                publish_dir: docs/_build/html
 
