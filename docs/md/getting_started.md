@@ -28,7 +28,11 @@ https://github.com/PublicHealthEngland/pygom.git
 
 You will need to create an environment, for example using conda. 
 
-    conda create -f requirements.txt
+    conda env create -f conda-env.yml
+
+Alternatively, add dependencies to your own environment.
+
+    pip install -r requirements.txt
 
 If you are working on a Windows machine you will also need to install:
 - [Graphviz](https://graphviz.org/)
