@@ -10,7 +10,7 @@ parts:
     - file: notebooks/sir
     - file: notebooks/transition
     - file: notebooks/stochastic
-    - file: md/unrollOde.
+    - file: md/unrollOde
       sections: 
       - file: notebooks/unroll/unrollSimple
       - file: notebooks/unroll/unrollBD

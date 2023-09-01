@@ -10,4 +10,6 @@ dependencies:
   - sympy
   - graphviz
   - cython
-#  - pip: []
+  - pip
+  -pip:
+    - -r requirements.txt
