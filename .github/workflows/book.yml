@@ -1,0 +1,62 @@
+name: build-book
+
+# only run when specific files change
+# only run on install-fix-docs branch 
+# TODO change this to dev/main branch once integrated
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+    build-book:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - uses: actions/cache@v3
+              with:
+                path: ~/.cache/pip
+                key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+                restore-keys: |
+                  ${{ runner.os }}-pip-
+                    steps:
+            
+            - uses: actions/checkout@v3
+            
+            - name: Setup Graphviz
+              uses: ts-graphviz/setup-graphviz@v1
+      
+            # install python
+            - name: Set up Python 3.8
+              uses: actions/setup-python@v4
+              with:
+                python-version: 3.8
+
+            # install dependencies
+            - name: Install dependencies
+              run: |
+                python -m pip install --upgrade pip
+                pip install -r requirements.txt
+                pip install -r docs/requirements.txt
+
+            # set up pygom
+            - name: Build and install pygom
+              run: |
+                  python setup.py build
+                  python setup.py install
+
+            # build the book
+            # TODO check which flags are needed, -W
+            - name: Build the book
+              run: |
+                jupyter-book build --all -v docs/
+
+            # deploy book to github-pages
+            - name: GitHub Pages 
+              uses: peaceiris/actions-gh-pages@v3.6.1
+              with:
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+                publish_dir: docs/_build/html
+

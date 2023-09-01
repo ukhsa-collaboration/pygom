@@ -13,8 +13,8 @@ import os
 import warnings
 
 #slight hack for graphvis on windows to ensure conda path is correct
-if sys.platform == 'win32':
-    os.environ['PATH'] += os.pathsep + os.environ['CONDA_PREFIX'] + r'\Library\bin\graphviz'
+#if sys.platform == 'win32':
+#    os.environ['PATH'] += os.pathsep + os.environ['CONDA_PREFIX'] + r'\Library\bin\graphviz'
 
 import sphinx
 if sphinx.__version__ < '1.4.1':
@@ -45,7 +45,8 @@ extensions = [
     'matplotlib.sphinxext.plot_directive',
     'numpydoc',
     'IPython.sphinxext.ipython_console_highlighting',
-    'IPython.sphinxext.ipython_directive'
+    'IPython.sphinxext.ipython_directive',
+    'nbsphinx'
     ]
 
 # the mapping for code in other packages
@@ -133,9 +134,11 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
     import sphinx_rtd_theme
     html_theme = 'sphinx_rtd_theme'
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+    exclude_patterns = ['doc_to_sort.*']
 else:
     # RTD will time out if we try to build the whole of the documentation so
     # ignore some of the longer bits and perhaps add them later
+    # // TODO: speed up runtime for longer examples for readthedocs
     exclude_patterns = ['common_models/*.rst',
 #                         'bvpSimple.rst',
                          'epi.rst',
