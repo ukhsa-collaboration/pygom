@@ -31,9 +31,9 @@ You will need to create an environment, for example using conda.
     conda create -f requirements.txt
 
 If you are working on a Windows machine you will also need to install:
-- (Graphviz)[https://graphviz.org/]
-- (Visual C++)[https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0]
-- (Visual C++ Build Tools)[https://go.microsoft.com/fwlink/?LinkId=691126]
+- [Graphviz](https://graphviz.org/)
+- [Visual C++](https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0)
+- [Visual C++ Build Tools](https://go.microsoft.com/fwlink/?LinkId=691126)
 
 You can install the package via command line:
 
@@ -47,7 +47,7 @@ or locally on a user level:
 The latest fully reviewed version of PyGOM will be on master branch. We recommend that users install the version from this branch.
 ```
 
-Alternatively the latest release can be installed from (PyPI)[https://pypi.org/project/pygom/]:
+Alternatively the latest release can be installed from [PyPI](https://pypi.org/project/pygom/):
 
     pip install pygom
 
@@ -76,13 +76,13 @@ The html files will be saved in the local copy of your repository under:
 
 
 ## Using this documentation
-This documentation is built using (JupyterBook)[https://jupyterbook.org/en/stable/intro.html]. To use the contents of a notebook as a starting point for trialing or developing your own models and analyses, you can download any of the examples within this documentation by using the download icon on the desired page (located at the top right).
+This documentation is built using [JupyterBook](https://jupyterbook.org/en/stable/intro.html). To use the contents of a notebook as a starting point for trialing or developing your own models and analyses, you can download any of the examples within this documentation by using the download icon on the desired page (located at the top right).
 
 ![download file](../images/download.png)
 
 ## Contributing to PyGOM
 
-Please see the (contribution guidance)[../../CONTRIBUTING.md] which outlines:
+Please see the [contribution guidance](../../CONTRIBUTING.md) which outlines:
 - required information for raising issues;
 - the process by which code contributions should be incorporated;
 - what is required by pull requests to PyGOM, including how to add to the documentation;
