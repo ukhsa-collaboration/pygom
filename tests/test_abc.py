@@ -63,8 +63,10 @@ class TestABC(TestCase):
         y = self.solution[1::, 1:3]
         parameters = [pgabc.Parameter('beta', 'unif', 0, 3, logscale=False), 
                       pgabc.Parameter('gamma', 'unif', 0, 3, logscale=False)]
-        sir_obj = pgabc.create_loss("NormalLoss", parameters, self.ode, self.x0, self.t[0],
-                                  self.t[1::], y, ['I', 'R'])
+
+        sir_obj = pgabc.create_loss(NormalLoss, parameters, self.ode, self.x0, self.t[0],
+                                  self.t[1::], y, ['I', 'R'], sigma=1.0)
+
         sir_abc = pgabc.ABC(sir_obj, parameters)
         sir_abc.get_posterior_sample(N=100, tol=np.inf, G=10, q=0.5)
         sir_abc.continue_posterior_sample(N=100, tol=sir_abc.next_tol, G=10, q=0.5)

@@ -1,12 +1,15 @@
-name: test-docs
+name: pygom
 
 on:
   push:
-    paths:
-      - doc/**
+    branches:
+      - master
+      - dev
+      - feature/*
+      - bugfix/*
   pull_request:
-    paths:
-      - doc/**
+    branches:
+      - master
 
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
@@ -16,14 +19,26 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
 
-    steps:  
+    steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
 
+      - uses: actions/cache@v1
+        if: startsWith(runner.os, 'Linux')
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - uses: actions/cache@v1
+        if: startsWith(runner.os, 'macOS')
+        with:
+          path: ~/Library/Caches/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
       - uses: actions/cache@v1
         if: startsWith(runner.os, 'Windows')
         with:
@@ -55,7 +70,7 @@ jobs:
           Invoke-VSDevEnvironment
           Get-Command rc.exe | Format-Table -AutoSize
           echo "::add-path::$(Get-Command rc.exe | Split-Path)"
-
+          
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -65,14 +80,10 @@ jobs:
         run: |
           python setup.py build
           python setup.py install
-
-      - name: Install documentation dependencies
+      - name: Fix matplotlib backend for MacOS
+        if: startsWith(runner.os, 'macOS')
         run: |
-          pip install -r doc/requirements.txt
-          pip install make
-      
-      - name: Build the book
-        run: |
-          cd doc/doc/pygom-doc
-          jupyter-book build .
-      
+          mkdir ~/.matplotlib
+          echo "backend: TkAgg" >> ~/.matplotlib/matplotlibrc
+      - name: Test and coverage
+        run: python setup.py test

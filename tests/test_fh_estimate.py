@@ -28,7 +28,7 @@ class TestFHEstimate(TestCase):
         g = self.obj.gradient()
         assert np.linalg.norm(g) > 0
 
-        EPSILON = np.sqrt(np.finfo(np.float).eps)
+        EPSILON = np.sqrt(np.finfo(float).eps)
 
         self.box_bounds = [(EPSILON, 5.0)]*len(self.theta)
 

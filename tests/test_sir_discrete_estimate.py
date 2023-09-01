@@ -38,7 +38,7 @@ class TestSIRDiscreteEstimate(TestCase):
         self.theta = np.array([0.4, 0.3])
 
         # constraints
-        EPSILON = np.sqrt(np.finfo(np.float).eps)
+        EPSILON = np.sqrt(np.finfo(float).eps)
 
         self.box_bounds = [(EPSILON, 2), (EPSILON, 2)]
         self.target = np.array([0.5, 1.0/3.0])

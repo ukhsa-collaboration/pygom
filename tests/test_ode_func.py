@@ -11,7 +11,7 @@ from pygom.model import common_models
 class TestJacobians(TestCase):
 
     def setUp(self):
-        self.h = np.sqrt(np.finfo(np.float).eps)
+        self.h = np.sqrt(np.finfo(float).eps)
         # initial time
         self.t0 = 0
         # the initial state, normalized to zero one
