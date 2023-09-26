@@ -2314,15 +2314,53 @@ class DeterministicOde(BaseOdeModel):
        IS = R + dot(H, dot(P, H.transpose()))
       
        K = dot(dot(P,H.transpose()), inv(IS) )
-       
+      # print("Test")
+       TEST = False
+       if TEST:
+           Rtest = np.identity(m_states)*1
+
+          
+           Ptest = dot(F, dot(P, F.transpose())) + Q
+          
+           IMtest = dot(H, X)
+           
+           IStest = Rtest + dot(H, dot(Ptest, H.transpose()))
+          
+           Ktest = dot(dot(Ptest,H.transpose()), inv(IStest) )
+           
+           print("Test1",dot(Ktest, (Y-IMtest)))
+           Rtest = np.identity(m_states)*1000
+
+          
+           Ptest = dot(F, dot(P, F.transpose())) + Q
+          
+           IMtest = dot(H, X)
+           
+           IStest = Rtest + dot(H, dot(Ptest, H.transpose()))
+          
+           Ktest = dot(dot(Ptest,H.transpose()), inv(IStest) )
+           print("Test2",dot(Ktest, (Y-IMtest)))
+           
+          
        X = X + dot(K, (Y-IM))
+      
+         
+       
+       
        if not beta_state is None:
           X[beta_state,0] =max(X[beta_state,0],0)
        Xlist=[]
        if (Bounds is not None):
-               for i in range(n_states):
-                   if Bounds[i] is not None:
-                      Xlist.append(min(max(X[i,0],Bounds[i][0]),Bounds[i][1]))
+             for i in range(n_states):
+                   if Bounds[i][0] is not None or Bounds[i][1] is not None:
+                       if Bounds[i][1] is None:
+                          Xlist.append(max(X[i,0],Bounds[i][0]))
+                         
+                       elif Bounds[i][0] is None:
+                          Xlist.append(min(X[i,0],Bounds[i][1]))
+                       else:
+                          Xlist.append(max(min(X[i,0],Bounds[i][1]),Bounds[i][0]))
+                      
                    else:
                        Xlist.append(X[i,0])
        else:
