@@ -26,6 +26,7 @@ parts:
       - file: notebooks/paramfit/estimate2
       - file: notebooks/paramfit/initialGuess
       - file: notebooks/paramfit/profile
+      - file: notebooks/paramfit/KalmanFilterDocumentation
   - caption: Common biological compartmental models
     chapters:
     - file: md/common_models
