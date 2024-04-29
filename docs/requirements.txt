@@ -11,5 +11,5 @@ sphinx>=1.4.1
 sphinx_rtd_theme>=0.2.0
 cython>=0.29
 nbsphinx
-jupyter-book
+jupyter-book>=0.15.0
 docutils==0.17.1
