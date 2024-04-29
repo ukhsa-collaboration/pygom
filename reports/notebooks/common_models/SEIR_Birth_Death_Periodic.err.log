@@ -1,0 +1,51 @@
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/nbclient/client.py", line 1305, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/asyncio/base_events.py", line 616, in run_until_complete
+    return future.result()
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/nbclient/client.py", line 705, in async_execute
+    await self.async_execute_cell(
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/nbclient/client.py", line 1058, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/nbclient/client.py", line 914, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+from pygom import common_models
+
+import numpy
+
+import matplotlib.pyplot as plt
+
+ode = common_models.SEIR_Birth_Death_Periodic({'beta_0':1800, 'beta_1':0.2, 'gamma':100, 'alpha':35.84, 'mu':0.02})
+
+t = numpy.linspace(0, 50, 1001)
+
+ode.initial_values = (x0, t[0])
+
+x0 = [0.0658, 0.0007, 0.0002, 0.0]
+
+solution = ode.integrate(t[1::])
+
+ode.plot()
+
+plt.close()
+
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[1], line 11[0m
+[1;32m      7[0m ode [38;5;241m=[39m common_models[38;5;241m.[39mSEIR_Birth_Death_Periodic({[38;5;124m'[39m[38;5;124mbeta_0[39m[38;5;124m'[39m:[38;5;241m1800[39m, [38;5;124m'[39m[38;5;124mbeta_1[39m[38;5;124m'[39m:[38;5;241m0.2[39m, [38;5;124m'[39m[38;5;124mgamma[39m[38;5;124m'[39m:[38;5;241m100[39m, [38;5;124m'[39m[38;5;124malpha[39m[38;5;124m'[39m:[38;5;241m35.84[39m, [38;5;124m'[39m[38;5;124mmu[39m[38;5;124m'[39m:[38;5;241m0.02[39m})
+[1;32m      9[0m t [38;5;241m=[39m numpy[38;5;241m.[39mlinspace([38;5;241m0[39m, [38;5;241m50[39m, [38;5;241m1001[39m)
+[0;32m---> 11[0m ode[38;5;241m.[39minitial_values [38;5;241m=[39m ([43mx0[49m, t[[38;5;241m0[39m])
+[1;32m     13[0m x0 [38;5;241m=[39m [[38;5;241m0.0658[39m, [38;5;241m0.0007[39m, [38;5;241m0.0002[39m, [38;5;241m0.0[39m]
+[1;32m     15[0m solution [38;5;241m=[39m ode[38;5;241m.[39mintegrate(t[[38;5;241m1[39m::])
+
+[0;31mNameError[0m: name 'x0' is not defined
+

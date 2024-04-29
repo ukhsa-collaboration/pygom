@@ -1,0 +1,47 @@
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/nbclient/client.py", line 1305, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/asyncio/base_events.py", line 616, in run_until_complete
+    return future.result()
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/nbclient/client.py", line 705, in async_execute
+    await self.async_execute_cell(
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/nbclient/client.py", line 1058, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/nbclient/client.py", line 914, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+from pygom import SquareLoss, common_models
+
+import numpy, scipy.optimize
+
+import matplotlib.pyplot as plt
+
+theta = numpy.array([5.0, 5.0, 5.0])
+
+ode = common_models.SEIR(theta)
+
+population = 1175e4
+
+y = numpy.reshape(numpy.append(numpy.array(yCase), numpy.array(yDeath)), 
+                  (len(yCase),2), 'F')/population
+
+x0 = [1., 0., 49.0/population, 29.0/population]
+
+t0 = t[0]
+
+objLegrand = SquareLoss(theta, ode, x0, t0, t[1::], y[1::,:], ['I','R'], numpy.sqrt([population\]*2))
+
+------------------
+
+
+[0;36m  Cell [0;32mIn[3], line 20[0;36m[0m
+[0;31m    objLegrand = SquareLoss(theta, ode, x0, t0, t[1::], y[1::,:], ['I','R'], numpy.sqrt([population\]*2))[0m
+[0m                                                                                                         ^[0m
+[0;31mSyntaxError[0m[0;31m:[0m unexpected character after line continuation character
+
+

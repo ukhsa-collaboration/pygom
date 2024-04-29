@@ -1,0 +1,45 @@
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/nbclient/client.py", line 1305, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/asyncio/base_events.py", line 616, in run_until_complete
+    return future.result()
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/nbclient/client.py", line 705, in async_execute
+    await self.async_execute_cell(
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/nbclient/client.py", line 1058, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/nbclient/client.py", line 914, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+ode = common_models.Lotka_Volterra({'alpha':1, 'delta':3, 'c':2, 'gamma':6})
+
+for i in range(len(x1List)): 
+    ode.initial_values = ([x1List[i], x2List[i]], 0)
+
+solutionList += [ode.integrate(t)]
+
+for i in range(len(x1List)):
+    plt.plot(solutionList[i][100::,0], solutionList[i][100::,1], 'b')
+
+plt.xlabel('x')
+
+plt.ylabel('y')
+
+plt.show()
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[2], line 3[0m
+[1;32m      1[0m ode [38;5;241m=[39m common_models[38;5;241m.[39mLotka_Volterra({[38;5;124m'[39m[38;5;124malpha[39m[38;5;124m'[39m:[38;5;241m1[39m, [38;5;124m'[39m[38;5;124mdelta[39m[38;5;124m'[39m:[38;5;241m3[39m, [38;5;124m'[39m[38;5;124mc[39m[38;5;124m'[39m:[38;5;241m2[39m, [38;5;124m'[39m[38;5;124mgamma[39m[38;5;124m'[39m:[38;5;241m6[39m})
+[0;32m----> 3[0m [38;5;28;01mfor[39;00m i [38;5;129;01min[39;00m [38;5;28mrange[39m([38;5;28mlen[39m([43mx1List[49m)): 
+[1;32m      4[0m     ode[38;5;241m.[39minitial_values [38;5;241m=[39m ([x1List[i], x2List[i]], [38;5;241m0[39m)
+[1;32m      6[0m solutionList [38;5;241m+[39m[38;5;241m=[39m [ode[38;5;241m.[39mintegrate(t)]
+
+[0;31mNameError[0m: name 'x1List' is not defined
+

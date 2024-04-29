@@ -1,0 +1,1477 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pygom.model.simulate &#8212; PyGOM documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pygom/model/simulate';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../../md/intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo_pygom.jpg" class="logo__image only-light" alt="PyGOM documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/logo_pygom.jpg" class="logo__image only-dark" alt="PyGOM documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../md/intro.html">
+                    Welcome to the documentation for PyGOM
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../md/getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/sir.html">Motivating Example: SIR Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/transition.html">Model set-up using the transition object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/stochastic.html">Stochastic representation of ODEs</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/unrollOde.html">Converting equations into transitions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollSimple.html">A simple problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollBD.html">ODE With Birth and Death Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollHard.html">Hard Problem</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/epi.html">Epidemic Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/epijson.html">Reading and using EpiJSON data</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/parameter_fitting.html">Parameter fitting</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/bvpSimple.html">Solving Boundary Value Problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/gradient.html">Gradient estimation under square loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/fh.html">Parameter Estimation: FitzHugh Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/estimate1.html">Parameter Estimation: Example 1</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/estimate2.html">Parameter Estimation: Example 2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/initialGuess.html">Obtaining good initial values for parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/profile.html">Confidence Interval of Estimated Parameters</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Common biological compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/common_models.html">Pre-defined examples - common epi models</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIS.html">SIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIS_Periodic.html">SIS, periodic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIR.html">SIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIR_Birth_Death.html">SIR, birth and death</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR.html">SEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Multiple.html">SEIR, multiple</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Birth_Death.html">SEIR - birth, death</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Birth_Death_Periodic.html">SEIR - birth, death and periodic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Legrand_Ebola_SEIHFR.html"><code class="docutils literal notranslate"><span class="pre">Legrand_Ebola_SEIHFR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Lotka_Volterra.html">Lotka Volterra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Lotka_Volterra_4State.html">Lotka_Volterra (4 state)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/FitzHugh.html">FitzHugh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Lorenz.html">Lorenz</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/vanDelPol.html">vanDerPol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Robertson.html">Robertson</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Frequently asked questions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../md/faq.html">Frequent asked questions {#faq}</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Code documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-model.html">model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-loss.html">loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-abc.html">approximate_bayesian_computation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-utilR.html">utilR</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../md/bib.html">Bibliography</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom/issues/new?title=Issue%20on%20page%20%2F_modules/pygom/model/simulate.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <h1>Source code for pygom.model.simulate</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. moduleauthor:: Edwin Tye &lt;Edwin.Tye@phe.gov.uk&gt;</span>
+
+<span class="sd">    Module/class that carries out different type of simulation</span>
+<span class="sd">    on an ode formulation</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SimulateOde&#39;</span><span class="p">]</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sympy</span>
+<span class="kn">import</span> <span class="nn">sympy.matrices.matrices</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span>
+
+<span class="kn">from</span> <span class="nn">.deterministic</span> <span class="kn">import</span> <span class="n">DeterministicOde</span>
+<span class="kn">from</span> <span class="nn">.stochastic_simulation</span> <span class="kn">import</span> <span class="n">cle</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">firstReaction</span><span class="p">,</span> <span class="n">tauLeap</span><span class="p">,</span> <span class="n">hybrid</span>
+<span class="kn">from</span> <span class="nn">.transition</span> <span class="kn">import</span> <span class="n">TransitionType</span><span class="p">,</span> <span class="n">Transition</span>
+<span class="kn">from</span> <span class="nn">._model_errors</span> <span class="kn">import</span> <span class="n">InputError</span><span class="p">,</span> <span class="n">SimulationError</span>
+<span class="kn">from</span> <span class="nn">._model_verification</span> <span class="kn">import</span> <span class="n">checkEquation</span><span class="p">,</span> <span class="n">simplifyEquation</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_ode_composition</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ode_utils</span>
+
+
+<span class="k">class</span> <span class="nc">HasNewTransition</span><span class="p">(</span><span class="n">ode_utils</span><span class="o">.</span><span class="n">CompileCanary</span><span class="p">):</span>
+    <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ode&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;Jacobian&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;diffJacobian&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;grad&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;GradJacobian&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;transitionMatrixCompile&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;transitionVector&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;birthDeathRateCompile&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;computeTransitionMeanVar&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;transitionJacobian&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="SimulateOde"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde">[docs]</a><span class="k">class</span> <span class="nc">SimulateOde</span><span class="p">(</span><span class="n">DeterministicOde</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This builds on top of :class:`DeterministicOde` which we</span>
+<span class="sd">    simulate the outcome instead of solving it deterministically</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    state: list</span>
+<span class="sd">        A list of states (string)</span>
+<span class="sd">    param: list</span>
+<span class="sd">        A list of the parameters (string)</span>
+<span class="sd">    derived_param: list</span>
+<span class="sd">        A list of the derived parameters (tuple of (string,string))</span>
+<span class="sd">    transition: list</span>
+<span class="sd">        A list of transition (:class:`Transition`)</span>
+<span class="sd">    birth_death: list</span>
+<span class="sd">        A list of birth or death process (:class:`Transition`)</span>
+<span class="sd">    ode: list</span>
+<span class="sd">        A list of ode (:class:`Transition`)</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">derived_param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">transition</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">birth_death</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">ode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Constructor that is built on top of DeterministicOde</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SimulateOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state</span><span class="p">,</span>
+                                          <span class="n">param</span><span class="p">,</span>
+                                          <span class="n">derived_param</span><span class="p">,</span>
+                                          <span class="n">transition</span><span class="p">,</span>
+                                          <span class="n">birth_death</span><span class="p">,</span>
+                                          <span class="n">ode</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span> <span class="o">=</span> <span class="n">HasNewTransition</span><span class="p">()</span>
+
+        <span class="c1"># need a manual override because it is possible that we</span>
+        <span class="c1"># want to perform simulation in a parallel/distributed manner</span>
+        <span class="c1"># and there are issues with pickling fortran objects</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span> <span class="o">=</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">compileCode</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s1">&#39;cython&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRate</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRateCompile</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># information required for the tau leap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionJacobian</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMean</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMeanCompile</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVar</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVarCompile</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrixCompile</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># micro times for jumps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tau</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tauDict</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;SimulateOde&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_model_str</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SimulateOde.exact"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.exact">[docs]</a>    <span class="k">def</span> <span class="nf">exact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">output_time</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Stochastic simulation using an exact method starting from time</span>
+<span class="sd">        t0 to t1 with the starting state values of x0</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x: array like</span>
+<span class="sd">            state vector</span>
+<span class="sd">        t0: double</span>
+<span class="sd">            start time</span>
+<span class="sd">        t1: double</span>
+<span class="sd">            final time</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">exact</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">,</span>
+                     <span class="n">output_time</span><span class="o">=</span><span class="n">output_time</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="SimulateOde.cle"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.cle">[docs]</a>    <span class="k">def</span> <span class="nf">cle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">output_time</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Stochastic simulation using the CLE approximation starting from time</span>
+<span class="sd">        t0 to t1 with the starting state values of x0.  The CLE approximation</span>
+<span class="sd">        is performed using a simple Euler-Maruyama method with step size h.</span>
+<span class="sd">        We assume that the input parameter transition_func provides</span>
+<span class="sd">        :math:`f(x,t)` while the CLE is defined as</span>
+<span class="sd">        :math:`dx = x + V*h*f(x,t) + \\sqrt(f(x,t))*Z*\\sqrt(h)`</span>
+<span class="sd">        with :math:`Z` being standard normal random variables.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x: array like</span>
+<span class="sd">            state vector</span>
+<span class="sd">        t0: double</span>
+<span class="sd">            start time</span>
+<span class="sd">        t1: double</span>
+<span class="sd">            final time</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">cle</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">,</span>
+                   <span class="n">output_time</span><span class="o">=</span><span class="n">output_time</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="SimulateOde.hybrid"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.hybrid">[docs]</a>    <span class="k">def</span> <span class="nf">hybrid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">output_time</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Stochastic simulation using an hybrid method that uses either the</span>
+<span class="sd">        first reaction method or the :math:`\\tau`-leap depending on the</span>
+<span class="sd">        size of the states and transition rates.  Starting from time</span>
+<span class="sd">        t0 to t1 with the starting state values of x0.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x: array like</span>
+<span class="sd">            state vector</span>
+<span class="sd">        t0: double</span>
+<span class="sd">            start time</span>
+<span class="sd">        t1: double</span>
+<span class="sd">            final time</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">hybrid</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lambdaMat</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">transition_mean</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">transition_var</span><span class="p">,</span>
+                      <span class="n">output_time</span><span class="o">=</span><span class="n">output_time</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="SimulateOde.simulate_param"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.simulate_param">[docs]</a>    <span class="k">def</span> <span class="nf">simulate_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Simulate the ode by generating new realization of the stochastic</span>
+<span class="sd">        parameters and integrate the system deterministically.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t: array like</span>
+<span class="sd">            the range of time points which we want to see the result of</span>
+<span class="sd">        iteration: int</span>
+<span class="sd">            number of iterations you wish to simulate</span>
+<span class="sd">        parallel: bool, optional</span>
+<span class="sd">            Defaults to True</span>
+<span class="sd">        full_output: bool, optional</span>
+<span class="sd">            if we want additional information, Y_all in the return,</span>
+<span class="sd">            defaults to false</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Y: :class:`numpy.ndarray`</span>
+<span class="sd">            of shape (len(t), len(state)), mean of all the simulation</span>
+<span class="sd">        Y_all: :class:`np.ndarray`</span>
+<span class="sd">            of shape (iteration, len(t), len(state))</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># if our parameters not stochastic, then we are going to</span>
+        <span class="c1"># throw a warning because simulating a deterministic system is</span>
+        <span class="c1"># just plain stupid</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Deterministic parameters.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">iteration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Need to specify the number of iterations&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Need to specify the time we wish to observe&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="c1"># try to compute the simulation in parallel</span>
+        <span class="k">if</span> <span class="n">parallel</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">_distn_infrastructure</span><span class="o">.</span><span class="n">rv_frozen</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Cannot perform parallel simulation &quot;</span>
+                                        <span class="o">+</span><span class="s2">&quot;using a serialized object as distribution&quot;</span><span class="p">)</span>
+                <span class="c1"># check the type of parameter we have as input</span>
+                <span class="kn">import</span> <span class="nn">dask.bag</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">):</span>
+                    <span class="n">y_i</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">rv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="n">y_i</span> <span class="o">+=</span> <span class="p">[{</span><span class="n">key</span><span class="p">:</span><span class="n">rv</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]}]</span>
+                    <span class="n">y</span> <span class="o">+=</span> <span class="p">[</span><span class="n">y_i</span><span class="p">]</span>
+                <span class="c1"># y = [rv.rvs(iteration) for rv in self._stochasticParam.values()]</span>
+                <span class="c1"># y = np.array(list(zip(*y)))</span>
+                <span class="k">def</span> <span class="nf">sim</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">x</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+                <span class="c1"># def sim(t1): return(self.integrate(t1))</span>
+
+                <span class="c1"># xtmp = dask.bag.from_sequence([t]*iteration)</span>
+                <span class="n">xtmp</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">bag</span><span class="o">.</span><span class="n">from_sequence</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                <span class="n">solutionList</span> <span class="o">=</span> <span class="n">xtmp</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span> <span class="c1"># as e:</span>
+                <span class="c1"># print(e)</span>
+                <span class="c1"># print(&quot;Serial&quot;)</span>
+                <span class="n">solutionList</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">solutionList</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">)]</span>
+
+        <span class="c1"># now make our 3D array</span>
+        <span class="c1"># the first dimension is the number of iteration</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">solutionList</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Y</span><span class="p">,</span> <span class="n">solutionList</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Y</span></div>
+
+<div class="viewcode-block" id="SimulateOde.simulate_jump"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.simulate_jump">[docs]</a>    <span class="k">def</span> <span class="nf">simulate_jump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">exact</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Simulate the ode using stochastic simulation.  It switches</span>
+<span class="sd">        between a first reaction method and a :math:`\\tau`-leap</span>
+<span class="sd">        algorithm internally. When a parallel backend exists, then a new random</span>
+<span class="sd">        state (seed) will be used for each processor.  This is due to a lack</span>
+<span class="sd">        of appropriate parallel seed random number generator in python.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t: array like</span>
+<span class="sd">            the range of time points which we want to see the result of</span>
+<span class="sd">            or the final time point</span>
+<span class="sd">        iteration: int</span>
+<span class="sd">            number of iterations you wish to simulate</span>
+<span class="sd">        parallel: bool, optional</span>
+<span class="sd">            Defaults to True</span>
+<span class="sd">        exact: bool, optional</span>
+<span class="sd">            True if exact simulation is desired, defaults to False</span>
+<span class="sd">        full_output: bool, optional</span>
+<span class="sd">            if we want additional information, sim_T</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sim_X: list</span>
+<span class="sd">            of length iteration each with (len(t),len(state)) if t is a vector,</span>
+<span class="sd">            else it outputs unequal shape that was record of all the jumps</span>
+<span class="sd">        sim_T: list or :class:`numpy.ndarray`</span>
+<span class="sd">            if t is a single value, it outputs unequal shape that was</span>
+<span class="sd">            record of all the jumps.  if t is a vector, it outputs t so that</span>
+<span class="sd">            it is a :class:`numpy.ndarray` instead</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> \
+            <span class="s2">&quot;Currently only able to simulate when only transitions are present&quot;</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span> \
+            <span class="s2">&quot;Can only simulate a jump process with integer initial values&quot;</span>
+
+        <span class="c1"># this determines what type of output we want</span>
+        <span class="n">timePoint</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span><span class="c1">#, (int, float, np.int64, np.float64)):</span>
+            <span class="n">finalT</span> <span class="o">=</span> <span class="n">t</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">finalT</span> <span class="o">=</span> <span class="n">t</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">finalT</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="n">timePoint</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">finalT</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">timePoint</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Unknown data type for time&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compileTransitionVector</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">parallel</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">dask.bag</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using Dask for parallel simulation&quot;</span><span class="p">)</span>
+                <span class="k">def</span> <span class="nf">jump_partial</span><span class="p">(</span><span class="n">final_t</span><span class="p">):</span> <span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump</span><span class="p">(</span><span class="n">final_t</span><span class="p">,</span>
+                                                             <span class="n">exact</span><span class="o">=</span><span class="n">exact</span><span class="p">,</span>
+                                                             <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                             <span class="n">seed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+                <span class="n">xtmp</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">bag</span><span class="o">.</span><span class="n">from_sequence</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">iteration</span><span class="p">)</span><span class="o">*</span><span class="n">finalT</span><span class="p">)</span>
+                <span class="n">xtmp</span> <span class="o">=</span> <span class="n">xtmp</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">jump_partial</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">e</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Parallel simulation failed reverting to serial&quot;</span><span class="p">)</span>
+                <span class="n">xtmp</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump</span><span class="p">(</span><span class="n">finalT</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="n">exact</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Performing serial simulation&quot;</span><span class="p">)</span>
+            <span class="n">xtmp</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump</span><span class="p">(</span><span class="n">finalT</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="n">exact</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">)]</span>
+
+        <span class="n">xmat</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">xtmp</span><span class="p">))</span>
+        <span class="n">simXList</span><span class="p">,</span> <span class="n">simTList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">xmat</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">list</span><span class="p">(</span><span class="n">xmat</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c1">## print(&quot;Finish computation&quot;)</span>
+        <span class="c1"># now we want to fix our simulation, if they need fixing that is</span>
+        <span class="c1"># print timePoint</span>
+        <span class="k">if</span> <span class="n">timePoint</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">simXList</span><span class="p">)):</span>
+                <span class="c1"># unroll, always the first element</span>
+                <span class="c1"># it is easy to remember that we are accessing the first</span>
+                <span class="c1"># element because pop is spelt similar to poop and we</span>
+                <span class="c1"># all know that your execute first in first out when you</span>
+                <span class="c1"># poop!</span>
+                <span class="n">simX</span> <span class="o">=</span> <span class="n">simXList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">simT</span> <span class="o">=</span> <span class="n">simTList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractObservationAtTime</span><span class="p">(</span><span class="n">simX</span><span class="p">,</span> <span class="n">simT</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+                <span class="n">simTList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+                <span class="n">simXList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1"># note that we have to remain in list form because the number of</span>
+        <span class="c1"># simulation will be different if we are not dealing with</span>
+        <span class="c1"># a specific set of time points</span>
+
+        <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">timePoint</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">simXList</span><span class="p">,</span> <span class="n">t</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">simXList</span><span class="p">,</span> <span class="n">simTList</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">simXList</span></div>
+
+    <span class="k">def</span> <span class="nf">_jump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">finalT</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Jumps from the initial time self._t0 to the input time finalT</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># initial time</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;No initial time&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;No initial state&quot;</span>
+
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x0</span><span class="p">)</span>
+
+        <span class="c1"># holders and record information</span>
+        <span class="n">xList</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()]</span>
+        <span class="n">tList</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+        <span class="c1"># we want to construct some jump times</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GMat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_computeDependencyMatrix</span><span class="p">()</span>
+
+        <span class="c1"># keep jumping, Whoop Whoop (put your hands up!).</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">firstReaction</span>
+        <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">finalT</span><span class="p">:</span>
+            <span class="c1"># print(t)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">exact</span><span class="p">:</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+                        <span class="n">x_tmp</span><span class="p">,</span> <span class="n">t_tmp</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="n">tauLeap</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lambdaMat</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">transition_mean</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">transition_var</span><span class="p">,</span>
+                                                <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+                            <span class="n">x</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">x_tmp</span><span class="p">,</span> <span class="n">t_tmp</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+                    <span class="n">xList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+                    <span class="n">tList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+                    <span class="c1">## print(&quot;x: %s, t: %s&quot; % (x, t))</span>
+                    <span class="c1">## raise Exception(&#39;WTF&#39;)</span>
+            <span class="k">except</span> <span class="n">SimulationError</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xList</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tList</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_extractObservationAtTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">targetTime</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Given simulation and a set of time points which we would like to</span>
+<span class="sd">        observe, we extract the observations :math:`x_{t}` with</span>
+<span class="sd">        :math:`\\min\\{ \\abs( t - targetTime) \\}`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="c1"># maxTime = max(t)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">targetTime</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">i</span><span class="p">):</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="c1">########################################################################</span>
+    <span class="c1">#</span>
+    <span class="c1"># Operators with regard to the transition matrix</span>
+    <span class="c1">#</span>
+    <span class="c1">########################################################################</span>
+
+<div class="viewcode-block" id="SimulateOde.get_transition_matrix"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_transition_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">get_transition_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns the transition matrix in algebraic form.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`sympy.matrices.matrices`</span>
+<span class="sd">            A matrix of dimension [number of state x number of state]</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">SimulateOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_computeTransitionMatrix</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrixCompile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+           <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">transitionMatrixCompile</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrix</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">SimulateOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_computeTransitionMatrix</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SimulateOde.get_transition_vector"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_transition_vector">[docs]</a>    <span class="k">def</span> <span class="nf">get_transition_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns the set of transitions in a single vector, transitions</span>
+<span class="sd">        between state to state first then the birth and death process</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`sympy.matrices.matrices`</span>
+<span class="sd">            A matrix of dimension [total number of transitions x 1]</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+           <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">transitionVector</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVector</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">SimulateOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_computeTransitionVector</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SimulateOde.transition_matrix"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.transition_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">transition_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Evaluate the transition matrix given state and time</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state: array like</span>
+<span class="sd">            The current numerical value for the states which can be</span>
+<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
+<span class="sd">        t: double</span>
+<span class="sd">            The current time</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`numpy.ndarray`</span>
+<span class="sd">            a 2d array of size (M,M) where M is the number</span>
+<span class="sd">            of transitions</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_transition_matrix</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimulateOde.eval_transition_matrix"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.eval_transition_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">eval_transition_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Evaluate the transition matrix given parameters, state and time. Note</span>
+<span class="sd">        that the output is not in sparse format</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        parameters: list</span>
+<span class="sd">            see :meth:`.setParameters`</span>
+<span class="sd">        time: double</span>
+<span class="sd">            The current time</span>
+<span class="sd">        state: array list</span>
+<span class="sd">            The current numerical value for the states which can</span>
+<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`numpy.matrix` or :class:`mpmath.matrix`</span>
+<span class="sd">            Matrix of dimension [number of state x number of state]</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrixCompile</span> <span class="ow">is</span> <span class="kc">None</span> \
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">transitionMatrixCompile</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compileTransitionMatrix</span><span class="p">()</span>
+
+        <span class="n">eval_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrixCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_compileTransitionMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        We would also need to compile the function so that</span>
+<span class="sd">        it can be evaluated faster.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrix</span> <span class="ow">is</span> <span class="kc">None</span> \
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">transitionMatrixCompile</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">SimulateOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_computeTransitionMatrix</span><span class="p">()</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrixCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrix</span><span class="p">,</span>
+                                              <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrixCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrix</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;transitionMatrixCompile&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="SimulateOde.transition_vector"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.transition_vector">[docs]</a>    <span class="k">def</span> <span class="nf">transition_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Evaluate the transition vector given state and time</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state: array like</span>
+<span class="sd">            The current numerical value for the states which can be</span>
+<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
+<span class="sd">        t: double</span>
+<span class="sd">            The current time</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`numpy.ndarray`</span>
+<span class="sd">            a 1d array of size K where K is the number of between</span>
+<span class="sd">            states transitions and the number of birth death</span>
+<span class="sd">            processes</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_transition_vector</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimulateOde.eval_transition_vector"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.eval_transition_vector">[docs]</a>    <span class="k">def</span> <span class="nf">eval_transition_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Evaluate the transition vector given parameters, state and time. Note</span>
+<span class="sd">        that the output is not in sparse format</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        parameters: list</span>
+<span class="sd">            see :meth:`.setParameters`</span>
+<span class="sd">        time: double</span>
+<span class="sd">            The current time</span>
+<span class="sd">        state: array list</span>
+<span class="sd">            The current numerical value for the states which can</span>
+<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`numpy.matrix` or :class:`mpmath.matrix`</span>
+<span class="sd">            vector of dimension [total number of transitions]</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span> <span class="ow">is</span> <span class="kc">None</span> \
+           <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">transitionVector</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compileTransitionVector</span><span class="p">()</span>
+
+        <span class="n">eval_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_compileTransitionVector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        We would also need to compile the function so that</span>
+<span class="sd">        it can be evaluated faster.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVector</span> <span class="ow">is</span> <span class="kc">None</span> \
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">transitionVector</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">SimulateOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_computeTransitionVector</span><span class="p">()</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVector</span><span class="p">,</span>
+                                              <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVector</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;transitionVector&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="SimulateOde.get_birth_death_rate"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_birth_death_rate">[docs]</a>    <span class="k">def</span> <span class="nf">get_birth_death_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Find the algebraic equations of birth and death processes</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`sympy.matrices.matrices`</span>
+<span class="sd">            birth death process in matrix form</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRate</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_computeBirthDeathRate</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRate</span></div>
+
+<div class="viewcode-block" id="SimulateOde.birth_death_rate"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.birth_death_rate">[docs]</a>    <span class="k">def</span> <span class="nf">birth_death_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Evaluate the birth death rates given state and time</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state: array like</span>
+<span class="sd">            The current numerical value for the states which can be</span>
+<span class="sd">            :class:`np.ndarray` or :class:`list`</span>
+<span class="sd">        t: double</span>
+<span class="sd">            The current time</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`numpy.ndarray`</span>
+<span class="sd">            an array of size (M,M) where M is the number</span>
+<span class="sd">            of birth and death actions</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_birth_death_rate</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimulateOde.eval_birth_death_rate"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.eval_birth_death_rate">[docs]</a>    <span class="k">def</span> <span class="nf">eval_birth_death_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Evaluate the birth and death rates given parameters, state and time.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        parameters: list</span>
+<span class="sd">            see :meth:`.setParameters`</span>
+<span class="sd">        time: double</span>
+<span class="sd">            The current time</span>
+<span class="sd">        state: array list</span>
+<span class="sd">            The current numerical value for the states which can be</span>
+<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`numpy.matrix` or :class:`mpmath.matrix`</span>
+<span class="sd">            Matrix of dimension [number of birth and death rates x 1]</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRateCompile</span> <span class="ow">is</span> <span class="kc">None</span> \
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">birthDeathRateCompile</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_computeBirthDeathRate</span><span class="p">()</span>
+
+        <span class="n">eval_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRateCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_computeBirthDeathRate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Note that this is different to _birthDeathVector because</span>
+<span class="sd">        this is of length (number of birth and death process) while</span>
+<span class="sd">        _birthDeathVector in baseOdeModel has the same length as</span>
+<span class="sd">        the number of states</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_birth_deaths</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_birth_deaths</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># go through all the transition objects</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">bd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">birth_death_list</span><span class="p">):</span>
+                <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_checkEquation</span><span class="p">(</span><span class="n">bd</span><span class="o">.</span><span class="n">equation</span><span class="p">()))</span>
+
+        <span class="c1"># assign back</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRate</span> <span class="o">=</span> <span class="n">A</span>
+        <span class="c1"># compilation of the symbolic calculation.  Note here that we are</span>
+        <span class="c1"># going to recompile the total transitions because it might</span>
+        <span class="c1"># have changed</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRateCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRate</span><span class="p">,</span>
+                                            <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRateCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRate</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;birthDeathRateCompile&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="SimulateOde.total_transition"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.total_transition">[docs]</a>    <span class="k">def</span> <span class="nf">total_transition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Evaluate the total transition rate given state and time</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state: array like</span>
+<span class="sd">            The current numerical value for the states which can be</span>
+<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
+<span class="sd">        t: double</span>
+<span class="sd">            The current time</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            total rate</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="SimulateOde.transition_mean"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.transition_mean">[docs]</a>    <span class="k">def</span> <span class="nf">transition_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Evaluate the mean of the transitions given state and time.  For</span>
+<span class="sd">        m transitions and n states, we have</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            f_{j,k} &amp;= \\sum_{i=1}^{n} \\frac{\\partial a_{j}(x)}{\\partial x_{i}} v_{i,k} \\\\</span>
+<span class="sd">            \\mu_{j} &amp;= \\sum_{k=1}^{m} f_{j,k}(x)a_{k}(x) \\\\</span>
+<span class="sd">            \\sigma^{2}_{j}(x) &amp;= \\sum_{k=1}^{m} f_{j,k}^{2}(x) a_{k}(x)</span>
+
+<span class="sd">        where :math:`v_{i,k}` is the state change matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state: array like</span>
+<span class="sd">            The current numerical value for the states which can be</span>
+<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
+<span class="sd">        t: double</span>
+<span class="sd">            The current time</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`numpy.ndarray`</span>
+<span class="sd">            an array of size m where m is the number of transition</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_transition_mean</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimulateOde.eval_transition_mean"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.eval_transition_mean">[docs]</a>    <span class="k">def</span> <span class="nf">eval_transition_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Evaluate the transition mean given parameters, state and time.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        parameters: list</span>
+<span class="sd">            see :meth:`.setParameters`</span>
+<span class="sd">        time: double</span>
+<span class="sd">            The current time</span>
+<span class="sd">        state: array list</span>
+<span class="sd">            The current numerical value for the states which can be</span>
+<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`numpy.matrix` or :class:`mpmath.matrix`</span>
+<span class="sd">            Matrix of dimension [number of state x number of state]</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMeanCompile</span> <span class="ow">is</span> <span class="kc">None</span> \
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">computeTransitionMeanVar</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_computeTransitionMeanVar</span><span class="p">()</span>
+
+        <span class="n">eval_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMeanCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimulateOde.transition_var"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.transition_var">[docs]</a>    <span class="k">def</span> <span class="nf">transition_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Evaluate the variance of the transitions given state and time</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state: array like</span>
+<span class="sd">            The current numerical value for the states which can be</span>
+<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
+<span class="sd">        t: double</span>
+<span class="sd">            The current time</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`numpy.ndarray`</span>
+<span class="sd">            an array of size M where M is the number of transition</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_transition_var</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimulateOde.eval_transition_var"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.eval_transition_var">[docs]</a>    <span class="k">def</span> <span class="nf">eval_transition_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Evaluate the transition variance given parameters, state and time.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        parameters: list</span>
+<span class="sd">            see :meth:`.setParameters`</span>
+<span class="sd">        time: double</span>
+<span class="sd">            The current time</span>
+<span class="sd">        state: array list</span>
+<span class="sd">            The current numerical value for the states which can be</span>
+<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`numpy.matrix` or :class:`mpmath.matrix`</span>
+<span class="sd">            Matrix of dimension [number of state x number of state]</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVarCompile</span> <span class="ow">is</span> <span class="kc">None</span> \
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">computeTransitionMeanVar</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_computeTransitionMeanVar</span><span class="p">()</span>
+
+        <span class="n">eval_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVarCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_computeTransitionJacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GMat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_computeDependencyMatrix</span><span class="p">()</span>
+
+        <span class="n">F</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_transitions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_transitions</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_transitions</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">eqn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transitionVector</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iterStateList</span><span class="p">()):</span>
+                    <span class="n">diffEqn</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">eqn</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">tempEqn</span><span class="p">,</span> <span class="n">isDifficult</span> <span class="o">=</span> <span class="n">simplifyEquation</span><span class="p">(</span><span class="n">diffEqn</span><span class="p">)</span>
+                    <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">tempEqn</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="ow">or</span> <span class="n">isDifficult</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionJacobian</span> <span class="o">=</span> <span class="n">F</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;transitionJacobian&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">F</span>
+
+    <span class="k">def</span> <span class="nf">_computeTransitionMeanVar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        This is the mean and variance information that we need</span>
+<span class="sd">        for the :math:`\\tau`-Leap</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionJacobian</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">transitionJacobian</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_computeTransitionJacobian</span><span class="p">()</span>
+
+        <span class="n">F</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionJacobian</span>
+        <span class="c1"># holders</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_transitions</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">sigma2</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_transitions</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># we calculate the mean and variance</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_transitions</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">eqn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transitionVector</span><span class="p">):</span>
+                <span class="n">mu</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">eqn</span>
+                <span class="n">sigma2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">eqn</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMean</span> <span class="o">=</span> <span class="n">mu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVar</span> <span class="o">=</span> <span class="n">sigma2</span>
+
+        <span class="c1"># now we are going to compile them</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMeanCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMean</span><span class="p">,</span>
+                                            <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVarCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVar</span><span class="p">,</span>
+                                           <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMeanCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMean</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVarCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVar</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;computeTransitionMeanVar&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1">########################################################################</span>
+    <span class="c1">#</span>
+    <span class="c1"># Unrolling of ode to transitions</span>
+    <span class="c1">#</span>
+    <span class="c1">########################################################################</span>
+
+<div class="viewcode-block" id="SimulateOde.get_unrolled_obj"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_unrolled_obj">[docs]</a>    <span class="k">def</span> <span class="nf">get_unrolled_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns a :class:`SimulateOde` with the same state and parameters</span>
+<span class="sd">        as the current object but with the equations defined by a set of</span>
+<span class="sd">        transitions and birth death process instead of say, odes</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">transition</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_transitions_from_ode</span><span class="p">()</span>
+        <span class="n">bdList</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bd_from_ode</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">SimulateOde</span><span class="p">(</span>
+                           <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateList</span><span class="p">],</span>
+                           <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paramList</span><span class="p">],</span>
+                           <span class="n">derived_param</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_derivedParamEqn</span><span class="p">,</span>
+                           <span class="n">transition</span><span class="o">=</span><span class="n">transition</span><span class="p">,</span>
+                           <span class="n">birth_death</span><span class="o">=</span><span class="n">bdList</span>
+                           <span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimulateOde.get_transitions_from_ode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_transitions_from_ode">[docs]</a>    <span class="k">def</span> <span class="nf">get_transitions_from_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns a list of :class:`Transition` from this object by unrolling</span>
+<span class="sd">        the odes.  All the elements are of TransitionType.T</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generateTransitionMatrix</span><span class="p">()</span>
+
+        <span class="n">transition</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stateList</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">s2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stateList</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">t</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">s1</span><span class="p">),</span>
+                                   <span class="n">destination</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">s2</span><span class="p">),</span>
+                                   <span class="n">equation</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]),</span>
+                                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+                    <span class="n">transition</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">transition</span></div>
+
+<div class="viewcode-block" id="SimulateOde.get_bd_from_ode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_bd_from_ode">[docs]</a>    <span class="k">def</span> <span class="nf">get_bd_from_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns a list of:class:`Transition` from this object by unrolling</span>
+<span class="sd">        the odes.  All the elements are of TransitionType.B or</span>
+<span class="sd">        TransitionType.D</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">A</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">none_or_empty_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">):</span>
+                <span class="n">eqn</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">equation</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">]</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">checkEquation</span><span class="p">(</span><span class="n">eqn</span><span class="p">,</span>
+                                               <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_getListOfVariablesDict</span><span class="p">(),</span>
+                                               <span class="n">subs_derived</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Object was not initialized using a set of ode&quot;</span><span class="p">)</span>
+            <span class="c1"># A = super(SimulateOde, self).getOde()</span>
+
+        <span class="n">bdList</span><span class="p">,</span> <span class="n">_term</span> <span class="o">=</span> <span class="n">_ode_composition</span><span class="o">.</span><span class="n">getUnmatchedExpressionVector</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bdList</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generateTransitionMatrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+            <span class="n">A1</span> <span class="o">=</span> <span class="n">_ode_composition</span><span class="o">.</span><span class="n">pureTransitionToOde</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+            <span class="n">diffA</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">A1</span><span class="p">)</span>
+
+            <span class="c1"># get our birth and death process</span>
+            <span class="n">bdUnroll</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_list</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">diffA</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bdList</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">_ode_composition</span><span class="o">.</span><span class="n">_hasExpression</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">_ode_composition</span><span class="o">.</span><span class="n">getLeafs</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+                            <span class="n">bdUnroll</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="n">states</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                            <span class="n">equation</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="o">*-</span><span class="mi">1</span><span class="p">),</span>
+                                            <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">bdUnroll</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="n">states</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                            <span class="n">equation</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">),</span>
+                                            <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">B</span><span class="p">))</span>
+                        <span class="n">a</span> <span class="o">-=</span> <span class="n">b</span>
+
+            <span class="k">return</span> <span class="n">bdUnroll</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span></div>
+
+    <span class="k">def</span> <span class="nf">_generateTransitionMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span><span class="c1">#, transitionExpressionList=None):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Finds the transition matrix from the set of ode.  It is</span>
+<span class="sd">        important to note that although some of the functions used</span>
+<span class="sd">        in this method appear to be the same as _getReactantMatrix</span>
+<span class="sd">        and _getStateChangeMatrix, they are different in the sense</span>
+<span class="sd">        that the functions called here is focused on the terms of</span>
+<span class="sd">        the equation rather than the states.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">A</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">none_or_empty_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">):</span>
+                <span class="n">eqn_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">equation</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">]</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">checkEquation</span><span class="p">(</span><span class="n">eqn_list</span><span class="p">,</span>
+                                               <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_getListOfVariablesDict</span><span class="p">(),</span>
+                                               <span class="n">subs_derived</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Object was not initialized using a set of ode&quot;</span><span class="p">)</span>
+
+        <span class="n">bdList</span><span class="p">,</span> <span class="n">_term</span> <span class="o">=</span> <span class="n">_ode_composition</span><span class="o">.</span><span class="n">getUnmatchedExpressionVector</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">fx</span> <span class="o">=</span> <span class="n">_ode_composition</span><span class="o">.</span><span class="n">stripBDFromOde</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">bdList</span><span class="p">)</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterStateList</span><span class="p">()]</span>
+        <span class="n">M</span><span class="p">,</span> <span class="n">_remain</span> <span class="o">=</span> <span class="n">_ode_composition</span><span class="o">.</span><span class="n">odeToPureTransition</span><span class="p">(</span><span class="n">fx</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">M</span>
+
+<div class="viewcode-block" id="SimulateOde.plot"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sim_X</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sim_T</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Plot the results of a simulation</span>
+
+<span class="sd">        Takes the output of a function like `simulate_jump`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sim_X: list</span>
+<span class="sd">            of length iteration each with (len(t),len(state)) if t is a vector,</span>
+<span class="sd">            else it outputs unequal shape that was record of all the jumps</span>
+<span class="sd">        sim_T: list or :class:`numpy.ndarray`</span>
+<span class="sd">            if t is a single value, it outputs unequal shape that was</span>
+<span class="sd">            record of all the jumps.  if t is a vector, it outputs t so that</span>
+<span class="sd">            it is a :class:`numpy.ndarray` instead</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        If either sim_X or sim_T are None the this function will attempt to</span>
+<span class="sd">        plot the deterministic ODE</span>
+
+<span class="sd">        If we have 3 states or more, it will always be arrange such</span>
+<span class="sd">        that it has 3 columns.  Uses the operation from</span>
+<span class="sd">        :mod:`odeutils`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">sim_X</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">sim_T</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">SimulateOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+        <span class="n">ode_utils</span><span class="o">.</span><span class="n">plot_stoc</span><span class="p">(</span><span class="n">sim_X</span><span class="p">,</span> <span class="n">sim_T</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div></div>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By UK Health Security Agency (previously Public Health England)
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
