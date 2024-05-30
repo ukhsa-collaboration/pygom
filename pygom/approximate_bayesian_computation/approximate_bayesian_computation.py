@@ -167,7 +167,7 @@ def create_loss(loss_type, parameters, ode, x0, t0, t, y, state_name,
     if loss_type == "SquareLoss":
         return SquareLoss(theta, ode, x0, t0, t, y, state_name, state_weight, target_param, target_state)
     
-    elif loss_type == NormalLoss:
+    elif loss_type == "NormalLoss":
         return NormalLoss(theta=theta, 
                           ode=ode, 
                           x0=x0, 
@@ -179,8 +179,8 @@ def create_loss(loss_type, parameters, ode, x0, t0, t, y, state_name,
                           target_param=target_param, 
                           target_state=target_state)
         
-    elif loss_type == PoissonLoss:
-        return PoissonLoss(theta, ode, x0, t0, t, y, state_name, target_param, target_state)    
+    elif loss_type == "PoissonLoss":
+        return PoissonLoss(theta, ode, x0, t0, t, y, state_name, state_weight, target_param, target_state)    
     else:
         raise ValueError("Please choose from the available loss functions")
 
