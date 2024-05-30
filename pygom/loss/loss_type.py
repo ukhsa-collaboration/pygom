@@ -81,7 +81,8 @@ class Baseloss_Type(object):
         else:
             resid = self._y - yhat
         if apply_weighting:
-            resid *= self._w
+            #resid *= self._w
+            resid = resid*self._w  # above multiplication caused error
 
         return resid
 
