@@ -393,10 +393,17 @@ def stripBDFromOde(fx, bd_list=None):
         term_in_expr = list(map(lambda x: x in fxi.expand().args, bd_list))
         for j, term in enumerate(bd_list):
             fx_copy[i] -= term if term_in_expr[j] else 0
-
     # simplify converts it to an ImmutableMatrix, so we make it into
     # a mutable object again because we want the expanded form
-    return sympy.Matrix(sympy.simplify(fx_copy)).expand()
+
+    # simplify() causes issues when we have terms with denominators as
+    # it will try to give all terms a common denominator thus 
+    # potentially masking terms which should be matched.
+    # We try leaving it out for now, but some thorough testing is required
+    # of the unroll pipeline.
+
+    # return sympy.Matrix(sympy.simplify(fx_copy)).expand()
+    return sympy.Matrix(fx_copy).expand()
 
 
 def odeToPureTransition(fx, states, output_remain=False):
@@ -441,7 +448,7 @@ def _odeToPureTransition(fx, terms=None, A=None):
     Parameters
     ----------
     fx: :class:`sympy.matrices.MatrixBase`
-       input ode in symbolic form, :math:`f(x)`
+       input ode with pure transitions in symbolic form, :math:`f(x)`
     terms:
         list of two element tuples which contains the
         matching terms
