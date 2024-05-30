@@ -9,6 +9,7 @@ from collections import OrderedDict
 
 from .transition import TransitionType, Transition
 from .deterministic import DeterministicOde
+from .simulate import SimulateOde
 
 
 def SIS(param=None):
@@ -158,6 +159,53 @@ def SIR(param=None):
         ode_obj.parameters = param
         return ode_obj
 
+
+def SIR_N_stochastic(param=None, init=None):
+    """
+    A standard SIR model [Brauer2008]_ with population N
+
+    """
+    stateList = ['S', 'I', 'R']
+    paramList = ['beta', 'gamma', 'N']
+    transitionList = [Transition(origin='S', destination='I', equation='beta*S*I/N', transition_type=TransitionType.T),
+                    Transition(origin='I', destination='R', equation='gamma*I', transition_type=TransitionType.T)]
+    
+    # initialize the model
+    ode_obj = SimulateOde(stateList, paramList, transition=transitionList)
+
+    # set return, depending on whether we have input the parameters
+
+    if param is not None:
+        ode_obj.parameters = param
+
+    if init is not None:
+        ode_obj.initial_values = init
+
+    return ode_obj
+
+
+def SEIR_N_stochastic(param=None, init=None):
+    """
+    A standard SIR model [Brauer2008]_ with population N
+
+    """
+    stateList = ['S', 'E', 'I', 'R']
+    paramList = ['beta', 'alpha', 'gamma', 'N']
+    transitionList = [Transition(origin='S', destination='E', equation='beta*S*I/N', transition_type=TransitionType.T),
+                      Transition(origin='E', destination='I', equation='alpha*E', transition_type=TransitionType.T),
+                      Transition(origin='I', destination='R', equation='gamma*I', transition_type=TransitionType.T)]
+
+    # initialize the model
+    ode_obj = SimulateOde(stateList, paramList, transition=transitionList)
+
+    # set return, depending on whether we have input the parameters
+    if param is not None:
+        ode_obj.parameters = param
+
+    if init is not None:
+        ode_obj.initial_values = init
+
+    return ode_obj
 
 def SIR_N(param=None):
     """
