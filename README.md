@@ -7,11 +7,9 @@
 [![Jupyter Book Badge](https://jupyterbook.org/badge.svg)](https://hwilliams-phe.github.io/pygom/intro.html)
 
 A generic framework for Ordinary Differential Equation (ODE) models, especially compartmental type systems.
-This package provides a simple interface for users to construct ODE models.
-This is backed by a comprehensive and easy to use tool–box which implements functions to easily perform
-common operations for ODE systems such as parameter estimation and solving for deterministic or stochastic time evolution.
+This package provides a simple interface for users to construct ODE models which is backed by a comprehensive and easy to use tool–box which implements functions to easily perform common operations such as parameter estimation and solving for deterministic or stochastic time evolution.
 With both the algebraic and numeric calculations performed automatically (but still accessible),
-the end user is freed to focus on model development.
+the end user is free to focus on model development.
 
 ## Installation
 
@@ -22,7 +20,7 @@ You can download a local copy of the PyGOM source files from this GitHub reposit
 Please be aware that there may be redundant files within the package as it is under active development.
 
 > [!NOTE]
-> The latest fully reviewed version of PyGOM will be on the master branch and we generally recommend that users install the version from there. However, the current version being prepared for release (featuring up-to-date documentation) is hosted on the `feature/prep-doc` branch.
+> The latest fully reviewed version of PyGOM will be on the `master` branch and we generally recommend that users install this version. However, the current version being prepared for release (featuring up-to-date documentation) is hosted on the `feature/prep-doc` branch.
 
 Activate the relevant branch for installation via Git Bash, if you have been recruited to test code for the
 new release then this is the `feature/prep-doc` branch:
@@ -42,12 +40,12 @@ Alternatively, you may add dependencies to your own environment:
 
     pip install -r requirements.txt
 
-If you are working on a Windows machine you will also need to install:
+The final prerequisite, if you are working on a Windows machine, is that you will also need to install:
 - [Graphviz](https://graphviz.org/)
 - [Visual C++](https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0)
 - [Visual C++ Build Tools](https://go.microsoft.com/fwlink/?LinkId=691126)
 
-You should be able to install the PyGOM package via command line::
+You should now be able to install the PyGOM package via command line:
 
     python setup.py install
 
@@ -59,7 +57,7 @@ This will run a few test cases and can take some minutes to complete.
 
 ## Documentation
 
-Documentation must be built locally and all necessary files can be found in the docs folder.
+Documentation must be built locally and all necessary files can be found in the `docs` folder.
 Documentation is built from the command line:
 
     jupyter-book build docs
@@ -68,13 +66,10 @@ The html files will be saved in the local copy of your repository under:
 
     pygom/docs/_build/html
 
-```{note}
-Building the documentation involves running many examples in python which can take up to tens of minutes.
-Subsequent builds with these examples unchanged are much quicker due to caching of the code outputs.
-```
+> [!NOTE]
+> Building the documentation involves running many examples in python which can take up to tens of minutes. Subsequent builds with these examples unchanged are much quicker due to caching of the code outputs.
 
-Please be aware that if the module tests fails, then the documentation for the
-package will not compile.
+Please be aware that if the module tests fails, then the documentation for the package will not compile.
 
 ## Contributors
 
