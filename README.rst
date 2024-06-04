@@ -1,6 +1,6 @@
-===============================
-pygom - ODE modelling in Python
-===============================
+================================
+PyGOM - Python Generic ODE Model
+================================
 
 |Build status|  |Github actions|  |Documentation Status|  |pypi version|  |licence|  |Jupyter Book Badge|
 
@@ -15,52 +15,80 @@ pygom - ODE modelling in Python
 .. |Jupyter Book Badge| image:: https://jupyterbook.org/badge.svg
    :target: https://hwilliams-phe.github.io/pygom/intro.html
 
-A generic framework for ode models, specifically compartmental type problems.
+A generic framework for Ordinary Differential Equation (ODE) models, especially compartmental type systems.
+This package provides a simple interface for users to construct ODE models.
+This is backed by a comprehensive and easy to use tool–box which implements functions to easily perform
+common operations for ODE systems such as parameter estimation and solving for deterministic or stochastic time evolution.
+With both the algebraic and numeric calculations performed automatically (but still accessible),
+the end user is freed to focus on model development.
 
-This package depends on::
+Installation
+============
 
-    dask
-    matplotlib
-    enum34
-    pandas
-    python-dateutil
-    numpy
-    scipy
-    sympy
+You can download a local copy of the PyGOM source files from this GitHub repository::
 
-and they should be installed if not already available.  Alternatively, the easier way
-to use a minimal (and isolated) setup is to use `conda <https://conda.io/docs/>`_ and
-create a new environment via::
+$ git clone https://github.com/ukhsa-collaboration/pygom.git
 
-  conda env create -f conda-env.yml
+Please be aware that there may be redundant files within the package as it is under active development.
 
-Installation of this package can be performed via::
+.. note::
+   The latest fully reviewed version of PyGOM will be on the master branch and
+   we generally recommend that users install the version from there. However,
+   the current version being prepared for release (featuring up-to-date documentation)
+   is hosted on the feature/prep_doc branch.
+
+Activate the relevant branch for installation via Git Bash, if you have been recruited to test code for the
+new release then this is the feature/prep_doc branch::
+
+$ git activate feature/prep_doc
+
+Package dependencies can be found in the file, requirements.txt.
+An easy way to install these to create a new `conda <https://conda.io/docs/>`_ environment via::
+
+$ conda env create -f conda-env.yml
+
+which you should ensure is active for the installation process using
+
+$ conda activate pygom
+
+Alternatively, you may add dependencies to your own environment::
+
+$ pip install -r requirements.txt
+
+If you are working on a Windows machine you will also need to install::
+   * `Graphviz <https://graphviz.org/>`_
+   * `Visual C++ <https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0>`_
+   * `Visual C++ Build Tools <https://go.microsoft.com/fwlink/?LinkId=691126>`
+
+You should be able to install the PyGOM package via command line::
 
 $ python setup.py install
 
-and tested via::
+and test that installation has completed successfully
 
 $ python setup.py test
 
-A reduced form of the documentation may be found on ReadTheDocs_.
+This will run a few test cases and can take some minutes to complete.
 
-.. _ReadTheDocs: https://pygom.readthedocs.io/en/master/
+Documentation
+=============
 
-You may get the full documentation, including the lengthy examples by locally
-building the documentation found in the folder::
+Documentation must be built locally and all necessary files can be found in the docs folder.
+Documentation is built from the command line::
 
-$ doc
+$ jupyter-book build docs
 
-Note that building the documentation can be extremely slow depending on the
-setup of the system.  Further details can be found at it's own read me::
+The html files will be saved in the local copy of your repository under:
 
-$ doc/README.rst
+$ pygom/docs/_build/html
+
+.. note::
+   Building the documentation involves running many examples in python
+   which can take up to tens of minutes. Subsequent builds with these
+   examples unchanged are much quicker due to caching of the code outputs.
 
 Please be aware that if the module tests fails, then the documentation for the
 package will not compile.
-
-Please be aware that there may be redundant files within the package as it is
-under active development.
 
 Contributors
 ============
@@ -73,6 +101,8 @@ Hannah Williams
 Jonty Carruthers
 
 Martin Grunnill
+
+Joseph Gibson
 
 Version
 =======
