@@ -21,10 +21,8 @@ You can download a local copy of the PyGOM source files from this GitHub reposit
 
 Please be aware that there may be redundant files within the package as it is under active development.
 
-```{note}
-The latest fully reviewed version of PyGOM will be on the master branch and we generally recommend that users install the version from there.
-However, the current version being prepared for release (featuring up-to-date documentation) is hosted on the `feature/prep-doc` branch.
-```
+> [!NOTE]
+> The latest fully reviewed version of PyGOM will be on the master branch and we generally recommend that users install the version from there. However, the current version being prepared for release (featuring up-to-date documentation) is hosted on the `feature/prep-doc` branch.
 
 Activate the relevant branch for installation via Git Bash, if you have been recruited to test code for the
 new release then this is the `feature/prep-doc` branch:
