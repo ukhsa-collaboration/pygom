@@ -7,7 +7,7 @@
 [![Jupyter Book Badge](https://jupyterbook.org/badge.svg)](https://hwilliams-phe.github.io/pygom/intro.html)
 
 A generic framework for Ordinary Differential Equation (ODE) models, especially compartmental type systems.
-This package provides a simple interface for users to construct ODE models which is backed by a comprehensive and easy to use tool–box which implements functions to easily perform common operations such as parameter estimation and solving for deterministic or stochastic time evolution.
+This package provides a simple interface for users to construct ODE models backed by a comprehensive and easy to use tool–box implementing functions to easily perform common operations such as parameter estimation and solving for deterministic or stochastic time evolution.
 With both the algebraic and numeric calculations performed automatically (but still accessible),
 the end user is free to focus on model development.
 
@@ -64,7 +64,7 @@ Documentation is built from the command line:
 
 The html files will be saved in the local copy of your repository under:
 
-    pygom/docs/_build/html
+    docs/_build/html
 
 > [!NOTE]
 > Building the documentation involves running many examples in python which can take up to tens of minutes. Subsequent builds with these examples unchanged are much quicker due to caching of the code outputs.

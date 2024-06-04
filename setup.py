@@ -68,7 +68,7 @@ for r in requires:
     else:
         install_requires.append(r)
 
-with open('README.rst', 'r') as f:
+with open('README.md', 'r') as f:
     readme = f.read()
 
 setup_requires = [
