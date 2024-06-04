@@ -22,16 +22,14 @@ You can download a local copy of the PyGOM source files from this GitHub reposit
 Please be aware that there may be redundant files within the package as it is under active development.
 
 ```{note}
-   The latest fully reviewed version of PyGOM will be on the master branch and
-   we generally recommend that users install the version from there. However,
-   the current version being prepared for release (featuring up-to-date documentation)
-   is hosted on the `feature/prep_doc` branch.
+The latest fully reviewed version of PyGOM will be on the master branch and we generally recommend that users install the version from there.
+However, the current version being prepared for release (featuring up-to-date documentation) is hosted on the `feature/prep-doc` branch.
 ```
 
 Activate the relevant branch for installation via Git Bash, if you have been recruited to test code for the
-new release then this is the `feature/prep_doc` branch:
+new release then this is the `feature/prep-doc` branch:
 
-    git activate feature/prep_doc
+    git activate feature/prep-doc
 
 Package dependencies can be found in the file, `requirements.txt`.
 An easy way to install these to create a new [conda](https://conda.io/docs) environment via:
@@ -73,15 +71,15 @@ The html files will be saved in the local copy of your repository under:
     pygom/docs/_build/html
 
 ```{note}
-   Building the documentation involves running many examples in python
-   which can take up to tens of minutes. Subsequent builds with these
-   examples unchanged are much quicker due to caching of the code outputs.
+Building the documentation involves running many examples in python which can take up to tens of minutes.
+Subsequent builds with these examples unchanged are much quicker due to caching of the code outputs.
 ```
 
 Please be aware that if the module tests fails, then the documentation for the
 package will not compile.
 
 ## Contributors
+
 Thomas Finnie (Thomas.Finnie@phe.gov.uk)
 
 Edwin Tye
