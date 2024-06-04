@@ -56,10 +56,10 @@ Alternatively, you may add dependencies to your own environment::
 $ pip install -r requirements.txt
 
 If you are working on a Windows machine you will also need to install::
-   
-   * `Graphviz <https://graphviz.org/>`_
-   * `Visual C++ <https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0>`_
-   * `Visual C++ Build Tools <https://go.microsoft.com/fwlink/?LinkId=691126>`
+
+   - `Graphviz <https://graphviz.org/>`_
+   - `Visual C++ <https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0>`_
+   - `Visual C++ Build Tools <https://go.microsoft.com/fwlink/?LinkId=691126>`
 
 You should be able to install the PyGOM package via command line::
 
