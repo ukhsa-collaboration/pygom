@@ -6,8 +6,9 @@ root: md/intro
 parts:
   - caption: Getting started
     chapters:
-    - file: md/getting_started
-  - caption: Pygom workflow
+    - file: md/installation
+    - file: md/building_doc
+  - caption: PyGOM workflow
     chapters:
     - file: notebooks/model_spec
     - file: notebooks/insights
@@ -37,10 +38,10 @@ parts:
       # - file: notebooks/paramfit/estimate2
       # - file: notebooks/paramfit/initialGuess
       # - file: notebooks/paramfit/profile
-  - caption: Appendix
-    chapters:
-    - file: notebooks/paramfit/gradient
-    - file: notebooks/paramfit/profile
+  #- caption: Appendix
+  #  chapters:
+  #  - file: notebooks/paramfit/gradient
+  #  - file: notebooks/paramfit/profile
   - caption: Common biological compartmental models
     chapters:
     - file: md/common_models

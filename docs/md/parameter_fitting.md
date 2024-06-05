@@ -1,21 +1,6 @@
 # Parameter fitting
 
-In this chapter we outline how PyGOM may be used to estimate values for model parameters from data.
-We focus on the common problem of finding epidemiological parameters from case data using Approximate Bayesian Computation (ABC).
-We also demonstrate PyGom's ability to solve more commode ODE style problems like boundary value problems and
-also ability to use more classical methods for optimization.
-
-
-<!-- {doc}`../notebooks/paramfit/bvpSimple`
-
-{doc}`../notebooks/paramfit/gradient`
-
-{doc}`../notebooks/paramfit/fh`
-
-{doc}`../notebooks/paramfit/estimate1`
-
-{doc}`../notebooks/paramfit/estimate2`
-
-{doc}`../notebooks/paramfit/initialGuess`
-
-{doc}`../notebooks/paramfit/profile` -->
+As well as producing forecasts, another key activity in infectious disease modelling is inference of epidemic parameters from incidence data.
+In this chapter we outline how PyGOM may be used to assist these endeavours.
+In {doc}`the first section <../notebooks/paramfit/params_via_abc>`, we present a more up to date method which uses Approximate Bayesian Computation (ABC) and {doc}`then <../notebooks/paramfit/params_via_optimization>` a more classical approach via Maximum Likelihood Estimation (MLE).
+We also demonstrate PyGOM's ability to solve the less epidemiologically related task of {doc}`boundary value problems <../notebooks/paramfit/bvpSimple>`

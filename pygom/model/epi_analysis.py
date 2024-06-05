@@ -75,8 +75,8 @@ def R0(ode, disease_state):
     F, V = disease_progression_matrices(ode, disease_state)
     ## index = ode.get_state_index(disease_state)
     e = R0_from_matrix(F, V)
-    DFE_eqn = DFE(ode, disease_state)
-    e = [eig.subs(DFE_eqn) for eig in e]
+    #DFE_eqn = DFE(ode, disease_state)
+    #e = [eig.subs(DFE_eqn) for eig in e]
     if ode.parameters is not None:
         e = [eig.subs(ode.parameters) for eig in e]
 

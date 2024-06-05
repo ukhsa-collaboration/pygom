@@ -67,7 +67,7 @@ The html files will be saved in the local copy of your repository under:
     docs/_build/html
 
 > [!NOTE]
-> Building the documentation involves running many examples in python which can take up to tens of minutes. Subsequent builds with these examples unchanged are much quicker due to caching of the code outputs.
+> Building the documentation involves running many examples in python which can take up to 30 minutes. Subsequent builds with these examples unchanged are much quicker due to caching of the code outputs.
 
 Please be aware that if the module tests fails, then the documentation for the package will not compile.
 
