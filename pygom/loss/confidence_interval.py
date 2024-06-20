@@ -301,8 +301,8 @@ def profile(obj, alpha, theta=None, lb=None, ub=None, full_output=False):
         funcFgradient = _profileFgradient(theta, i, alpha, obj)
         funcFhessian = _profileFhessian(theta, i, alpha, obj)
 
-        lbT = np.ones(p)*-np.Inf if lb is None else lb.copy()
-        ubT = np.ones(p)*np.Inf if ub is None else ub.copy()
+        lbT = np.ones(p)*-np.inf if lb is None else lb.copy()
+        ubT = np.ones(p)*np.inf if ub is None else ub.copy()
 
         ubT[i] = theta[i]
 
@@ -318,8 +318,8 @@ def profile(obj, alpha, theta=None, lb=None, ub=None, full_output=False):
                                                          xhatL, lbT, ubT, True)
 
         ## re-adjust the bounds for the other side
-        lbT = np.ones(p)*-np.Inf if lb is None else lb.copy()
-        ubT = np.ones(p)*np.Inf if ub is None else ub.copy()
+        lbT = np.ones(p)*-np.inf if lb is None else lb.copy()
+        ubT = np.ones(p)*np.inf if ub is None else ub.copy()
 
         lbT[i] = theta[i]
 

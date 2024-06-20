@@ -74,7 +74,7 @@ with open('README.md', 'r') as f:
 setup_requires = [
     'setuptools-scm>=3.2.0',
     'setuptools_scm_git_archive',
-    'numpy>=1.12.0'
+    'numpy>=2.0.0'
     ]
 
 setup(
