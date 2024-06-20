@@ -32,6 +32,7 @@ if use_cython:
         Extension("pygom.model._tau_leap",
                   ["pygom/model/_tau_leap.pyx"],
                   include_dirs=[numpy.get_include()],
+                  extra_compile_args=['-std=c99'],
 #                  extra_compile_args=['-fopenmp'],
 #                  extra_link_args=['-fopenmp']),
 )
@@ -45,6 +46,7 @@ else:
         Extension("pygom.model._tau_leap",
                   ["pygom/model/_tau_leap.c"],
                   include_dirs=[numpy.get_include()],
+                  extra_compile_args=['-std=c99'],
 #                  extra_compile_args=['-fopenmp'],
 #                  extra_link_args=['-fopenmp']),
 )

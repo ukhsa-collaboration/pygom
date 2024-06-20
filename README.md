@@ -22,13 +22,17 @@ Please be aware that there may be redundant files within the package as it is un
 > [!NOTE]
 > The latest fully reviewed version of PyGOM will be on the `master` branch and we generally recommend that users install this version. However, the current version being prepared for release (featuring up-to-date documentation) is hosted on the `feature/prep-doc` branch.
 
+When running the following command line commands, ensure that your current working directory is the one where the PyGOM source files were downloaded to. This should be found from your home directory:
+
+    cd pygom
+
 Activate the relevant branch for installation via Git Bash, if you have been recruited to test code for the
 new release then this is the `feature/prep-doc` branch:
 
-    git activate feature/prep-doc
+    git checkout feature/prep-doc
 
 Package dependencies can be found in the file, `requirements.txt`.
-An easy way to install these to create a new [conda](https://conda.io/docs) environment via:
+An easy way to install these to create a new [conda](https://conda.io/docs) environment in Anaconda Prompt via:
 
     conda env create -f conda-env.yml
 
