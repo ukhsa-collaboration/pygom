@@ -8,13 +8,13 @@
 from collections import OrderedDict
 
 from .transition import TransitionType, Transition
-from .deterministic import DeterministicOde
+#from .deterministic import DeterministicOde
 from .simulate import SimulateOde
 
 
 def SIS(param=None):
     """
-    A standard SIS model
+    Susceptible Infected Susceptible model
 
     .. math::
         \\frac{dS}{dt} &= -\\beta SI + \\gamma I \\\\
@@ -25,7 +25,7 @@ def SIS(param=None):
     >>> import numpy as np
     >>> from pygom import common_models
     >>> ode = common_models.SIS({'beta':0.5, 'gamma':0.2})
-    >>> t = np.linspace(0, 20, 101)
+    >>> t = np.linspace(0, 20, 100)
     >>> x0 = [1.0, 0.1]
     >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
@@ -35,15 +35,13 @@ def SIS(param=None):
     state = ['S', 'I']
     param_list = ['beta', 'gamma']
     transition = [
-        Transition(origin='S', destination='I', equation='beta*S*I',
-                   transition_type=TransitionType.T),
-        Transition(origin='I', destination='S', equation='gamma*I',
-                   transition_type=TransitionType.T)
+        Transition(origin='S', destination='I', equation='beta*S*I',transition_type=TransitionType.T),
+        Transition(origin='I', destination='S', equation='gamma*I',transition_type=TransitionType.T)
         ]
     # initialize the model
-    ode = DeterministicOde(state,
-                           param_list,
-                           transition=transition)
+    ode = SimulateOde(state,
+                      param_list,
+                      transition=transition)
 
     # set return, depending on whether we have input the parameters
     if param is None:
@@ -91,7 +89,7 @@ def SIS_Periodic(param=None):
                    transition_type=TransitionType.ODE)
         ]
     # initialize the model
-    ode_obj = DeterministicOde(state, param_list,
+    ode_obj = SimulateOde(state, param_list,
                                derived_param=derived_param,
                                ode=ode)
 
@@ -150,7 +148,7 @@ def SIR(param=None):
                    transition_type=TransitionType.T)
         ]
     # initialize the model
-    ode_obj = DeterministicOde(state, param_list, transition=transition)
+    ode_obj = SimulateOde(state, param_list, transition=transition)
 
     # set return, depending on whether we have input the parameters
     if param is None:
@@ -160,9 +158,14 @@ def SIR(param=None):
         return ode_obj
 
 
-def SIR_N_stochastic(param=None, init=None):
+def SIR_N(param=None, init=None):
     """
     A standard SIR model [Brauer2008]_ with population N
+
+    .. math::
+        \\frac{dS}{dt} &= -\\beta SI/N \\\\
+        \\frac{dI}{dt} &= \\beta SI/N- \\gamma I \\\\
+        \\frac{dR}{dt} &= \\gamma I
 
     """
     stateList = ['S', 'I', 'R']
@@ -184,7 +187,7 @@ def SIR_N_stochastic(param=None, init=None):
     return ode_obj
 
 
-def SEIR_N_stochastic(param=None, init=None):
+def SEIR_N(param=None, init=None):
     """
     A standard SIR model [Brauer2008]_ with population N
 
@@ -207,60 +210,60 @@ def SEIR_N_stochastic(param=None, init=None):
 
     return ode_obj
 
-def SIR_N(param=None):
-    """
-    A standard SIR model [Brauer2008]_ with population N.  This is the unnormalized
-    version of the SIR model.
+# def SIR_N(param=None):
+#     """
+#     A standard SIR model [Brauer2008]_ with population N.  This is the unnormalized
+#     version of the SIR model.
 
-    .. math::
-        \\frac{dS}{dt} &= -\\beta SI/N \\\\
-        \\frac{dI}{dt} &= \\beta SI/N- \\gamma I \\\\
-        \\frac{dR}{dt} &= \\gamma I
+#     .. math::
+#         \\frac{dS}{dt} &= -\\beta SI/N \\\\
+#         \\frac{dI}{dt} &= \\beta SI/N- \\gamma I \\\\
+#         \\frac{dR}{dt} &= \\gamma I
 
-    Examples
-    --------
-    The model that produced top two graph in Figure 1.3 of the reference above.
-    First, when everyone is susceptible and only one individual was infected.
+#     Examples
+#     --------
+#     The model that produced top two graph in Figure 1.3 of the reference above.
+#     First, when everyone is susceptible and only one individual was infected.
 
-    >>> import numpy as np
-    >>> from pygom import common_models
-    >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
-    >>> t = np.linspace(0, 730, 1001)
-    >>> N = 7781984.0
-    >>> x0 = [N, 1.0, 0.0]
-    >>> ode.initial_values = (x0, t[0])
-    >>> solution = ode.integrate(t[1::])
-    >>> ode.plot()
+#     >>> import numpy as np
+#     >>> from pygom import common_models
+#     >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
+#     >>> t = np.linspace(0, 730, 1001)
+#     >>> N = 7781984.0
+#     >>> x0 = [N, 1.0, 0.0]
+#     >>> ode.initial_values = (x0, t[0])
+#     >>> solution = ode.integrate(t[1::])
+#     >>> ode.plot()
 
-    Second model with a more *realistic* scenario
+#     Second model with a more *realistic* scenario
 
-    >>> import numpy as np
-    >>> from pygom import common_models
-    >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
-    >>> t = np.linspace(0, 730, 1001)
-    >>> N = 7781984.0
-    >>> x0 = [int(0.065*N), 21.0, 0.0]
-    >>> ode.initial_values = (x0, t[0])
-    >>> solution = ode.integrate(t[1::])
-    >>> ode.plot()
-    """
-    state = ['S', 'I', 'R']
-    param_list = ['beta', 'gamma', 'N']
-    transition = [
-        Transition(origin='S', destination='I', equation='beta*S*I/N',
-                   transition_type=TransitionType.T),
-        Transition(origin='I', destination='R', equation='gamma*I',
-                   transition_type=TransitionType.T)
-        ]
-    # initialize the model
-    ode_obj = DeterministicOde(state, param_list, transition=transition)
+#     >>> import numpy as np
+#     >>> from pygom import common_models
+#     >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
+#     >>> t = np.linspace(0, 730, 1001)
+#     >>> N = 7781984.0
+#     >>> x0 = [int(0.065*N), 21.0, 0.0]
+#     >>> ode.initial_values = (x0, t[0])
+#     >>> solution = ode.integrate(t[1::])
+#     >>> ode.plot()
+#     """
+#     state = ['S', 'I', 'R']
+#     param_list = ['beta', 'gamma', 'N']
+#     transition = [
+#         Transition(origin='S', destination='I', equation='beta*S*I/N',
+#                    transition_type=TransitionType.T),
+#         Transition(origin='I', destination='R', equation='gamma*I',
+#                    transition_type=TransitionType.T)
+#         ]
+#     # initialize the model
+#     ode_obj = SimulateOde(state, param_list, transition=transition)
 
-    # set return, depending on whether we have input the parameters
-    if param is None:
-        return ode_obj
-    else:
-        ode_obj.parameters = param
-        return ode_obj
+#     # set return, depending on whether we have input the parameters
+#     if param is None:
+#         return ode_obj
+#     else:
+#         ode_obj.parameters = param
+#         return ode_obj
 
 
 def SIR_Birth_Death(param=None):
@@ -312,7 +315,7 @@ def SIR_Birth_Death(param=None):
         ]
 
     # initialize the model
-    ode_obj = DeterministicOde(state, param_list,
+    ode_obj = SimulateOde(state, param_list,
                                birth_death=birth_death,
                                transition=transition)
 
@@ -363,7 +366,7 @@ def SEIR(param=None):
                    transition_type=TransitionType.T)
         ]
 
-    ode_obj = DeterministicOde(state, param_list, transition=transition)
+    ode_obj = SimulateOde(state, param_list, transition=transition)
 
     if param is None:
         return ode_obj
@@ -425,7 +428,7 @@ def SEIR_Birth_Death(param=None):
                    transition_type=TransitionType.B)
         ]
 
-    ode_obj = DeterministicOde(state, param_list,
+    ode_obj = SimulateOde(state, param_list,
                                transition=transition,
                                birth_death=bd_list)
 
@@ -492,7 +495,7 @@ def SEIR_Birth_Death_Periodic(param=None):
                    transition_type=TransitionType.ODE)
         ]
     # initialize the model
-    ode_obj = DeterministicOde(state, param_list,
+    ode_obj = SimulateOde(state, param_list,
                                derived_param=derived_param,
                                ode=ode)
 
@@ -598,7 +601,7 @@ def SEIR_Multiple(n=2, param=None):
             bd_list += [Transition(origin=states[v][i], equation='d*' + states[v][i], transition_type=TransitionType.D)]
         bd_list += [Transition(origin=states['S'][i], equation='d*' + N[i], transition_type=TransitionType.B)]
 
-    ode_obj = DeterministicOde(state_list,
+    ode_obj = SimulateOde(state_list,
                                param_list,
                                derived_param=derived_param,
                                transition=transition,
@@ -639,7 +642,7 @@ def Influenza_SLIARN(param=None):
                    transition_type=TransitionType.ODE)
     ]
     # initialize the model
-    ode_obj = DeterministicOde(state, param_list, ode=ode)
+    ode_obj = SimulateOde(state, param_list, ode=ode)
 
     if param is None:
         return ode_obj
@@ -704,7 +707,7 @@ def Legrand_Ebola_SEIHFR(param=None):
         ]
 
     # alternatively, we can do it on the operate ode model
-    ode_obj = DeterministicOde(state, params)
+    ode_obj = SimulateOde(state, params)
     # add the derived parameter
     ode_obj.derived_param_list = derived_param
 
@@ -789,7 +792,7 @@ def Lotka_Volterra(param=None):
                    transition_type=TransitionType.ODE)
         ]
 
-    ode_obj = DeterministicOde(state, param_list, ode=ode)
+    ode_obj = SimulateOde(state, param_list, ode=ode)
     # set return, depending on whether we have input the parameters
     if param is None:
         return ode_obj
@@ -840,7 +843,7 @@ def Lotka_Volterra_4State(param=None):
                    transition_type=TransitionType.T)
         ]
 
-    ode_obj = DeterministicOde(state, param_list, transition=transition)
+    ode_obj = SimulateOde(state, param_list, transition=transition)
 
     # set return, depending on whether we have input the parameters
     if param is None:
@@ -883,7 +886,7 @@ def FitzHugh(param=None):
                    transition_type=TransitionType.ODE)
         ]
     # setup our ode
-    ode_obj = DeterministicOde(state, param_list,
+    ode_obj = SimulateOde(state, param_list,
                                derived_param=None,
                                transition=None,
                                birth_death=None,
@@ -931,7 +934,7 @@ def Lorenz(param=None):
                    transition_type=TransitionType.ODE)
         ]
     # initialize the model
-    ode_obj = DeterministicOde(state, param_list, ode=ode)
+    ode_obj = SimulateOde(state, param_list, ode=ode)
 
     if param is None:
         return ode_obj
@@ -981,7 +984,7 @@ def vanDelPol(param=None):
                    transition_type=TransitionType.ODE)
         ]
     # initialize the model
-    ode_obj = DeterministicOde(state_list, param_list, ode=ode)
+    ode_obj = SimulateOde(state_list, param_list, ode=ode)
 
     if param is None:
         return ode_obj
@@ -1028,7 +1031,7 @@ def Robertson(param=None):
                    transition_type=TransitionType.T)
         ]
     # initialize the model
-    ode_obj = DeterministicOde(state, param_list, transition=transition)
+    ode_obj = SimulateOde(state, param_list, transition=transition)
 
     if param is None:
         return ode_obj
