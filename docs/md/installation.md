@@ -1,6 +1,6 @@
 # Installation
 
-Installation instructions may be found on the GitHub project README, but we include them here also.
+Installation instructions may be found on the [GitHub project README](https://github.com/ukhsa-collaboration/pygom/tree/feature/prep-doc) (currently on the `feature/prep-doc` branch), but we include them here also.
 
 ## From source
 
@@ -44,7 +44,7 @@ pip install -r requirements.txt
 The final prerequisite, if you are working on a Windows machine, is that you will also need to install:
 - [Graphviz](https://graphviz.org/)
 - [Visual C++](https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0)
-- [Visual C++ Build Tools](https://go.microsoft.com/fwlink/?LinkId=691126)
+- Visual C++ Build Tools
 
 You you should be able to install the PyGOM package via command line:
 

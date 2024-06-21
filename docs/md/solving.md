@@ -1,6 +1,6 @@
 # Producing forecasts
 
-An exercise central to the study of infectious diseases (and indeed ODE models in general) is performing simulations to understand the evolution of the system in time.
+An exercise central to the study of infectious diseases (and indeed ODE models in general) is performing simulations to understand the likely evolution of the system in time.
 PyGOM allows the user to easily obtain numerical solutions for both the deterministic and stochastic time evolution of their model.
 Furthermore, users may specify model parameters to take either fixed values or to be drawn randomly from a probability distribution.
 

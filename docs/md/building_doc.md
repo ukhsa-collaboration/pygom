@@ -1,13 +1,13 @@
 # Building the documentation locally
 
-The documentation which you are currently reading may be built locally.
-First, install additional packages:
+The documentation, which you are currently reading, may be built locally.
+First, install additional packages required specifically for the documentation:
 
 ```bash
 pip install -r docs/requirements.txt
 ```
 
-Then build the documentation from command line
+Then, build the documentation from command line:
 
 ```bash
 jupyter-book build docs
