@@ -1,13 +1,11 @@
 # Pre-defined examples - common epi models 
 
-We have defined a set of models {mod}`common_models`, most of them commonly used in epidemiology. They are there
-as examples and also to save time for users. Most of them are of the
-compartmental type, and we use standard naming conventions i.e. **S** =
-Susceptible, **E** = Exposed, **I** = Infectious, **R** = Recovered.
+```{warning}
+JG: I have not gone through every example here
+```
 
-#TODO is R recovered, removed or dead? 
-
-Extra state symbol will be introduced when required.
+We have defined a set of models in the module {mod}`common_models`.
+Most of these draw from commonly used models in epidemiology and are included primarily to save time for users, but also to serve as examples.
 
 {doc}`../notebooks/common_models/SIS`
 
