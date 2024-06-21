@@ -61,14 +61,13 @@ class BaseOdeModel(object):
         """
         Constructor
         """
-        # the 3 required input when doing evaluation
+        # the 3 required inputs when doing evaluation
         self._state = None
         self._param = None
         self._time = None
-        # we always need time to be a symbol... and it should be denoted as t
+        # we always need time to be a symbol and it should be denoted as t
         self._t = symbols('t')
 
-        #
         self._isDifficult = False
         # allows the system to be defined directly
         self._ode = None
@@ -114,17 +113,8 @@ class BaseOdeModel(object):
         self._vMat = None
         self._GMat = None
 
-        if state is not None:
-            if isinstance(state, str):
-                state = re_split_string.split(state)
-                state = filter(lambda x: not len(x.strip()) == 0, state)
-            self.state_list = list(state)
-
-        if param is not None:
-            if isinstance(param, str):
-                param = re_split_string.split(param)
-                param = filter(lambda x: not len(x.strip()) == 0, param)
-            self.param_list = list(param)
+        self._add_list_attr(state, "state_list")
+        self._add_list_attr(param, "param_list")
 
         # this has to go after adding the parameters
         # because it is suppose to be based on the current
@@ -178,9 +168,22 @@ class BaseOdeModel(object):
                         {str(k): v for k, v in self._parameters.items()}
         return model_str
 
+    def _add_list_attr(self, attr, attr_list_name):
+        """
+        Given an attribute (name attr_name), which is a string of comma
+        or space separated values, create a new attribute (name attr_name_list)
+        which is a list of those separated values.
+        e.g. "a,b,c d ef" returns [a, b, c, d, ef]
+        """
+        if attr is not None:
+            if isinstance(attr, str):
+                attr = re_split_string.split(attr)
+                attr = filter(lambda x: not len(x.strip()) == 0, attr)
+            self.__setattr__(attr_list_name, list(attr))
+
     ########################################################################
     #
-    # Getting and setters
+    # Getters and setters
     #
     ########################################################################
 
@@ -223,6 +226,7 @@ class BaseOdeModel(object):
             if isinstance(parameters, (list, tuple, np.ndarray)):
                 # length checking, we are assuming here that we always set
                 # the full set of parameters
+                # TODO: for model fitting, we might only want to set a subset of the known ones
                 if len(parameters) == self.num_param:
                     if isinstance(parameters, np.ndarray):
                         if parameters.size == self.num_param:
@@ -306,6 +310,7 @@ class BaseOdeModel(object):
             elif self.num_param == 1:
                 # a single parameter ode and you are not evaluating it
                 # analytically! fair enough! no further comments your honour.
+                # TODO: Can't single parameter ODE's still be complicated?
                 if isinstance(parameters, tuple):
                     param_out[f(parameters[0])] = parameters[1]
                 elif isinstance(parameters, (int, float)):
@@ -1139,6 +1144,9 @@ class BaseOdeModel(object):
             raise InputError("Input parameter: %s does not exist" % input_str)
 
     def _extractParamSymbol(self, input_str):
+        """
+        Given a parameter name, input_str
+        """
         if isinstance(input_str, ODEVariable):
             input_str = input_str.ID
 
