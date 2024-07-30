@@ -33,9 +33,9 @@ def SIS(param=None):
     """
 
     state = ['S', 'I']
-    param_list = ['beta', 'gamma']
+    param_list = ['beta', 'gamma', 'N']
     transition = [
-        Transition(origin='S', destination='I', equation='beta*S*I',transition_type=TransitionType.T),
+        Transition(origin='S', destination='I', equation='beta*S*I/N',transition_type=TransitionType.T),
         Transition(origin='I', destination='S', equation='gamma*I',transition_type=TransitionType.T)
         ]
     # initialize the model
@@ -78,20 +78,22 @@ def SIS_Periodic(param=None):
     """
 
     state = ['I', 'tau']
-    param_list = ['alpha']
-    derived_param = [('betaT', '2 - 1.8*cos(5*tau)')]
+    param_list = ['gamma', 'beta0', 'delta', 'period', 'N']
+    # derived_param = [('betaT', '2 - 1.8*cos(5*tau)')]
+    derived_param = [('betaT', 'beta0*(1-delta*cos(2*3.14159*tau/period))')]
     ode = [
         Transition(origin='I',
-                   equation='(betaT - alpha)*I - betaT*I*I',
+                   equation='(betaT - gamma)*I - (betaT*I*I/N)',
                    transition_type=TransitionType.ODE),
         Transition(origin='tau',
                    equation='1',
                    transition_type=TransitionType.ODE)
         ]
     # initialize the model
-    ode_obj = SimulateOde(state, param_list,
-                               derived_param=derived_param,
-                               ode=ode)
+    ode_obj = SimulateOde(state,
+                          param_list,
+                          derived_param=derived_param,
+                          ode=ode)
 
     # set return, depending on whether we have input the parameters
     if param is None:
@@ -140,9 +142,9 @@ def SIR(param=None):
 
     """
     state = ['S', 'I', 'R']
-    param_list = ['beta', 'gamma']
+    param_list = ['beta', 'gamma', 'N']
     transition = [
-        Transition(origin='S', destination='I', equation='beta*S*I',
+        Transition(origin='S', destination='I', equation='beta*S*I/N',
                    transition_type=TransitionType.T),
         Transition(origin='I', destination='R', equation='gamma*I',
                    transition_type=TransitionType.T)
@@ -297,27 +299,30 @@ def SIR_Birth_Death(param=None):
     :func:`.SIR`
     """
     state = ['S', 'I', 'R']
-    param_list = ['beta', 'gamma', 'B', 'mu']
+    param_list = ['beta', 'gamma', 'mu', 'N']
     transition = [
-        Transition(origin='S', destination='I', equation='beta*S*I',
+        Transition(origin='S', destination='I', equation='beta*S*I/N',
                    transition_type=TransitionType.T),
         Transition(origin='I', destination='R', equation='gamma*I',
                    transition_type=TransitionType.T)
         ]
     # our birth and deaths
     birth_death = [
-        Transition(origin='S', equation='B',
+        Transition(origin='S', equation='mu*N',
                    transition_type=TransitionType.B),
         Transition(origin='S', equation='mu*S',
                    transition_type=TransitionType.D),
         Transition(origin='I', equation='mu*I',
+                   transition_type=TransitionType.D),
+        Transition(origin='R', equation='mu*R',
                    transition_type=TransitionType.D)
         ]
 
     # initialize the model
-    ode_obj = SimulateOde(state, param_list,
-                               birth_death=birth_death,
-                               transition=transition)
+    ode_obj = SimulateOde(state,
+                          param_list,
+                          birth_death=birth_death,
+                          transition=transition)
 
     # set return, depending on whether we have input the parameters
     if param is None:
@@ -355,10 +360,10 @@ def SEIR(param=None):
     """
 
     state = ['S', 'E', 'I', 'R']
-    param_list = ['beta', 'alpha', 'gamma']
+    param_list = ['beta', 'alpha', 'gamma', 'N']
 
     transition = [
-        Transition(origin='S', destination='E', equation='beta*S*I',
+        Transition(origin='S', destination='E', equation='beta*S*I/N',
                    transition_type=TransitionType.T),
         Transition(origin='E', destination='I', equation='alpha*E',
                    transition_type=TransitionType.T),
@@ -406,10 +411,10 @@ def SEIR_Birth_Death(param=None):
     """
 
     state = ['S', 'E', 'I', 'R']
-    param_list = ['beta', 'alpha', 'gamma', 'mu']
+    param_list = ['beta', 'alpha', 'gamma', 'mu', 'N']
 
     transition = [
-        Transition(origin='S', destination='E', equation='beta*S*I',
+        Transition(origin='S', destination='E', equation='beta*S*I/N',
                    transition_type=TransitionType.T),
         Transition(origin='E', destination='I', equation='alpha*E',
                    transition_type=TransitionType.T),
@@ -424,7 +429,7 @@ def SEIR_Birth_Death(param=None):
                    transition_type=TransitionType.D),
         Transition(origin='I', equation='mu*I',
                    transition_type=TransitionType.D),
-        Transition(origin='S', equation='mu',
+        Transition(origin='S', equation='mu*N',
                    transition_type=TransitionType.B)
         ]
 
@@ -498,6 +503,51 @@ def SEIR_Birth_Death_Periodic(param=None):
     ode_obj = SimulateOde(state, param_list,
                                derived_param=derived_param,
                                ode=ode)
+
+    if param is None:
+        return ode_obj
+    else:
+        ode_obj.parameters = param
+        return ode_obj
+
+
+def SEIR_Birth_Death_Periodic_Waning_Intro(param=None):
+    state = ['S', 'E', 'I', 'R', 'tau']
+    param_list = ['mu', 'alpha', 'gamma', 'epsilon', 'w', 'beta0', 'delta', 'period', 'N']
+
+    derived_param = [('betaT', 'beta0*(1-delta*cos(2*3.14159*tau/period))')]
+
+    transition = [
+        Transition(origin='S', destination='E', equation='betaT*S*I/N',
+                   transition_type=TransitionType.T),
+        Transition(origin='S', destination='E', equation='epsilon*S',
+                   transition_type=TransitionType.T),
+        Transition(origin='E', destination='I', equation='alpha*E',
+                   transition_type=TransitionType.T),
+        Transition(origin='I', destination='R', equation='gamma*I',
+                   transition_type=TransitionType.T),
+        Transition(origin='R', destination='S', equation='w*R',
+                   transition_type=TransitionType.T)
+        ]
+
+    bd_list = [
+        Transition(origin='S', equation='mu*S',
+                   transition_type=TransitionType.D),
+        Transition(origin='E', equation='mu*E',
+                   transition_type=TransitionType.D),
+        Transition(origin='I', equation='mu*I',
+                   transition_type=TransitionType.D),
+        Transition(origin='R', equation='mu*R',
+                   transition_type=TransitionType.D),
+        Transition(origin='S', equation='mu*N',
+                   transition_type=TransitionType.B),
+        Transition(origin='tau', equation='1',
+                   transition_type=TransitionType.B)
+        ]
+
+    ode_obj = SimulateOde(state, param_list, derived_param=derived_param,
+                               transition=transition,
+                               birth_death=bd_list)
 
     if param is None:
         return ode_obj
