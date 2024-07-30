@@ -567,7 +567,7 @@ class SimulateOde(DeterministicOde):
         xList = [x.copy()]
         tList = [t]
 
-        # we want to construct some jump times
+        # we want to construct some jump times (TODO: doesn't seem like _GMat is used anywhere)
         if self._GMat is None:
             self._computeDependencyMatrix()
 
@@ -582,7 +582,8 @@ class SimulateOde(DeterministicOde):
                 else:
                     if np.min(x) > 10:
                         x_tmp, t_tmp, success = tauLeap(x, t,
-                                                self._vMat, self._lambdaMat,
+                                                # self._vMat, self._lambdaMat,
+                                                self._vMat, self._lambdaMatOD,  # I think that the wrong matrix has been used, trying this one instead
                                                 self.transition_vector,
                                                 self.transition_mean,
                                                 self.transition_var,
@@ -1171,6 +1172,17 @@ class SimulateOde(DeterministicOde):
         else:
             return []
 
+    def _get_A(self, A=None):
+        if A is None:
+            if not ode_utils.none_or_empty_list(self._odeList):
+                eqn_list = [t.equation for t in self._odeList]
+                A = sympy.Matrix(checkEquation(eqn_list,
+                                               *self._getListOfVariablesDict(),
+                                               subs_derived=False))
+                return A
+            else:
+                raise Exception("Object was not initialized using a set of ode")
+
     def _generateTransitionMatrix(self, A=None):#, transitionExpressionList=None):
         '''
         Finds the transition matrix from the set of ode.  It is
@@ -1180,15 +1192,7 @@ class SimulateOde(DeterministicOde):
         that the functions called here is focused on the terms of
         the equation rather than the states.
         '''
-        if A is None:
-            if not ode_utils.none_or_empty_list(self._odeList):
-                eqn_list = [t.equation for t in self._odeList]
-                A = sympy.Matrix(checkEquation(eqn_list,
-                                               *self._getListOfVariablesDict(),
-                                               subs_derived=False))
-            else:
-                raise Exception("Object was not initialized using a set of ode")
-
+        A=self._get_A(A)
         bdList, _term = _ode_composition.getUnmatchedExpressionVector(A, True)
         fx = _ode_composition.stripBDFromOde(A, bdList)
         states = [s for s in self._iterStateList()]
