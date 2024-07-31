@@ -108,6 +108,52 @@ def SIR(param=None):
     A standard SIR model as per [Brauer2008]_
 
     .. math::
+        \\frac{dS}{dt} &= -\\ \\frac{beta SI}{N} \\\\
+        \\frac{dI}{dt} &= \\ \\frac{beta SI}{N} - \\gamma I \\\\
+        \\frac{dR}{dt} &= \\gamma I
+
+
+    Examples
+    --------
+    The model that produced top two graph in Figure 1.3 of the reference above.
+    First, when everyone is susceptible and only one individual was infected.
+
+    >>> import numpy as np
+    >>> from pygom import common_models
+    >>> N=1e5
+    >>> ode = common_models.SIR({'beta':0.5, 'gamma':0.2, 'N':N})
+    >>> t = np.linspace(0, 730, 1001)
+    >>> i0=1
+    >>> x0 = [N-i0, i0, 0.0]
+    >>> ode.initial_values = (x0, t[0])
+    >>> solution = ode.integrate(t[1::])
+    >>> ode.plot()
+
+    """
+    state = ['S', 'I', 'R']
+    param_list = ['beta', 'gamma', 'N']
+    transition = [
+        Transition(origin='S', destination='I', equation='beta*S*I/N',
+                   transition_type=TransitionType.T),
+        Transition(origin='I', destination='R', equation='gamma*I',
+                   transition_type=TransitionType.T)
+        ]
+    # initialize the model
+    ode_obj = SimulateOde(state, param_list, transition=transition)
+
+    # set return, depending on whether we have input the parameters
+    if param is None:
+        return ode_obj
+    else:
+        ode_obj.parameters = param
+        return ode_obj
+
+
+def SIR_norm(param=None):
+    """
+    A normalized SIR model:
+
+    .. math::
         \\frac{dS}{dt} &= -\\beta SI \\\\
         \\frac{dI}{dt} &= \\beta SI - \\gamma I \\\\
         \\frac{dR}{dt} &= \\gamma I
@@ -142,9 +188,9 @@ def SIR(param=None):
 
     """
     state = ['S', 'I', 'R']
-    param_list = ['beta', 'gamma', 'N']
+    param_list = ['beta', 'gamma']
     transition = [
-        Transition(origin='S', destination='I', equation='beta*S*I/N',
+        Transition(origin='S', destination='I', equation='beta*S*I',
                    transition_type=TransitionType.T),
         Transition(origin='I', destination='R', equation='gamma*I',
                    transition_type=TransitionType.T)
@@ -159,34 +205,33 @@ def SIR(param=None):
         ode_obj.parameters = param
         return ode_obj
 
+# def SIR_N(param=None, init=None):
+#     """
+#     A standard SIR model [Brauer2008]_ with population N
 
-def SIR_N(param=None, init=None):
-    """
-    A standard SIR model [Brauer2008]_ with population N
+#     .. math::
+#         \\frac{dS}{dt} &= -\\beta SI/N \\\\
+#         \\frac{dI}{dt} &= \\beta SI/N- \\gamma I \\\\
+#         \\frac{dR}{dt} &= \\gamma I
 
-    .. math::
-        \\frac{dS}{dt} &= -\\beta SI/N \\\\
-        \\frac{dI}{dt} &= \\beta SI/N- \\gamma I \\\\
-        \\frac{dR}{dt} &= \\gamma I
-
-    """
-    stateList = ['S', 'I', 'R']
-    paramList = ['beta', 'gamma', 'N']
-    transitionList = [Transition(origin='S', destination='I', equation='beta*S*I/N', transition_type=TransitionType.T),
-                    Transition(origin='I', destination='R', equation='gamma*I', transition_type=TransitionType.T)]
+#     """
+#     stateList = ['S', 'I', 'R']
+#     paramList = ['beta', 'gamma', 'N']
+#     transitionList = [Transition(origin='S', destination='I', equation='beta*S*I/N', transition_type=TransitionType.T),
+#                     Transition(origin='I', destination='R', equation='gamma*I', transition_type=TransitionType.T)]
     
-    # initialize the model
-    ode_obj = SimulateOde(stateList, paramList, transition=transitionList)
+#     # initialize the model
+#     ode_obj = SimulateOde(stateList, paramList, transition=transitionList)
 
-    # set return, depending on whether we have input the parameters
+#     # set return, depending on whether we have input the parameters
 
-    if param is not None:
-        ode_obj.parameters = param
+#     if param is not None:
+#         ode_obj.parameters = param
 
-    if init is not None:
-        ode_obj.initial_values = init
+#     if init is not None:
+#         ode_obj.initial_values = init
 
-    return ode_obj
+#     return ode_obj
 
 
 def SEIR_N(param=None, init=None):
@@ -830,19 +875,36 @@ def Lotka_Volterra(param=None):
     """
 
     # our two state and four parameters
-    # no idea why they are not in capital
     state = ['x', 'y']
     # while these 4 are
-    param_list = ['alpha', 'delta', 'c', 'gamma']
+    param_list = ['alpha', 'beta', 'gamma', 'delta', 'A']
     # then define the set of ode
-    ode = [
-        Transition(origin='x', equation='alpha*x - c*x*y',
-                   transition_type=TransitionType.ODE),
-        Transition(origin='y', equation='-delta*y + gamma*x*y',
-                   transition_type=TransitionType.ODE)
+    # ode = [
+    #     Transition(origin='x', equation='alpha*x - c*x*y',
+    #                transition_type=TransitionType.ODE),
+    #     Transition(origin='y', equation='-delta*y + gamma*x*y',
+    #                transition_type=TransitionType.ODE)
+    #     ]
+    # ode_obj = SimulateOde(state, param_list, ode=ode)
+
+    # Defining via transitions allows us to solve stochastically too
+    birth_death = [
+        Transition(origin='x', equation='alpha*x',
+                   transition_type=TransitionType.B),
+        Transition(origin='x', equation='beta*x*y/A',
+                   transition_type=TransitionType.D),
+        Transition(origin='y', equation='gamma*x*y/A',
+                   transition_type=TransitionType.B),
+        Transition(origin='y', equation='delta*y',
+                   transition_type=TransitionType.D)
         ]
 
-    ode_obj = SimulateOde(state, param_list, ode=ode)
+    # initialize the model
+    ode_obj = SimulateOde(state,
+                          param_list,
+                          birth_death=birth_death)
+
+
     # set return, depending on whether we have input the parameters
     if param is None:
         return ode_obj
@@ -993,7 +1055,7 @@ def Lorenz(param=None):
         return ode_obj
 
 
-def vanDelPol(param=None):
+def vanDerPol(param=None):
     """
     The van der Pol equation [vanderpol1926]_, a second order ode
 
@@ -1019,7 +1081,7 @@ def vanDelPol(param=None):
     >>> from pygom import common_models
     >>> import numpy
     >>> t = numpy.linspace(0, 20, 1000)
-    >>> ode = common_models.vanDelPol({'mu':1.0})
+    >>> ode = common_models.vanDerPol({'mu':1.0})
     >>> ode.initial_values = ([2.0,0.0], t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
