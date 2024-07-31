@@ -23,7 +23,7 @@ git activate relevant-branch-name
 ```
 
 Package dependencies can be found in the file `requirements.txt`.
-An easy way to install these to create a new [conda](https://conda.io/docs) environment via:
+An easy way to install these is to create a new [conda](https://conda.io/docs) environment via:
 
 ```bash
 conda env create -f conda-env.yml
@@ -43,8 +43,7 @@ pip install -r requirements.txt
 
 The final prerequisite, if you are working on a Windows machine, is that you will also need to install:
 - [Graphviz](https://graphviz.org/)
-- [Visual C++](https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0)
-- Visual C++ Build Tools
+- Microsoft Visual C++ 14.0 or greater, which you can get with [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
 
 You you should be able to install the PyGOM package via command line:
 

@@ -8,7 +8,7 @@ The package source is freely available (hosted on [GitHub](https://github.com/uk
 
 ## What is new in this release?
 
-The main objective of the current release (0.1.8?) is to provide more comprehensive documentation on how to use PyGOM.
+The main objective of the current release (0.1.8) is to provide more comprehensive documentation on how to use PyGOM.
 
 The code underlying PyGOM's functionality is largely unchanged since the previous release, barring a few minor bug fixes.
 The only significant changes which previous users should be aware of are:
@@ -19,7 +19,8 @@ Both these changes are outlined in more detail in the {doc}`Producing forecasts 
 
 ## Using this documentation
 This documentation is built using [JupyterBook](https://jupyterbook.org/en/stable/intro.html).
-To use the contents of a notebook as a starting point for trialing or developing your own models and analyses, you can download any of the examples within this documentation by using the download icon on the desired page (located at the top right).
+Instructions on how to build the documentation locally and where to find it can be found {doc}`here <building_doc>`.
+To use the contents of a notebook as a starting point for trialling or developing your own models and analyses, you can download any of the examples within this documentation by using the download icon on the desired page (located at the top right).
 
 ![download file](../images/download.png)
 
