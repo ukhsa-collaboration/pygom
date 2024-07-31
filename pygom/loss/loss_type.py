@@ -370,7 +370,7 @@ class Gamma(Baseloss_Type):
         Returns
         -------
         first_deriv_yhat: array like
-            :math:`\\mathcal\\frac{a \\left(\\hat{y} - y\\right)}{\\hat{y}^{2}}`
+            :math:`\\frac{a \\left(\\hat{y} - y\\right)}{\\hat{y}^{2}}`
 
         '''
         shape = self._shape
@@ -394,7 +394,7 @@ class Gamma(Baseloss_Type):
         Returns
         -------
         scnd_deriv_yhat: array like
-            :math:`\\mathcal\\frac{a \\left(- \\hat{y} + 2 y\\right)}{\\hat{y}^{3}}`
+            :math:`\\frac{a \\left(- \\hat{y} + 2 y\\right)}{\\hat{y}^{3}}`
 
         '''
         if len(yhat.shape) > 1:
