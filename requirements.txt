@@ -1,8 +1,8 @@
 dask[complete]>=0.13.0
 graphviz>=0.4.9
 matplotlib>=1.0.0
-numpy>=2.0.0
-pandas>=0.15.0
+numpy==1.26.4
+pandas>=2.2.2
 python-dateutil>=2.0.0
 scipy>=1.4.1
 sympy>=1.0.0
