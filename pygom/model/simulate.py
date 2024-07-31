@@ -1127,24 +1127,29 @@ class SimulateOde(DeterministicOde):
 
         return transition
 
+    def _get_A(self, A=None):
+        if A is None:
+            if not ode_utils.none_or_empty_list(self._odeList):
+                eqn_list = [t.equation for t in self._odeList]
+                A = sympy.Matrix(checkEquation(eqn_list,
+                                               *self._getListOfVariablesDict(),
+                                               subs_derived=False))
+                return A
+            else:
+                raise Exception("Object was not initialized using a set of ode")
+        else:
+            return A
+
     def get_bd_from_ode(self, A=None):
         '''
         Returns a list of:class:`Transition` from this object by unrolling
         the odes.  All the elements are of TransitionType.B or
         TransitionType.D
         '''
-        if A is None:
-            if not ode_utils.none_or_empty_list(self._odeList):
-                eqn = [t.equation for t in self._odeList]
-                A = sympy.Matrix(checkEquation(eqn,
-                                               *self._getListOfVariablesDict(),
-                                               subs_derived=False))
-            else:
-                raise Exception("Object was not initialized using a set of ode")
-            # A = super(SimulateOde, self).getOde()
+
+        A=self._get_A(A)
 
         bdList, _term = _ode_composition.getUnmatchedExpressionVector(A, True)
-
         if len(bdList) > 0:
             M = self._generateTransitionMatrix(A)
 
@@ -1171,17 +1176,6 @@ class SimulateOde(DeterministicOde):
             return bdUnroll
         else:
             return []
-
-    def _get_A(self, A=None):
-        if A is None:
-            if not ode_utils.none_or_empty_list(self._odeList):
-                eqn_list = [t.equation for t in self._odeList]
-                A = sympy.Matrix(checkEquation(eqn_list,
-                                               *self._getListOfVariablesDict(),
-                                               subs_derived=False))
-                return A
-            else:
-                raise Exception("Object was not initialized using a set of ode")
 
     def _generateTransitionMatrix(self, A=None):#, transitionExpressionList=None):
         '''
