@@ -25,7 +25,8 @@ from ._model_errors import ArrayError, InputError, \
 from ._model_verification import simplifyEquation
 
 from . import ode_utils
-from . import _ode_composition
+# from . import _ode_composition
+from . import _transition_graph
 
 class HasNewTransition(ode_utils.CompileCanary):
     states = ['ode', 'Jacobian', 'diffJacobian', 'grad', 'GradJacobian']
@@ -343,7 +344,8 @@ class DeterministicOde(BaseOdeModel):
         -------
         :class:`graphviz.Digraph`
         '''
-        dot = _ode_composition.generateTransitionGraph(self, file_name)
+        # dot = _ode_composition.generateTransitionGraph(self, file_name)
+        dot = _transition_graph.generateTransitionGraph(self, file_name)
         if show:
             import matplotlib.image as mpimg
             import matplotlib.pyplot as plt
