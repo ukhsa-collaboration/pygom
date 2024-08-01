@@ -13,6 +13,10 @@ Then, build the documentation from command line:
 jupyter-book build docs
 ```
 
-The html files will be saved in the local copy of your repository under:
+The generated HTML files will be saved in the local copy of your repository under:
 
     pygom/docs/_build/html
+
+You can view the documentation by opening the index file in your browser of choice:
+
+    pygom/docs/_build/html/index.html

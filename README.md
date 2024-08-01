@@ -46,8 +46,7 @@ Alternatively, you may add dependencies to your own environment:
 
 The final prerequisite, if you are working on a Windows machine, is that you will also need to install:
 - [Graphviz](https://graphviz.org/)
-- [Visual C++](https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0)
-- [Visual C++ Build Tools](https://go.microsoft.com/fwlink/?LinkId=691126)
+- Microsoft Visual C++ 14.0 or greater, which you can get with [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
 
 You should now be able to install the PyGOM package via command line:
 
@@ -68,7 +67,11 @@ Documentation is built from the command line:
 
 The html files will be saved in the local copy of your repository under:
 
-    docs/_build/html
+    pygom/docs/_build/html
+
+You can view the documentation by opening the index file in your browser of choice:
+
+    pygom/docs/_build/html/index.html
 
 > [!NOTE]
 > Building the documentation involves running many examples in python which can take up to 30 minutes. Subsequent builds with these examples unchanged are much quicker due to caching of the code outputs.

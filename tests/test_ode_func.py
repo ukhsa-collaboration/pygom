@@ -18,7 +18,7 @@ class TestJacobians(TestCase):
         self.x0 = np.array([1, 1.27e-6, 0])
         # params
         param_eval = [('beta', 0.5), ('gamma', 1.0 / 3.0)]
-        self.ode = common_models.SIR(param_eval)
+        self.ode = common_models.SIR_norm(param_eval)
         self.ode.initial_values = (self.x0, self.t0)
         self.d = self.ode.num_state
         self.p = self.ode.num_param

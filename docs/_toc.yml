@@ -20,6 +20,7 @@ parts:
       sections:
         - file: notebooks/model_params
         - file: notebooks/model_solver
+        - file: notebooks/time_dependent_params
     #- file: notebooks/transition
     # - file: md/unrollOde
     #   sections: 
@@ -47,20 +48,21 @@ parts:
     - file: md/common_models
       sections:
       - file: notebooks/common_models/SIS
-      - file: notebooks/common_models/SIS_Periodic
-      - file: notebooks/common_models/SIR 
-      - file: notebooks/common_models/SIR_Birth_Death 
+      - file: notebooks/common_models/SIR
       - file: notebooks/common_models/SEIR 
-      - file: notebooks/common_models/SEIR_Multiple 
-      - file: notebooks/common_models/SEIR_Birth_Death
-      - file: notebooks/common_models/SEIR_Birth_Death_Periodic 
+      - file: notebooks/common_models/SIS_Periodic
+      - file: notebooks/common_models/SIR_Birth_Death 
+      - file: notebooks/common_models/SEIR_Multiple
+      - file: notebooks/common_models/SEIR_Birth_Death_Periodic_Waning_Intro
+      #- file: notebooks/common_models/SEIR_Birth_Death
+      #- file: notebooks/common_models/SEIR_Birth_Death_Periodic 
       - file: notebooks/common_models/Legrand_Ebola_SEIHFR 
       - file: notebooks/common_models/Lotka_Volterra 
-      - file: notebooks/common_models/Lotka_Volterra_4State  
+      #- file: notebooks/common_models/Lotka_Volterra_4State  
       - file: notebooks/common_models/FitzHugh 
-      - file: notebooks/common_models/Lorenz  
-      - file: notebooks/common_models/vanDelPol
-      - file: notebooks/common_models/Robertson
+      #- file: notebooks/common_models/Lorenz  
+      #- file: notebooks/common_models/vanDelPol
+      #- file: notebooks/common_models/Robertson
   - caption: Frequently asked questions
     chapters: 
     - file: md/faq

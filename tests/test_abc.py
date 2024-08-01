@@ -10,7 +10,7 @@ class TestABC(TestCase):
     
     def setUp(self):
         # define the model and parameters
-        self.ode = common_models.SIR({'beta':0.5, 'gamma':1.0/3.0})
+        self.ode = common_models.SIR_norm({'beta':0.5, 'gamma':1.0/3.0})
         
         # the initial state, normalized to one
         self.x0 = [1, 1.27e-6, 0]

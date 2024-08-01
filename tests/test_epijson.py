@@ -18,7 +18,7 @@ class TestEpijson(TestCase):
 
     def test_initialize_epijson_loss(self):
         data = pkgutil.get_data('pygom', 'data/eg1.json')
-        ode = common_models.SIR()
+        ode = common_models.SIR_norm()
         ode.parameters = [0.5, 0.3]
         obj = EpijsonLoss([0.005, 0.03], ode, data, 'Death', 'R', [300, 2, 0])
         self.assertTrue(np.allclose(obj.cost(), 10.86559460256))

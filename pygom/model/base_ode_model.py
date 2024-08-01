@@ -112,6 +112,7 @@ class BaseOdeModel(object):
         self._lambdaMat = None
         self._vMat = None
         self._GMat = None
+        self._lambdaMatOD = None # also trialing this matrix indicating if a state is an origin or destination in a transition
 
         self._add_list_attr(state, "state_list")
         self._add_list_attr(param, "param_list")
@@ -987,7 +988,9 @@ class BaseOdeModel(object):
         _f, _t, eqn = self._unrollTransitionList(self._getAllTransition())
         for j, eqn in enumerate(eqn):
             for i, state in enumerate(self._stateList):
-                if self._stateDict[state.ID] in eqn.atoms():
+                if type(eqn)==int:
+                    self._lambdaMat[i, j] = 0
+                elif self._stateDict[state.ID] in eqn.atoms():
                     self._lambdaMat[i, j] = 1
 
         return self._lambdaMat
@@ -1019,6 +1022,24 @@ class BaseOdeModel(object):
                         self._vMat[k2, j] += -1
 
         return self._vMat
+    
+    # Might replace _computeReactantMatrix. This function gives a matrix 
+    def _computeReactantMatrixOD(self):
+        """
+        The alternative reactant matrix, where
+
+        .. math::
+            \\lambda_{i,j} = \\left\\{ 1, &if state i is an origin or destination in transition j, \\\\
+                                       0, &otherwise \\right.
+
+        OD imples this refers to origin and destination
+        """
+        
+        x=self._vMat!=0
+        x=x.astype(int)
+        self._lambdaMatOD=x
+
+        return self._lambdaMatOD
 
     def _computeDependencyMatrix(self):
         """
@@ -1029,6 +1050,8 @@ class BaseOdeModel(object):
             self._computeReactantMatrix()
         if self._vMat is None:
             self._computeStateChangeMatrix()
+        if self._lambdaMatOD is None:
+            self._computeReactantMatrixOD()
 
         nt = self.num_transitions
         self._GMat = np.zeros((nt, nt), int)

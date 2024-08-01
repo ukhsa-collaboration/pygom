@@ -98,7 +98,7 @@ def gamma_mu_shape(x, mu,shape,log=False):
 
     Returns
     -------
-    pdf, :math:`\\mathcal\\{p}(x; \\mu,a) = \\exp(- a \\ln{\\left(\\frac{\\mu}{a} \\right)} - \\frac{a x}{\\mu} + \\left(a - 1\\right) \\ln{\\left(x \\right)} - \\ln{\\left(\\Gamma\\left(a\\right) \\right)})`
+    pdf, :math:`\\mathcal{p}(x; \\mu,a) = \\exp(- a \\ln{\\left(\\frac{\\mu}{a} \\right)} - \\frac{a x}{\\mu} + \\left(a - 1\\right) \\ln{\\left(x \\right)} - \\ln{\\left(\\Gamma\\left(a\\right) \\right)})`
 `
 
     '''
