@@ -82,6 +82,11 @@ jobs:
         run: |
           mkdir ~/.matplotlib
           echo "backend: TkAgg" >> ~/.matplotlib/matplotlibrc
+
+      - name: install PyGOM
+        run |
+          pip install .
+
       - name: Run tests
         run: python -m unittest discover --start-directory tests
 
