@@ -40,7 +40,11 @@ which you should ensure is active for the installation process using
 
     conda activate pygom
 
-Alternatively, you may add dependencies to your own environment:
+Alternatively, you may add dependencies to your own environment through conda:
+
+    conda install --file requirements.txt
+
+**or** via pip:
 
     pip install -r requirements.txt
 
@@ -61,17 +65,21 @@ This will run a few test cases and can take some minutes to complete.
 ## Documentation
 
 Documentation must be built locally and all necessary files can be found in the `docs` folder.
-Documentation is built from the command line:
+Documentation is built from the command line by first installing the additional documentation requirements:
+
+    pip install -r docs/requirements.txt
+
+and then building the documentation:
 
     jupyter-book build docs
 
 The html files will be saved in the local copy of your repository under:
 
-    pygom/docs/_build/html
+    docs/_build/html
 
 You can view the documentation by opening the index file in your browser of choice:
 
-    pygom/docs/_build/html/index.html
+    docs/_build/html/index.html
 
 > [!NOTE]
 > Building the documentation involves running many examples in python which can take up to 30 minutes. Subsequent builds with these examples unchanged are much quicker due to caching of the code outputs.
