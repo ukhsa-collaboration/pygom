@@ -2,7 +2,7 @@
 requires = ["setuptools>=64", 
             "setuptools_scm>=8",
             "setuptools_scm_git_archive",
-            "numpy>=2.0.0",
+            "numpy>=1.24.4",
             "cython>=0.29",
             "setuptools>=61.0",
             "scipy>=1.12.0"]
@@ -62,5 +62,5 @@ Issues = "https://github.com/ukhsa-collaboration/pygom/issues"
 manylinux-x86_64-image = "manylinux2014"
 
 [[tool.cibuildwheel.overrides]]
-select = "cp3{9}-*"
+select = "cp3{8,9}-*"
 manylinux-x86_64-image = "manylinux2010"
