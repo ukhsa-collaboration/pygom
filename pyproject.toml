@@ -43,8 +43,8 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
-[tool.setuptools_scm]
-version_file = "pygom/_version.py"
+#[tool.setuptools_scm]
+#version_file = "pygom/_version.py"
 
 [tool.setuptools.packages.find]
 where = ["src"]
