@@ -1,5 +1,6 @@
 [build-system]
-requires = ["setuptools-scm>=3.2.0",
+requires = ["setuptools>=64", 
+            "setuptools_scm>=8"
             "setuptools_scm_git_archive",
             "numpy>=2.0.0",
             "cython>=0.29",
@@ -9,8 +10,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pygom"
-#dynamic = ["version"]
-version = "0.1.8a"
+dynamic = ["version"]
 dependencies = [
   "dask[complete]>=0.13.0",
   "graphviz>=0.4.9",
@@ -43,11 +43,13 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[tool.setuptools_scm]
+version_file = "pygom/_version.py"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.dynamic]
-# version = {attr = "0.1.8a"} # TODO: change to git tag
 readme = {file = ["README.rst"]}
 
 [project.urls]
