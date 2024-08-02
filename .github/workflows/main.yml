@@ -84,7 +84,7 @@ jobs:
           echo "backend: TkAgg" >> ~/.matplotlib/matplotlibrc
 
       - name: install PyGOM
-        run |
+        run: |
           pip install .
 
       - name: Run tests
