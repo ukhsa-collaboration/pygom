@@ -63,12 +63,18 @@ manylinux-x86_64-image = "manylinux2014"
 
 # Install blas on linux
 [tool.cibuildwheel.linux]
-#before-all = "yum -y update && yum -y install openblas-devel openblas"
-#before-test = "yum -y update && yum -y install openblas-devel openblas"
 before-all = """
-python -m pip install scipy-openblas32==0.3.27.63.1 
-python -c "import scipy_openblas32; print(scipy_openblas32.get_pkg_config())" > {project}/scipy-openblas.pc
+# Note we can't just use the version from yum as it doesn't have a pkgconfig
+git clone https://github.com/xianyi/OpenBLAS.git
+cd OpenBLAS
+make -j8
+make PREFIX=/usr/local/OpenBLAS install
+export PKG_CONFIG_PATH=/usr/local/OpenBLAS/lib/pkgconfig
 """
+# 
+# "yum -y update && yum -y install openblas-devel openblas"
+#before-test = "yum -y update && yum -y install openblas-devel openblas"
+
 
 [[tool.cibuildwheel.overrides]]
 select = "cp3{8,9}-*"
