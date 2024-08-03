@@ -56,8 +56,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-          # We need quite a deep fetch so that we get the versioning right 
-          fetch-depth: 500 
+        # We need quite a deep fetch so that we get the versioning right 
+        fetch-depth: 500 
 
       - name: Install dependencies
         run: |
