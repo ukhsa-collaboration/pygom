@@ -5,7 +5,7 @@ requires = ["setuptools>=64",
             "numpy>=1.24.4",
             "cython>=0.29",
             "setuptools>=61.0",
-            "scipy>=1.10.1"]
+            "scipy>=1.14.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -18,7 +18,7 @@ dependencies = [
   "numpy>=1.24.4",
   "pandas>=2.2.2",
   "python-dateutil>=2.0.0",
-  "scipy>=1.10.1",
+  "scipy>=1.14.0",
   "sympy>=1.0.0",
   "numpydoc>=0.6.0",
   "cython>=0.29"
@@ -64,9 +64,10 @@ manylinux-x86_64-image = "manylinux2014"
 # Install blas on linux
 [tool.cibuildwheel.linux]
 before-all = """
-yum -y update && yum -y install pkgconfig openblas-devel openblas
+#yum -y update && yum -y install pkgconfig openblas-devel openblas
+
 #python -m pip install --upgrade pip
-#pip install --prefer-binary scipy
+pip install --prefer-binary scipy>=1.14.0
 # Note we can't just use the version from yum as it doesn't have a pkgconfig
 #git clone https://github.com/xianyi/OpenBLAS.git
 #cd OpenBLAS
