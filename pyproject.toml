@@ -64,7 +64,8 @@ manylinux-x86_64-image = "manylinux2014"
 # Install blas on linux
 [tool.cibuildwheel.linux]
 before-all = """
-pip install scipy
+python -m pip install --upgrade pip
+pip install --prefer-binary scipy
 # Note we can't just use the version from yum as it doesn't have a pkgconfig
 #git clone https://github.com/xianyi/OpenBLAS.git
 #cd OpenBLAS
