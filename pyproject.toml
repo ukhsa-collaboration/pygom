@@ -14,7 +14,7 @@ dynamic = ["version"]
 dependencies = [
   "setuptools>=64", 
   "setuptools_scm>=8",
-  "setuptools_scm_git_archive"
+  "setuptools_scm_git_archive",
   "dask[complete]>=0.13.0",
   "graphviz>=0.4.9",
   "matplotlib>=1.0.0",
