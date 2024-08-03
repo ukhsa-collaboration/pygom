@@ -1,7 +1,7 @@
 [build-system]
 requires = ["setuptools>=64", 
             "setuptools_scm>=8",
-            "setuptools_scm_git_archive",
+#            "setuptools_scm_git_archive",
             "numpy>=1.24.4",
             "cython>=0.29",
             "setuptools>=61.0",
@@ -46,7 +46,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
-#[tool.setuptools_scm]
+[tool.setuptools_scm]
 #version_file = "pygom/_version.py"
 
 [tool.setuptools.packages.find]
