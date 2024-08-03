@@ -89,11 +89,11 @@ jobs:
             python: 312
             platform_id: win_amd64
 
-          # Linux 64 bit manylinux2014
-          - os: ubuntu-latest
-            python: cp39
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
+#          # Linux 64 bit manylinux2014
+#          - os: ubuntu-latest
+#            python: cp39
+#            platform_id: manylinux_x86_64
+#            manylinux_image: manylinux2014
 
           # NumPy on Python 3.10 only supports 64bit and is only available with manylinux2014
           - os: ubuntu-latest
