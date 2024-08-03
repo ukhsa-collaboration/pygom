@@ -66,7 +66,7 @@ manylinux-x86_64-image = "manylinux2014"
 #before-all = "yum -y update && yum -y install openblas-devel openblas"
 #before-test = "yum -y update && yum -y install openblas-devel openblas"
 before-all = """
-python -m pip install -r requirements/openblas.txt 
+python -m pip install scipy-openblas32==0.3.27.63.1 
 python -c "import scipy_openblas32; print(scipy_openblas32.get_pkg_config())" > {project}/scipy-openblas.pc
 """
 
