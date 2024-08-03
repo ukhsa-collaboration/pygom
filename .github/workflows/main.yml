@@ -91,22 +91,22 @@ jobs:
 
           # Linux 64 bit manylinux2014
           - os: ubuntu-latest
-            python: 39
+            python: cp39
             platform_id: manylinux_x86_64
             manylinux_image: manylinux2014
 
           # NumPy on Python 3.10 only supports 64bit and is only available with manylinux2014
           - os: ubuntu-latest
-            python: 310
+            python: cp310
             platform_id: manylinux_x86_64
             manylinux_image: manylinux2014
 
           - os: ubuntu-latest
-            python: 311
+            python: cp311
             platform_id: manylinux_x86_64
             manylinux_image: manylinux2014
           - os: ubuntu-latest
-            python: 312
+            python: cp312
             platform_id: manylinux_x86_64
             manylinux_image: manylinux2014
 
@@ -127,8 +127,8 @@ jobs:
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
-          CIBW_BUILD: ${{ matrix.python[0] }}-${{ matrix.buildplat[1] }}*
-          CIBW_ARCHS: ${{ matrix.buildplat[2] }}
+          CIBW_BUILD: ${{ matrix.python }}-${{ matrix.platform_id }}*
+
 
       - uses: actions/upload-artifact@v4
         with:
