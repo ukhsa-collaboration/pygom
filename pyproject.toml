@@ -65,7 +65,10 @@ manylinux-x86_64-image = "manylinux2014"
 [tool.cibuildwheel.linux]
 #before-all = "yum -y update && yum -y install openblas-devel openblas"
 #before-test = "yum -y update && yum -y install openblas-devel openblas"
-before-all = "python -m pip install -r requirements/openblas.txt && python -c "import scipy_openblas32; print(scipy_openblas32.get_pkg_config())" > {project}/scipy-openblas.pc"
+before-all = """
+python -m pip install -r requirements/openblas.txt 
+python -c "import scipy_openblas32; print(scipy_openblas32.get_pkg_config())" > {project}/scipy-openblas.pc
+"""
 
 [[tool.cibuildwheel.overrides]]
 select = "cp3{8,9}-*"
