@@ -65,7 +65,7 @@ jobs:
           pip install .
 
       - name: Run tests
-        run: python -m unittest discover --start-directory tests
+        run: python -m unittest discover -s {project}/tests
 
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
@@ -77,16 +77,16 @@ jobs:
         include:
           # Window 64 bit
           - os: windows-latest
-            python: 39
+            python: cp39
             platform_id: win_amd64
           - os: windows-latest
-            python: 310
+            python: cp310
             platform_id: win_amd64
           - os: windows-latest
-            python: 311
+            python: cp311
             platform_id: win_amd64
           - os: windows-latest
-            python: 312
+            python: cp312
             platform_id: win_amd64
 
 #          # Linux 64 bit manylinux2014
@@ -128,6 +128,7 @@ jobs:
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BUILD: ${{ matrix.python }}-${{ matrix.platform_id }}*
+          CIBW_TEST_COMMAND: python -W default -m unittest discover -s {project}/tests
 
 
       - uses: actions/upload-artifact@v4
