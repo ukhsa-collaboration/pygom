@@ -63,8 +63,8 @@ manylinux-x86_64-image = "manylinux2014"
 
 # Install blas & lapack on x86_64
 [tool.cibuildwheel.linux]
-before-all = "yum -y update && yum -y install blas-devel lapack-devel"
-before-test = "yum -y update && yum -y install openblas-devel lapack"
+before-all = "yum -y update && yum -y install openblas-devel"
+# before-test = "yum -y update && yum -y install openblas-devel lapack"
 
 
 [[tool.cibuildwheel.overrides]]
