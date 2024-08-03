@@ -70,11 +70,11 @@ before-all = """
 #pip install --prefer-binary scipy>=1.10.1
 
 # Note we can't just use the version from yum as it doesn't have a pkgconfig
-git clone https://github.com/OpenMathLib/OpenBLAS.git
-cd OpenBLAS
-make -j8
-make PREFIX=/usr/local/OpenBLAS install
-export PKG_CONFIG_PATH=/usr/local/OpenBLAS/lib/pkgconfig
+#git clone https://github.com/OpenMathLib/OpenBLAS.git
+#cd OpenBLAS
+#make -j8
+#make PREFIX=/usr/local/OpenBLAS install
+#export PKG_CONFIG_PATH=/usr/local/OpenBLAS/lib/pkgconfig
 """
 # 
 # "yum -y update && yum -y install pkgconfig openblas-devel openblas"
