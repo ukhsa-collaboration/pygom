@@ -71,8 +71,44 @@ jobs:
     name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
+      # Ensure that a wheel builder finishes even if another fails
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest,windows-latest]#, macos-13, macos-14]
+        include:
+          # Window 64 bit
+          - os: windows-latest
+            python: 39
+            platform_id: win_amd64
+          - os: windows-latest
+            python: 310
+            platform_id: win_amd64
+          - os: windows-latest
+            python: 311
+            platform_id: win_amd64
+          - os: windows-latest
+            python: 312
+            platform_id: win_amd64
+
+          # Linux 64 bit manylinux2014
+          - os: ubuntu-latest
+            python: 39
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+
+          # NumPy on Python 3.10 only supports 64bit and is only available with manylinux2014
+          - os: ubuntu-latest
+            python: 310
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+
+          - os: ubuntu-latest
+            python: 311
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+          - os: ubuntu-latest
+            python: 312
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
 
     steps:
       - uses: actions/checkout@v4
