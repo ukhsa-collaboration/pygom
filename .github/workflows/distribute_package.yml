@@ -80,7 +80,7 @@ jobs:
           CIBW_BUILD: ${{ matrix.python[0] }}-${{ matrix.platform_id }}*
           CIBW_TEST_COMMAND: python -W default -m unittest discover --start-directory {project}/tests
           # setuptools_scm workaround for https://github.com/pypa/setuptools_scm/issues/455
-          CIBW_BEFORE_BUILD: ${{ github.ref == 'refs/heads/dev' &&  'echo ''local_scheme = "no-local-version"'' >> pyproject.toml\n git diff --color=always\n git update-index --assume-unchanged pyproject.toml\n' || '' }}
+          CIBW_BEFORE_BUILD: ${{ github.ref == 'refs/heads/dev' &&  'echo ''local_scheme = "no-local-version"'' >> pyproject.toml && git diff --color=always && git update-index --assume-unchanged pyproject.toml' || '' }}
           
       # Upload the results
       - uses: actions/upload-artifact@v4
