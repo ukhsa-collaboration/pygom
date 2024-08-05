@@ -98,6 +98,14 @@ jobs:
           fetch-depth: 500
           fetch-tags: true
 
+      # setuptools_scm workaround for https://github.com/pypa/setuptools_scm/issues/455
+      - name: Disable local version identifier on develop CI
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          echo 'local_scheme = "no-local-version"' >> pyproject.toml
+          git diff --color=always
+          git update-index --assume-unchanged pyproject.toml
+
       - name: Build sdist
         run: pipx run build --sdist
 
