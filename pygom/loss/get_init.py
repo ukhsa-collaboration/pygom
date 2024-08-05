@@ -2,13 +2,11 @@ from functools import partial
 
 import numpy as np
 from scipy.interpolate import UnivariateSpline
-
 # TODO: For newer <1.14.0 versions of scipy. Once established remove and leave only except part
 try:
     from scipy.integrate import simps
 except ImportError:
     from scipy.integrate import simpson as simps
-
 from scipy.optimize import leastsq, minimize_scalar
 
 def get_init(y, t, ode, theta=None, full_output=False):

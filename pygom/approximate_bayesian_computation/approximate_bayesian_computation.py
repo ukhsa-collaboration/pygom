@@ -137,7 +137,7 @@ def create_loss(loss_type, parameters, ode, x0, t0, t, y, state_name,
                 state_weight=None, sigma=None):
     """
     Parameters (see also class `BaseLoss`)
-    ----------
+    --------------------------------------
     loss_type: class `BaseLoss`
     parameters: list
         a list of objects of class `Parameter`
@@ -155,7 +155,8 @@ def create_loss(loss_type, parameters, ode, x0, t0, t, y, state_name,
         the state(s) which the observations came from
     state_weight: array like
         weight for the observations
-    sigma: 
+    sigma: numeric
+        sigma for `NormalLoss` function
     """
     assert t0 != t[0], "Make sure that the times, t, do not include t0"
     assert all(param.name in (ode.param_list+ode.state_list) for param in parameters), "Parameters have been provided that are not in the model"
@@ -167,7 +168,7 @@ def create_loss(loss_type, parameters, ode, x0, t0, t, y, state_name,
     if loss_type == "SquareLoss":
         return SquareLoss(theta, ode, x0, t0, t, y, state_name, state_weight, target_param, target_state)
     
-    elif loss_type == NormalLoss:
+    elif loss_type == "NormalLoss":
         return NormalLoss(theta=theta, 
                           ode=ode, 
                           x0=x0, 
@@ -179,8 +180,8 @@ def create_loss(loss_type, parameters, ode, x0, t0, t, y, state_name,
                           target_param=target_param, 
                           target_state=target_state)
         
-    elif loss_type == PoissonLoss:
-        return PoissonLoss(theta, ode, x0, t0, t, y, state_name, target_param, target_state)    
+    elif loss_type == "PoissonLoss":
+        return PoissonLoss(theta, ode, x0, t0, t, y, state_name, state_weight, target_param, target_state)    
     else:
         raise ValueError("Please choose from the available loss functions")
 
@@ -474,7 +475,7 @@ class ABC():
     def continue_posterior_sample(self, N, tol, G=1, q=None, M=None, progress=False):
         """
         Parameters (same as get_posterior_sample)
-        ----------
+        -----------------------------------------
         N: integer
             the number of samples in each generation
         tol: float or array like

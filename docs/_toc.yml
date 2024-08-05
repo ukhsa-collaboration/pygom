@@ -4,47 +4,65 @@
 format: jb-book
 root: md/intro
 parts:
-  - caption: User documentation
+  - caption: Getting started
     chapters:
-    - file: md/getting_started
-    - file: notebooks/sir
-    - file: notebooks/transition
-    - file: notebooks/stochastic
-    - file: md/unrollOde
-      sections: 
-      - file: notebooks/unroll/unrollSimple
-      - file: notebooks/unroll/unrollBD
-      - file: notebooks/unroll/unrollHard
-    - file: notebooks/epi
-    - file: notebooks/epijson
+    - file: md/installation
+    - file: md/building_doc
+  - caption: PyGOM workflow
+    chapters:
+    - file: notebooks/model_spec
+    - file: notebooks/insights
+      sections:
+        - file: notebooks/extract_info
+        #- file: notebooks/epi
+        - file: notebooks/unroll/unrollSimple
+    - file: md/solving
+      sections:
+        - file: notebooks/model_params
+        - file: notebooks/model_solver
+        - file: notebooks/time_dependent_params
+    #- file: notebooks/transition
+    # - file: md/unrollOde
+    #   sections: 
+    #   - file: notebooks/unroll/unrollSimple
+    #   - file: notebooks/unroll/unrollBD
+    #   - file: notebooks/unroll/unrollHard
     - file: md/parameter_fitting
       sections:
+      - file: notebooks/paramfit/params_via_abc
+      - file: notebooks/paramfit/params_via_optimization
       - file: notebooks/paramfit/bvpSimple
-      - file: notebooks/paramfit/gradient
-      - file: notebooks/paramfit/fh
-      - file: notebooks/paramfit/estimate1
-      - file: notebooks/paramfit/estimate2
-      - file: notebooks/paramfit/initialGuess
-      - file: notebooks/paramfit/profile
+    - file: notebooks/epijson
+      # - file: notebooks/paramfit/gradient
+      # - file: notebooks/paramfit/fh
+      # - file: notebooks/paramfit/estimate1
+      # - file: notebooks/paramfit/estimate2
+      # - file: notebooks/paramfit/initialGuess
+      # - file: notebooks/paramfit/profile
+  #- caption: Appendix
+  #  chapters:
+  #  - file: notebooks/paramfit/gradient
+  #  - file: notebooks/paramfit/profile
   - caption: Common biological compartmental models
     chapters:
     - file: md/common_models
       sections:
       - file: notebooks/common_models/SIS
-      - file: notebooks/common_models/SIS_Periodic
-      - file: notebooks/common_models/SIR 
-      - file: notebooks/common_models/SIR_Birth_Death 
+      - file: notebooks/common_models/SIR
       - file: notebooks/common_models/SEIR 
-      - file: notebooks/common_models/SEIR_Multiple 
-      - file: notebooks/common_models/SEIR_Birth_Death
-      - file: notebooks/common_models/SEIR_Birth_Death_Periodic 
+      - file: notebooks/common_models/SIS_Periodic
+      - file: notebooks/common_models/SIR_Birth_Death 
+      - file: notebooks/common_models/SEIR_Multiple
+      - file: notebooks/common_models/SEIR_Birth_Death_Periodic_Waning_Intro
+      #- file: notebooks/common_models/SEIR_Birth_Death
+      #- file: notebooks/common_models/SEIR_Birth_Death_Periodic 
       - file: notebooks/common_models/Legrand_Ebola_SEIHFR 
       - file: notebooks/common_models/Lotka_Volterra 
-      - file: notebooks/common_models/Lotka_Volterra_4State  
+      #- file: notebooks/common_models/Lotka_Volterra_4State  
       - file: notebooks/common_models/FitzHugh 
-      - file: notebooks/common_models/Lorenz  
-      - file: notebooks/common_models/vanDelPol
-      - file: notebooks/common_models/Robertson
+      #- file: notebooks/common_models/Lorenz  
+      #- file: notebooks/common_models/vanDelPol
+      #- file: notebooks/common_models/Robertson
   - caption: Frequently asked questions
     chapters: 
     - file: md/faq

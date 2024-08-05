@@ -81,7 +81,8 @@ class Baseloss_Type(object):
         else:
             resid = self._y - yhat
         if apply_weighting:
-            resid *= self._w
+            #resid *= self._w
+            resid = resid*self._w  # above multiplication caused error
 
         return resid
 
@@ -369,7 +370,7 @@ class Gamma(Baseloss_Type):
         Returns
         -------
         first_deriv_yhat: array like
-            :math:`\\mathcal\\frac{a \\left(\\hat{y} - y\\right)}{\\hat{y}^{2}}`
+            :math:`\\frac{a \\left(\\hat{y} - y\\right)}{\\hat{y}^{2}}`
 
         '''
         shape = self._shape
@@ -393,7 +394,7 @@ class Gamma(Baseloss_Type):
         Returns
         -------
         scnd_deriv_yhat: array like
-            :math:`\\mathcal\\frac{a \\left(- \\hat{y} + 2 y\\right)}{\\hat{y}^{3}}`
+            :math:`\\frac{a \\left(- \\hat{y} + 2 y\\right)}{\\hat{y}^{3}}`
 
         '''
         if len(yhat.shape) > 1:

@@ -32,6 +32,7 @@ if use_cython:
         Extension("pygom.model._tau_leap",
                   ["pygom/model/_tau_leap.pyx"],
                   include_dirs=[numpy.get_include()],
+                  extra_compile_args=['-std=c99'],
 #                  extra_compile_args=['-fopenmp'],
 #                  extra_link_args=['-fopenmp']),
 )
@@ -45,6 +46,7 @@ else:
         Extension("pygom.model._tau_leap",
                   ["pygom/model/_tau_leap.c"],
                   include_dirs=[numpy.get_include()],
+                  extra_compile_args=['-std=c99'],
 #                  extra_compile_args=['-fopenmp'],
 #                  extra_link_args=['-fopenmp']),
 )
@@ -68,13 +70,13 @@ for r in requires:
     else:
         install_requires.append(r)
 
-with open('README.rst', 'r') as f:
+with open('README.md', 'r') as f:
     readme = f.read()
 
 setup_requires = [
     'setuptools-scm>=3.2.0',
     'setuptools_scm_git_archive',
-    'numpy>=1.12.0'
+    'numpy>=2.0.0'
     ]
 
 setup(

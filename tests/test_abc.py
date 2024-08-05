@@ -10,7 +10,7 @@ class TestABC(TestCase):
     
     def setUp(self):
         # define the model and parameters
-        self.ode = common_models.SIR({'beta':0.5, 'gamma':1.0/3.0})
+        self.ode = common_models.SIR_norm({'beta':0.5, 'gamma':1.0/3.0})
         
         # the initial state, normalized to one
         self.x0 = [1, 1.27e-6, 0]
@@ -64,7 +64,7 @@ class TestABC(TestCase):
         parameters = [pgabc.Parameter('beta', 'unif', 0, 3, logscale=False), 
                       pgabc.Parameter('gamma', 'unif', 0, 3, logscale=False)]
 
-        sir_obj = pgabc.create_loss(NormalLoss, parameters, self.ode, self.x0, self.t[0],
+        sir_obj = pgabc.create_loss("NormalLoss", parameters, self.ode, self.x0, self.t[0],
                                   self.t[1::], y, ['I', 'R'], sigma=1.0)
 
         sir_abc = pgabc.ABC(sir_obj, parameters)

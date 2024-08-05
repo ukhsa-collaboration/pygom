@@ -246,6 +246,198 @@ class SimulateOde(DeterministicOde):
             return Y, solutionList
         else:
             return Y
+        
+    def solve_determ(self, t, iteration=None, parallel=False, full_output=False):
+            '''
+            Simulate the ode by generating new realization of the stochastic
+            parameters and integrate the system deterministically.
+
+            Parameters
+            ----------
+            t: array like
+                the range of time points which we want to see the result of
+            iteration: int
+                number of iterations you wish to simulate
+            parallel: bool, optional
+                Defaults to True
+            full_output: bool, optional
+                if we want additional information, Y_all in the return,
+                defaults to false
+
+            Returns
+            -------
+            Y: :class:`numpy.ndarray`
+                of shape (len(t), len(state)), mean of all the simulation
+            Y_all: :class:`np.ndarray`
+                of shape (iteration, len(t), len(state))
+            '''
+            if t is None:
+                raise InputError("Need to specify the time we wish to observe")
+            
+            # If parameters are not random then return one integration
+            if self._stochasticParam is None:
+                solution = self.integrate(t)
+                return solution
+            
+            # Otherwise, proceed for random parameters and verify expected extra parameters are present.
+            if iteration is None:
+                raise InputError("Need to specify the number of iterations")
+
+            self._odeSolution = self.integrate(t)
+
+            # try to compute the simulation in parallel
+            if parallel:
+                try:
+                    for i in self._stochasticParam:
+                        if isinstance(i, scipy.stats._distn_infrastructure.rv_frozen):
+                            raise Exception("Cannot perform parallel simulation "
+                                            +"using a serialized object as distribution")
+                    # check the type of parameter we have as input
+                    import dask.bag
+                    y = list()
+                    for i in range(iteration):
+                        y_i = list()
+                        for key, rv in self._stochasticParam.items():
+                            y_i += [{key:rv.rvs(1)[0]}]
+                        y += [y_i]
+                    # y = [rv.rvs(iteration) for rv in self._stochasticParam.values()]
+                    # y = np.array(list(zip(*y)))
+                    def sim(x):
+                        self.parameters = x
+                        return self.integrate(t)
+
+                    # def sim(t1): return(self.integrate(t1))
+
+                    # xtmp = dask.bag.from_sequence([t]*iteration)
+                    xtmp = dask.bag.from_sequence(y)
+                    solutionList = xtmp.map(sim).compute()
+                except Exception: # as e:
+                    # print(e)
+                    # print("Serial")
+                    solutionList = [self.integrate(t) for i in range(iteration)]
+            else:
+                solutionList = [self.integrate(t) for i in range(iteration)]
+
+            # now make our 3D array
+            # the first dimension is the number of iteration
+            Y = np.dstack(solutionList).mean(axis=2)
+
+            if full_output:
+                return Y, solutionList
+            else:
+                return Y
+
+    # Same as function below, just trying out new naming convention
+    def solve_stochast(self, t, iteration, parallel=False,
+                      exact=False, full_output=False):
+        '''
+        Simulate the ode using stochastic simulation.  It switches
+        between a first reaction method and a :math:`\\tau`-leap
+        algorithm internally. When a parallel backend exists, then a new random
+        state (seed) will be used for each processor.  This is due to a lack
+        of appropriate parallel seed random number generator in python.
+
+        Parameters
+        ----------
+        t: array like
+            the range of time points which we want to see the result of
+            or the final time point
+        iteration: int
+            number of iterations you wish to simulate
+        parallel: bool, optional
+            Defaults to True
+        exact: bool, optional
+            True if exact simulation is desired, defaults to False
+        full_output: bool, optional
+            if we want additional information, sim_T
+
+        Returns
+        -------
+        sim_X: list
+            of length iteration each with (len(t),len(state)) if t is a vector,
+            else it outputs unequal shape that was record of all the jumps
+        sim_T: list or :class:`numpy.ndarray`
+            if t is a single value, it outputs unequal shape that was
+            record of all the jumps.  if t is a vector, it outputs t so that
+            it is a :class:`numpy.ndarray` instead
+
+        '''
+
+        assert len(self._odeList) == 0, \
+            "Currently only able to simulate when only transitions are present"
+        assert np.all(np.mod(self._x0, 1) == 0), \
+            "Can only simulate a jump process with integer initial values"
+
+        # this determines what type of output we want
+        timePoint = False
+
+        if isinstance(t, Number):#, (int, float, np.int64, np.float64)):
+            finalT = t
+        elif isinstance(t, (list, tuple)):
+            t = np.array(t)
+            if len(t) == 1:
+                finalT = t
+            else:
+                finalT = t[-1:]
+                timePoint = True
+        elif isinstance(t, np.ndarray):
+            finalT = t[-1:]
+            timePoint = True
+        else:
+            raise InputError("Unknown data type for time")
+
+        if self._transitionVectorCompile is None:
+            self._compileTransitionVector()
+
+        if parallel:
+            try:
+                import dask.bag
+                logging.debug("Using Dask for parallel simulation")
+                def jump_partial(final_t): return(self._jump(final_t,
+                                                             exact=exact,
+                                                             full_output=True,
+                                                             seed=True))
+
+                xtmp = dask.bag.from_sequence(np.ones(iteration)*finalT)
+                xtmp = xtmp.map(jump_partial).compute()
+            except Exception as e:
+                raise e
+                logging.warning("Parallel simulation failed reverting to serial")
+                xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
+        else:
+            logging.debug("Performing serial simulation")
+            xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
+
+        xmat = list(zip(*xtmp))
+        simXList, simTList = list(xmat[0]), list(xmat[1])
+        ## print("Finish computation")
+        # now we want to fix our simulation, if they need fixing that is
+        # print timePoint
+        if timePoint:
+            for _i in range(len(simXList)):
+                # unroll, always the first element
+                # it is easy to remember that we are accessing the first
+                # element because pop is spelt similar to poop and we
+                # all know that your execute first in first out when you
+                # poop!
+                simX = simXList.pop(0)
+                simT = simTList.pop(0)
+
+                x = self._extractObservationAtTime(simX, simT, t)
+                simTList.append(t)
+                simXList.append(x)
+        # note that we have to remain in list form because the number of
+        # simulation will be different if we are not dealing with
+        # a specific set of time points
+
+        if full_output:
+            if timePoint:
+                return simXList, t
+            else:
+                return simXList, simTList
+        else:
+            return simXList
+
 
     def simulate_jump(self, t, iteration, parallel=False,
                       exact=False, full_output=False):
@@ -361,6 +553,9 @@ class SimulateOde(DeterministicOde):
         '''
         Jumps from the initial time self._t0 to the input time finalT
         '''
+        if isinstance(self._stochasticParam, dict):
+            self.parameters = self._stochasticParam
+
         # initial time
         assert self._t0 is not None, "No initial time"
         assert self._x0 is not None, "No initial state"
@@ -372,7 +567,7 @@ class SimulateOde(DeterministicOde):
         xList = [x.copy()]
         tList = [t]
 
-        # we want to construct some jump times
+        # we want to construct some jump times (TODO: doesn't seem like _GMat is used anywhere)
         if self._GMat is None:
             self._computeDependencyMatrix()
 
@@ -387,7 +582,8 @@ class SimulateOde(DeterministicOde):
                 else:
                     if np.min(x) > 10:
                         x_tmp, t_tmp, success = tauLeap(x, t,
-                                                self._vMat, self._lambdaMat,
+                                                # self._vMat, self._lambdaMat,
+                                                self._vMat, self._lambdaMatOD,  # I think that the wrong matrix has been used, trying this one instead
                                                 self.transition_vector,
                                                 self.transition_mean,
                                                 self.transition_var,
@@ -931,24 +1127,29 @@ class SimulateOde(DeterministicOde):
 
         return transition
 
+    def _get_A(self, A=None):
+        if A is None:
+            if not ode_utils.none_or_empty_list(self._odeList):
+                eqn_list = [t.equation for t in self._odeList]
+                A = sympy.Matrix(checkEquation(eqn_list,
+                                               *self._getListOfVariablesDict(),
+                                               subs_derived=False))
+                return A
+            else:
+                raise Exception("Object was not initialized using a set of ode")
+        else:
+            return A
+
     def get_bd_from_ode(self, A=None):
         '''
         Returns a list of:class:`Transition` from this object by unrolling
         the odes.  All the elements are of TransitionType.B or
         TransitionType.D
         '''
-        if A is None:
-            if not ode_utils.none_or_empty_list(self._odeList):
-                eqn = [t.equation for t in self._odeList]
-                A = sympy.Matrix(checkEquation(eqn,
-                                               *self._getListOfVariablesDict(),
-                                               subs_derived=False))
-            else:
-                raise Exception("Object was not initialized using a set of ode")
-            # A = super(SimulateOde, self).getOde()
+
+        A=self._get_A(A)
 
         bdList, _term = _ode_composition.getUnmatchedExpressionVector(A, True)
-
         if len(bdList) > 0:
             M = self._generateTransitionMatrix(A)
 
@@ -985,15 +1186,7 @@ class SimulateOde(DeterministicOde):
         that the functions called here is focused on the terms of
         the equation rather than the states.
         '''
-        if A is None:
-            if not ode_utils.none_or_empty_list(self._odeList):
-                eqn_list = [t.equation for t in self._odeList]
-                A = sympy.Matrix(checkEquation(eqn_list,
-                                               *self._getListOfVariablesDict(),
-                                               subs_derived=False))
-            else:
-                raise Exception("Object was not initialized using a set of ode")
-
+        A=self._get_A(A)
         bdList, _term = _ode_composition.getUnmatchedExpressionVector(A, True)
         fx = _ode_composition.stripBDFromOde(A, bdList)
         states = [s for s in self._iterStateList()]

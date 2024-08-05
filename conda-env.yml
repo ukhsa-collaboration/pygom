@@ -11,5 +11,5 @@ dependencies:
   - graphviz
   - cython
   - pip
-  -pip:
+  - pip:
     - -r requirements.txt

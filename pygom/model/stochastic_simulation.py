@@ -421,7 +421,7 @@ def firstReaction(x, t, state_change_mat, transition_func, seed=None):
     rates = transition_func(x, t)
     # find our jump times
     jump_times = _newJumpTimes(rates, seed=seed)
-    if np.all(jump_times == np.Inf):
+    if np.all(jump_times == np.inf):
         return x, t, False
     # first jump
     min_index = np.argmin(jump_times)
@@ -461,7 +461,7 @@ def nextReaction(x, t, state_change_mat, dependency_graph,
                 if anew > 0:
                     jump_times[i] = (aold/anew)*(jump_times[i] - t) + t
                 else:
-                    jump_times[i] = np.Inf
+                    jump_times[i] = np.inf
         # done :)
         return new_x, t, True, rates, jump_times
     else:
@@ -630,7 +630,7 @@ def _newJumpTimes(rates, seed=None):
     distribution
     """
 
-    tau = [rexp(1, r, seed=seed) if r > 0 else np.Inf for r in rates]
+    tau = [rexp(1, r, seed=seed) if r > 0 else np.inf for r in rates]
     return np.array(tau)
 
 
