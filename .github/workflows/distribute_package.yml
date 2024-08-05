@@ -105,13 +105,13 @@ jobs:
           path: dist/*.tar.gz
 
   upload_pypi:
+    name: Upload release to PyPI
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
-    environment: pypi
+    environment: 
+      name: pypi
     permissions:
       id-token: write
-    # Upload to PyPI on every tag starting with 'v' 
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -119,8 +119,18 @@ jobs:
           pattern: cibw-*
           path: dist
           merge-multiple: true
-
+      
+      # This is the live push to PyPI on tagging the master branch
       - uses: pypa/gh-action-pypi-publish@release/v1
+        # Upload to PyPI on every tag starting with 'v' 
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        with:
+          repository-url: https://pypi.org/p/pygom
+
+      # Upload to PyPI *testing* every dev branch commit 
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        # Upload to testing only if we are on the dev branch
+        if: github.ref == 'refs/heads/dev'
         with:
           # Testing only at this point
           repository-url: https://test.pypi.org/legacy/
