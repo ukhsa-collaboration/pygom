@@ -46,9 +46,6 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
-[tool.setuptools_scm]
-#version_file = "pygom/_version.py"
-
 [tool.setuptools.packages.find]
 where = ["src"]
 
@@ -63,3 +60,10 @@ Issues = "https://github.com/ukhsa-collaboration/pygom/issues"
 [tool.cibuildwheel]
 # Normal options, etc.
 manylinux-x86_64-image = "manylinux2014"
+
+# '[tool.setuptools.scm]' needs to be the last line because
+# we do an append operation in the deploy.yaml GitHub Actions workflow
+# so that we are able to push to test.pypi.org with a proper version
+# number
+[tool.setuptools_scm]
+#version_file = "pygom/_version.py"

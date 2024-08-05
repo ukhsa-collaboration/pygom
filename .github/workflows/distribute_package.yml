@@ -66,6 +66,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # setuptools_scm workaround for https://github.com/pypa/setuptools_scm/issues/455
+      - name: Disable local version identifier on develop CI
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          echo 'local_scheme = "no-local-version"' >> pyproject.toml
+          git diff --color=always
+          git update-index --assume-unchanged pyproject.toml
+
       # Used to host cibuildwheel
       - uses: actions/setup-python@v5
         with:
