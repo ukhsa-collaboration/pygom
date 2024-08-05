@@ -19,7 +19,7 @@ class TestSimulateParam(TestCase):
         # set the time sequence that we would like to observe
         self.t = np.linspace(0, 150, 100)
         # Standard.  Find the solution.
-        ode = common_models.SIR()
+        ode = common_models.SIR_norm()
         ode.parameters = [0.5, 1.0 / 3.0]
         ode.initial_values = (self.x0, self.t0)
         self.solution = ode.integrate(self.t[1::], full_output=False)

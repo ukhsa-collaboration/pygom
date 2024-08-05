@@ -13,7 +13,7 @@ class TestModelExisting(TestCase):
         Test the SIR model from the set of pre-defined models in common_models
         '''
         # We we wish to test another (simpler) model
-        ode = common_models.SIR()
+        ode = common_models.SIR_norm()
 
         # define the parameters
         param_eval = [

@@ -14,6 +14,7 @@ only_build_toc_files: true
 # this could avoid the issue of execution timing out
 # See https://jupyterbook.org/content/execute.html
 execute:
+  allow_errors: true
   execute_notebooks: cache
   timeout: -1
 

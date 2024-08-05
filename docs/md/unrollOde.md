@@ -1,16 +1,11 @@
 # Converting equations into transitions
 
-As seen previously in {doc}`transition`, we can
-define the model via the transitions or explicitly as ODEs. There are
-times when we all just want to test out some model in a paper and the
-only available information are the ODEs themselves. Even though we know
-that the ODEs come from some underlying transitions, breaking them down
-can be a time consuming process. We provide the functionalities to do
-this automatically.
+As seen previously in {doc}`transition`, we can define a model via transitions or explicitly as ODEs.
+There may be times when importing a model from elsewhere and the only available information are the ODEs themselves.
+If it is known that the ODEs come from some underlying transitions, we provide the functionality to do this automatically.
+Of course there is some interpretation...
 
-
+Here we demostrate usage of this feature via examples of increasing complexity:
 {doc}`../notebooks/unroll/unrollSimple`
-
 {doc}`../notebooks/unroll/unrollBD`
-
 {doc}`../notebooks/unroll/unrollHard`

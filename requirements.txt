@@ -1,8 +1,8 @@
 dask[complete]>=0.13.0
 graphviz>=0.4.9
 matplotlib>=1.0.0
-numpy>=1.6.0
-pandas>=0.15.0
+numpy>=2.0.0
+pandas>=2.2.2
 python-dateutil>=2.0.0
 scipy>=1.4.1
 sympy>=1.0.0
@@ -10,5 +10,3 @@ numpydoc>=0.6.0
 sphinx>=1.4.1
 sphinx_rtd_theme>=0.2.0
 cython>=0.29
-nbsphinx
-jupyter-book>=0.15.0

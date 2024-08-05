@@ -7,46 +7,28 @@ Replace this text with a description of the pull request including the issue num
 
 This is an itemised checklist for the QA process within UKHSA and represents the bare minimum a QA should be. 
 
-Full instructions on reviewing work can be found at Confluence on the [ONS QA of code guidance](https://best-practice-and-impact.github.io/qa-of-code-guidance/intro.html) page.
-
 **To the reviewer:** Check the boxes once you have completed the checks below.
 
-- [ ] It runs
-  - Can you get the code run to completion in a new instance and from top to bottom in the case of notebooks, or in a new R session?
-  - Can original analysis results be accurately & easily reproduced from the code?
-- [] tests pass
-- [] CI is successful
+- [ ] CI is successful
+  - Did the test suite run sucessfully?
+
 This is a basic form of Smoke Testing
 - [ ]  Data and security
-  - Use nbstripout to prevent Jupyter notebook output being committed to git repositories
-  - Files containing individual user's secret files and config files are not in repo, however examples of these files and setup instructions are included in the repo.
-  - Secrets include s3 bucket names, login credentials, and organisation information. These can be handled using secrets.yml
-  - If you are unsure whether an item should be secret please discuss with repo owner
-  - The changes do not include unreleased policy or official information.
+  - Files containing individual user's secret files and config files are not in repo.
+  - No private or identifiable data has been added to the repo.
+  
 - [ ] Sensible
-  - Does the code execute the task accurately?  This is a subjective challenge.
+  - Does the code execute the task accurately? 
+  - Is the code tidy, commented and parsimonious?
   - Does the code do what the comments and readme say it does\*?
-  - Is the code robust enough to handle missing or challenging data?
-- [ ] Documentation
-  - The purpose of the code is clearly defined, whether in a markdown chunk at the top of a notebook or in a README
-  - Assumptions of the analysis & input data are clearly displayed to the reader, whether in a markdown chunk at the top of a notebook or in a README
-  - Comments are included in the code so the reader can follow why the code behaves in the way it does
-  - Teams with high quality documentation are better able to implement technical practices more readily and perform better as a whole (DORA, 2021).
-  - Is the code written in a standard way? (In a hurry this may be a nice to have, but if at all possible, this standard from the beginning can cut long term costs dramatically)
-  - Code is modular, storing functions & classes in the src  and being imported into a notebook or script
-  - Projects should be based on the UKHSA repo template developed to work with cookiecutter
-  - Variable, function & module names should be intuitive to the reader
-    - For example, intuitive names include df_geo_lookup   & non-intuitive names include foobar
-  - Common and useful checks for coding we use broadly across UKHSA include:
-    - Rstyler
-    - lintr
-    - black
-    - flake8
-- [ ] Pair coding review completed (optional, but highly recommended for QA in a hurry)
-  - Pair programming is a way of working and reviewing that can result in the same standard of work being completed 40%-50% faster (Williams et al., 2000, Nosek, 1998) and is better than solo programming for tasks involving efficient knowledge transferring and for working on highly connected systems (Dawande et al., 2008).
-  - Have the assignee and reviewer been on a video call or in person together during the code development in a line by line writing and review process?
+  - Is the code covered by useful unit tests?
 
-\* If the comments or readme do not have enough information, this check fails.
+- [ ] Documentation
+  - The purpose of the code is clearly defined?
+  - If reasonable, has an exaple of the code been given in a notebook in the docs?
+  - Comments are included in the code so the reader can follow why the code behaves in the way it does
+  - Is the code written in a standard way (does it pass linting)? 
+  - Variable, function & module names should be intuitive to the reader?
 
 ## How to QA this PR
 

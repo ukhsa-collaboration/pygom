@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools>=64", 
+            "setuptools_scm>=8",
+#            "setuptools_scm_git_archive",
+            "numpy>=1.24.4",
+            "cython>=0.29",
+            "setuptools>=61.0",
+            "scipy>=1.10.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygom"
+dynamic = ["version"]
+requires-python = ">= 3.9"
+
+dependencies = [
+  "setuptools>=64", 
+  "setuptools_scm>=8",
+  "setuptools_scm_git_archive",
+  "dask[complete]>=0.13.0",
+  "graphviz>=0.4.9",
+  "matplotlib>=1.0.0",
+  "numpy>=1.24.4",
+  "pandas>=2.2.2",
+  "python-dateutil>=2.0.0",
+  "scipy>=1.10.1",
+  "sympy>=1.0.0",
+  "numpydoc>=0.6.0",
+  "cython>=0.29"
+]
+authors = [
+  {name="Edwin Tye"},
+  {name="Thomas Finnie", email="thomas.finnie@ukhsa.gov.uk"},
+  {name="Hannah Williams"},
+  {name="Jonty Carruthers"},
+  {name="Martin Grunnill"},
+  {name="Joe Gibson", email="joseph.gibson@ukhsa.gov.uk"}
+]
+
+description = "ODE modeling in Python."
+readme = "README.md"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Development Status :: 5 - Production/Stable"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.rst"]}
+
+[project.urls]
+Homepage = "http://ukhsa-collaboration.github.io/pygom/md/intro.html"
+Issues = "https://github.com/ukhsa-collaboration/pygom/issues"
+
+# Options for wheel building with cibuildwheel
+[tool.cibuildwheel]
+# Normal options, etc.
+manylinux-x86_64-image = "manylinux2014"
+
+# '[tool.setuptools.scm]' needs to be the last line because
+# we do an append operation in the deploy.yaml GitHub Actions workflow
+# so that we are able to push to test.pypi.org with a proper version
+# number
+[tool.setuptools_scm]
+#version_file = "pygom/_version.py"
