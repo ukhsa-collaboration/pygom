@@ -42,8 +42,17 @@ readme = "README.md"
 
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: GPL2",
-    "Operating System :: OS Independent",
+    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Development Status :: 5 - Production/Stable"
 ]
 
 [tool.setuptools.packages.find]
