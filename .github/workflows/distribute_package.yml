@@ -7,6 +7,8 @@ on:
       - dev
       - feature/*
       - bugfix/*
+    tags:
+      - 'v*.*.*'
 
   pull_request:
     branches:
@@ -83,6 +85,7 @@ jobs:
           CIBW_TEST_COMMAND: python -W default -m unittest discover --start-directory {project}/tests
           # setuptools_scm workaround for https://github.com/pypa/setuptools_scm/issues/455
           CIBW_BEFORE_BUILD: ${{ github.ref == 'refs/heads/dev' &&  'echo ''local_scheme = "no-local-version"'' >> pyproject.toml && git diff --color=always && git update-index --assume-unchanged pyproject.toml' || '' }}
+
       - name: Build and test the wheels
         if: matrix.os == 'windows-latest'
         run: python -m cibuildwheel --output-dir wheelhouse
