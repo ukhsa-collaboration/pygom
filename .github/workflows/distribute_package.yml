@@ -61,7 +61,18 @@ jobs:
         with:
           # We need quite a deep fetch so that we get the versioning right 
           fetch-depth: 500
-          fetch-tags: true
+      # Fetch tag manually because fetch-tags option for checkout@v4 does not work
+      - name: Fetch tag annotations
+        run: |
+          # Fetch tag manually because fetch-tags option for checkout@v4 does not work
+          git fetch --force --tags --depth 1
+      - id: read_tag
+        name: Set VERSION env variable
+        if: ${{ startsWith(github.ref, 'refs/tags') }}
+        run: |
+          # Set tag from GitHub: using git describe for tags inside the run script
+          # seems not working
+          echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: |
@@ -109,7 +120,18 @@ jobs:
         with:
           # We need quite a deep fetch so that we get the versioning right 
           fetch-depth: 500
-          fetch-tags: true
+      # Fetch tag manually because fetch-tags option for checkout@v4 does not work
+      - name: Fetch tag annotations
+        run: |
+          # Fetch tag manually because fetch-tags option for checkout@v4 does not work
+          git fetch --force --tags --depth 1
+      - id: read_tag
+        name: Set VERSION env variable
+        if: ${{ startsWith(github.ref, 'refs/tags') }}
+        run: |
+          # Set tag from GitHub: using git describe for tags inside the run script
+          # seems not working
+          echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       # setuptools_scm workaround for https://github.com/pypa/setuptools_scm/issues/455
       - name: Disable local version identifier on develop CI
