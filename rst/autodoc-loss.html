@@ -15,52 +15,49 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -78,28 +75,23 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -121,12 +113,20 @@ const thebe_selector_output = ".output, .cell_output"
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -142,6 +142,8 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
 
+  
+    
   
 
 <a class="navbar-brand logo" href="../md/intro.html">
@@ -160,7 +162,18 @@ const thebe_selector_output = ".output, .cell_output"
   
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -170,56 +183,53 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User documentation</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../md/getting_started.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/sir.html">Motivating Example: SIR Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/transition.html">Model set-up using the transition object</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/stochastic.html">Stochastic representation of ODEs</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../md/unrollOde.html">Converting equations into transitions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/unroll/unrollSimple.html">A simple problem</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/unroll/unrollBD.html">ODE With Birth and Death Process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/unroll/unrollHard.html">Hard Problem</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/epi.html">Epidemic Analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/epijson.html">Reading and using EpiJSON data</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../md/parameter_fitting.html">Parameter fitting</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/paramfit/bvpSimple.html">Solving Boundary Value Problems</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/paramfit/gradient.html">Gradient estimation under square loss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/paramfit/fh.html">Parameter Estimation: FitzHugh Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/paramfit/estimate1.html">Parameter Estimation: Example 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../md/installation.html">Installation</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/paramfit/estimate2.html">Parameter Estimation: Example 2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/paramfit/initialGuess.html">Obtaining good initial values for parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/paramfit/profile.html">Confidence Interval of Estimated Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
-</li>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../notebooks/insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/extract_info.html">Extracting model information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/unroll/unrollSimple.html">Deducing transitions from equations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../md/solving.html">Producing forecasts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/model_params.html">Parameterisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/model_solver.html">Finding ODE solutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/time_dependent_params.html">Time dependent parameters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../md/parameter_fitting.html">Parameter fitting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/paramfit/params_via_abc.html">Parameter Estimation: Approximate Bayesian Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/paramfit/params_via_optimization.html">Parameter Estimation: Maximum likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/paramfit/bvpSimple.html">Solving Boundary Value Problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/epijson.html">Reading and using EpiJSON data</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Common biological compartmental models</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../md/common_models.html">Pre-defined examples - common epi models</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../md/common_models.html">Pre-defined examples - common epi models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SIS.html">SIS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SIS_Periodic.html">SIS, periodic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SIR.html">SIR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SIR_Birth_Death.html">SIR, birth and death</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SEIR.html">SEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SIS_Periodic.html">SIS, periodic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SIR_Birth_Death.html">SIR, birth and death</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SEIR_Multiple.html">SEIR, multiple</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SEIR_Birth_Death.html">SEIR - birth, death</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SEIR_Birth_Death_Periodic.html">SEIR - birth, death and periodic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/Legrand_Ebola_SEIHFR.html"><code class="docutils literal notranslate"><span class="pre">Legrand_Ebola_SEIHFR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SEIR_Birth_Death_Periodic_Waning_Intro.html">SEIR, birth, death, periodic, waning and introductions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/Legrand_Ebola_SEIHFR.html">Legrand Ebola SEIHFR</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/Lotka_Volterra.html">Lotka Volterra</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/Lotka_Volterra_4State.html">Lotka_Volterra (4 state)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/FitzHugh.html">FitzHugh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/Lorenz.html">Lorenz</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/vanDelPol.html">vanDerPol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/Robertson.html">Robertson</a></li>
 </ul>
-</li>
+</details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Frequently asked questions</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../md/faq.html">Frequent asked questions {#faq}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../md/faq.html">Frequently asked questions</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Code documentation</span></p>
 <ul class="current nav bd-sidenav">
@@ -246,7 +256,7 @@ const thebe_selector_output = ".output, .cell_output"
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -255,14 +265,14 @@ const thebe_selector_output = ".output, .cell_output"
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -387,10 +397,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
@@ -398,12 +408,14 @@ document.write(`
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -419,6 +431,82 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Gamma"><code class="docutils literal notranslate"><span class="pre">Gamma</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Gamma.diff2Loss"><code class="docutils literal notranslate"><span class="pre">Gamma.diff2Loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Gamma.diff_loss"><code class="docutils literal notranslate"><span class="pre">Gamma.diff_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Gamma.loss"><code class="docutils literal notranslate"><span class="pre">Gamma.loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.GammaLoss"><code class="docutils literal notranslate"><span class="pre">GammaLoss</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.NegBinom"><code class="docutils literal notranslate"><span class="pre">NegBinom</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.NegBinom.diff2Loss"><code class="docutils literal notranslate"><span class="pre">NegBinom.diff2Loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.NegBinom.diff_loss"><code class="docutils literal notranslate"><span class="pre">NegBinom.diff_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.NegBinom.loss"><code class="docutils literal notranslate"><span class="pre">NegBinom.loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.NegBinomLoss"><code class="docutils literal notranslate"><span class="pre">NegBinomLoss</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Normal"><code class="docutils literal notranslate"><span class="pre">Normal</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Normal.diff2Loss"><code class="docutils literal notranslate"><span class="pre">Normal.diff2Loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Normal.diff_loss"><code class="docutils literal notranslate"><span class="pre">Normal.diff_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Normal.loss"><code class="docutils literal notranslate"><span class="pre">Normal.loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.NormalLoss"><code class="docutils literal notranslate"><span class="pre">NormalLoss</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Poisson"><code class="docutils literal notranslate"><span class="pre">Poisson</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Poisson.diff2Loss"><code class="docutils literal notranslate"><span class="pre">Poisson.diff2Loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Poisson.diff_loss"><code class="docutils literal notranslate"><span class="pre">Poisson.diff_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Poisson.loss"><code class="docutils literal notranslate"><span class="pre">Poisson.loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.PoissonLoss"><code class="docutils literal notranslate"><span class="pre">PoissonLoss</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Square"><code class="docutils literal notranslate"><span class="pre">Square</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Square.diff2Loss"><code class="docutils literal notranslate"><span class="pre">Square.diff2Loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Square.diff_loss"><code class="docutils literal notranslate"><span class="pre">Square.diff_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Square.loss"><code class="docutils literal notranslate"><span class="pre">Square.loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.SquareLoss"><code class="docutils literal notranslate"><span class="pre">SquareLoss</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.antiderivative"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.antiderivative()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.derivative"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.derivative()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.derivatives"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.derivatives()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.get_coeffs"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.get_coeffs()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.get_knots"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.get_knots()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.get_residual"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.get_residual()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.integral"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.integral()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.roots"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.roots()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.set_smoothing_factor"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.set_smoothing_factor()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.asymptotic"><code class="docutils literal notranslate"><span class="pre">asymptotic()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.bootstrap"><code class="docutils literal notranslate"><span class="pre">bootstrap()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.cost_grad_interpolant"><code class="docutils literal notranslate"><span class="pre">cost_grad_interpolant()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.cost_interpolant"><code class="docutils literal notranslate"><span class="pre">cost_interpolant()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.cost_sample"><code class="docutils literal notranslate"><span class="pre">cost_sample()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.geometric"><code class="docutils literal notranslate"><span class="pre">geometric()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.get_init"><code class="docutils literal notranslate"><span class="pre">get_init()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.grad_sample"><code class="docutils literal notranslate"><span class="pre">grad_sample()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.interpolate"><code class="docutils literal notranslate"><span class="pre">interpolate()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.jac_sample"><code class="docutils literal notranslate"><span class="pre">jac_sample()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.leastsq"><code class="docutils literal notranslate"><span class="pre">leastsq()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.minimize_scalar"><code class="docutils literal notranslate"><span class="pre">minimize_scalar()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.partial"><code class="docutils literal notranslate"><span class="pre">partial</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.partial.args"><code class="docutils literal notranslate"><span class="pre">partial.args</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.partial.func"><code class="docutils literal notranslate"><span class="pre">partial.func</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.partial.keywords"><code class="docutils literal notranslate"><span class="pre">partial.keywords</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.profile"><code class="docutils literal notranslate"><span class="pre">profile()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.residual_interpolant"><code class="docutils literal notranslate"><span class="pre">residual_interpolant()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.residual_sample"><code class="docutils literal notranslate"><span class="pre">residual_sample()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.simps"><code class="docutils literal notranslate"><span class="pre">simps()</span></code></a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -426,7 +514,7 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section id="module-pygom.loss">
 <span id="loss"></span><h1>loss<a class="headerlink" href="#module-pygom.loss" title="Permalink to this heading">#</a></h1>
@@ -459,7 +547,7 @@ residuals are used.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>scnd_deriv_yhat</strong> – <span class="math notranslate nohighlight">\(\mathcal\frac{a \left(- \hat{y} + 2 y\right)}{\hat{y}^{3}}\)</span></p>
+<dd class="field-even"><p><strong>scnd_deriv_yhat</strong> – <span class="math notranslate nohighlight">\(\frac{a \left(- \hat{y} + 2 y\right)}{\hat{y}^{3}}\)</span></p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>array like</p>
@@ -484,7 +572,7 @@ residuals are used.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>first_deriv_yhat</strong> – <span class="math notranslate nohighlight">\(\mathcal\frac{a \left(\hat{y} - y\right)}{\hat{y}^{2}}\)</span></p>
+<dd class="field-even"><p><strong>first_deriv_yhat</strong> – <span class="math notranslate nohighlight">\(\frac{a \left(\hat{y} - y\right)}{\hat{y}^{2}}\)</span></p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>array like</p>
@@ -932,7 +1020,7 @@ not in the interval defined by the knot sequence.</p>
 <li><p>if ext=0 or ‘extrapolate’, return the extrapolated value.</p></li>
 <li><p>if ext=1 or ‘zeros’, return 0</p></li>
 <li><p>if ext=2 or ‘raise’, raise a ValueError</p></li>
-<li><p>if ext=3 of ‘const’, return the boundary value.</p></li>
+<li><p>if ext=3 or ‘const’, return the boundary value.</p></li>
 </ul>
 <p>Default is 0.</p>
 </p></li>
@@ -995,6 +1083,28 @@ data points:</p>
 </div>
 <p>Notice the need to replace a <code class="docutils literal notranslate"><span class="pre">nan</span></code> by a numerical value (precise value
 does not matter as long as the corresponding weight is zero.)</p>
+<p class="rubric">References</p>
+<p>Based on algorithms described in <a href="#id24"><span class="problematic" id="id3">[1]_</span></a>, <a href="#id25"><span class="problematic" id="id4">[2]_</span></a>, <a href="#id26"><span class="problematic" id="id5">[3]_</span></a>, and <a class="footnote-reference brackets" href="#id10" id="id6">4</a>:</p>
+<dl class="footnote brackets">
+<dt class="label" id="id7"><span class="brackets">1</span></dt>
+<dd><p>P. Dierckx, “An algorithm for smoothing, differentiation and
+integration of experimental data using spline functions”,
+J.Comp.Appl.Maths 1 (1975) 165-184.</p>
+</dd>
+<dt class="label" id="id8"><span class="brackets">2</span></dt>
+<dd><p>P. Dierckx, “A fast algorithm for smoothing data on a rectangular
+grid while using spline functions”, SIAM J.Numer.Anal. 19 (1982)
+1286-1304.</p>
+</dd>
+<dt class="label" id="id9"><span class="brackets">3</span></dt>
+<dd><p>P. Dierckx, “An improved algorithm for curve fitting with spline
+functions”, report tw54, Dept. Computer Science,K.U. Leuven, 1981.</p>
+</dd>
+<dt class="label" id="id10"><span class="brackets"><a class="fn-backref" href="#id6">4</a></span></dt>
+<dd><p>P. Dierckx, “Curve and surface fitting with splines”, Monographs on
+Numerical Analysis, Oxford University Press, 1993.</p>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -1406,7 +1516,7 @@ optimal using methods provided by obj</p></li>
 where <span class="math notranslate nohighlight">\(J\)</span> is the Jacobian of the ode.  ‘hessian’ is the hessian
 of the ode while ‘fisher’ is the fisher information found by
 <span class="math notranslate nohighlight">\(cov(\nabla_{\theta}\mathcal{L})\)</span>.</p></li>
-<li><p><strong>geometry</strong> (<em>string</em>) – the two types of geometry defined in <span id="id3">[Moolgavkar1987]</span>. c geometry uses
+<li><p><strong>geometry</strong> (<em>string</em>) – the two types of geometry defined in <span id="id11">[Moolgavkar1987]</span>. c geometry uses
 the covariance at the maximum likelihood estimate
 <span class="math notranslate nohighlight">\(\hat{\theta}\)</span>, while the ‘o’ geometry is the covariance
 defined at point <span class="math notranslate nohighlight">\(\theta\)</span>.</p></li>
@@ -1539,7 +1649,7 @@ that the parameters taken here is chosen to be same as
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pygom.loss.leastsq">
-<span class="sig-prename descclassname"><span class="pre">pygom.loss.</span></span><span class="sig-name descname"><span class="pre">leastsq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dfun</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_deriv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ftol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.49012e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.49012e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxfev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsfcn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scipy/optimize/_minpack_py.html#leastsq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.loss.leastsq" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pygom.loss.</span></span><span class="sig-name descname"><span class="pre">leastsq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dfun</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_deriv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ftol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.49012e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.49012e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxfev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsfcn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scipy/optimize/_minpack_py.html#leastsq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.loss.leastsq" title="Permalink to this definition">#</a></dt>
 <dd><p>Minimize the sum of squares of a set of equations.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">arg</span> <span class="nb">min</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
          <span class="n">y</span>
@@ -1555,8 +1665,8 @@ fitting might fail. <code class="docutils literal notranslate"><span class="pre"
 <li><p><strong>args</strong> (<em>tuple</em><em>, </em><em>optional</em>) – Any extra arguments to func are placed in this tuple.</p></li>
 <li><p><strong>Dfun</strong> (<em>callable</em><em>, </em><em>optional</em>) – A function or method to compute the Jacobian of func with derivatives
 across the rows. If this is None, the Jacobian will be estimated.</p></li>
-<li><p><strong>full_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – non-zero to return all optional outputs.</p></li>
-<li><p><strong>col_deriv</strong> (<em>bool</em><em>, </em><em>optional</em>) – non-zero to specify that the Jacobian function computes derivatives
+<li><p><strong>full_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, return all optional outputs (not just <cite>x</cite> and <cite>ier</cite>).</p></li>
+<li><p><strong>col_deriv</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, specify that the Jacobian function computes derivatives
 down the columns (faster, because there is no transpose operation).</p></li>
 <li><p><strong>ftol</strong> (<em>float</em><em>, </em><em>optional</em>) – Relative error desired in the sum of squares.</p></li>
 <li><p><strong>xtol</strong> (<em>float</em><em>, </em><em>optional</em>) – Relative error desired in the approximate solution.</p></li>
@@ -1583,7 +1693,8 @@ call).</p></li>
 estimate of the Hessian. A value of None indicates a singular matrix,
 which means the curvature in parameters <cite>x</cite> is numerically flat. To
 obtain the covariance matrix of the parameters <cite>x</cite>, <cite>cov_x</cite> must be
-multiplied by the variance of the residuals – see curve_fit.</p></li>
+multiplied by the variance of the residuals – see curve_fit. Only
+returned if <cite>full_output</cite> is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>infodict</strong> (<em>dict</em>) – a dictionary of optional outputs with the keys:</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">nfev</span></code></dt><dd><p>The number of function calls</p>
@@ -1606,8 +1717,10 @@ of the identity matrix.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">qtf</span></code></dt><dd><p>The vector (transpose(q) * fvec).</p>
 </dd>
 </dl>
+<p>Only returned if <cite>full_output</cite> is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </li>
-<li><p><strong>mesg</strong> (<em>str</em>) – A string message giving information about the cause of failure.</p></li>
+<li><p><strong>mesg</strong> (<em>str</em>) – A string message giving information about the cause of failure.
+Only returned if <cite>full_output</cite> is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>ier</strong> (<em>int</em>) – An integer flag. If it is equal to 1, 2, 3 or 4, the solution was
 found. Otherwise, the solution was not found. In either case, the
 optional output variable ‘mesg’ gives more information.</p></li>
@@ -1652,18 +1765,20 @@ or whether <cite>x0</cite> is a scalar.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pygom.loss.minimize_scalar">
 <span class="sig-prename descclassname"><span class="pre">pygom.loss.</span></span><span class="sig-name descname"><span class="pre">minimize_scalar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bracket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scipy/optimize/_minimize.html#minimize_scalar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.loss.minimize_scalar" title="Permalink to this definition">#</a></dt>
-<dd><p>Minimization of scalar function of one variable.</p>
+<dd><p>Local minimization of scalar function of one variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fun</strong> (<em>callable</em>) – Objective function.
 Scalar function, must return a scalar.</p></li>
 <li><p><strong>bracket</strong> (<em>sequence</em><em>, </em><em>optional</em>) – For methods ‘brent’ and ‘golden’, <cite>bracket</cite> defines the bracketing
-interval and can either have three items <code class="docutils literal notranslate"><span class="pre">(a,</span> <span class="pre">b,</span> <span class="pre">c)</span></code> so that
-<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">&lt;</span> <span class="pre">b</span> <span class="pre">&lt;</span> <span class="pre">c</span></code> and <code class="docutils literal notranslate"><span class="pre">fun(b)</span> <span class="pre">&lt;</span> <span class="pre">fun(a),</span> <span class="pre">fun(c)</span></code> or two items <code class="docutils literal notranslate"><span class="pre">a</span></code> and
-<code class="docutils literal notranslate"><span class="pre">c</span></code> which are assumed to be a starting interval for a downhill
-bracket search (see <cite>bracket</cite>); it doesn’t always mean that the
-obtained solution will satisfy <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">&lt;=</span> <span class="pre">x</span> <span class="pre">&lt;=</span> <span class="pre">c</span></code>.</p></li>
+interval and is required.
+Either a triple <code class="docutils literal notranslate"><span class="pre">(xa,</span> <span class="pre">xb,</span> <span class="pre">xc)</span></code> satisfying <code class="docutils literal notranslate"><span class="pre">xa</span> <span class="pre">&lt;</span> <span class="pre">xb</span> <span class="pre">&lt;</span> <span class="pre">xc</span></code> and
+<code class="docutils literal notranslate"><span class="pre">func(xb)</span> <span class="pre">&lt;</span> <span class="pre">func(xa)</span> <span class="pre">and</span>&#160; <span class="pre">func(xb)</span> <span class="pre">&lt;</span> <span class="pre">func(xc)</span></code>, or a pair
+<code class="docutils literal notranslate"><span class="pre">(xa,</span> <span class="pre">xb)</span></code> to be used as initial points for a downhill bracket search
+(see <cite>scipy.optimize.bracket</cite>).
+The minimizer <code class="docutils literal notranslate"><span class="pre">res.x</span></code> will not necessarily satisfy
+<code class="docutils literal notranslate"><span class="pre">xa</span> <span class="pre">&lt;=</span> <span class="pre">res.x</span> <span class="pre">&lt;=</span> <span class="pre">xb</span></code>.</p></li>
 <li><p><strong>bounds</strong> (<em>sequence</em><em>, </em><em>optional</em>) – For method ‘bounded’, <cite>bounds</cite> is mandatory and must have two finite
 items corresponding to the optimization bounds.</p></li>
 <li><p><strong>args</strong> (<em>tuple</em><em>, </em><em>optional</em>) – Extra arguments passed to the objective function.</p></li>
@@ -1719,16 +1834,21 @@ Boolean flag indicating if the optimizer exited successfully and
 ‘method’ parameter. The default method is the <code class="docutils literal notranslate"><span class="pre">&quot;Bounded&quot;</span></code> Brent method if
 <cite>bounds</cite> are passed and unbounded <code class="docutils literal notranslate"><span class="pre">&quot;Brent&quot;</span></code> otherwise.</p>
 <p>Method <span class="xref std std-ref">Brent</span> uses Brent’s
-algorithm <a class="footnote-reference brackets" href="#id8" id="id4">1</a> to find a local minimum.  The algorithm uses inverse
+algorithm <a href="#id27"><span class="problematic" id="id12">[1]_</span></a> to find a local minimum.  The algorithm uses inverse
 parabolic interpolation when possible to speed up convergence of
 the golden section method.</p>
 <p>Method <span class="xref std std-ref">Golden</span> uses the
-golden section search technique <a class="footnote-reference brackets" href="#id8" id="id5">1</a>. It uses analog of the bisection
+golden section search technique <a href="#id28"><span class="problematic" id="id13">[1]_</span></a>. It uses analog of the bisection
 method to decrease the bracketed interval. It is usually
 preferable to use the <em>Brent</em> method.</p>
 <p>Method <span class="xref std std-ref">Bounded</span> can
-perform bounded minimization <a class="footnote-reference brackets" href="#id9" id="id6">2</a> <a class="footnote-reference brackets" href="#id10" id="id7">3</a>. It uses the Brent method to find a
+perform bounded minimization <a href="#id29"><span class="problematic" id="id14">[2]_</span></a> <a href="#id30"><span class="problematic" id="id15">[3]_</span></a>. It uses the Brent method to find a
 local minimum in the interval x1 &lt; xopt &lt; x2.</p>
+<p>Note that the Brent and Golden methods do not guarantee success unless a
+valid <code class="docutils literal notranslate"><span class="pre">bracket</span></code> triple is provided. If a three-point bracket cannot be
+found, consider <cite>scipy.optimize.minimize</cite>. Also, all methods are intended
+only for local minimization. When the function of interest has more than
+one local minimum, consider <span class="xref std std-ref">global_optimization</span>.</p>
 <p><strong>Custom minimizers</strong></p>
 <p>It may be useful to pass a custom minimization method, for example
 when using some library frontend to minimize_scalar. You can simply
@@ -1747,16 +1867,16 @@ the method. You can find an example in the scipy.optimize tutorial.</p>
 </div>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id8"><span class="brackets">1</span><span class="fn-backref">(<a href="#id4">1</a>,<a href="#id5">2</a>)</span></dt>
+<dt class="label" id="id16"><span class="brackets">1</span></dt>
 <dd><p>Press, W., S.A. Teukolsky, W.T. Vetterling, and B.P. Flannery.
 Numerical Recipes in C. Cambridge University Press.</p>
 </dd>
-<dt class="label" id="id9"><span class="brackets"><a class="fn-backref" href="#id6">2</a></span></dt>
+<dt class="label" id="id17"><span class="brackets">2</span></dt>
 <dd><p>Forsythe, G.E., M. A. Malcolm, and C. B. Moler. “Computer Methods
 for Mathematical Computations.” Prentice-Hall Series in Automatic
 Computation 259 (1977).</p>
 </dd>
-<dt class="label" id="id10"><span class="brackets"><a class="fn-backref" href="#id7">3</a></span></dt>
+<dt class="label" id="id18"><span class="brackets">3</span></dt>
 <dd><p>Brent, Richard P. Algorithms for Minimization Without Derivatives.
 Courier Corporation, 2013.</p>
 </dd>
@@ -1793,7 +1913,7 @@ bounds as:</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pygom.loss.partial">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygom.loss.</span></span><span class="sig-name descname"><span class="pre">partial</span></span><a class="reference internal" href="../_modules/functools.html#partial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.loss.partial" title="Permalink to this definition">#</a></dt>
-<dd><p>partial(func, <a href="#id11"><span class="problematic" id="id12">*</span></a>args, <a href="#id13"><span class="problematic" id="id14">**</span></a>keywords) - new function with partial application
+<dd><p>partial(func, <a href="#id19"><span class="problematic" id="id20">*</span></a>args, <a href="#id21"><span class="problematic" id="id22">**</span></a>keywords) - new function with partial application
 of the given arguments and keywords.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pygom.loss.partial.args">
@@ -1900,13 +2020,82 @@ time points t.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pygom.loss.simps">
-<span class="sig-prename descclassname"><span class="pre">pygom.loss.</span></span><span class="sig-name descname"><span class="pre">simps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">even</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'avg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scipy/integrate/_quadrature.html#simps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.loss.simps" title="Permalink to this definition">#</a></dt>
-<dd><p>An alias of <cite>simpson</cite>.</p>
-<p><cite>simps</cite> is kept for backwards compatibility. For new code, prefer
-<cite>simpson</cite> instead.</p>
+<span class="sig-prename descclassname"><span class="pre">pygom.loss.</span></span><span class="sig-name descname"><span class="pre">simps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygom.loss.simps" title="Permalink to this definition">#</a></dt>
+<dd><p>Integrate y(x) using samples along the given axis and the composite
+Simpson’s rule. If x is None, spacing of dx is assumed.</p>
+<p>If there are an even number of samples, N, then there are an odd
+number of intervals (N-1), but Simpson’s rule requires an even number
+of intervals. The parameter ‘even’ controls how this is handled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>array_like</em>) – Array to be integrated.</p></li>
+<li><p><strong>x</strong> (<em>array_like</em><em>, </em><em>optional</em>) – If given, the points at which <cite>y</cite> is sampled.</p></li>
+<li><p><strong>dx</strong> (<em>float</em><em>, </em><em>optional</em>) – Spacing of integration points along axis of <cite>x</cite>. Only used when
+<cite>x</cite> is None. Default is 1.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – Axis along which to integrate. Default is the last axis.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The estimated integral computed with the composite Simpson’s rule.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">quad</span></code></dt><dd><p>adaptive quadrature using QUADPACK</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">fixed_quad</span></code></dt><dd><p>fixed-order Gaussian quadrature</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">dblquad</span></code></dt><dd><p>double integrals</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">tplquad</span></code></dt><dd><p>triple integrals</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">romb</span></code></dt><dd><p>integrators for sampled data</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">cumulative_trapezoid</span></code></dt><dd><p>cumulative integration for sampled data</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">cumulative_simpson</span></code></dt><dd><p>cumulative integration using Simpson’s 1/3 rule</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>For an odd number of samples that are equally spaced the result is
+exact if the function is a polynomial of order 3 or less. If
+the samples are not equally spaced, then the result is exact only
+if the function is a polynomial of order 2 or less.</p>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id23"><span class="brackets">1</span></dt>
+<dd><p>Cartwright, Kenneth V. Simpson’s Rule Cumulative Integration with
+MS Excel and Irregularly-spaced Data. Journal of Mathematical
+Sciences and Mathematics Education. 12 (2): 1-9</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">integrate</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">integrate</span><span class="o">.</span><span class="n">simpson</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+<span class="go">40.5</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">integrate</span><span class="o">.</span><span class="n">simpson</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+<span class="go">1640.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">1640.25</span>
+</pre></div>
+</div>
 </dd></dl>
 
-<table class="autosummary longtable table autosummary">
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -1914,6 +2103,7 @@ time points t.</p>
 <tbody>
 </tbody>
 </table>
+</div>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1943,7 +2133,7 @@ time points t.</p>
               
               
               
-                <footer class="prev-next-footer">
+                <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
     <a class="left-prev"
@@ -1971,6 +2161,89 @@ time points t.</p>
             
             
               
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Gamma"><code class="docutils literal notranslate"><span class="pre">Gamma</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Gamma.diff2Loss"><code class="docutils literal notranslate"><span class="pre">Gamma.diff2Loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Gamma.diff_loss"><code class="docutils literal notranslate"><span class="pre">Gamma.diff_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Gamma.loss"><code class="docutils literal notranslate"><span class="pre">Gamma.loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.GammaLoss"><code class="docutils literal notranslate"><span class="pre">GammaLoss</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.NegBinom"><code class="docutils literal notranslate"><span class="pre">NegBinom</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.NegBinom.diff2Loss"><code class="docutils literal notranslate"><span class="pre">NegBinom.diff2Loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.NegBinom.diff_loss"><code class="docutils literal notranslate"><span class="pre">NegBinom.diff_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.NegBinom.loss"><code class="docutils literal notranslate"><span class="pre">NegBinom.loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.NegBinomLoss"><code class="docutils literal notranslate"><span class="pre">NegBinomLoss</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Normal"><code class="docutils literal notranslate"><span class="pre">Normal</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Normal.diff2Loss"><code class="docutils literal notranslate"><span class="pre">Normal.diff2Loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Normal.diff_loss"><code class="docutils literal notranslate"><span class="pre">Normal.diff_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Normal.loss"><code class="docutils literal notranslate"><span class="pre">Normal.loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.NormalLoss"><code class="docutils literal notranslate"><span class="pre">NormalLoss</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Poisson"><code class="docutils literal notranslate"><span class="pre">Poisson</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Poisson.diff2Loss"><code class="docutils literal notranslate"><span class="pre">Poisson.diff2Loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Poisson.diff_loss"><code class="docutils literal notranslate"><span class="pre">Poisson.diff_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Poisson.loss"><code class="docutils literal notranslate"><span class="pre">Poisson.loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.PoissonLoss"><code class="docutils literal notranslate"><span class="pre">PoissonLoss</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Square"><code class="docutils literal notranslate"><span class="pre">Square</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Square.diff2Loss"><code class="docutils literal notranslate"><span class="pre">Square.diff2Loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Square.diff_loss"><code class="docutils literal notranslate"><span class="pre">Square.diff_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.Square.loss"><code class="docutils literal notranslate"><span class="pre">Square.loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.SquareLoss"><code class="docutils literal notranslate"><span class="pre">SquareLoss</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.antiderivative"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.antiderivative()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.derivative"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.derivative()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.derivatives"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.derivatives()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.get_coeffs"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.get_coeffs()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.get_knots"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.get_knots()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.get_residual"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.get_residual()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.integral"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.integral()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.roots"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.roots()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.UnivariateSpline.set_smoothing_factor"><code class="docutils literal notranslate"><span class="pre">UnivariateSpline.set_smoothing_factor()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.asymptotic"><code class="docutils literal notranslate"><span class="pre">asymptotic()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.bootstrap"><code class="docutils literal notranslate"><span class="pre">bootstrap()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.cost_grad_interpolant"><code class="docutils literal notranslate"><span class="pre">cost_grad_interpolant()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.cost_interpolant"><code class="docutils literal notranslate"><span class="pre">cost_interpolant()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.cost_sample"><code class="docutils literal notranslate"><span class="pre">cost_sample()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.geometric"><code class="docutils literal notranslate"><span class="pre">geometric()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.get_init"><code class="docutils literal notranslate"><span class="pre">get_init()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.grad_sample"><code class="docutils literal notranslate"><span class="pre">grad_sample()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.interpolate"><code class="docutils literal notranslate"><span class="pre">interpolate()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.jac_sample"><code class="docutils literal notranslate"><span class="pre">jac_sample()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.leastsq"><code class="docutils literal notranslate"><span class="pre">leastsq()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.minimize_scalar"><code class="docutils literal notranslate"><span class="pre">minimize_scalar()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.partial"><code class="docutils literal notranslate"><span class="pre">partial</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.partial.args"><code class="docutils literal notranslate"><span class="pre">partial.args</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.partial.func"><code class="docutils literal notranslate"><span class="pre">partial.func</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.partial.keywords"><code class="docutils literal notranslate"><span class="pre">partial.keywords</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.profile"><code class="docutils literal notranslate"><span class="pre">profile()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.residual_interpolant"><code class="docutils literal notranslate"><span class="pre">residual_interpolant()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.residual_sample"><code class="docutils literal notranslate"><span class="pre">residual_sample()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.loss.simps"><code class="docutils literal notranslate"><span class="pre">simps()</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
             
           </div>
           <footer class="bd-footer-content">
@@ -1990,7 +2263,7 @@ By UK Health Security Agency (previously Public Health England)
 
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -2014,8 +2287,8 @@ By UK Health Security Agency (previously Public Health England)
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

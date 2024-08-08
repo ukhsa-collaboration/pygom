@@ -15,60 +15,57 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
-  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/paramfit/bvpSimple';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Gradient estimation under square loss" href="gradient.html" />
-    <link rel="prev" title="Parameter fitting" href="../../md/parameter_fitting.html" />
+    <link rel="next" title="Reading and using EpiJSON data" href="../epijson.html" />
+    <link rel="prev" title="Parameter Estimation: Maximum likelihood" href="params_via_optimization.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -78,28 +75,23 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -121,12 +113,20 @@ const thebe_selector_output = ".output, .cell_output"
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -142,6 +142,8 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
 
+  
+    
   
 
 <a class="navbar-brand logo" href="../../md/intro.html">
@@ -160,7 +162,18 @@ const thebe_selector_output = ".output, .cell_output"
   
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -170,56 +183,53 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User documentation</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../md/getting_started.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sir.html">Motivating Example: SIR Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../transition.html">Model set-up using the transition object</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stochastic.html">Stochastic representation of ODEs</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../md/unrollOde.html">Converting equations into transitions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../unroll/unrollSimple.html">A simple problem</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../unroll/unrollBD.html">ODE With Birth and Death Process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../unroll/unrollHard.html">Hard Problem</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../epi.html">Epidemic Analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../epijson.html">Reading and using EpiJSON data</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../md/parameter_fitting.html">Parameter fitting</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Solving Boundary Value Problems</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradient.html">Gradient estimation under square loss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fh.html">Parameter Estimation: FitzHugh Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="estimate1.html">Parameter Estimation: Example 1</a></li>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../md/installation.html">Installation</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="estimate2.html">Parameter Estimation: Example 2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="initialGuess.html">Obtaining good initial values for parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="profile.html">Confidence Interval of Estimated Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
-</li>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../extract_info.html">Extracting model information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unroll/unrollSimple.html">Deducing transitions from equations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../md/solving.html">Producing forecasts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../model_params.html">Parameterisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_solver.html">Finding ODE solutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../time_dependent_params.html">Time dependent parameters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../md/parameter_fitting.html">Parameter fitting</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="params_via_abc.html">Parameter Estimation: Approximate Bayesian Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="params_via_optimization.html">Parameter Estimation: Maximum likelihood</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Solving Boundary Value Problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../epijson.html">Reading and using EpiJSON data</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Common biological compartmental models</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../md/common_models.html">Pre-defined examples - common epi models</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../md/common_models.html">Pre-defined examples - common epi models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../common_models/SIS.html">SIS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../common_models/SIS_Periodic.html">SIS, periodic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../common_models/SIR.html">SIR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../common_models/SIR_Birth_Death.html">SIR, birth and death</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../common_models/SEIR.html">SEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SIS_Periodic.html">SIS, periodic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SIR_Birth_Death.html">SIR, birth and death</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../common_models/SEIR_Multiple.html">SEIR, multiple</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../common_models/SEIR_Birth_Death.html">SEIR - birth, death</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../common_models/SEIR_Birth_Death_Periodic.html">SEIR - birth, death and periodic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../common_models/Legrand_Ebola_SEIHFR.html"><code class="docutils literal notranslate"><span class="pre">Legrand_Ebola_SEIHFR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SEIR_Birth_Death_Periodic_Waning_Intro.html">SEIR, birth, death, periodic, waning and introductions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/Legrand_Ebola_SEIHFR.html">Legrand Ebola SEIHFR</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../common_models/Lotka_Volterra.html">Lotka Volterra</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../common_models/Lotka_Volterra_4State.html">Lotka_Volterra (4 state)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../common_models/FitzHugh.html">FitzHugh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../common_models/Lorenz.html">Lorenz</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../common_models/vanDelPol.html">vanDerPol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../common_models/Robertson.html">Robertson</a></li>
 </ul>
-</li>
+</details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Frequently asked questions</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../md/faq.html">Frequent asked questions {#faq}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../md/faq.html">Frequently asked questions</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Code documentation</span></p>
 <ul class="nav bd-sidenav">
@@ -246,7 +256,7 @@ const thebe_selector_output = ".output, .cell_output"
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -255,14 +265,14 @@ const thebe_selector_output = ".output, .cell_output"
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -387,10 +397,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
@@ -398,14 +408,14 @@ document.write(`
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</label>
+</button>
 </div></div>
       
     </div>
@@ -426,8 +436,9 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-model-1">Simple model 1</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-model-2">Simple model 2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#problem">Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unknown-initial-conditions">Unknown initial conditions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unknown-parameters">Unknown parameters</a></li>
 </ul>
             </nav>
         </div>
@@ -437,285 +448,194 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="solving-boundary-value-problems">
 <h1>Solving Boundary Value Problems<a class="headerlink" href="#solving-boundary-value-problems" title="Permalink to this heading">#</a></h1>
-<p>In addition to finding solutions for an initial value problem (IVP) and estimating the unknown
-parameters, this package also allows you to solve boundary value problems (BVP) with a little bit
-of imagination. Here, we are going to show how a BVP can be solved by
-treating it as a parameter estimation problem. Essentially, a shooting
-method where the first boundary condition defines the initial condition
-of an IVP and the second boundary condition is an observation. Two
-examples, both from the <a class="reference external" href="https://uk.mathworks.com/help/matlab/ref/bvp4c.html">bvp4c implementation in MATLAB</a>, are demonstrated here.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>These examples are general and not specific to disease scenarios.</p>
-</div>
-<section id="simple-model-1">
-<h2>Simple model 1<a class="headerlink" href="#simple-model-1" title="Permalink to this heading">#</a></h2>
-<p>We are trying to find the solution to the second order differential
-equation</p>
+<p>In addition to finding solutions for an initial value problem (IVP) and estimating unknown parameters, PyGOM also allows users to solve boundary value problems (BVPs) with a little bit of imagination.
+Here, we show how a BVP can be solved by treating it as a parameter estimation problem.
+Essentially, this is done via a shooting method where the first boundary condition defines the initial condition of an IVP and the second boundary condition is an observation.
+We use projectile motion as our example system, which we note is not relevant to disease modelling scenarios, but then BVPs are not commonly useful in this domain anyway.</p>
+<section id="problem">
+<h2>Problem<a class="headerlink" href="#problem" title="Permalink to this heading">#</a></h2>
+<p>Imagine launching a ball straight up into the air from a starting height <span class="math notranslate nohighlight">\(y(t=0)=0\)</span>. Ignoring air resistance, the ball will be pulled back to it’s starting position under gravity.</p>
 <div class="math notranslate nohighlight">
-\[\nabla^{2} y + |y| = 0\]</div>
-<p>subject to the boundary conditions <span class="math notranslate nohighlight">\(y(0) = 0\)</span> and <span class="math notranslate nohighlight">\(y(4) = -2\)</span>. Convert
-this into a set of first order ODEs</p>
+\[\begin{aligned}
+\frac{\mathrm{d}^2 y}{\mathrm{d} t^2}=-g
+\end{aligned}\]</div>
+<p>where <span class="math notranslate nohighlight">\(g\)</span> is acceleration due to gravity. Reducing this equation to two first order ODEs in terms of position and velocity, <span class="math notranslate nohighlight">\(v\)</span>, yields:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{aligned}
-\frac{d y_{0}}{dt} &amp;= y_{1} \\
-\frac{d y_{1}}{dt} &amp;= -|y_{0}|
+\frac{\mathrm{d} y}{\mathrm{d} t}&amp;=v\\
+\frac{\mathrm{d} v}{\mathrm{d} t}&amp;=-g
 \end{aligned}\end{split}\]</div>
-<p>using an auxiliary variable <span class="math notranslate nohighlight">\(y_{1} = \nabla y\)</span> and <span class="math notranslate nohighlight">\(y_{0} = y\)</span>.
-Here we set up the system.</p>
+<p>Let’s suppose that the ball lands 3 seconds later (i.e. <span class="math notranslate nohighlight">\(y(t=3)=0\)</span>).
+We will now solve two related BVPs in which the initial speed is unknown and later, the parameter <span class="math notranslate nohighlight">\(g\)</span>.</p>
+</section>
+<section id="unknown-initial-conditions">
+<h2>Unknown initial conditions<a class="headerlink" href="#unknown-initial-conditions" title="Permalink to this heading">#</a></h2>
+<p>First, assuming we know that the acceleration due to gravity is <span class="math notranslate nohighlight">\(g=10ms^{-2}\)</span>, we must estimate the initial velocity (<span class="math notranslate nohighlight">\(v(t=0)\)</span>) required to ensure that the ball lands 3 seconds later.
+This could be trivially solved via a quick analytical solution of the above equations resulting in <span class="math notranslate nohighlight">\(v(0)=15ms^{-1}\)</span>.
+Here we focus on demonstrating PyGOM’s functionality, so this value will instead serve as a target we hope to reproduce.
+Another artefact of PyGOM, which will soon require changing, is that model parameters are automatically treated as unknowns.
+For this example, it means that we must specify parameters (in this case <span class="math notranslate nohighlight">\(g\)</span>) numerically in our equations:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">TransitionType</span><span class="p">,</span> <span class="n">DeterministicOde</span><span class="p">,</span> <span class="n">SquareLoss</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">TransitionType</span><span class="p">,</span> <span class="n">SimulateOde</span>
+
+<span class="n">stateList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">]</span>
+<span class="n">paramList</span><span class="o">=</span><span class="p">[]</span>
+
+<span class="n">ode1</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;v&#39;</span><span class="p">)</span>
+<span class="n">ode2</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;-10&#39;</span><span class="p">)</span>  <span class="c1"># -g replaced explicitly by -10</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">stateList</span><span class="p">,</span> <span class="n">paramList</span><span class="p">,</span> <span class="n">ode</span><span class="o">=</span><span class="p">[</span><span class="n">ode1</span><span class="p">,</span> <span class="n">ode2</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We first plot an example trajectory.
+Given we know that that the ball will land in 3 seconds if launched with speed <span class="math notranslate nohighlight">\(15ms^{-1}\)</span>, let’s try a faster launch of <span class="math notranslate nohighlight">\(20ms^{-1}\)</span> and the ball should still be in the air.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>             <span class="c1"># Time-points at which to find solutions</span>
+
+<span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">]</span>                    <span class="c1"># Initial position and velocity</span>
+<span class="n">model</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>   <span class="c1"># Initial position, velocity and t[0]</span>
+<span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solve_determ</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::])</span>  <span class="c1"># Solve for subsequent timepoints</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="n">stateList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;y0&#39;</span><span class="p">,</span> <span class="s1">&#39;y1&#39;</span><span class="p">]</span>
-
-<span class="n">paramList</span> <span class="o">=</span> <span class="p">[]</span>
-
-<span class="n">ode1</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;y0&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
-
-<span class="n">ode2</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;-abs(y0)&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
-
-<span class="n">model</span> <span class="o">=</span> <span class="n">DeterministicOde</span><span class="p">(</span><span class="n">stateList</span><span class="p">,</span> <span class="n">paramList</span><span class="p">,</span> <span class="n">ode</span><span class="o">=</span><span class="p">[</span><span class="n">ode1</span><span class="p">,</span> <span class="n">ode2</span><span class="p">])</span>
-
-<span class="n">model</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="s1">&#39;constrained&#39;</span><span class="p">)</span>
+<span class="n">axarr</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">axarr</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Height, y&quot;</span><span class="p">)</span>
+<span class="n">axarr</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[\begin{split}\displaystyle \left[\begin{matrix}y_{1}\\- \left|{y_{0}}\right|\end{matrix}\right]\end{split}\]</div>
+<img alt="../../_images/faa6df2b1dc6402f8c07f08afec73d7219f5e5b9b6206febc6dd3ac58bb6915f.png" src="../../_images/faa6df2b1dc6402f8c07f08afec73d7219f5e5b9b6206febc6dd3ac58bb6915f.png" />
 </div>
 </div>
-<p>We check that the equations are correct before proceeding to set up our
-loss function. The loss function enables us to optimize the parameter choice.</p>
-<p>#TODO add some ref/notes for loss functions</p>
+<p>Let’s now use PyGOM to solve for the initial condition that satisfies the BVP, using <span class="math notranslate nohighlight">\(20ms^{-1}\)</span> as our initial guess.
+It is admittedly a bit inefficient that we have to specify this initial guess twice both in the <code class="docutils literal notranslate"><span class="pre">theta</span></code> parameter and also the initial condition.
+We let the solver know which variable we are solving the initial condition for by specifying the <code class="docutils literal notranslate"><span class="pre">target_state</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">SquareLoss</span>
 
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">20.0</span><span class="p">]</span>
 
-<span class="n">initialState</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="n">initialState</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">]</span>
 
-<span class="n">t</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-
-<span class="n">model</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">initialState</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-<span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::])</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">SquareLoss</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span>
+                 <span class="n">ode</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+                 <span class="n">t0</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x0</span><span class="o">=</span><span class="n">initialState</span><span class="p">,</span>
+                 <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                 <span class="n">state_name</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">target_state</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell tag_hide docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;Figure size 640x480 with 0 Axes&gt;
-</pre></div>
-</div>
-<img alt="../../_images/5bb47fc2f660e593570ae9bb893e134dabf422d376472437b4df6b602576e6b3.png" src="../../_images/5bb47fc2f660e593570ae9bb893e134dabf422d376472437b4df6b602576e6b3.png" />
-</div>
-</div>
-<p>Setting up the second boundary condition <span class="math notranslate nohighlight">\(y(4) = -2\)</span> is easy, because
-that is only a single observation attached to the state <span class="math notranslate nohighlight">\(y_{1}\)</span>.
-Enforcing the first boundary condition requires us to set it as the
-initial condition. Because the condition only states that <span class="math notranslate nohighlight">\(y(0) = 0\)</span>,
-the starting value of the other state <span class="math notranslate nohighlight">\(y_1\)</span> is free. We let our loss
-object know that it is free through the <code class="docutils literal notranslate"><span class="pre">targetState</span></code> input argument.</p>
-<p>#TODO unsure what this means</p>
+<p>And we use the <code class="xref py py-func docutils literal notranslate"><span class="pre">costIV()</span></code> function to let the solver know we are considering an initial value problem:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
-
-<span class="n">obj</span> <span class="o">=</span> <span class="n">SquareLoss</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">ode</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">initialState</span><span class="p">,</span> <span class="n">t0</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
-                <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">state_name</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;y0&#39;</span><span class="p">],</span> <span class="n">target_state</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;y1&#39;</span><span class="p">])</span>
-
-<span class="n">thetaHat</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">costIV</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">])</span>
-
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">thetaHat</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">costIV</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">theta</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">thetaHat</span><span class="p">)</span>
-
-<span class="n">model</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">+</span> <span class="n">thetaHat</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-<span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::])</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">UFuncTypeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">line</span> <span class="mi">3</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
-<span class="ne">----&gt; </span><span class="mi">3</span> <span class="n">obj</span> <span class="o">=</span> <span class="n">SquareLoss</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">ode</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">initialState</span><span class="p">,</span> <span class="n">t0</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
-<span class="g g-Whitespace">      </span><span class="mi">4</span>                 <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">state_name</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;y0&#39;</span><span class="p">],</span> <span class="n">target_state</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;y1&#39;</span><span class="p">])</span>
-<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="n">thetaHat</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">costIV</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">])</span>
-<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="nb">print</span><span class="p">(</span><span class="n">thetaHat</span><span class="p">)</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/pygom-0.1.dev1+g303ef5d.d20240429-py3.8-linux-x86_64.egg/pygom/loss/ode_loss.py:27,</span> in <span class="ni">SquareLoss.__init__</span><span class="nt">(self, theta, ode, x0, t0, t, y, state_name, state_weight, target_param, target_state)</span>
-<span class="g g-Whitespace">     </span><span class="mi">25</span> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">ode</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">state_name</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">26</span>              <span class="n">state_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="ne">---&gt; </span><span class="mi">27</span>     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">ode</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">state_name</span><span class="p">,</span> <span class="n">state_weight</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">28</span>                      <span class="kc">None</span><span class="p">,</span> <span class="n">target_param</span><span class="p">,</span> <span class="n">target_state</span><span class="p">)</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/pygom-0.1.dev1+g303ef5d.d20240429-py3.8-linux-x86_64.egg/pygom/loss/base_loss.py:191,</span> in <span class="ni">BaseLoss.__init__</span><span class="nt">(self, theta, ode, x0, t0, t, y, state_name, state_weight, spread_param, target_param, target_state)</span>
-<span class="g g-Whitespace">    </span><span class="mi">187</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolateTimeIndex</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="g g-Whitespace">    </span><span class="mi">189</span> <span class="c1"># TODO: optimal weight in terms of Pareto front from a</span>
-<span class="g g-Whitespace">    </span><span class="mi">190</span> <span class="c1"># multiobjective optimization perspective</span>
-<span class="ne">--&gt; </span><span class="mi">191</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lossObj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setLossType</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">193</span> <span class="c1"># final check</span>
-<span class="g g-Whitespace">    </span><span class="mi">194</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateName</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/pygom-0.1.dev1+g303ef5d.d20240429-py3.8-linux-x86_64.egg/pygom/loss/ode_loss.py:34,</span> in <span class="ni">SquareLoss._setLossType</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">     </span><span class="mi">33</span> <span class="k">def</span> <span class="nf">_setLossType</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="ne">---&gt; </span><span class="mi">34</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_lossObj</span> <span class="o">=</span> <span class="n">Square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">35</span>     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lossObj</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/pygom-0.1.dev1+g303ef5d.d20240429-py3.8-linux-x86_64.egg/pygom/loss/loss_type.py:100,</span> in <span class="ni">Square.__init__</span><span class="nt">(self, y, weights)</span>
-<span class="g g-Whitespace">     </span><span class="mi">98</span> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="g g-Whitespace">     </span><span class="mi">99</span>     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">100</span>     <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/pygom-0.1.dev1+g303ef5d.d20240429-py3.8-linux-x86_64.egg/pygom/loss/loss_type.py:118,</span> in <span class="ni">Square.loss</span><span class="nt">(self, yhat, apply_weighting)</span>
-<span class="g g-Whitespace">    </span><span class="mi">102</span> <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">103</span><span class="w">     </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="g g-Whitespace">    </span><span class="mi">104</span><span class="sd">     Loss under square loss.  Not really saying much here</span>
-<span class="g g-Whitespace">    </span><span class="mi">105</span><span class="sd"> </span>
-<span class="sd">   (...)</span>
-<span class="g g-Whitespace">    </span><span class="mi">116</span><span class="sd">     :math:`\\sum_{i=1}^{n} (y-\\hat{y})^{2}`</span>
-<span class="g g-Whitespace">    </span><span class="mi">117</span><span class="sd">     &#39;&#39;&#39;</span>
-<span class="ne">--&gt; </span><span class="mi">118</span>     <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/pygom-0.1.dev1+g303ef5d.d20240429-py3.8-linux-x86_64.egg/pygom/loss/loss_type.py:84,</span> in <span class="ni">Baseloss_Type.residual</span><span class="nt">(self, yhat, apply_weighting)</span>
-<span class="g g-Whitespace">     </span><span class="mi">82</span>     <span class="n">resid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">-</span> <span class="n">yhat</span>
-<span class="g g-Whitespace">     </span><span class="mi">83</span> <span class="k">if</span> <span class="n">apply_weighting</span><span class="p">:</span>
-<span class="ne">---&gt; </span><span class="mi">84</span>     <span class="n">resid</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span>
-<span class="g g-Whitespace">     </span><span class="mi">86</span> <span class="k">return</span> <span class="n">resid</span>
-
-<span class="ne">UFuncTypeError</span>: Cannot cast ufunc &#39;multiply&#39; output from dtype(&#39;float64&#39;) to dtype(&#39;int64&#39;) with casting rule &#39;same_kind&#39;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  message: Optimization terminated successfully.
+  success: True
+   status: 0
+      fun: 4.987646893079144e-16
+        x: [ 1.500e+01]
+      nit: 4
+      jac: [ 1.122e-10]
+ hess_inv: [[ 5.556e-02]]
+     nfev: 10
+     njev: 5
 </pre></div>
 </div>
 </div>
 </div>
+<p>We see that the target value of <span class="math notranslate nohighlight">\(15ms^{-1}\)</span> and when plotting the trajectory below we see that the ball lands after precisely 3 seconds.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">+</span> <span class="n">thetaHat</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::])</span>
+
+<span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="s1">&#39;constrained&#39;</span><span class="p">)</span>
+<span class="n">axarr</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">axarr</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Height, y&quot;</span><span class="p">)</span>
+<span class="n">axarr</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../../_images/124aa4f82eed9f3374ac4c73fe17e509a1df702a081cfffdf6270a5eaa0c3d6a.png" src="../../_images/124aa4f82eed9f3374ac4c73fe17e509a1df702a081cfffdf6270a5eaa0c3d6a.png" />
 </div>
-<p>We are going to visualize the solution, and also check the boundary
-condition. The first became our initial condition, so it is always
-satisfied and only the latter is of concern, which is zero (subject to
-numerical error) from thetahat.</p>
-<p>#TODO what is thetahat?</p>
+</div>
 </section>
-<section id="simple-model-2">
-<h2>Simple model 2<a class="headerlink" href="#simple-model-2" title="Permalink to this heading">#</a></h2>
-<p>Our second example is different as it involves an actual parameter and
-also time. We have the Mathieu’s Equation</p>
-<p>#TODO add ref</p>
-<div class="math notranslate nohighlight">
-\[\nabla^{2} y + \left(p - 2q \cos(2x)\right)y = 0\]</div>
-<p>and the aim is to compute the fourth eigenvalue <span class="math notranslate nohighlight">\(q=5\)</span>. There are three
-boundary conditions</p>
-<div class="math notranslate nohighlight">
-\[\nabla y(0) = 0, \quad \nabla y(\pi) = 0, \quad y(0) = 1\]</div>
-<p>and we aim to solve it by converting it to a first order ODE and tackle
-it as an IVP. As our model object does not allow the use of the time
-component in the equations, we introduce a anxiliary state <span class="math notranslate nohighlight">\(\tau\)</span> that
-replaces time <span class="math notranslate nohighlight">\(t\)</span>. Rewrite the equations using
-<span class="math notranslate nohighlight">\(y_{0} = y, y_{1} = \nabla y\)</span> and define our model as</p>
+<section id="unknown-parameters">
+<h2>Unknown parameters<a class="headerlink" href="#unknown-parameters" title="Permalink to this heading">#</a></h2>
+<p>Now we consider the case where initial conditions are known, but we wish to estimate the unknown parameter <span class="math notranslate nohighlight">\(g\)</span> which satisfies the BVP.
+Like before, we set up the second boundary condition by pretending that it is an observation.
+This time we omit the <code class="docutils literal notranslate"><span class="pre">target_state</span></code> argument to let the solver know that our initial conditions are fixed.
+We declare <span class="math notranslate nohighlight">\(g\)</span> as a model parameter and then solve as before.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stateList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;y0&#39;</span><span class="p">,</span> <span class="s1">&#39;y1&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stateList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">]</span>
+<span class="n">paramList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;g&#39;</span><span class="p">]</span>
 
-<span class="n">IparamList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">]</span>
+<span class="n">ode1</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;v&#39;</span><span class="p">)</span>
+<span class="n">ode2</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;-g&#39;</span><span class="p">)</span>
 
-<span class="n">ode1</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="s1">&#39;y0&#39;</span><span class="p">,</span> <span class="s1">&#39;y1&#39;</span><span class="p">,</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">stateList</span><span class="p">,</span> <span class="n">paramList</span><span class="p">,</span> <span class="n">ode</span><span class="o">=</span><span class="p">[</span><span class="n">ode1</span><span class="p">,</span> <span class="n">ode2</span><span class="p">])</span>
 
-<span class="n">ode2</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span> <span class="s1">&#39;-(p - 2*5*cos(2*tau))*y0&#39;</span><span class="p">,</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)]</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">5.0</span><span class="p">]</span>
+<span class="n">initialState</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">]</span>
 
-<span class="n">ode3</span> <span class="o">=</span> <span class="n">Transition</span><span class="p">(</span><span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">DeterministicOde</span><span class="p">(</span><span class="n">stateList</span><span class="p">,</span> <span class="n">paramList</span><span class="p">,</span> <span class="n">ode</span><span class="o">=</span><span class="p">[</span><span class="n">ode1</span><span class="p">,</span> <span class="n">ode2</span><span class="p">,</span> <span class="n">ode3</span><span class="p">])</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">SquareLoss</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span>
+                 <span class="n">ode</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+                 <span class="n">t0</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x0</span><span class="o">=</span><span class="n">initialState</span><span class="p">,</span>
+                 <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                 <span class="n">state_name</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">])</span>
 
-<span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
-
-<span class="n">p</span> <span class="o">=</span> <span class="mf">15.0</span>
-
-<span class="n">t</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-
-<span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;p&#39;</span><span class="p">,</span><span class="n">p</span><span class="p">)]</span>
-
-<span class="n">model</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-<span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::])</span>
+<span class="n">thetaHat</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">theta</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>We see that the result of <span class="math notranslate nohighlight">\(g=10ms^{-2}\)</span> is recovered:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">thetaHat</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  message: Optimization terminated successfully.
+  success: True
+   status: 0
+      fun: 1.1241808584714344e-15
+        x: [ 1.000e+01]
+      nit: 4
+      jac: [-1.068e-11]
+ hess_inv: [[ 2.469e-02]]
+     nfev: 10
+     njev: 5
 </pre></div>
 </div>
 </div>
 </div>
-<p>Now we are ready to setup the estimation. Like before, we set up the
-second boundary condition by pretending that it is an observation. We
-have all the initial conditions defined by the first boundary condition.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="o">=</span> <span class="n">SquareLoss</span><span class="p">(</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">t0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> 
-                 <span class="n">t</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">state_name</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">)</span>
-
-<span class="n">xhatObj</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">,[</span><span class="mi">15</span><span class="p">])</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">xhatObj</span><span class="p">)</span>
-
-<span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="n">xhatObj</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])]</span>
-
-<span class="n">model</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-<span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::])</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-
-<span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>The plot of the solution shows the path that satisfies all boundary
-condition. The last subplot is time, which is redundant here but
-the <code class="docutils literal notranslate"><span class="pre">DeterministicOde.plot</span></code> method is not yet able to recognize the time
-component. Possible speed up can be achieved through the use of
-derivative information or via the root finding method that tackles the
-gradient directly, instead of the cost function.</p>
-<p>#TODO add meth/fun/class refs for root finding method, derivative</p>
-<p><strong>Reference</strong></p>
-<p>[1] <a class="reference external" href="http://uk.mathworks.com/help/matlab/ref/bvp4c.html">http://uk.mathworks.com/help/matlab/ref/bvp4c.html</a></p>
 </section>
 </section>
 
@@ -746,24 +666,24 @@ gradient directly, instead of the cost function.</p>
               
               
               
-                <footer class="prev-next-footer">
+                <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../../md/parameter_fitting.html"
+       href="params_via_optimization.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Parameter fitting</p>
+        <p class="prev-next-title">Parameter Estimation: Maximum likelihood</p>
       </div>
     </a>
     <a class="right-next"
-       href="gradient.html"
+       href="../epijson.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Gradient estimation under square loss</p>
+        <p class="prev-next-title">Reading and using EpiJSON data</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -776,14 +696,16 @@ gradient directly, instead of the cost function.</p>
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-model-1">Simple model 1</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-model-2">Simple model 2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#problem">Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unknown-initial-conditions">Unknown initial conditions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unknown-parameters">Unknown parameters</a></li>
 </ul>
   </nav></div>
 
@@ -808,7 +730,7 @@ By UK Health Security Agency (previously Public Health England)
 
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -832,8 +754,8 @@ By UK Health Security Agency (previously Public Health England)
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

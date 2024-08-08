@@ -14,52 +14,49 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
-  <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>
-    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="../../../_static/sphinx-thebe.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pygom/model/simulate';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -73,28 +70,23 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -116,12 +108,22 @@ const thebe_selector_output = ".output, .cell_output"
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -137,6 +139,8 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
 
+  
+    
   
 
 <a class="navbar-brand logo" href="../../../md/intro.html">
@@ -155,7 +159,18 @@ const thebe_selector_output = ".output, .cell_output"
   
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -165,56 +180,53 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User documentation</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../md/getting_started.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/sir.html">Motivating Example: SIR Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/transition.html">Model set-up using the transition object</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/stochastic.html">Stochastic representation of ODEs</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/unrollOde.html">Converting equations into transitions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollSimple.html">A simple problem</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollBD.html">ODE With Birth and Death Process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollHard.html">Hard Problem</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/epi.html">Epidemic Analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/epijson.html">Reading and using EpiJSON data</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/parameter_fitting.html">Parameter fitting</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/bvpSimple.html">Solving Boundary Value Problems</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/gradient.html">Gradient estimation under square loss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/fh.html">Parameter Estimation: FitzHugh Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/estimate1.html">Parameter Estimation: Example 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../md/installation.html">Installation</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/estimate2.html">Parameter Estimation: Example 2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/initialGuess.html">Obtaining good initial values for parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/profile.html">Confidence Interval of Estimated Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
-</li>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../notebooks/insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/extract_info.html">Extracting model information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollSimple.html">Deducing transitions from equations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/solving.html">Producing forecasts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/model_params.html">Parameterisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/model_solver.html">Finding ODE solutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/time_dependent_params.html">Time dependent parameters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/parameter_fitting.html">Parameter fitting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/params_via_abc.html">Parameter Estimation: Approximate Bayesian Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/params_via_optimization.html">Parameter Estimation: Maximum likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/bvpSimple.html">Solving Boundary Value Problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/epijson.html">Reading and using EpiJSON data</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Common biological compartmental models</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/common_models.html">Pre-defined examples - common epi models</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/common_models.html">Pre-defined examples - common epi models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIS.html">SIS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIS_Periodic.html">SIS, periodic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIR.html">SIR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIR_Birth_Death.html">SIR, birth and death</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR.html">SEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIS_Periodic.html">SIS, periodic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIR_Birth_Death.html">SIR, birth and death</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Multiple.html">SEIR, multiple</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Birth_Death.html">SEIR - birth, death</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Birth_Death_Periodic.html">SEIR - birth, death and periodic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Legrand_Ebola_SEIHFR.html"><code class="docutils literal notranslate"><span class="pre">Legrand_Ebola_SEIHFR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Birth_Death_Periodic_Waning_Intro.html">SEIR, birth, death, periodic, waning and introductions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Legrand_Ebola_SEIHFR.html">Legrand Ebola SEIHFR</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Lotka_Volterra.html">Lotka Volterra</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Lotka_Volterra_4State.html">Lotka_Volterra (4 state)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/FitzHugh.html">FitzHugh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Lorenz.html">Lorenz</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/vanDelPol.html">vanDerPol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Robertson.html">Robertson</a></li>
 </ul>
-</li>
+</details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Frequently asked questions</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../md/faq.html">Frequent asked questions {#faq}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../md/faq.html">Frequently asked questions</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Code documentation</span></p>
 <ul class="nav bd-sidenav">
@@ -241,7 +253,7 @@ const thebe_selector_output = ".output, .cell_output"
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -250,14 +262,14 @@ const thebe_selector_output = ".output, .cell_output"
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -334,10 +346,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
@@ -345,7 +357,7 @@ document.write(`
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
@@ -373,7 +385,7 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <h1>Source code for pygom.model.simulate</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
@@ -624,6 +636,198 @@ document.write(`
             <span class="k">return</span> <span class="n">Y</span><span class="p">,</span> <span class="n">solutionList</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Y</span></div>
+        
+<div class="viewcode-block" id="SimulateOde.solve_determ"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.solve_determ">[docs]</a>    <span class="k">def</span> <span class="nf">solve_determ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">iteration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Simulate the ode by generating new realization of the stochastic</span>
+<span class="sd">            parameters and integrate the system deterministically.</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            t: array like</span>
+<span class="sd">                the range of time points which we want to see the result of</span>
+<span class="sd">            iteration: int</span>
+<span class="sd">                number of iterations you wish to simulate</span>
+<span class="sd">            parallel: bool, optional</span>
+<span class="sd">                Defaults to True</span>
+<span class="sd">            full_output: bool, optional</span>
+<span class="sd">                if we want additional information, Y_all in the return,</span>
+<span class="sd">                defaults to false</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            Y: :class:`numpy.ndarray`</span>
+<span class="sd">                of shape (len(t), len(state)), mean of all the simulation</span>
+<span class="sd">            Y_all: :class:`np.ndarray`</span>
+<span class="sd">                of shape (iteration, len(t), len(state))</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Need to specify the time we wish to observe&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># If parameters are not random then return one integration</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">solution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">solution</span>
+            
+            <span class="c1"># Otherwise, proceed for random parameters and verify expected extra parameters are present.</span>
+            <span class="k">if</span> <span class="n">iteration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Need to specify the number of iterations&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+            <span class="c1"># try to compute the simulation in parallel</span>
+            <span class="k">if</span> <span class="n">parallel</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">_distn_infrastructure</span><span class="o">.</span><span class="n">rv_frozen</span><span class="p">):</span>
+                            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Cannot perform parallel simulation &quot;</span>
+                                            <span class="o">+</span><span class="s2">&quot;using a serialized object as distribution&quot;</span><span class="p">)</span>
+                    <span class="c1"># check the type of parameter we have as input</span>
+                    <span class="kn">import</span> <span class="nn">dask.bag</span>
+                    <span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">):</span>
+                        <span class="n">y_i</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">rv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="n">y_i</span> <span class="o">+=</span> <span class="p">[{</span><span class="n">key</span><span class="p">:</span><span class="n">rv</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]}]</span>
+                        <span class="n">y</span> <span class="o">+=</span> <span class="p">[</span><span class="n">y_i</span><span class="p">]</span>
+                    <span class="c1"># y = [rv.rvs(iteration) for rv in self._stochasticParam.values()]</span>
+                    <span class="c1"># y = np.array(list(zip(*y)))</span>
+                    <span class="k">def</span> <span class="nf">sim</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">x</span>
+                        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+                    <span class="c1"># def sim(t1): return(self.integrate(t1))</span>
+
+                    <span class="c1"># xtmp = dask.bag.from_sequence([t]*iteration)</span>
+                    <span class="n">xtmp</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">bag</span><span class="o">.</span><span class="n">from_sequence</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                    <span class="n">solutionList</span> <span class="o">=</span> <span class="n">xtmp</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span> <span class="c1"># as e:</span>
+                    <span class="c1"># print(e)</span>
+                    <span class="c1"># print(&quot;Serial&quot;)</span>
+                    <span class="n">solutionList</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">solutionList</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">)]</span>
+
+            <span class="c1"># now make our 3D array</span>
+            <span class="c1"># the first dimension is the number of iteration</span>
+            <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">solutionList</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Y</span><span class="p">,</span> <span class="n">solutionList</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Y</span></div>
+
+    <span class="c1"># Same as function below, just trying out new naming convention</span>
+<div class="viewcode-block" id="SimulateOde.solve_stochast"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.solve_stochast">[docs]</a>    <span class="k">def</span> <span class="nf">solve_stochast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">exact</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Simulate the ode using stochastic simulation.  It switches</span>
+<span class="sd">        between a first reaction method and a :math:`\\tau`-leap</span>
+<span class="sd">        algorithm internally. When a parallel backend exists, then a new random</span>
+<span class="sd">        state (seed) will be used for each processor.  This is due to a lack</span>
+<span class="sd">        of appropriate parallel seed random number generator in python.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t: array like</span>
+<span class="sd">            the range of time points which we want to see the result of</span>
+<span class="sd">            or the final time point</span>
+<span class="sd">        iteration: int</span>
+<span class="sd">            number of iterations you wish to simulate</span>
+<span class="sd">        parallel: bool, optional</span>
+<span class="sd">            Defaults to True</span>
+<span class="sd">        exact: bool, optional</span>
+<span class="sd">            True if exact simulation is desired, defaults to False</span>
+<span class="sd">        full_output: bool, optional</span>
+<span class="sd">            if we want additional information, sim_T</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sim_X: list</span>
+<span class="sd">            of length iteration each with (len(t),len(state)) if t is a vector,</span>
+<span class="sd">            else it outputs unequal shape that was record of all the jumps</span>
+<span class="sd">        sim_T: list or :class:`numpy.ndarray`</span>
+<span class="sd">            if t is a single value, it outputs unequal shape that was</span>
+<span class="sd">            record of all the jumps.  if t is a vector, it outputs t so that</span>
+<span class="sd">            it is a :class:`numpy.ndarray` instead</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> \
+            <span class="s2">&quot;Currently only able to simulate when only transitions are present&quot;</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span> \
+            <span class="s2">&quot;Can only simulate a jump process with integer initial values&quot;</span>
+
+        <span class="c1"># this determines what type of output we want</span>
+        <span class="n">timePoint</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span><span class="c1">#, (int, float, np.int64, np.float64)):</span>
+            <span class="n">finalT</span> <span class="o">=</span> <span class="n">t</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">finalT</span> <span class="o">=</span> <span class="n">t</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">finalT</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="n">timePoint</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">finalT</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">timePoint</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Unknown data type for time&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compileTransitionVector</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">parallel</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">dask.bag</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using Dask for parallel simulation&quot;</span><span class="p">)</span>
+                <span class="k">def</span> <span class="nf">jump_partial</span><span class="p">(</span><span class="n">final_t</span><span class="p">):</span> <span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump</span><span class="p">(</span><span class="n">final_t</span><span class="p">,</span>
+                                                             <span class="n">exact</span><span class="o">=</span><span class="n">exact</span><span class="p">,</span>
+                                                             <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                             <span class="n">seed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+                <span class="n">xtmp</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">bag</span><span class="o">.</span><span class="n">from_sequence</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">iteration</span><span class="p">)</span><span class="o">*</span><span class="n">finalT</span><span class="p">)</span>
+                <span class="n">xtmp</span> <span class="o">=</span> <span class="n">xtmp</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">jump_partial</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">e</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Parallel simulation failed reverting to serial&quot;</span><span class="p">)</span>
+                <span class="n">xtmp</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump</span><span class="p">(</span><span class="n">finalT</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="n">exact</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Performing serial simulation&quot;</span><span class="p">)</span>
+            <span class="n">xtmp</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump</span><span class="p">(</span><span class="n">finalT</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="n">exact</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">)]</span>
+
+        <span class="n">xmat</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">xtmp</span><span class="p">))</span>
+        <span class="n">simXList</span><span class="p">,</span> <span class="n">simTList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">xmat</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">list</span><span class="p">(</span><span class="n">xmat</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c1">## print(&quot;Finish computation&quot;)</span>
+        <span class="c1"># now we want to fix our simulation, if they need fixing that is</span>
+        <span class="c1"># print timePoint</span>
+        <span class="k">if</span> <span class="n">timePoint</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">simXList</span><span class="p">)):</span>
+                <span class="c1"># unroll, always the first element</span>
+                <span class="c1"># it is easy to remember that we are accessing the first</span>
+                <span class="c1"># element because pop is spelt similar to poop and we</span>
+                <span class="c1"># all know that your execute first in first out when you</span>
+                <span class="c1"># poop!</span>
+                <span class="n">simX</span> <span class="o">=</span> <span class="n">simXList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">simT</span> <span class="o">=</span> <span class="n">simTList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractObservationAtTime</span><span class="p">(</span><span class="n">simX</span><span class="p">,</span> <span class="n">simT</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+                <span class="n">simTList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+                <span class="n">simXList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1"># note that we have to remain in list form because the number of</span>
+        <span class="c1"># simulation will be different if we are not dealing with</span>
+        <span class="c1"># a specific set of time points</span>
+
+        <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">timePoint</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">simXList</span><span class="p">,</span> <span class="n">t</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">simXList</span><span class="p">,</span> <span class="n">simTList</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">simXList</span></div>
+
 
 <div class="viewcode-block" id="SimulateOde.simulate_jump"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.simulate_jump">[docs]</a>    <span class="k">def</span> <span class="nf">simulate_jump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                       <span class="n">exact</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -739,6 +943,9 @@ document.write(`
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Jumps from the initial time self._t0 to the input time finalT</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span>
+
         <span class="c1"># initial time</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;No initial time&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;No initial state&quot;</span>
@@ -750,7 +957,7 @@ document.write(`
         <span class="n">xList</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()]</span>
         <span class="n">tList</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">]</span>
 
-        <span class="c1"># we want to construct some jump times</span>
+        <span class="c1"># we want to construct some jump times (TODO: doesn&#39;t seem like _GMat is used anywhere)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GMat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_computeDependencyMatrix</span><span class="p">()</span>
 
@@ -765,7 +972,8 @@ document.write(`
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
                         <span class="n">x_tmp</span><span class="p">,</span> <span class="n">t_tmp</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="n">tauLeap</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span>
-                                                <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lambdaMat</span><span class="p">,</span>
+                                                <span class="c1"># self._vMat, self._lambdaMat,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lambdaMatOD</span><span class="p">,</span>  <span class="c1"># I think that the wrong matrix has been used, trying this one instead</span>
                                                 <span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">,</span>
                                                 <span class="bp">self</span><span class="o">.</span><span class="n">transition_mean</span><span class="p">,</span>
                                                 <span class="bp">self</span><span class="o">.</span><span class="n">transition_var</span><span class="p">,</span>
@@ -1309,24 +1517,29 @@ document.write(`
 
         <span class="k">return</span> <span class="n">transition</span></div>
 
+    <span class="k">def</span> <span class="nf">_get_A</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">A</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">none_or_empty_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">):</span>
+                <span class="n">eqn_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">equation</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">]</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">checkEquation</span><span class="p">(</span><span class="n">eqn_list</span><span class="p">,</span>
+                                               <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_getListOfVariablesDict</span><span class="p">(),</span>
+                                               <span class="n">subs_derived</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">A</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Object was not initialized using a set of ode&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">A</span>
+
 <div class="viewcode-block" id="SimulateOde.get_bd_from_ode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_bd_from_ode">[docs]</a>    <span class="k">def</span> <span class="nf">get_bd_from_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns a list of:class:`Transition` from this object by unrolling</span>
 <span class="sd">        the odes.  All the elements are of TransitionType.B or</span>
 <span class="sd">        TransitionType.D</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="n">A</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">none_or_empty_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">):</span>
-                <span class="n">eqn</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">equation</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">]</span>
-                <span class="n">A</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">checkEquation</span><span class="p">(</span><span class="n">eqn</span><span class="p">,</span>
-                                               <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_getListOfVariablesDict</span><span class="p">(),</span>
-                                               <span class="n">subs_derived</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Object was not initialized using a set of ode&quot;</span><span class="p">)</span>
-            <span class="c1"># A = super(SimulateOde, self).getOde()</span>
+
+        <span class="n">A</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_A</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 
         <span class="n">bdList</span><span class="p">,</span> <span class="n">_term</span> <span class="o">=</span> <span class="n">_ode_composition</span><span class="o">.</span><span class="n">getUnmatchedExpressionVector</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bdList</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generateTransitionMatrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 
@@ -1363,15 +1576,7 @@ document.write(`
 <span class="sd">        that the functions called here is focused on the terms of</span>
 <span class="sd">        the equation rather than the states.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="n">A</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">none_or_empty_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">):</span>
-                <span class="n">eqn_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">equation</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">]</span>
-                <span class="n">A</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">checkEquation</span><span class="p">(</span><span class="n">eqn_list</span><span class="p">,</span>
-                                               <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_getListOfVariablesDict</span><span class="p">(),</span>
-                                               <span class="n">subs_derived</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Object was not initialized using a set of ode&quot;</span><span class="p">)</span>
-
+        <span class="n">A</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_A</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
         <span class="n">bdList</span><span class="p">,</span> <span class="n">_term</span> <span class="o">=</span> <span class="n">_ode_composition</span><span class="o">.</span><span class="n">getUnmatchedExpressionVector</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="n">fx</span> <span class="o">=</span> <span class="n">_ode_composition</span><span class="o">.</span><span class="n">stripBDFromOde</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">bdList</span><span class="p">)</span>
         <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterStateList</span><span class="p">()]</span>
@@ -1415,7 +1620,7 @@ document.write(`
               
               
               
-                <footer class="prev-next-footer">
+                <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
 </div>
@@ -1444,7 +1649,7 @@ By UK Health Security Agency (previously Public Health England)
 
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -1468,8 +1673,8 @@ By UK Health Security Agency (previously Public Health England)
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

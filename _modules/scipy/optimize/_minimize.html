@@ -14,52 +14,49 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
-  <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>
-    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="../../../_static/sphinx-thebe.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/scipy/optimize/_minimize';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -73,28 +70,23 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -116,12 +108,22 @@ const thebe_selector_output = ".output, .cell_output"
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -137,6 +139,8 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
 
+  
+    
   
 
 <a class="navbar-brand logo" href="../../../md/intro.html">
@@ -155,7 +159,18 @@ const thebe_selector_output = ".output, .cell_output"
   
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -165,56 +180,53 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User documentation</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../md/getting_started.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/sir.html">Motivating Example: SIR Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/transition.html">Model set-up using the transition object</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/stochastic.html">Stochastic representation of ODEs</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/unrollOde.html">Converting equations into transitions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollSimple.html">A simple problem</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollBD.html">ODE With Birth and Death Process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollHard.html">Hard Problem</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/epi.html">Epidemic Analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/epijson.html">Reading and using EpiJSON data</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/parameter_fitting.html">Parameter fitting</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/bvpSimple.html">Solving Boundary Value Problems</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/gradient.html">Gradient estimation under square loss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/fh.html">Parameter Estimation: FitzHugh Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/estimate1.html">Parameter Estimation: Example 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../md/installation.html">Installation</a></li>
 
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/estimate2.html">Parameter Estimation: Example 2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/initialGuess.html">Obtaining good initial values for parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/profile.html">Confidence Interval of Estimated Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
-</li>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../notebooks/insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/extract_info.html">Extracting model information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollSimple.html">Deducing transitions from equations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/solving.html">Producing forecasts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/model_params.html">Parameterisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/model_solver.html">Finding ODE solutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/time_dependent_params.html">Time dependent parameters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/parameter_fitting.html">Parameter fitting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/params_via_abc.html">Parameter Estimation: Approximate Bayesian Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/params_via_optimization.html">Parameter Estimation: Maximum likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/bvpSimple.html">Solving Boundary Value Problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/epijson.html">Reading and using EpiJSON data</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Common biological compartmental models</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/common_models.html">Pre-defined examples - common epi models</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/common_models.html">Pre-defined examples - common epi models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIS.html">SIS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIS_Periodic.html">SIS, periodic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIR.html">SIR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIR_Birth_Death.html">SIR, birth and death</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR.html">SEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIS_Periodic.html">SIS, periodic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIR_Birth_Death.html">SIR, birth and death</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Multiple.html">SEIR, multiple</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Birth_Death.html">SEIR - birth, death</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Birth_Death_Periodic.html">SEIR - birth, death and periodic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Legrand_Ebola_SEIHFR.html"><code class="docutils literal notranslate"><span class="pre">Legrand_Ebola_SEIHFR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Birth_Death_Periodic_Waning_Intro.html">SEIR, birth, death, periodic, waning and introductions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Legrand_Ebola_SEIHFR.html">Legrand Ebola SEIHFR</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Lotka_Volterra.html">Lotka Volterra</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Lotka_Volterra_4State.html">Lotka_Volterra (4 state)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/FitzHugh.html">FitzHugh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Lorenz.html">Lorenz</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/vanDelPol.html">vanDerPol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Robertson.html">Robertson</a></li>
 </ul>
-</li>
+</details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Frequently asked questions</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../md/faq.html">Frequent asked questions {#faq}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../md/faq.html">Frequently asked questions</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Code documentation</span></p>
 <ul class="nav bd-sidenav">
@@ -241,7 +253,7 @@ const thebe_selector_output = ".output, .cell_output"
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -250,14 +262,14 @@ const thebe_selector_output = ".output, .cell_output"
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -334,10 +346,10 @@ const thebe_selector_output = ".output, .cell_output"
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
@@ -345,7 +357,7 @@ document.write(`
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
@@ -373,7 +385,7 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <h1>Source code for scipy.optimize._minimize</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
@@ -396,7 +408,8 @@ document.write(`
 <span class="kn">from</span> <span class="nn">._optimize</span> <span class="kn">import</span> <span class="p">(</span><span class="n">_minimize_neldermead</span><span class="p">,</span> <span class="n">_minimize_powell</span><span class="p">,</span> <span class="n">_minimize_cg</span><span class="p">,</span>
                         <span class="n">_minimize_bfgs</span><span class="p">,</span> <span class="n">_minimize_newtoncg</span><span class="p">,</span>
                         <span class="n">_minimize_scalar_brent</span><span class="p">,</span> <span class="n">_minimize_scalar_bounded</span><span class="p">,</span>
-                        <span class="n">_minimize_scalar_golden</span><span class="p">,</span> <span class="n">MemoizeJac</span><span class="p">,</span> <span class="n">OptimizeResult</span><span class="p">)</span>
+                        <span class="n">_minimize_scalar_golden</span><span class="p">,</span> <span class="n">MemoizeJac</span><span class="p">,</span> <span class="n">OptimizeResult</span><span class="p">,</span>
+                        <span class="n">_wrap_callback</span><span class="p">,</span> <span class="n">_recover_from_bracket_error</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">._trustregion_dogleg</span> <span class="kn">import</span> <span class="n">_minimize_dogleg</span>
 <span class="kn">from</span> <span class="nn">._trustregion_ncg</span> <span class="kn">import</span> <span class="n">_minimize_trust_ncg</span>
 <span class="kn">from</span> <span class="nn">._trustregion_krylov</span> <span class="kn">import</span> <span class="n">_minimize_trust_krylov</span>
@@ -407,6 +420,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">._lbfgsb_py</span> <span class="kn">import</span> <span class="n">_minimize_lbfgsb</span>
 <span class="kn">from</span> <span class="nn">._tnc</span> <span class="kn">import</span> <span class="n">_minimize_tnc</span>
 <span class="kn">from</span> <span class="nn">._cobyla_py</span> <span class="kn">import</span> <span class="n">_minimize_cobyla</span>
+<span class="kn">from</span> <span class="nn">._cobyqa_py</span> <span class="kn">import</span> <span class="n">_minimize_cobyqa</span>
 <span class="kn">from</span> <span class="nn">._slsqp_py</span> <span class="kn">import</span> <span class="n">_minimize_slsqp</span>
 <span class="kn">from</span> <span class="nn">._constraints</span> <span class="kn">import</span> <span class="p">(</span><span class="n">old_bound_to_new</span><span class="p">,</span> <span class="n">new_bounds_to_old</span><span class="p">,</span>
                            <span class="n">old_constraint_to_new</span><span class="p">,</span> <span class="n">new_constraint_to_old</span><span class="p">,</span>
@@ -415,8 +429,14 @@ document.write(`
 <span class="kn">from</span> <span class="nn">._differentiable_functions</span> <span class="kn">import</span> <span class="n">FD_METHODS</span>
 
 <span class="n">MINIMIZE_METHODS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;nelder-mead&#39;</span><span class="p">,</span> <span class="s1">&#39;powell&#39;</span><span class="p">,</span> <span class="s1">&#39;cg&#39;</span><span class="p">,</span> <span class="s1">&#39;bfgs&#39;</span><span class="p">,</span> <span class="s1">&#39;newton-cg&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;l-bfgs-b&#39;</span><span class="p">,</span> <span class="s1">&#39;tnc&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;slsqp&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;dogleg&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-ncg&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-exact&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-krylov&#39;</span><span class="p">]</span>
+                    <span class="s1">&#39;l-bfgs-b&#39;</span><span class="p">,</span> <span class="s1">&#39;tnc&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">,</span> <span class="s1">&#39;slsqp&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span> <span class="s1">&#39;dogleg&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-ncg&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-exact&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;trust-krylov&#39;</span><span class="p">]</span>
+
+<span class="c1"># These methods support the new callback interface (passed an OptimizeResult)</span>
+<span class="n">MINIMIZE_METHODS_NEW_CB</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;nelder-mead&#39;</span><span class="p">,</span> <span class="s1">&#39;powell&#39;</span><span class="p">,</span> <span class="s1">&#39;cg&#39;</span><span class="p">,</span> <span class="s1">&#39;bfgs&#39;</span><span class="p">,</span> <span class="s1">&#39;newton-cg&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;l-bfgs-b&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span> <span class="s1">&#39;dogleg&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-ncg&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;trust-exact&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-krylov&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">]</span>
 
 <span class="n">MINIMIZE_SCALAR_METHODS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;brent&#39;</span><span class="p">,</span> <span class="s1">&#39;bounded&#39;</span><span class="p">,</span> <span class="s1">&#39;golden&#39;</span><span class="p">]</span>
 
@@ -452,6 +472,7 @@ document.write(`
 <span class="sd">            - &#39;L-BFGS-B&#39;    :ref:`(see here) &lt;optimize.minimize-lbfgsb&gt;`</span>
 <span class="sd">            - &#39;TNC&#39;         :ref:`(see here) &lt;optimize.minimize-tnc&gt;`</span>
 <span class="sd">            - &#39;COBYLA&#39;      :ref:`(see here) &lt;optimize.minimize-cobyla&gt;`</span>
+<span class="sd">            - &#39;COBYQA&#39;      :ref:`(see here) &lt;optimize.minimize-cobyqa&gt;`</span>
 <span class="sd">            - &#39;SLSQP&#39;       :ref:`(see here) &lt;optimize.minimize-slsqp&gt;`</span>
 <span class="sd">            - &#39;trust-constr&#39;:ref:`(see here) &lt;optimize.minimize-trustconstr&gt;`</span>
 <span class="sd">            - &#39;dogleg&#39;      :ref:`(see here) &lt;optimize.minimize-dogleg&gt;`</span>
@@ -517,18 +538,19 @@ document.write(`
 <span class="sd">        dimension (n,) and ``args`` is a tuple with the fixed</span>
 <span class="sd">        parameters.</span>
 <span class="sd">    bounds : sequence or `Bounds`, optional</span>
-<span class="sd">        Bounds on variables for Nelder-Mead, L-BFGS-B, TNC, SLSQP, Powell, and</span>
-<span class="sd">        trust-constr methods. There are two ways to specify the bounds:</span>
+<span class="sd">        Bounds on variables for Nelder-Mead, L-BFGS-B, TNC, SLSQP, Powell,</span>
+<span class="sd">        trust-constr, COBYLA, and COBYQA methods. There are two ways to specify</span>
+<span class="sd">        the bounds:</span>
 
 <span class="sd">            1. Instance of `Bounds` class.</span>
 <span class="sd">            2. Sequence of ``(min, max)`` pairs for each element in `x`. None</span>
 <span class="sd">               is used to specify no bound.</span>
 
 <span class="sd">    constraints : {Constraint, dict} or List of {Constraint, dict}, optional</span>
-<span class="sd">        Constraints definition. Only for COBYLA, SLSQP and trust-constr.</span>
+<span class="sd">        Constraints definition. Only for COBYLA, COBYQA, SLSQP and trust-constr.</span>
 
-<span class="sd">        Constraints for &#39;trust-constr&#39; are defined as a single object or a</span>
-<span class="sd">        list of objects specifying constraints to the optimization problem.</span>
+<span class="sd">        Constraints for &#39;trust-constr&#39; and &#39;cobyqa&#39; are defined as a single object</span>
+<span class="sd">        or a list of objects specifying constraints to the optimization problem.</span>
 <span class="sd">        Available constraints are:</span>
 
 <span class="sd">            - `LinearConstraint`</span>
@@ -549,6 +571,7 @@ document.write(`
 <span class="sd">        Equality constraint means that the constraint function result is to</span>
 <span class="sd">        be zero whereas inequality means that it is to be non-negative.</span>
 <span class="sd">        Note that COBYLA only supports inequality constraints.</span>
+
 <span class="sd">    tol : float, optional</span>
 <span class="sd">        Tolerance for termination. When `tol` is specified, the selected</span>
 <span class="sd">        minimization algorithm sets some relevant solver-specific tolerance(s)</span>
@@ -568,20 +591,28 @@ document.write(`
 
 <span class="sd">        For method-specific options, see :func:`show_options()`.</span>
 <span class="sd">    callback : callable, optional</span>
-<span class="sd">        Called after each iteration. For &#39;trust-constr&#39; it is a callable with</span>
+<span class="sd">        A callable called after each iteration.</span>
+
+<span class="sd">        All methods except TNC, SLSQP, and COBYLA support a callable with</span>
 <span class="sd">        the signature:</span>
 
-<span class="sd">            ``callback(xk, OptimizeResult state) -&gt; bool``</span>
+<span class="sd">            ``callback(intermediate_result: OptimizeResult)``</span>
 
-<span class="sd">        where ``xk`` is the current parameter vector. and ``state``</span>
-<span class="sd">        is an `OptimizeResult` object, with the same fields</span>
-<span class="sd">        as the ones from the return. If callback returns True</span>
-<span class="sd">        the algorithm execution is terminated.</span>
-<span class="sd">        For all the other methods, the signature is:</span>
+<span class="sd">        where ``intermediate_result`` is a keyword parameter containing an</span>
+<span class="sd">        `OptimizeResult` with attributes ``x`` and ``fun``, the present values</span>
+<span class="sd">        of the parameter vector and objective function. Note that the name</span>
+<span class="sd">        of the parameter must be ``intermediate_result`` for the callback</span>
+<span class="sd">        to be passed an `OptimizeResult`. These methods will also terminate if</span>
+<span class="sd">        the callback raises ``StopIteration``.</span>
+
+<span class="sd">        All methods except trust-constr (also) support a signature like:</span>
 
 <span class="sd">            ``callback(xk)``</span>
 
 <span class="sd">        where ``xk`` is the current parameter vector.</span>
+
+<span class="sd">        Introspection is used to determine which of the signatures above to</span>
+<span class="sd">        invoke.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -698,6 +729,13 @@ document.write(`
 <span class="sd">    constraints functions &#39;fun&#39; may return either a single number</span>
 <span class="sd">    or an array or list of numbers.</span>
 
+<span class="sd">    Method :ref:`COBYQA &lt;optimize.minimize-cobyqa&gt;` uses the Constrained</span>
+<span class="sd">    Optimization BY Quadratic Approximations (COBYQA) method [18]_. The</span>
+<span class="sd">    algorithm is a derivative-free trust-region SQP method based on quadratic</span>
+<span class="sd">    approximations to the objective function and each nonlinear constraint. The</span>
+<span class="sd">    bounds are treated as unrelaxable constraints, in the sense that the</span>
+<span class="sd">    algorithm always respects them throughout the optimization process.</span>
+
 <span class="sd">    Method :ref:`SLSQP &lt;optimize.minimize-slsqp&gt;` uses Sequential</span>
 <span class="sd">    Least SQuares Programming to minimize a function of several</span>
 <span class="sd">    variables with any combination of bounds, equality and inequality</span>
@@ -707,13 +745,13 @@ document.write(`
 <span class="sd">    large floating values.</span>
 
 <span class="sd">    Method :ref:`trust-constr &lt;optimize.minimize-trustconstr&gt;` is a</span>
-<span class="sd">    trust-region algorithm for constrained optimization. It swiches</span>
+<span class="sd">    trust-region algorithm for constrained optimization. It switches</span>
 <span class="sd">    between two implementations depending on the problem definition.</span>
 <span class="sd">    It is the most versatile constrained minimization algorithm</span>
 <span class="sd">    implemented in SciPy and the most appropriate for large-scale problems.</span>
 <span class="sd">    For equality constrained problems it is an implementation of Byrd-Omojokun</span>
 <span class="sd">    Trust-Region SQP method described in [17]_ and in [5]_, p. 549. When</span>
-<span class="sd">    inequality constraints are imposed as well, it swiches to the trust-region</span>
+<span class="sd">    inequality constraints are imposed as well, it switches to the trust-region</span>
 <span class="sd">    interior point method described in [16]_. This interior point algorithm,</span>
 <span class="sd">    in turn, solves inequality constraints by introducing slack variables</span>
 <span class="sd">    and solving a sequence of equality-constrained barrier problems</span>
@@ -829,6 +867,10 @@ document.write(`
 <span class="sd">    .. [17] Lalee, Marucha, Jorge Nocedal, and Todd Plantega. 1998. On the</span>
 <span class="sd">        implementation of an algorithm for large-scale equality constrained</span>
 <span class="sd">        optimization. SIAM Journal on Optimization 8.3: 682-706.</span>
+<span class="sd">    .. [18] Ragonneau, T. M. *Model-Based Derivative-Free Optimization Methods</span>
+<span class="sd">        and Software*. PhD thesis, Department of Applied Mathematics, The Hong</span>
+<span class="sd">        Kong Polytechnic University, Hong Kong, China, 2022. URL:</span>
+<span class="sd">        https://theses.lib.polyu.edu.hk/handle/200/12294.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -860,11 +902,13 @@ document.write(`
 <span class="sd">    &gt;&gt;&gt; print(res.message)</span>
 <span class="sd">    Optimization terminated successfully.</span>
 <span class="sd">    &gt;&gt;&gt; res.hess_inv</span>
-<span class="sd">    array([[ 0.00749589,  0.01255155,  0.02396251,  0.04750988,  0.09495377],  # may vary</span>
-<span class="sd">           [ 0.01255155,  0.02510441,  0.04794055,  0.09502834,  0.18996269],</span>
-<span class="sd">           [ 0.02396251,  0.04794055,  0.09631614,  0.19092151,  0.38165151],</span>
-<span class="sd">           [ 0.04750988,  0.09502834,  0.19092151,  0.38341252,  0.7664427 ],</span>
-<span class="sd">           [ 0.09495377,  0.18996269,  0.38165151,  0.7664427,   1.53713523]])</span>
+<span class="sd">    array([</span>
+<span class="sd">        [ 0.00749589,  0.01255155,  0.02396251,  0.04750988,  0.09495377],  # may vary</span>
+<span class="sd">        [ 0.01255155,  0.02510441,  0.04794055,  0.09502834,  0.18996269],</span>
+<span class="sd">        [ 0.02396251,  0.04794055,  0.09631614,  0.19092151,  0.38165151],</span>
+<span class="sd">        [ 0.04750988,  0.09502834,  0.19092151,  0.38341252,  0.7664427 ],</span>
+<span class="sd">        [ 0.09495377,  0.18996269,  0.38165151,  0.7664427,   1.53713523]</span>
+<span class="sd">    ])</span>
 
 
 <span class="sd">    Next, consider a minimization problem with several constraints (namely</span>
@@ -893,11 +937,7 @@ document.write(`
     <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x0</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">x0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Use of `minimize` with `x0.ndim != 1` is deprecated. &#39;</span>
-                   <span class="s1">&#39;Currently, singleton dimensions will be removed from &#39;</span>
-                   <span class="s1">&#39;`x0`, but an error will be raised in SciPy 1.11.0.&#39;</span><span class="p">)</span>
-        <span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">x0</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;x0&#39; must only have one dimension.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">x0</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">typecodes</span><span class="p">[</span><span class="s2">&quot;AllInteger&quot;</span><span class="p">]:</span>
         <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
@@ -923,34 +963,36 @@ document.write(`
         <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c1"># check if optional parameters are supported by the selected method</span>
     <span class="c1"># - jac</span>
-    <span class="k">if</span> <span class="n">meth</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;nelder-mead&#39;</span><span class="p">,</span> <span class="s1">&#39;powell&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyla&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="n">jac</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">meth</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;nelder-mead&#39;</span><span class="p">,</span> <span class="s1">&#39;powell&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="n">jac</span><span class="p">):</span>
         <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Method </span><span class="si">%s</span><span class="s1"> does not use gradient information (jac).&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">,</span>
-             <span class="ne">RuntimeWarning</span><span class="p">)</span>
+             <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="c1"># - hess</span>
     <span class="k">if</span> <span class="n">meth</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;newton-cg&#39;</span><span class="p">,</span> <span class="s1">&#39;dogleg&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-ncg&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span>
                     <span class="s1">&#39;trust-krylov&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-exact&#39;</span><span class="p">,</span> <span class="s1">&#39;_custom&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">hess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Method </span><span class="si">%s</span><span class="s1"> does not use Hessian information (hess).&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">,</span>
-             <span class="ne">RuntimeWarning</span><span class="p">)</span>
+             <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="c1"># - hessp</span>
     <span class="k">if</span> <span class="n">meth</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;newton-cg&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-ncg&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span>
                     <span class="s1">&#39;trust-krylov&#39;</span><span class="p">,</span> <span class="s1">&#39;_custom&#39;</span><span class="p">)</span> \
        <span class="ow">and</span> <span class="n">hessp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Method </span><span class="si">%s</span><span class="s1"> does not use Hessian-vector product &#39;</span>
-             <span class="s1">&#39;information (hessp).&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+             <span class="s1">&#39;information (hessp).&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">,</span>
+             <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="c1"># - constraints or bounds</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">meth</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;slsqp&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span> <span class="s1">&#39;_custom&#39;</span><span class="p">)</span> <span class="ow">and</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">meth</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">,</span> <span class="s1">&#39;slsqp&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span> <span class="s1">&#39;_custom&#39;</span><span class="p">)</span> <span class="ow">and</span>
             <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">constraints</span><span class="p">)):</span>
         <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Method </span><span class="si">%s</span><span class="s1"> cannot handle constraints.&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">,</span>
-             <span class="ne">RuntimeWarning</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">meth</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;nelder-mead&#39;</span><span class="p">,</span> <span class="s1">&#39;powell&#39;</span><span class="p">,</span> <span class="s1">&#39;l-bfgs-b&#39;</span><span class="p">,</span> <span class="s1">&#39;tnc&#39;</span><span class="p">,</span> <span class="s1">&#39;slsqp&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span> <span class="s1">&#39;_custom&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+             <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">meth</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="s1">&#39;nelder-mead&#39;</span><span class="p">,</span> <span class="s1">&#39;powell&#39;</span><span class="p">,</span> <span class="s1">&#39;l-bfgs-b&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">,</span> <span class="s1">&#39;slsqp&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tnc&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span> <span class="s1">&#39;_custom&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Method </span><span class="si">%s</span><span class="s1"> cannot handle bounds.&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">,</span>
-             <span class="ne">RuntimeWarning</span><span class="p">)</span>
+             <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="c1"># - return_all</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">meth</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;l-bfgs-b&#39;</span><span class="p">,</span> <span class="s1">&#39;tnc&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;slsqp&#39;</span><span class="p">)</span> <span class="ow">and</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">meth</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;l-bfgs-b&#39;</span><span class="p">,</span> <span class="s1">&#39;tnc&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">,</span> <span class="s1">&#39;slsqp&#39;</span><span class="p">)</span> <span class="ow">and</span>
             <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;return_all&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)):</span>
         <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Method </span><span class="si">%s</span><span class="s1"> does not support the return_all option.&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">,</span>
-             <span class="ne">RuntimeWarning</span><span class="p">)</span>
+             <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># check gradient vector</span>
     <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">jac</span><span class="p">):</span>
@@ -988,6 +1030,8 @@ document.write(`
             <span class="n">options</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;gtol&#39;</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">meth</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;_custom&#39;</span><span class="p">):</span>
             <span class="n">options</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;tol&#39;</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">meth</span> <span class="o">==</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">:</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;final_tr_radius&#39;</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">meth</span> <span class="o">==</span> <span class="s1">&#39;trust-constr&#39;</span><span class="p">:</span>
             <span class="n">options</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;xtol&#39;</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
             <span class="n">options</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;gtol&#39;</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
@@ -1005,6 +1049,10 @@ document.write(`
 
     <span class="n">remove_vars</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># convert to new-style bounds so we only have to consider one case</span>
+        <span class="n">bounds</span> <span class="o">=</span> <span class="n">standardize_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="s1">&#39;new&#39;</span><span class="p">)</span>
+        <span class="n">bounds</span> <span class="o">=</span> <span class="n">_validate_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">meth</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">meth</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;tnc&quot;</span><span class="p">,</span> <span class="s2">&quot;slsqp&quot;</span><span class="p">,</span> <span class="s2">&quot;l-bfgs-b&quot;</span><span class="p">}:</span>
             <span class="c1"># These methods can&#39;t take the finite-difference derivatives they</span>
             <span class="c1"># need when a variable is fixed by the bounds. To avoid this issue,</span>
@@ -1012,9 +1060,6 @@ document.write(`
             <span class="c1"># NOTE: if this list is expanded, then be sure to update the</span>
             <span class="c1"># accompanying tests and test_optimize.eb_data. Consider also if</span>
             <span class="c1"># default OptimizeResult will need updating.</span>
-
-            <span class="c1"># convert to new-style bounds so we only have to consider one case</span>
-            <span class="n">bounds</span> <span class="o">=</span> <span class="n">standardize_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="s1">&#39;new&#39;</span><span class="p">)</span>
 
             <span class="c1"># determine whether any variables are fixed</span>
             <span class="n">i_fixed</span> <span class="o">=</span> <span class="p">(</span><span class="n">bounds</span><span class="o">.</span><span class="n">lb</span> <span class="o">==</span> <span class="n">bounds</span><span class="o">.</span><span class="n">ub</span><span class="p">)</span>
@@ -1058,6 +1103,8 @@ document.write(`
                                                        <span class="n">remove</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">bounds</span> <span class="o">=</span> <span class="n">standardize_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">meth</span><span class="p">)</span>
 
+    <span class="n">callback</span> <span class="o">=</span> <span class="n">_wrap_callback</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">meth</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">meth</span> <span class="o">==</span> <span class="s1">&#39;nelder-mead&#39;</span><span class="p">:</span>
         <span class="n">res</span> <span class="o">=</span> <span class="n">_minimize_neldermead</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
                                    <span class="o">**</span><span class="n">options</span><span class="p">)</span>
@@ -1078,7 +1125,10 @@ document.write(`
                             <span class="o">**</span><span class="n">options</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">meth</span> <span class="o">==</span> <span class="s1">&#39;cobyla&#39;</span><span class="p">:</span>
         <span class="n">res</span> <span class="o">=</span> <span class="n">_minimize_cobyla</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">constraints</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span>
-                                <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+                               <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">meth</span> <span class="o">==</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">_minimize_cobyqa</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">constraints</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span>
+                               <span class="o">**</span><span class="n">options</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">meth</span> <span class="o">==</span> <span class="s1">&#39;slsqp&#39;</span><span class="p">:</span>
         <span class="n">res</span> <span class="o">=</span> <span class="n">_minimize_slsqp</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">jac</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span>
                               <span class="n">constraints</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
@@ -1107,12 +1157,17 @@ document.write(`
         <span class="k">if</span> <span class="s2">&quot;hess_inv&quot;</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
             <span class="n">res</span><span class="o">.</span><span class="n">hess_inv</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># unknown</span>
 
+    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="s1">&#39;stop_iteration&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="mi">99</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;`callback` raised `StopIteration`.&quot;</span>
+
     <span class="k">return</span> <span class="n">res</span>
 
 
 <div class="viewcode-block" id="minimize_scalar"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.minimize_scalar">[docs]</a><span class="k">def</span> <span class="nf">minimize_scalar</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">bracket</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span>
                     <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Minimization of scalar function of one variable.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Local minimization of scalar function of one variable.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1121,11 +1176,13 @@ document.write(`
 <span class="sd">        Scalar function, must return a scalar.</span>
 <span class="sd">    bracket : sequence, optional</span>
 <span class="sd">        For methods &#39;brent&#39; and &#39;golden&#39;, `bracket` defines the bracketing</span>
-<span class="sd">        interval and can either have three items ``(a, b, c)`` so that</span>
-<span class="sd">        ``a &lt; b &lt; c`` and ``fun(b) &lt; fun(a), fun(c)`` or two items ``a`` and</span>
-<span class="sd">        ``c`` which are assumed to be a starting interval for a downhill</span>
-<span class="sd">        bracket search (see `bracket`); it doesn&#39;t always mean that the</span>
-<span class="sd">        obtained solution will satisfy ``a &lt;= x &lt;= c``.</span>
+<span class="sd">        interval and is required.</span>
+<span class="sd">        Either a triple ``(xa, xb, xc)`` satisfying ``xa &lt; xb &lt; xc`` and</span>
+<span class="sd">        ``func(xb) &lt; func(xa) and  func(xb) &lt; func(xc)``, or a pair</span>
+<span class="sd">        ``(xa, xb)`` to be used as initial points for a downhill bracket search</span>
+<span class="sd">        (see `scipy.optimize.bracket`).</span>
+<span class="sd">        The minimizer ``res.x`` will not necessarily satisfy</span>
+<span class="sd">        ``xa &lt;= res.x &lt;= xb``.</span>
 <span class="sd">    bounds : sequence, optional</span>
 <span class="sd">        For method &#39;bounded&#39;, `bounds` is mandatory and must have two finite</span>
 <span class="sd">        items corresponding to the optimization bounds.</span>
@@ -1189,6 +1246,12 @@ document.write(`
 <span class="sd">    Method :ref:`Bounded &lt;optimize.minimize_scalar-bounded&gt;` can</span>
 <span class="sd">    perform bounded minimization [2]_ [3]_. It uses the Brent method to find a</span>
 <span class="sd">    local minimum in the interval x1 &lt; xopt &lt; x2.</span>
+
+<span class="sd">    Note that the Brent and Golden methods do not guarantee success unless a</span>
+<span class="sd">    valid ``bracket`` triple is provided. If a three-point bracket cannot be</span>
+<span class="sd">    found, consider `scipy.optimize.minimize`. Also, all methods are intended</span>
+<span class="sd">    only for local minimization. When the function of interest has more than</span>
+<span class="sd">    one local minimum, consider :ref:`global_optimization`.</span>
 
 <span class="sd">    **Custom minimizers**</span>
 
@@ -1268,7 +1331,8 @@ document.write(`
         <span class="n">options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">meth</span> <span class="o">==</span> <span class="s1">&#39;bounded&#39;</span> <span class="ow">and</span> <span class="s1">&#39;xatol&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
             <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Method &#39;bounded&#39; does not support relative tolerance in x; &quot;</span>
-                 <span class="s2">&quot;defaulting to absolute tolerance.&quot;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+                 <span class="s2">&quot;defaulting to absolute tolerance.&quot;</span><span class="p">,</span>
+                 <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
             <span class="n">options</span><span class="p">[</span><span class="s1">&#39;xatol&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tol</span>
         <span class="k">elif</span> <span class="n">meth</span> <span class="o">==</span> <span class="s1">&#39;_custom&#39;</span><span class="p">:</span>
             <span class="n">options</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;tol&#39;</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
@@ -1281,18 +1345,27 @@ document.write(`
         <span class="n">options</span><span class="p">[</span><span class="s1">&#39;disp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">disp</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">meth</span> <span class="o">==</span> <span class="s1">&#39;_custom&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">bracket</span><span class="o">=</span><span class="n">bracket</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">bracket</span><span class="o">=</span><span class="n">bracket</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">meth</span> <span class="o">==</span> <span class="s1">&#39;brent&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_minimize_scalar_brent</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">bracket</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">_recover_from_bracket_error</span><span class="p">(</span><span class="n">_minimize_scalar_brent</span><span class="p">,</span>
+                                          <span class="n">fun</span><span class="p">,</span> <span class="n">bracket</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">meth</span> <span class="o">==</span> <span class="s1">&#39;bounded&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The `bounds` parameter is mandatory for &#39;</span>
                              <span class="s1">&#39;method `bounded`.&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">_minimize_scalar_bounded</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">_minimize_scalar_bounded</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">meth</span> <span class="o">==</span> <span class="s1">&#39;golden&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_minimize_scalar_golden</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">bracket</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">_recover_from_bracket_error</span><span class="p">(</span><span class="n">_minimize_scalar_golden</span><span class="p">,</span>
+                                          <span class="n">fun</span><span class="p">,</span> <span class="n">bracket</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown solver </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown solver </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">)</span>
+
+    <span class="c1"># gh-16196 reported inconsistencies in the output shape of `res.x`. While</span>
+    <span class="c1"># fixing this, future-proof it for when the function is vectorized:</span>
+    <span class="c1"># the shape of `res.x` should match that of `res.fun`.</span>
+    <span class="n">res</span><span class="o">.</span><span class="n">fun</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">fun</span><span class="p">)[()]</span>
+    <span class="n">res</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">fun</span><span class="o">.</span><span class="n">shape</span><span class="p">)[()]</span>
+    <span class="k">return</span> <span class="n">res</span></div>
 
 
 <span class="k">def</span> <span class="nf">_remove_from_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">i_fixed</span><span class="p">):</span>
@@ -1336,9 +1409,26 @@ document.write(`
     <span class="k">return</span> <span class="n">x_out</span>
 
 
+<span class="k">def</span> <span class="nf">_validate_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">meth</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check that bounds are valid.&quot;&quot;&quot;</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;An upper bound is less than the corresponding lower bound.&quot;</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">bounds</span><span class="o">.</span><span class="n">ub</span> <span class="o">&lt;</span> <span class="n">bounds</span><span class="o">.</span><span class="n">lb</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;The number of bounds is not compatible with the length of `x0`.&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">bounds</span><span class="o">.</span><span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">bounds</span><span class="o">.</span><span class="n">lb</span><span class="p">,</span> <span class="n">x0</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">bounds</span><span class="o">.</span><span class="n">ub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">bounds</span><span class="o">.</span><span class="n">ub</span><span class="p">,</span> <span class="n">x0</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
+    <span class="k">return</span> <span class="n">bounds</span>
+
 <span class="k">def</span> <span class="nf">standardize_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">meth</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts bounds to the form required by the solver.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">meth</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span> <span class="s1">&#39;powell&#39;</span><span class="p">,</span> <span class="s1">&#39;nelder-mead&#39;</span><span class="p">,</span> <span class="s1">&#39;new&#39;</span><span class="p">}:</span>
+    <span class="k">if</span> <span class="n">meth</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span> <span class="s1">&#39;powell&#39;</span><span class="p">,</span> <span class="s1">&#39;nelder-mead&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;new&#39;</span><span class="p">}:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">Bounds</span><span class="p">):</span>
             <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span> <span class="o">=</span> <span class="n">old_bound_to_new</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
             <span class="n">bounds</span> <span class="o">=</span> <span class="n">Bounds</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">)</span>
@@ -1359,7 +1449,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="n">constraints</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>  <span class="c1"># ensure it&#39;s a mutable sequence</span>
 
-    <span class="k">if</span> <span class="n">meth</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span> <span class="s1">&#39;new&#39;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">meth</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">,</span> <span class="s1">&#39;new&#39;</span><span class="p">]:</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">con</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">constraints</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">con</span><span class="p">,</span> <span class="n">new_constraint_types</span><span class="p">):</span>
                 <span class="n">constraints</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">old_constraint_to_new</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">con</span><span class="p">)</span>
@@ -1423,7 +1513,7 @@ document.write(`
               
               
               
-                <footer class="prev-next-footer">
+                <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
 </div>
@@ -1452,7 +1542,7 @@ By UK Health Security Agency (previously Public Health England)
 
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -1476,8 +1566,8 @@ By UK Health Security Agency (previously Public Health England)
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>
