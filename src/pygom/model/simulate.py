@@ -80,6 +80,10 @@ class SimulateOde(DeterministicOde):
 
         self._hasNewTransition = HasNewTransition()
 
+        # self.event=None
+        self.pre_tau=None
+        self._epsilon=0.03
+
         # need a manual override because it is possible that we
         # want to perform simulation in a parallel/distributed manner
         # and there are issues with pickling fortran objects
@@ -90,6 +94,7 @@ class SimulateOde(DeterministicOde):
 
         # information required for the tau leap
         self._transitionJacobian = None
+        self._transitionJacobianCompile = None
 
         self._transitionMean = None
         self._transitionMeanCompile = None
@@ -329,7 +334,7 @@ class SimulateOde(DeterministicOde):
 
     # Same as function below, just trying out new naming convention
     def solve_stochast(self, t, iteration, parallel=False,
-                      exact=False, full_output=False):
+                       exact=False, full_output=False):
         '''
         Simulate the ode using stochastic simulation.  It switches
         between a first reaction method and a :math:`\\tau`-leap
@@ -356,6 +361,8 @@ class SimulateOde(DeterministicOde):
         sim_X: list
             of length iteration each with (len(t),len(state)) if t is a vector,
             else it outputs unequal shape that was record of all the jumps
+        sim_Jump: list of :class:`numpy.ndarray`
+            Number times each transition happens per timestep
         sim_T: list or :class:`numpy.ndarray`
             if t is a single value, it outputs unequal shape that was
             record of all the jumps.  if t is a vector, it outputs t so that
@@ -368,7 +375,8 @@ class SimulateOde(DeterministicOde):
         assert np.all(np.mod(self._x0, 1) == 0), \
             "Can only simulate a jump process with integer initial values"
 
-        # this determines what type of output we want
+        # Determine if results are output to predefined timepoints or the timepoints
+        # as determined by the numerical solver
         timePoint = False
 
         if isinstance(t, Number):#, (int, float, np.int64, np.float64)):
@@ -408,151 +416,178 @@ class SimulateOde(DeterministicOde):
             logging.debug("Performing serial simulation")
             xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
 
+        # Unpack output
         xmat = list(zip(*xtmp))
-        simXList, simTList = list(xmat[0]), list(xmat[1])
-        ## print("Finish computation")
-        # now we want to fix our simulation, if they need fixing that is
-        # print timePoint
+        simXList, simJumpList, simTList, simdTList = list(xmat[0]), list(xmat[1]), list(xmat[2]), list(xmat[3])
+
+        # Process simulation output if user has specified target time steps
         if timePoint:
             for _i in range(len(simXList)):
+                # TODO: this seems like an overcomplicated way to do things
+
                 # unroll, always the first element
                 # it is easy to remember that we are accessing the first
                 # element because pop is spelt similar to poop and we
                 # all know that your execute first in first out when you
                 # poop!
-                simX = simXList.pop(0)
-                simT = simTList.pop(0)
 
-                x = self._extractObservationAtTime(simX, simT, t)
-                simTList.append(t)
-                simXList.append(x)
+                # Get time points of run _i
+                simT = simTList.pop(0)      # get timepoints and remove (temporarily)
+
+                # 1. Process states
+                simX = simXList.pop(0)      # get states and remove (will be appended after processing)
+                if exact:
+                    x = self._extractObservationAtTime(simX, simT, t)
+                else:
+                    x = self._interpolateObservationAtTime(simX, simT, t)
+                simXList.append(x)          # processed results now go at the end of the list
+
+                # 2. Process jumps
+                simJump = simJumpList.pop(0)
+                jump=self._addJumpsBetweenTime(simJump, simT, t, exact)
+                simJumpList.append(jump)    # processed results go at end of list
+
+                # # 3. Process timesteps (essentially send to back of list to match new X and jump positions)
+                # dt=simdTList.pop(0)         # send dt to back too
+                # simdTList.append(dt)
+
+                # simTList.append(t)          # do same with timepoints
+                #                             # TODO: not useful to have user timepoints repeatd for every iteration
+
         # note that we have to remain in list form because the number of
         # simulation will be different if we are not dealing with
         # a specific set of time points
 
         if full_output:
             if timePoint:
-                return simXList, t
+                return simXList, simJumpList, t
             else:
-                return simXList, simTList
+                return simXList, simJumpList, simTList
         else:
             return simXList
 
+    # def simulate_jump(self, t, iteration, parallel=False,
+    #                   exact=False, full_output=False):
+    #     '''
+    #     Simulate the ode using stochastic simulation.  It switches
+    #     between a first reaction method and a :math:`\\tau`-leap
+    #     algorithm internally. When a parallel backend exists, then a new random
+    #     state (seed) will be used for each processor.  This is due to a lack
+    #     of appropriate parallel seed random number generator in python.
 
-    def simulate_jump(self, t, iteration, parallel=False,
-                      exact=False, full_output=False):
-        '''
-        Simulate the ode using stochastic simulation.  It switches
-        between a first reaction method and a :math:`\\tau`-leap
-        algorithm internally. When a parallel backend exists, then a new random
-        state (seed) will be used for each processor.  This is due to a lack
-        of appropriate parallel seed random number generator in python.
+    #     Parameters
+    #     ----------
+    #     t: array like
+    #         the range of time points which we want to see the result of
+    #         or the final time point
+    #     iteration: int
+    #         number of iterations you wish to simulate
+    #     parallel: bool, optional
+    #         Defaults to True
+    #     exact: bool, optional
+    #         True if exact simulation is desired, defaults to False
+    #     full_output: bool, optional
+    #         if we want additional information, sim_T
 
-        Parameters
-        ----------
-        t: array like
-            the range of time points which we want to see the result of
-            or the final time point
-        iteration: int
-            number of iterations you wish to simulate
-        parallel: bool, optional
-            Defaults to True
-        exact: bool, optional
-            True if exact simulation is desired, defaults to False
-        full_output: bool, optional
-            if we want additional information, sim_T
+    #     Returns
+    #     -------
+    #     sim_X: list
+    #         of length iteration each with (len(t),len(state)) if t is a vector,
+    #         else it outputs unequal shape that was record of all the jumps
+    #     sim_T: list or :class:`numpy.ndarray`
+    #         if t is a single value, it outputs unequal shape that was
+    #         record of all the jumps.  if t is a vector, it outputs t so that
+    #         it is a :class:`numpy.ndarray` instead
 
-        Returns
-        -------
-        sim_X: list
-            of length iteration each with (len(t),len(state)) if t is a vector,
-            else it outputs unequal shape that was record of all the jumps
-        sim_T: list or :class:`numpy.ndarray`
-            if t is a single value, it outputs unequal shape that was
-            record of all the jumps.  if t is a vector, it outputs t so that
-            it is a :class:`numpy.ndarray` instead
+    #     '''
 
-        '''
+    #     assert len(self._odeList) == 0, \
+    #         "Currently only able to simulate when only transitions are present"
+    #     assert np.all(np.mod(self._x0, 1) == 0), \
+    #         "Can only simulate a jump process with integer initial values"
 
-        assert len(self._odeList) == 0, \
-            "Currently only able to simulate when only transitions are present"
-        assert np.all(np.mod(self._x0, 1) == 0), \
-            "Can only simulate a jump process with integer initial values"
+    #     # this determines what type of output we want
+    #     timePoint = False
 
-        # this determines what type of output we want
-        timePoint = False
+    #     if isinstance(t, Number):#, (int, float, np.int64, np.float64)):
+    #         finalT = t
+    #     elif isinstance(t, (list, tuple)):
+    #         t = np.array(t)
+    #         if len(t) == 1:
+    #             finalT = t
+    #         else:
+    #             finalT = t[-1:]
+    #             timePoint = True
+    #     elif isinstance(t, np.ndarray):
+    #         finalT = t[-1:]
+    #         timePoint = True
+    #     else:
+    #         raise InputError("Unknown data type for time")
 
-        if isinstance(t, Number):#, (int, float, np.int64, np.float64)):
-            finalT = t
-        elif isinstance(t, (list, tuple)):
-            t = np.array(t)
-            if len(t) == 1:
-                finalT = t
-            else:
-                finalT = t[-1:]
-                timePoint = True
-        elif isinstance(t, np.ndarray):
-            finalT = t[-1:]
-            timePoint = True
-        else:
-            raise InputError("Unknown data type for time")
+    #     if self._transitionVectorCompile is None:
+    #         self._compileTransitionVector()
 
-        if self._transitionVectorCompile is None:
-            self._compileTransitionVector()
+    #     if parallel:
+    #         try:
+    #             import dask.bag
+    #             logging.debug("Using Dask for parallel simulation")
+    #             def jump_partial(final_t): return(self._jump(final_t,
+    #                                                          exact=exact,
+    #                                                          full_output=True,
+    #                                                          seed=True))
 
-        if parallel:
-            try:
-                import dask.bag
-                logging.debug("Using Dask for parallel simulation")
-                def jump_partial(final_t): return(self._jump(final_t,
-                                                             exact=exact,
-                                                             full_output=True,
-                                                             seed=True))
+    #             xtmp = dask.bag.from_sequence(np.ones(iteration)*finalT)
+    #             xtmp = xtmp.map(jump_partial).compute()
+    #         except Exception as e:
+    #             raise e
+    #             logging.warning("Parallel simulation failed reverting to serial")
+    #             xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
+    #     else:
+    #         logging.debug("Performing serial simulation")
+    #         xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
 
-                xtmp = dask.bag.from_sequence(np.ones(iteration)*finalT)
-                xtmp = xtmp.map(jump_partial).compute()
-            except Exception as e:
-                raise e
-                logging.warning("Parallel simulation failed reverting to serial")
-                xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
-        else:
-            logging.debug("Performing serial simulation")
-            xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
+    #     xmat = list(zip(*xtmp))
+    #     simXList, simTList = list(xmat[0]), list(xmat[1])
+    #     ## print("Finish computation")
+    #     # now we want to fix our simulation, if they need fixing that is
+    #     # print timePoint
+    #     if timePoint:
+    #         for _i in range(len(simXList)):
+    #             # unroll, always the first element
+    #             # it is easy to remember that we are accessing the first
+    #             # element because pop is spelt similar to poop and we
+    #             # all know that your execute first in first out when you
+    #             # poop!
+    #             simX = simXList.pop(0)
+    #             simT = simTList.pop(0)
 
-        xmat = list(zip(*xtmp))
-        simXList, simTList = list(xmat[0]), list(xmat[1])
-        ## print("Finish computation")
-        # now we want to fix our simulation, if they need fixing that is
-        # print timePoint
-        if timePoint:
-            for _i in range(len(simXList)):
-                # unroll, always the first element
-                # it is easy to remember that we are accessing the first
-                # element because pop is spelt similar to poop and we
-                # all know that your execute first in first out when you
-                # poop!
-                simX = simXList.pop(0)
-                simT = simTList.pop(0)
+    #             #x = self._extractObservationAtTime(simX, simT, t)
 
-                x = self._extractObservationAtTime(simX, simT, t)
-                simTList.append(t)
-                simXList.append(x)
-        # note that we have to remain in list form because the number of
-        # simulation will be different if we are not dealing with
-        # a specific set of time points
+    #             # Linearly interpolate state pops from raw output
+    #             # TODO: Probably need to be rounded, but then may have issues with sum=N
+    #             x = np.interp(t, simT, simX)
 
-        if full_output:
-            if timePoint:
-                return simXList, t
-            else:
-                return simXList, simTList
-        else:
-            return simXList
+    #             # Sum jumps between each timepoint TODO: matrix verion
+
+    #             simTList.append(t)
+    #             simXList.append(x)
+    #     # note that we have to remain in list form because the number of
+    #     # simulation will be different if we are not dealing with
+    #     # a specific set of time points
+
+    #     if full_output:
+    #         if timePoint:
+    #             return simXList, t
+    #         else:
+    #             return simXList, simTList
+    #     else:
+    #         return simXList
 
     def _jump(self, finalT, exact=False, full_output=True, seed=None):
         '''
         Jumps from the initial time self._t0 to the input time finalT
         '''
+
         if isinstance(self._stochasticParam, dict):
             self.parameters = self._stochasticParam
 
@@ -563,68 +598,194 @@ class SimulateOde(DeterministicOde):
         t = self._t0.tolist()
         x = copy.deepcopy(self._x0)
 
+        n_trans=(len(self.transition_list)+len(self.birth_death_list))
         # holders and record information
-        xList = [x.copy()]
-        tList = [t]
+        xList = [x.copy()]          # states
+        tList = [t]                 # timepoints
+        dtList=[]                   # timesteps (can be inferred from timepoints, but useful for now to debug tau leap)
+        jumpList=[]                 # transitions
 
         # we want to construct some jump times (TODO: doesn't seem like _GMat is used anywhere)
         if self._GMat is None:
             self._computeDependencyMatrix()
 
-        # keep jumping, Whoop Whoop (put your hands up!).
-        f = firstReaction
+        # keep jumping, Whoop Whoop (put your hands up!)
         while t < finalT:
-            # print(t)
+            # Take a timetep
+
+            # # TODO: Hacky fix to do transition of given size if condition met.
+            # #       has been seen to work but comment out for now to dev other more
+            ##        important code
+            # # Check if one-off condition met.
+            # if self.event!=None:
+            #     if eval(self.event.condition)==True and self.event.event_occured==False:
+            #         x=self.event.action(x)
+
             try:
                 if exact:
-                    x, t, success = f(x, t, self._vMat,
-                                      self.transition_vector, seed=seed)
+                    # Use Gillespie algorithm for entire simulation
+                    (t,
+                     jump_time,
+                     x,
+                     jumps,
+                     success) = firstReaction(x,
+                                              self._state_lims,
+                                              t,
+                                              self._vMat,
+                                              self.transition_vector,
+                                              seed=seed)
+                    if success==False:
+                        break
                 else:
-                    if np.min(x) > 10:
-                        x_tmp, t_tmp, success = tauLeap(x, t,
-                                                # self._vMat, self._lambdaMat,
-                                                self._vMat, self._lambdaMatOD,  # I think that the wrong matrix has been used, trying this one instead
-                                                self.transition_vector,
-                                                self.transition_mean,
-                                                self.transition_var,
-                                                seed=seed)
-                        if success:
-                            x, t = x_tmp, t_tmp
-                        else:
-                            x, t, success = f(x, t, self._vMat,
-                                              self.transition_vector, seed=seed)
+                    #if np.min(x) < 10:
+                    #Use tau leap when population of any state is small.
+                    # TODO: why? If one state, eg dead, always has a population zero then we force ourselves to use Gillespie
+                    (t_new,
+                     jump_time,
+                     x_new,
+                     jumps,
+                     success) = tauLeap(x,
+                                        self._state_lims,
+                                        t,
+                                        self._vMat,
+                                        self._lambdaMatOD,  # I think that the wrong matrix has been used, trying this one instead
+                                        self.transition_vector,
+                                        self.transition_mean,
+                                        self.transition_var,
+                                        self._determ,       # For now we tell the tau leap explicitly if we take a deterministic step
+                                        epsilon=self._epsilon,
+                                        seed=seed,
+                                        pre_tau=self.pre_tau)
+                    
+                    if success:
+                        # Jump results in all states within their limits, continue.
+                        t, x = t_new, x_new
                     else:
-                        x, t, success = f(x, t, self._vMat,
-                                          self.transition_vector, seed=seed)
+                        # Retry with first reaction method.
+                        (t, 
+                         jump_time,
+                         x,
+                         jumps,
+                         success) = firstReaction(x,
+                                                  self._state_lims,
+                                                  t,
+                                                  self._vMat,
+                                                  self.transition_vector,
+                                                  seed=seed)
+                        
+                        if success==False:
+                            break
+
                 if success:
-                    xList.append(x.copy())
+                    xList.append(x.copy())     # TODO: why is x a copy and the rest not?
                     tList.append(t)
+                    dtList.append(jump_time)
+                    jumpList.append(jumps)
                 else:
                     break
-                    ## print("x: %s, t: %s" % (x, t))
-                    ## raise Exception('WTF')
             except SimulationError:
                 break
 
-        return np.array(xList), np.array(tList)
+        return np.array(xList), np.array(jumpList), np.array(tList), np.array(dtList)
+
+    ###########################
+    # Post processing functions
+    ###########################
 
     def _extractObservationAtTime(self, X, t, targetTime):
         '''
         Given simulation and a set of time points which we would like to
         observe, we extract the observations :math:`x_{t}` with
         :math:`\\min\\{ \\abs( t - targetTime) \\}`
-        '''
-        y = list()
-        # maxTime = max(t)
-        index = 0
-        for i in targetTime:
-            if np.any(t == i):
-                index = np.where(t == i)[0][0]
-            else:
-                index = np.searchsorted(t, i) - 1
-            y.append(X[index])
 
-        return np.array(y)
+        Parameters
+        ----------
+            t (list): Timepoints of simulation
+            X (list of lists): State values at each timepoint
+            targetTime (list): Desired timepoints
+
+        Returns
+        -------
+            X_out (np.array): Value of states at targetTime 
+        '''
+        X_out = []
+        
+        for t_target in targetTime:
+            if np.any(t == t_target):
+                index = np.where(t == t_target)[0][0]
+            else:
+                index = max(np.searchsorted(t, t_target) - 1, 0)
+            X_out.append(X[index])
+
+        return np.array(X_out)
+    
+    def _interpolateObservationAtTime(self, X, t, targetTime):
+        '''
+        Given simulation and a set of time points which we would like to
+        observe, we interpolate the observations onto the desired grid.
+
+        Parameters
+        ----------
+            t (list): Timepoints of simulation
+            X (list of lists): State values at each timepoint
+            targetTime (list): Desired timepoints
+
+        Returns
+        -------
+            X_out (np.array): Value of states at targetTime 
+                    
+        '''
+
+        X=np.array(X)   # Convert to numpy array so we can interpolate between timepoints
+
+        dims=X.shape    # Get dimensions of data (timepoints x vars)
+        n_state=dims[1]
+
+        X_out=np.zeros((len(targetTime), n_state))  # empty matrix to receive scaled data = (new timepoints x vars)
+
+        # linearly interpolate to new timepoints
+        for i in range(n_state):
+            X_out[:,i]=np.interp(targetTime, t, X[:,i])
+
+        return X_out
+
+    def _addJumpsBetweenTime(self, dX, t, targetTime, exact):
+        '''
+        Given number of events occuring at certain times find total
+        number of occurrances between the desired timepoints.
+
+        Parameters
+        ----------
+            t (list): Timepoints that events occurred
+            dX (list of lists): Number of events at each timepoint
+            targetTime (list): Desired timepoints
+            exact (bool): If first reaction method used (otherwise tau assumed)
+
+        Returns
+        -------
+            X_out (np.array): Value of states at targetTime 
+                    
+        '''
+
+        dX=np.array(dX)   # convert to numpy array so we can interpolate between timepoints
+
+        dims=dX.shape         # Get dimensions of data (timepoints x n_trans)
+        n_trans=dims[1]
+
+        # empty matrix to receive scaled data = (new timepoints x n_trans)
+        # minus one because we are looking at jumps which occur betwen timepoints
+        # (e.g. 2 timepoints =1 jump, 10 timepoints =9)
+        X_out=np.zeros((len(targetTime)-1, n_trans))
+
+        # if exact, each point corresponds to a transitions and has weight 1.
+        for i in range(n_trans):
+            if exact:
+                hist, bin_edges=np.histogram(t, bins=targetTime)
+            else:
+                hist, bin_edges=np.histogram(t[1:], bins=targetTime, weights=dX[:,i])
+            X_out[:,i]=hist            
+
+        return X_out
 
     ########################################################################
     #
@@ -1003,7 +1164,7 @@ class SimulateOde(DeterministicOde):
 
     def eval_transition_var(self, parameters=None, time=None, state=None):
         '''
-        Evaluate the transition variance given parameters, state and time.
+        Evaluate the transition variance given parameters, time and state
 
         Parameters
         ----------
@@ -1028,43 +1189,79 @@ class SimulateOde(DeterministicOde):
         eval_param = self._getEvalParam(state, time, parameters)
         return self._transitionVarCompile(eval_param)
 
+    # A condensed version of the above without the comments
+    def transition_Jacobian(self, state, t):
+        return self.eval_transition_Jacobian(time=t, state=state)
+
+    def eval_transition_Jacobian(self, parameters=None, time=None, state=None):
+        if self._transitionJacobianCompile is None:
+            self._computeTransitionJacobian()  # TODO: make match above
+
+        eval_param = self._getEvalParam(state, time, parameters)
+        return self._transitionJacobianCompile(eval_param)
+
+
     def _computeTransitionJacobian(self):
+        '''
+        Evaluate equation (7) from https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf
+        where F_[i,j] is the change in transition rate a[i], if a transition of type j occurs:
+        F_[i,j] = sum_k diff(a[i], x_k) v_[k,j]
+        where k=state and v[k,j] is how much state x_k changes by if transition of type j occurs.
+        '''
+
         if self._GMat is None:
             self._computeDependencyMatrix()
 
         F = sympy.zeros(self.num_transitions, self.num_transitions)
-        for i in range(self.num_transitions):
-            for j, eqn in enumerate(self._transitionVector):
+
+        for i, eqn in enumerate(self._transitionVector):
+            for j in range(self.num_transitions):
                 for k, state in enumerate(self._iterStateList()):
-                    diffEqn = sympy.diff(eqn, state, 1)
-                    tempEqn, isDifficult = simplifyEquation(diffEqn)
-                    F[i,j] += tempEqn*self._vMat[k,i]
-                    self._isDifficult = self._isDifficult or isDifficult
+                    diffEqn = sympy.diff(eqn, state, 1)                  # diff(a_i, x_k)
+                    diffEqn, isDifficult = simplifyEquation(diffEqn)
+                    F[i,j] += diffEqn*self._vMat[k,j]
+                    self._isDifficult = self._isDifficult or isDifficult  # TODO: what is this for?
 
         self._transitionJacobian = F
 
-        self._hasNewTransition.reset('transitionJacobian')
+        # now compile
+        f = self._SC.compileExprAndFormat
+        self._transitionJacobianCompile = f(self._sp, self._transitionJacobian)
+
+        self._hasNewTransition.reset('transitionJacobian')  # TODO: what is this for?
         return F
 
     def _computeTransitionMeanVar(self):
         '''
-        This is the mean and variance information that we need
-        for the :math:`\\tau`-Leap
+        This is the mean and variance of the changes in the transition rates
+        (aka propensity funtions) after a potential timestep:
+        equations (8a) and (8b) from https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf
+        For n transitions the outputs are 2 vectors, each of length n.
+        Outputs are added to self as mu and sigma2
         '''
 
         if self._transitionJacobian is None or self._hasNewTransition.transitionJacobian:
             self._computeTransitionJacobian()
 
         F = self._transitionJacobian
+
         # holders
         mu = sympy.zeros(self.num_transitions, 1)
         sigma2 = sympy.zeros(self.num_transitions, 1)
-        # we calculate the mean and variance
-        for i in range(self.num_transitions):
-            for j, eqn in enumerate(self._transitionVector):
-                mu[i] += F[i,j] * eqn
-                sigma2[i] += F[i,j] * F[i,j] * eqn
 
+        for i, eqn_i in enumerate(self._transitionVector):
+            for j, eqn_j in enumerate(self._transitionVector):
+                mu[i] += F[i,j] * eqn_j
+                sigma2[i] += F[i,j] * F[i,j] * eqn_j
+
+            # If time dependence, add in another term to reflect this:
+            timelike_symbols=[symb for symb in eqn_i.free_symbols if str(symb)=='t']
+            is_time_dependent=len(timelike_symbols)>0
+            if is_time_dependent and self.tstep:
+                time_variable = [timelike_symbols][0]
+                mu[i] += sympy.diff(eqn_i, time_variable, 1) # mean changes but sd does not, TODO: check this
+
+        # add results to class
         self._transitionMean = mu
         self._transitionVar = sigma2
 
