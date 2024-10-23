@@ -78,7 +78,7 @@ def exact(x0, t0, t1, state_change_mat, transition_func,
         return x
 
 
-def hybrid(x0, t0, t1, state_change_mat, reactant_mat,
+def hybrid(x0, t0, t1, state_change_mat,
            transition_func, transition_mean_func, transition_var_func,
            output_time=False, seed=None):
     """
@@ -140,7 +140,7 @@ def hybrid(x0, t0, t1, state_change_mat, reactant_mat,
     while t < t1:
         if np.min(x) > 10:
             x_new, t_new, s = tauLeap(x, t,
-                                      state_change_mat, reactant_mat,
+                                      state_change_mat,
                                       transition_func,
                                       transition_mean_func,
                                       transition_var_func,
@@ -487,11 +487,10 @@ def tauLeap(x,
             x_lims,
             t,
             state_change_mat,
-            reactant_mat,
             transition_func,
             transition_mean_func,
             transition_var_func,
-            determ,
+            isStochastic,
             epsilon=0.03,
             seed=None,
             pre_tau=None):
@@ -591,7 +590,7 @@ def tauLeap(x,
 
     # take deterministic or stochastic step-
     for i, r in enumerate(rates):
-        if determ[i]==True:
+        if isStochastic[i]==False:
             jumpQuantity = tau_scale*r
         else:
             jumpQuantity = rpois(1, tau_scale*r, seed=seed)

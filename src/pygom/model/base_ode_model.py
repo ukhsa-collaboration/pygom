@@ -65,10 +65,14 @@ class BaseOdeModel(object):
         self._state = None
         self._param = None
         self._time = None
+
+        self._state_lims=None
+
         # we always need time to be a symbol and it should be denoted as t
         self._t = symbols('t')
 
         self._isDifficult = False
+
         # allows the system to be defined directly
         self._ode = None
         self._odeList = list()
@@ -83,11 +87,13 @@ class BaseOdeModel(object):
         self._derivedParamList = list()
         self._derivedParamEqn = list()
 
+        # Derived states:
+        # these differ from params since we know the d/dt but not algebraic forms
+
         # this three is not actually that useful
         # but lets leave it here for now
         self._parameters = None
         self._stochasticParam = None
-
         self._hasNewTransition = HasNewTransition()
 
         # dictionary for mapping
@@ -114,7 +120,9 @@ class BaseOdeModel(object):
         self._GMat = None
         self._lambdaMatOD = None # also trialing this matrix indicating if a state is an origin or destination in a transition
 
-        self._add_list_attr(state, "state_list")
+        self.tstep=False
+
+        self._add_list_attr_tuple(state, "state_list")
         self._add_list_attr(param, "param_list")
 
         # this has to go after adding the parameters
@@ -126,9 +134,13 @@ class BaseOdeModel(object):
             self.derived_param_list = derived_param
         # if derived_param is not None:
 
+
+        self.n_transition=None
+
         # if transition is not None:
         if not ode_utils.none_or_empty_list(transition):
             self.transition_list = transition
+            self.n_transition=len(transition)
 
         # if birth_death is not None:
         if not ode_utils.none_or_empty_list(birth_death):
@@ -181,6 +193,33 @@ class BaseOdeModel(object):
                 attr = re_split_string.split(attr)
                 attr = filter(lambda x: not len(x.strip()) == 0, attr)
             self.__setattr__(attr_list_name, list(attr))
+
+    def _add_list_attr_tuple(self, attr, attr_list_name):
+        """
+        Given an attribute (name attr_name), which is a string of comma
+        or space separated values, create a new attribute (name attr_name_list)
+        which is a list of those separated values.
+        e.g. "a,b,c d ef" returns [a, b, c, d, ef]
+        """
+        if attr is not None:
+            lim_list=[]
+            if isinstance(attr, str):
+                attr = re_split_string.split(attr)
+                attr_list = filter(lambda x: not len(x.strip()) == 0, attr)
+            else:
+                attr_list=[]
+                for att in attr:
+                    if isinstance(att, tuple):
+                        attr_list.append(att[0])
+                        lim_list.append(att[1])
+                    else:
+                        attr_list.append(att)
+
+            if lim_list==[]:
+                lim_list=None
+
+            self._state_lims=lim_list
+            self.__setattr__(attr_list_name, list(attr_list))
 
     ########################################################################
     #
@@ -866,7 +905,7 @@ class BaseOdeModel(object):
         self._transitionMatrix = sympy.zeros(self.num_state, self.num_state)
         # going through the list of transitions
         pure_trans = self._getAllTransition(pureTransitions=True)
-        from_list, to, eqn = self._unrollTransitionList(pure_trans)
+        from_list, to, eqn, sec = self._unrollTransitionList(pure_trans)
         for k, eqn in enumerate(eqn):
             for i in from_list[k]:
                 for j in to[k]:
@@ -942,7 +981,7 @@ class BaseOdeModel(object):
         # allow the end user to input more state than initially desired
         if len(self.ode_list) <= self.num_state:
             self._ode = sympy.zeros(self.num_state, 1)
-            fromList, _t, eqn = self._unrollTransitionList(self.ode_list)
+            fromList, _t, eqn, sec = self._unrollTransitionList(self.ode_list)
             for i, eqn in enumerate(eqn):
                 if len(fromList[i]) > 1:
                     raise InputError("An explicit ode cannot describe more " +
@@ -962,7 +1001,8 @@ class BaseOdeModel(object):
         state transition then the birth death processes
         """
         self._transitionVector = sympy.zeros(self.num_transitions, 1)
-        _f, _t, eqn = self._unrollTransitionList(self._getAllTransition())
+        _f, _t, eqn, sec = self._unrollTransitionList(self._getAllTransition())
+
         for i, eqn in enumerate(eqn):
             self._transitionVector[i] = eqn
 
@@ -970,100 +1010,111 @@ class BaseOdeModel(object):
 
     ########################################################################
     #
-    # Other type of matrices
+    # State change matrix
     #
     ########################################################################
 
-    def _computeReactantMatrix(self):
-        """
-        The reactant matrix, where
+    # TODO: Commented out matrices are not used, maybe remove if they are just providing clutter
 
-        .. math::
-            \\lambda_{i,j} = \\left\\{ 1, &if state i is involved in transition j, \\\\
-                                       0, &otherwise \\right.
-        """
-        # declare holder
-        self._lambdaMat = np.zeros((self.num_state, self.num_transitions), int)
+    # def _computeReactantMatrix(self):
+    #     """
+    #     The reactant matrix, where
 
-        _f, _t, eqn = self._unrollTransitionList(self._getAllTransition())
-        for j, eqn in enumerate(eqn):
-            for i, state in enumerate(self._stateList):
-                if type(eqn)==int:
-                    self._lambdaMat[i, j] = 0
-                elif self._stateDict[state.ID] in eqn.atoms():
-                    self._lambdaMat[i, j] = 1
+    #     .. math::
+    #         \\lambda_{i,j} = \\left\\{ 1, &if state i is involved in transition j, \\\\
+    #                                    0, &otherwise \\right.
+    #     """
+    #     # declare holder
+    #     self._lambdaMat = np.zeros((self.num_state, self.num_transitions), int)
 
-        return self._lambdaMat
+    #     _f, _t, eqn = self._unrollTransitionList(self._getAllTransition())
+    #     for j, eqn in enumerate(eqn):
+    #         for i, state in enumerate(self._stateList):
+    #             if type(eqn)==int:
+    #                 self._lambdaMat[i, j] = 0
+    #             elif self._stateDict[state.ID] in eqn.atoms():
+    #                 self._lambdaMat[i, j] = 1
+
+    #     return self._lambdaMat
+
+    # # Might replace _computeReactantMatrix. This function gives a matrix 
+    # def _computeReactantMatrixOD(self):
+    #     """
+    #     The alternative reactant matrix, where
+
+    #     .. math::
+    #         \\lambda_{i,j} = \\left\\{ 1, &if state i is an origin or destination in transition j, \\\\
+    #                                    0, &otherwise \\right.
+
+    #     OD imples this refers to origin and destination
+    #     """
+        
+    #     x=self._vMat!=0
+    #     x=x.astype(int)
+    #     self._lambdaMatOD=x
+
+    #     return self._lambdaMatOD
 
     def _computeStateChangeMatrix(self):
         """
         The state change matrix, where
         .. math::
-            v_{i,j} = \\left\\{ 1, &if transition j cause state i to lose a particle, \\\\
-                               -1, &if transition j cause state i to gain a particle, \\\\
-                                0, &otherwise \\right.
+            v_{i,j} = change in state i if transition j occurs
+            (this could still be in symbolic form at this stage)
         """
-        self._vMat = np.zeros((self.num_state, self.num_transitions), int)
+        # container for output
+        self._vMat = sympy.zeros(self.num_state, self.num_transitions)
 
-        f, t, eqn = self._unrollTransitionList(self._getAllTransition())
-        for j, _eqn in enumerate(eqn):
+        _f, _t, eqn, sec = self._unrollTransitionList(self._getAllTransition())
+
+        for j in range(len(eqn)):
             if j < self.num_pure_transitions:
-                for k1 in f[j]:
-                    self._vMat[k1, j] += -1
-                for k2 in t[j]:
-                    self._vMat[k2, j] += 1
+                for i in _f[j]:
+                    self._vMat[i, j]-=sympy.sympify(1)
+                for i in _t[j]:
+                    self._vMat[i, j]+=sympy.sympify(1)
+                if sec[j] is not None:
+                    for _sec in sec[j]:
+                        if _sec is not None:
+                            self._vMat[_sec[0][0], j] += sympy.sympify(_sec[1])
             else:
                 bdObj = self._birthDeathList[j - self.num_pure_transitions]
                 if bdObj.transition_type is TransitionType.B:
-                    for k1 in f[j]:
-                        self._vMat[k1, j] += 1
+                    for k1 in _f[j]:
+                        self._vMat[k1, j] += sympy.sympify(1)
                 elif bdObj.transition_type is TransitionType.D:
-                    for k2 in f[j]:
-                        self._vMat[k2, j] += -1
-
+                    for k2 in _f[j]:
+                        self._vMat[k2, j] -= sympy.sympify(1)
+                if sec[j] is not None:
+                    for _sec in sec[j]:
+                        if _sec is not None:
+                            self._vMat[_sec[0][0], j] += sympy.sympify(_sec[1])
+                            
         return self._vMat
-    
-    # Might replace _computeReactantMatrix. This function gives a matrix 
-    def _computeReactantMatrixOD(self):
-        """
-        The alternative reactant matrix, where
 
-        .. math::
-            \\lambda_{i,j} = \\left\\{ 1, &if state i is an origin or destination in transition j, \\\\
-                                       0, &otherwise \\right.
+    # def _computeDependencyMatrix(self):
+    #     """
+    #     Obtain the dependency matrix/graph. G_{i,j} indicate whether invoking
+    #     the transition j will cause the rate to change for transition j
+    #     """
+    #     # if self._lambdaMat is None:
+    #     #     self._computeReactantMatrix()
+    #     # if self._lambdaMatOD is None:
+    #     #     self._computeReactantMatrixOD()
+    #     if self._vMat is None:
+    #         self._computeStateChangeMatrix()
 
-        OD imples this refers to origin and destination
-        """
-        
-        x=self._vMat!=0
-        x=x.astype(int)
-        self._lambdaMatOD=x
+    #     nt = self.num_transitions
+    #     self._GMat = np.zeros((nt, nt), int)
 
-        return self._lambdaMatOD
+    #     for i in range(nt):
+    #         for j in range(nt):
+    #             d = 0
+    #             for k in range(self.num_state):
+    #                 d = d or (self._lambdaMat[k, i] and self._vMat[k, j])
+    #             self._GMat[i, j] = d
 
-    def _computeDependencyMatrix(self):
-        """
-        Obtain the dependency matrix/graph. G_{i,j} indicate whether invoking
-        the transition j will cause the rate to change for transition j
-        """
-        if self._lambdaMat is None:
-            self._computeReactantMatrix()
-        if self._vMat is None:
-            self._computeStateChangeMatrix()
-        if self._lambdaMatOD is None:
-            self._computeReactantMatrixOD()
-
-        nt = self.num_transitions
-        self._GMat = np.zeros((nt, nt), int)
-
-        for i in range(nt):
-            for j in range(nt):
-                d = 0
-                for k in range(self.num_state):
-                    d = d or (self._lambdaMat[k, i] and self._vMat[k, j])
-                self._GMat[i, j] = d
-
-        return self._GMat
+    #     return self._GMat
 
 
     ########################################################################
@@ -1103,19 +1154,49 @@ class BaseOdeModel(object):
 
         return from_index, to_index, eqn
 
+    # def _unrollTransitionList(self, transition_list):
+    #     state_list = list()
+    #     change_list = list()
+    #     rate_list = list()
+    #     for t in transition_list:
+    #         state_list.append(self._extractStateIndex(t.vars))
+    #         change_list.append(t.diffs)
+    #         rate_list.append(t.react)
+
+    #     rate_list = checkEquation(rate_list, *self._getListOfVariablesDict())
+    #     rate_list = rate_list if hasattr(rate_list, '__iter__') else [rate_list]
+
+    #     return state_list, change_list, rate_list
+
     def _unrollTransitionList(self, transition_list):
         from_list = list()
         to_list = list()
         eqn_list = list()
+        secondary_list = list()
+        stochastic_list = list()
+
         for t in transition_list:
             from_list.append(self._extractStateIndex(t.origin))
             to_list.append(self._extractStateIndex(t.destination))
             eqn_list.append(t.equation)
+            stochastic_list.append(t.stochastic)
+            if t.secondary_effects is not None:
+                secondary_dest=[self._extractStateIndex(x[0]) for x in t.secondary_effects]
+                secondary_change=[x[1] for x in t.secondary_effects]
+                secondary_change=checkEquation(secondary_change, *self._getListOfVariablesDict())
+                if type(secondary_change) is not list:
+                    secondary_change=[secondary_change]
+                secondary_effects=list(zip(secondary_dest, secondary_change))
+                secondary_list.append(secondary_effects)
+            else:
+                secondary_list.append(None)
 
         eqn_list = checkEquation(eqn_list, *self._getListOfVariablesDict())
         eqn_list = eqn_list if hasattr(eqn_list, '__iter__') else [eqn_list]
 
-        return from_list, to_list, eqn_list
+        self._stochasticTrans=stochastic_list
+
+        return from_list, to_list, eqn_list, secondary_list
 
     def _getAllTransition(self, pureTransitions=False):
         assert isinstance(pureTransitions, bool), \
@@ -1133,7 +1214,6 @@ class BaseOdeModel(object):
             else:
                 i = j - self.num_pure_transitions
                 all_transition.append(self._birthDeathList[i])
-
         return all_transition
 
     def _iterStateList(self):

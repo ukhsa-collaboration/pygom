@@ -48,25 +48,45 @@ class Transition(object):
         it throws an error
     '''
 
-    def __init__(self, origin, equation, transition_type='ODE',
-                 destination=None, ID=None, name=None):
+    # def __init__(self, origin, equation, transition_type='ODE',
+    #              destination=None, ID=None, name=None):
+    def __init__(self,
+                 equation,
+                 origin=None,
+                 transition_type='ODE',
+                 destination=None,
+                 secondary_effects=None,
+                 stochastic=True,
+                 ID=None,
+                 name=None):
         '''
         Constructor for the class.
 
         '''
         self.ID = ID
         self.name = name
+
         # we naturally assume that the between state transition
         # is false, i.e. everything is either an ode or a birth
         # death process type _equation
         self._betweenStateTransition = False
-        self._transition_type = None
         self._setTransitionType(transition_type)
-
         # private variables
-        self._orig_state = None
-        self._dest_state = None
-        self._equation = None
+        self._orig_state = origin
+        self._dest_state = destination
+        self._secondary_effects = secondary_effects
+        self._equation = equation
+        self._stochastic=stochastic
+
+        # For transitions_type=T we need either of:
+        # 1) origin and destination (+optional secondary)
+        # 2) secondary only
+        if self.transition_type == TransitionType.T:
+            if origin is None:
+                if destination is not None:
+                    raise InputStateError("Destination but no origin")
+                if secondary_effects is None:
+                    raise InputStateError("No main or secondary transition")
 
         if destination is not None:
             if origin == destination:
@@ -83,6 +103,11 @@ class Transition(object):
                     self._setOrigState(origin)
                     self._setDestState(destination)
                     self._setEquation(equation)
+                    if secondary_effects!=None:
+                        if origin in [x[0] for x in secondary_effects]:
+                            raise InputStateError("At least one secondary state same as origin")
+                        else:
+                            self._setSecondaryEffects(secondary_effects)
                 else:
                     raise InputStateError("Input have both origin and " +
                                           "destination state but transition " +
@@ -91,10 +116,10 @@ class Transition(object):
             if self.transition_type != TransitionType.T:
                 self._setOrigState(origin)
                 self._setEquation(equation)
+            elif secondary_effects!=None:
+                self._setSecondaryEffects(secondary_effects)
             else:
-                raise InputStateError("Input only have origin, but " +
-                                      "transition type is " +
-                                      self._transition_type.name)
+                raise InputStateError("No origin, destination or secondary effects")
 
     def __str__(self):
         if self.transition_type == TransitionType.T:
@@ -176,6 +201,32 @@ class Transition(object):
         return self._dest_state
 
     @property
+    def secondary_effects(self):
+        '''
+        Return the secondary effects
+
+        Returns
+        -------
+        string
+            The destination state
+
+        '''
+        return self._secondary_effects
+
+    @property
+    def stochastic(self):
+        '''
+        Return the secondary effects
+
+        Returns
+        -------
+        string
+            The destination state
+
+        '''
+        return self._stochastic
+
+    @property
     def equation(self):
         '''
         Return the transition _equation
@@ -237,6 +288,24 @@ class Transition(object):
         :type destination: String
         """
         self._dest_state = dest_state
+        return self
+    
+    def _setSecondaryEffects(self, secondary_effects):
+        """
+        Set the destination state
+        :param destination: Destination State
+        :type destination: String
+        """
+        self._secondary_effects = secondary_effects
+        return self
+    
+    def _setStochastic(self, stochastic):
+        """
+        Set the destination state
+        :param destination: Destination State
+        :type destination: String
+        """
+        self._stochastic = stochastic
         return self
 
     def _setEquation(self, equation):

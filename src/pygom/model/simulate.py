@@ -105,9 +105,10 @@ class SimulateOde(DeterministicOde):
         self._transitionVectorCompile = None
         self._transitionMatrixCompile = None
 
-        # micro times for jumps
-        self._tau = None
-        self._tauDict = None
+        # TODO: is this used anywhere?
+        # # micro times for jumps
+        # self._tau = None
+        # self._tauDict = None
 
     def __repr__(self):
         return "SimulateOde" + self._get_model_str()
@@ -167,7 +168,7 @@ class SimulateOde(DeterministicOde):
         t1: double
             final time
         '''
-        return(hybrid(x0, t0, t1, self._vMat, self._lambdaMat,
+        return(hybrid(x0, t0, t1, self._vMat,
                       self.transition_vector,
                       self.transition_mean,
                       self.transition_var,
@@ -394,8 +395,8 @@ class SimulateOde(DeterministicOde):
         else:
             raise InputError("Unknown data type for time")
 
-        if self._transitionVectorCompile is None:
-            self._compileTransitionVector()
+        # if self._transitionVectorCompile is None:
+        #     self._compileTransitionVector()
 
         if parallel:
             try:
@@ -605,9 +606,25 @@ class SimulateOde(DeterministicOde):
         dtList=[]                   # timesteps (can be inferred from timepoints, but useful for now to debug tau leap)
         jumpList=[]                 # transitions
 
-        # we want to construct some jump times (TODO: doesn't seem like _GMat is used anywhere)
-        if self._GMat is None:
-            self._computeDependencyMatrix()
+        # we want to construct some jump times
+        # if self._GMat is None:
+        #     self._computeDependencyMatrix()
+        
+        # TODO: add in the "if transition changed" stuff
+        # vmat needs to be compiled, now we are mixing in more than just to (+1) and from (-1)
+        # transitions. Instead, we can have states changing by a parameter value if a transition occurs.
+        if self._vMat is None:
+            self._computeStateChangeMatrix()
+        self.compile_sympy_object("_vMat", "_vMat_compiled")
+
+        if self._transitionVector is None:
+            self._computeTransitionVector()
+        self.compile_sympy_object("_transitionVector", "transition_vector")
+
+        if self._transitionMean is None or self._transitionVar is None:
+            self._computeTransitionMeanVar()
+        self.compile_sympy_object("_transitionMean", "_transitionMeanCompile")
+        self.compile_sympy_object("_transitionVar", "_transitionVarCompile")
 
         # keep jumping, Whoop Whoop (put your hands up!)
         while t < finalT:
@@ -621,6 +638,11 @@ class SimulateOde(DeterministicOde):
             #     if eval(self.event.condition)==True and self.event.event_occured==False:
             #         x=self.event.action(x)
 
+            # TODO: Are there many modelling scenarios where it's necessary for the 
+            #       v matrix to change? The rates might change with time, but do
+            #       the underlying effects of a transition?
+            vMat=self._vMat_compiled(x,t)
+
             try:
                 if exact:
                     # Use Gillespie algorithm for entire simulation
@@ -631,7 +653,7 @@ class SimulateOde(DeterministicOde):
                      success) = firstReaction(x,
                                               self._state_lims,
                                               t,
-                                              self._vMat,
+                                              vMat,
                                               self.transition_vector,
                                               seed=seed)
                     if success==False:
@@ -647,12 +669,11 @@ class SimulateOde(DeterministicOde):
                      success) = tauLeap(x,
                                         self._state_lims,
                                         t,
-                                        self._vMat,
-                                        self._lambdaMatOD,  # I think that the wrong matrix has been used, trying this one instead
+                                        vMat,
                                         self.transition_vector,
-                                        self.transition_mean,
-                                        self.transition_var,
-                                        self._determ,       # For now we tell the tau leap explicitly if we take a deterministic step
+                                        self._transitionMeanCompile,
+                                        self._transitionVarCompile,
+                                        self._stochasticTrans,       # For now we tell the tau leap explicitly if we take a deterministic step
                                         epsilon=self._epsilon,
                                         seed=seed,
                                         pre_tau=self.pre_tau)
@@ -669,7 +690,7 @@ class SimulateOde(DeterministicOde):
                          success) = firstReaction(x,
                                                   self._state_lims,
                                                   t,
-                                                  self._vMat,
+                                                  vMat,
                                                   self.transition_vector,
                                                   seed=seed)
                         
@@ -812,260 +833,293 @@ class SimulateOde(DeterministicOde):
         else:
             return super(SimulateOde, self)._computeTransitionMatrix()
 
-    def get_transition_vector(self):
+    # TODO: We still need get functions
+
+    # def get_transition_vector(self):
+    #     '''
+    #     Returns the set of transitions in a single vector, transitions
+    #     between state to state first then the birth and death process
+
+    #     Returns
+    #     -------
+    #     :class:`sympy.matrices.matrices`
+    #         A matrix of dimension [total number of transitions x 1]
+
+    #     '''
+    #     if self._transitionVectorCompile is not None \
+    #        or not self._hasNewTransition.transitionVector:
+    #         return self._transitionVector
+    #     else:
+    #         return super(SimulateOde, self)._computeTransitionVector()
+    #
+    # TODO: Commenting out for now, transition_matrix() doesn't seem to be used anywhere
+
+    # def transition_matrix(self, state, t):
+    #     '''
+    #     Evaluate the transition matrix given state and time
+
+    #     Parameters
+    #     ----------
+    #     state: array like
+    #         The current numerical value for the states which can be
+    #         :class:`numpy.ndarray` or :class:`list`
+    #     t: double
+    #         The current time
+
+    #     Returns
+    #     -------
+    #     :class:`numpy.ndarray`
+    #         a 2d array of size (M,M) where M is the number
+    #         of transitions
+
+    #     '''
+    #     return self.eval_transition_matrix(time=t, state=state)
+
+    # def eval_transition_matrix(self, parameters=None, time=None, state=None):
+    #     '''
+    #     Evaluate the transition matrix given parameters, state and time. Note
+    #     that the output is not in sparse format
+
+    #     Parameters
+    #     ----------
+    #     parameters: list
+    #         see :meth:`.setParameters`
+    #     time: double
+    #         The current time
+    #     state: array list
+    #         The current numerical value for the states which can
+    #         :class:`numpy.ndarray` or :class:`list`
+
+    #     Returns
+    #     -------
+    #     :class:`numpy.matrix` or :class:`mpmath.matrix`
+    #         Matrix of dimension [number of state x number of state]
+
+    #     '''
+    #     if self._transitionMatrixCompile is None \
+    #         or self._hasNewTransition.transitionMatrixCompile:
+    #         self._compileTransitionMatrix()
+
+    #     eval_param = self._getEvalParam(state, time, parameters)
+    #     return self._transitionMatrixCompile(eval_param)
+
+    # def _compileTransitionMatrix(self):
+    #     '''
+    #     We would also need to compile the function so that
+    #     it can be evaluated faster.
+    #     '''
+    #     if self._transitionMatrix is None \
+    #         or self._hasNewTransition.transitionMatrixCompile:
+    #         super(SimulateOde, self)._computeTransitionMatrix()
+
+    #     f = self._SC.compileExprAndFormat
+    #     if self._isDifficult:
+    #         self._transitionMatrixCompile = f(self._sp,
+    #                                           self._transitionMatrix,
+    #                                           modules='mpmath')
+    #     else:
+    #         self._transitionMatrixCompile = f(self._sp,
+    #                                           self._transitionMatrix)
+
+    #     self._hasNewTransition.reset('transitionMatrixCompile')
+
+    #     return None
+
+
+    # TODO: This could serve to compile all sympy objects
+    def compile_sympy_object(self, obj_name, compiled_obj_name):
         '''
-        Returns the set of transitions in a single vector, transitions
-        between state to state first then the birth and death process
-
-        Returns
-        -------
-        :class:`sympy.matrices.matrices`
-            A matrix of dimension [total number of transitions x 1]
-
+        Take sympy object (could be an expression or matrix of expressions)
+        and compile it into a function of the systsem state and time.
         '''
-        if self._transitionVectorCompile is not None \
-           or not self._hasNewTransition.transitionVector:
-            return self._transitionVector
-        else:
-            return super(SimulateOde, self)._computeTransitionVector()
+        if hasattr(self, compiled_obj_name) is False \
+            or getattr(self, compiled_obj_name) is None \
+            or getattr(self._hasNewTransition, compiled_obj_name):
 
-    def transition_matrix(self, state, t):
-        '''
-        Evaluate the transition matrix given state and time
+            print("... Compiling sympy object with name:", obj_name, "...")
+            f = self._SC.compileExprAndFormat
+            compile_obj=f(self._sp, getattr(self, obj_name))
 
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-        t: double
-            The current time
+            def eval_obj(parameters=None, time=None, state=None):
+                eval_param = self._getEvalParam(state, time, parameters)
+                return compile_obj(eval_param)
 
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            a 2d array of size (M,M) where M is the number
-            of transitions
+            def f(state, t):
+                return eval_obj(time=t, state=state)
 
-        '''
-        return self.eval_transition_matrix(time=t, state=state)
-
-    def eval_transition_matrix(self, parameters=None, time=None, state=None):
-        '''
-        Evaluate the transition matrix given parameters, state and time. Note
-        that the output is not in sparse format
-
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.setParameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can
-            :class:`numpy.ndarray` or :class:`list`
-
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            Matrix of dimension [number of state x number of state]
-
-        '''
-        if self._transitionMatrixCompile is None \
-            or self._hasNewTransition.transitionMatrixCompile:
-            self._compileTransitionMatrix()
-
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._transitionMatrixCompile(eval_param)
-
-    def _compileTransitionMatrix(self):
-        '''
-        We would also need to compile the function so that
-        it can be evaluated faster.
-        '''
-        if self._transitionMatrix is None \
-            or self._hasNewTransition.transitionMatrixCompile:
-            super(SimulateOde, self)._computeTransitionMatrix()
-
-        f = self._SC.compileExprAndFormat
-        if self._isDifficult:
-            self._transitionMatrixCompile = f(self._sp,
-                                              self._transitionMatrix,
-                                              modules='mpmath')
-        else:
-            self._transitionMatrixCompile = f(self._sp,
-                                              self._transitionMatrix)
-
-        self._hasNewTransition.reset('transitionMatrixCompile')
+            setattr(self, compiled_obj_name, f)
+            self._hasNewTransition.reset(compiled_obj_name)
 
         return None
+    
+    # def transition_vector(self, state, t):
+    #     '''
+    #     Evaluate the transition vector given state and time
 
-    def transition_vector(self, state, t):
-        '''
-        Evaluate the transition vector given state and time
+    #     Parameters
+    #     ----------
+    #     state: array like
+    #         The current numerical value for the states which can be
+    #         :class:`numpy.ndarray` or :class:`list`
+    #     t: double
+    #         The current time
 
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-        t: double
-            The current time
+    #     Returns
+    #     -------
+    #     :class:`numpy.ndarray`
+    #         a 1d array of size K where K is the number of between
+    #         states transitions and the number of birth death
+    #         processes
+    #     '''
+    #     return self.eval_transition_vector(time=t, state=state)
 
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            a 1d array of size K where K is the number of between
-            states transitions and the number of birth death
-            processes
-        '''
-        return self.eval_transition_vector(time=t, state=state)
+    # def eval_transition_vector(self, parameters=None, time=None, state=None):
+    #     '''
+    #     Evaluate the transition vector given parameters, state and time. Note
+    #     that the output is not in sparse format
 
-    def eval_transition_vector(self, parameters=None, time=None, state=None):
-        '''
-        Evaluate the transition vector given parameters, state and time. Note
-        that the output is not in sparse format
+    #     Parameters
+    #     ----------
+    #     parameters: list
+    #         see :meth:`.setParameters`
+    #     time: double
+    #         The current time
+    #     state: array list
+    #         The current numerical value for the states which can
+    #         :class:`numpy.ndarray` or :class:`list`
 
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.setParameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can
-            :class:`numpy.ndarray` or :class:`list`
+    #     Returns
+    #     -------
+    #     :class:`numpy.matrix` or :class:`mpmath.matrix`
+    #         vector of dimension [total number of transitions]
 
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            vector of dimension [total number of transitions]
+    #     '''
+    #     if self._transitionVectorCompile is None \
+    #        or self._hasNewTransition.transitionVector:
+    #         self._compileTransitionVector()
 
-        '''
-        if self._transitionVectorCompile is None \
-           or self._hasNewTransition.transitionVector:
-            self._compileTransitionVector()
+    #     eval_param = self._getEvalParam(state, time, parameters)
+    #     return self._transitionVectorCompile(eval_param)
 
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._transitionVectorCompile(eval_param)
+    # def _compileTransitionVector(self):
+    #     '''
+    #     We would also need to compile the function so that
+    #     it can be evaluated faster.
+    #     '''
+    #     if self._transitionVector is None \
+    #         or self._hasNewTransition.transitionVector:
+    #         super(SimulateOde, self)._computeTransitionVector()
 
-    def _compileTransitionVector(self):
-        '''
-        We would also need to compile the function so that
-        it can be evaluated faster.
-        '''
-        if self._transitionVector is None \
-            or self._hasNewTransition.transitionVector:
-            super(SimulateOde, self)._computeTransitionVector()
+    #     f = self._SC.compileExprAndFormat
+    #     if self._isDifficult:
+    #         self._transitionVectorCompile = f(self._sp,
+    #                                           self._transitionVector,
+    #                                           modules='mpmath')
+    #     else:
+    #         self._transitionVectorCompile = f(self._sp,
+    #                                           self._transitionVector)
 
-        f = self._SC.compileExprAndFormat
-        if self._isDifficult:
-            self._transitionVectorCompile = f(self._sp,
-                                              self._transitionVector,
-                                              modules='mpmath')
-        else:
-            self._transitionVectorCompile = f(self._sp,
-                                              self._transitionVector)
+    #     self._hasNewTransition.reset('transitionVector')
 
-        self._hasNewTransition.reset('transitionVector')
+    #     return
 
-        return
+    # TODO: Are these functions used?
 
-    def get_birth_death_rate(self):
-        '''
-        Find the algebraic equations of birth and death processes
+    # def get_birth_death_rate(self):
+    #     '''
+    #     Find the algebraic equations of birth and death processes
 
-        Returns
-        -------
-        :class:`sympy.matrices.matrices`
-            birth death process in matrix form
-        '''
-        if self._birthDeathRate is None or self._hasNewTransition:
-            self._computeBirthDeathRate()
+    #     Returns
+    #     -------
+    #     :class:`sympy.matrices.matrices`
+    #         birth death process in matrix form
+    #     '''
+    #     if self._birthDeathRate is None or self._hasNewTransition:
+    #         self._computeBirthDeathRate()
 
-        return self._birthDeathRate
+    #     return self._birthDeathRate
 
-    def birth_death_rate(self, state, t):
-        '''
-        Evaluate the birth death rates given state and time
+    # def birth_death_rate(self, state, t):
+    #     '''
+    #     Evaluate the birth death rates given state and time
 
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
-        t: double
-            The current time
+    #     Parameters
+    #     ----------
+    #     state: array like
+    #         The current numerical value for the states which can be
+    #         :class:`np.ndarray` or :class:`list`
+    #     t: double
+    #         The current time
 
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            an array of size (M,M) where M is the number
-            of birth and death actions
+    #     Returns
+    #     -------
+    #     :class:`numpy.ndarray`
+    #         an array of size (M,M) where M is the number
+    #         of birth and death actions
 
-        '''
-        return self.eval_birth_death_rate(time=t, state=state)
+    #     '''
+    #     return self.eval_birth_death_rate(time=t, state=state)
 
-    def eval_birth_death_rate(self, parameters=None, time=None, state=None):
-        '''
-        Evaluate the birth and death rates given parameters, state and time.
+    # def eval_birth_death_rate(self, parameters=None, time=None, state=None):
+    #     '''
+    #     Evaluate the birth and death rates given parameters, state and time.
 
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.setParameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+    #     Parameters
+    #     ----------
+    #     parameters: list
+    #         see :meth:`.setParameters`
+    #     time: double
+    #         The current time
+    #     state: array list
+    #         The current numerical value for the states which can be
+    #         :class:`numpy.ndarray` or :class:`list`
 
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            Matrix of dimension [number of birth and death rates x 1]
+    #     Returns
+    #     -------
+    #     :class:`numpy.matrix` or :class:`mpmath.matrix`
+    #         Matrix of dimension [number of birth and death rates x 1]
 
-        '''
-        if self._birthDeathRateCompile is None \
-            or self._hasNewTransition.birthDeathRateCompile:
-            self._computeBirthDeathRate()
+    #     '''
+    #     if self._birthDeathRateCompile is None \
+    #         or self._hasNewTransition.birthDeathRateCompile:
+    #         self._computeBirthDeathRate()
 
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._birthDeathRateCompile(eval_param)
+    #     eval_param = self._getEvalParam(state, time, parameters)
+    #     return self._birthDeathRateCompile(eval_param)
 
-    def _computeBirthDeathRate(self):
-        '''
-        Note that this is different to _birthDeathVector because
-        this is of length (number of birth and death process) while
-        _birthDeathVector in baseOdeModel has the same length as
-        the number of states
-        '''
-        if self.num_birth_deaths == 0:
-            A = sympy.zeros(1, 1)
-        else:
-            A = sympy.zeros(self.num_birth_deaths, 1)
+    # def _computeBirthDeathRate(self):
+    #     '''
+    #     Note that this is different to _birthDeathVector because
+    #     this is of length (number of birth and death process) while
+    #     _birthDeathVector in baseOdeModel has the same length as
+    #     the number of states
+    #     '''
+    #     if self.num_birth_deaths == 0:
+    #         A = sympy.zeros(1, 1)
+    #     else:
+    #         A = sympy.zeros(self.num_birth_deaths, 1)
 
-            # go through all the transition objects
-            for i, bd in enumerate(self.birth_death_list):
-                A[i] += eval(self._checkEquation(bd.equation()))
+    #         # go through all the transition objects
+    #         for i, bd in enumerate(self.birth_death_list):
+    #             A[i] += eval(self._checkEquation(bd.equation()))
 
-        # assign back
-        self._birthDeathRate = A
-        # compilation of the symbolic calculation.  Note here that we are
-        # going to recompile the total transitions because it might
-        # have changed
-        f = self._SC.compileExprAndFormat
-        if self._isDifficult:
-            self._birthDeathRateCompile = f(self._sp,
-                                            self._birthDeathRate,
-                                            modules='mpmath')
-        else:
-            self._birthDeathRateCompile = f(self._sp,
-                                            self._birthDeathRate)
+    #     # assign back
+    #     self._birthDeathRate = A
+    #     # compilation of the symbolic calculation.  Note here that we are
+    #     # going to recompile the total transitions because it might
+    #     # have changed
+    #     f = self._SC.compileExprAndFormat
+    #     if self._isDifficult:
+    #         self._birthDeathRateCompile = f(self._sp,
+    #                                         self._birthDeathRate,
+    #                                         modules='mpmath')
+    #     else:
+    #         self._birthDeathRateCompile = f(self._sp,
+    #                                         self._birthDeathRate)
 
-        self._hasNewTransition.reset('birthDeathRateCompile')
+    #     self._hasNewTransition.reset('birthDeathRateCompile')
 
-        return None
+    #     return None
 
     def total_transition(self, state, t):
         '''
@@ -1087,118 +1141,118 @@ class SimulateOde(DeterministicOde):
         '''
         return sum(self.transition_vector(time=t, state=state))
 
-    def transition_mean(self, state, t):
-        '''
-        Evaluate the mean of the transitions given state and time.  For
-        m transitions and n states, we have
+    # def transition_mean(self, state, t):
+    #     '''
+    #     Evaluate the mean of the transitions given state and time.  For
+    #     m transitions and n states, we have
 
-        .. math::
-            f_{j,k} &= \\sum_{i=1}^{n} \\frac{\\partial a_{j}(x)}{\\partial x_{i}} v_{i,k} \\\\
-            \\mu_{j} &= \\sum_{k=1}^{m} f_{j,k}(x)a_{k}(x) \\\\
-            \\sigma^{2}_{j}(x) &= \\sum_{k=1}^{m} f_{j,k}^{2}(x) a_{k}(x)
+    #     .. math::
+    #         f_{j,k} &= \\sum_{i=1}^{n} \\frac{\\partial a_{j}(x)}{\\partial x_{i}} v_{i,k} \\\\
+    #         \\mu_{j} &= \\sum_{k=1}^{m} f_{j,k}(x)a_{k}(x) \\\\
+    #         \\sigma^{2}_{j}(x) &= \\sum_{k=1}^{m} f_{j,k}^{2}(x) a_{k}(x)
 
-        where :math:`v_{i,k}` is the state change matrix.
+    #     where :math:`v_{i,k}` is the state change matrix.
 
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-        t: double
-            The current time
+    #     Parameters
+    #     ----------
+    #     state: array like
+    #         The current numerical value for the states which can be
+    #         :class:`numpy.ndarray` or :class:`list`
+    #     t: double
+    #         The current time
 
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            an array of size m where m is the number of transition
+    #     Returns
+    #     -------
+    #     :class:`numpy.ndarray`
+    #         an array of size m where m is the number of transition
 
-        '''
-        return self.eval_transition_mean(time=t, state=state)
+    #     '''
+    #     return self.eval_transition_mean(time=t, state=state)
 
-    def eval_transition_mean(self, parameters=None, time=None, state=None):
-        '''
-        Evaluate the transition mean given parameters, state and time.
+    # def eval_transition_mean(self, parameters=None, time=None, state=None):
+    #     '''
+    #     Evaluate the transition mean given parameters, state and time.
 
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.setParameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+    #     Parameters
+    #     ----------
+    #     parameters: list
+    #         see :meth:`.setParameters`
+    #     time: double
+    #         The current time
+    #     state: array list
+    #         The current numerical value for the states which can be
+    #         :class:`numpy.ndarray` or :class:`list`
 
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            Matrix of dimension [number of state x number of state]
+    #     Returns
+    #     -------
+    #     :class:`numpy.matrix` or :class:`mpmath.matrix`
+    #         Matrix of dimension [number of state x number of state]
 
-        '''
-        if self._transitionMeanCompile is None \
-            or self._hasNewTransition.computeTransitionMeanVar:
-            self._computeTransitionMeanVar()
+    #     '''
+    #     if self._transitionMeanCompile is None \
+    #         or self._hasNewTransition.computeTransitionMeanVar:
+    #         self._computeTransitionMeanVar()
 
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._transitionMeanCompile(eval_param)
+    #     eval_param = self._getEvalParam(state, time, parameters)
+    #     return self._transitionMeanCompile(eval_param)
 
-    def transition_var(self, state, t):
-        '''
-        Evaluate the variance of the transitions given state and time
+    # def transition_var(self, state, t):
+    #     '''
+    #     Evaluate the variance of the transitions given state and time
 
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-        t: double
-            The current time
+    #     Parameters
+    #     ----------
+    #     state: array like
+    #         The current numerical value for the states which can be
+    #         :class:`numpy.ndarray` or :class:`list`
+    #     t: double
+    #         The current time
 
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            an array of size M where M is the number of transition
+    #     Returns
+    #     -------
+    #     :class:`numpy.ndarray`
+    #         an array of size M where M is the number of transition
 
-        '''
-        return self.eval_transition_var(time=t, state=state)
+    #     '''
+    #     return self.eval_transition_var(time=t, state=state)
 
-    def eval_transition_var(self, parameters=None, time=None, state=None):
-        '''
-        Evaluate the transition variance given parameters, time and state
+    # def eval_transition_var(self, parameters=None, time=None, state=None):
+    #     '''
+    #     Evaluate the transition variance given parameters, time and state
 
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.setParameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+    #     Parameters
+    #     ----------
+    #     parameters: list
+    #         see :meth:`.setParameters`
+    #     time: double
+    #         The current time
+    #     state: array list
+    #         The current numerical value for the states which can be
+    #         :class:`numpy.ndarray` or :class:`list`
 
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            Matrix of dimension [number of state x number of state]
+    #     Returns
+    #     -------
+    #     :class:`numpy.matrix` or :class:`mpmath.matrix`
+    #         Matrix of dimension [number of state x number of state]
 
-        '''
-        if self._transitionVarCompile is None \
-            or self._hasNewTransition.computeTransitionMeanVar:
-            self._computeTransitionMeanVar()
+    #     '''
+    #     if self._transitionVarCompile is None \
+    #         or self._hasNewTransition.computeTransitionMeanVar:
+    #         self._computeTransitionMeanVar()
 
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._transitionVarCompile(eval_param)
+    #     eval_param = self._getEvalParam(state, time, parameters)
+    #     return self._transitionVarCompile(eval_param)
 
     # A condensed version of the above without the comments
-    def transition_Jacobian(self, state, t):
-        return self.eval_transition_Jacobian(time=t, state=state)
+    # def transition_Jacobian(self, state, t):
+    #     return self.eval_transition_Jacobian(time=t, state=state)
 
-    def eval_transition_Jacobian(self, parameters=None, time=None, state=None):
-        if self._transitionJacobianCompile is None:
-            self._computeTransitionJacobian()  # TODO: make match above
+    # def eval_transition_Jacobian(self, parameters=None, time=None, state=None):
+    #     if self._transitionJacobianCompile is None:
+    #         self._computeTransitionJacobian()  # TODO: make match above
 
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._transitionJacobianCompile(eval_param)
+    #     eval_param = self._getEvalParam(state, time, parameters)
+    #     return self._transitionJacobianCompile(eval_param)
 
 
     def _computeTransitionJacobian(self):
@@ -1208,9 +1262,8 @@ class SimulateOde(DeterministicOde):
         F_[i,j] = sum_k diff(a[i], x_k) v_[k,j]
         where k=state and v[k,j] is how much state x_k changes by if transition of type j occurs.
         '''
-
-        if self._GMat is None:
-            self._computeDependencyMatrix()
+        if self._vMat is None:
+            self._computeStateChangeMatrix()
 
         F = sympy.zeros(self.num_transitions, self.num_transitions)
 
@@ -1224,11 +1277,14 @@ class SimulateOde(DeterministicOde):
 
         self._transitionJacobian = F
 
+        # TODO: maybe don't need to compile at all
         # now compile
-        f = self._SC.compileExprAndFormat
-        self._transitionJacobianCompile = f(self._sp, self._transitionJacobian)
+        # self.compile_sympy_object("_transitionJacobian", "transitionJacobian")
+        # f = self._SC.compileExprAndFormat
+        # self._transitionJacobianCompile = f(self._sp, self._transitionJacobian)
 
-        self._hasNewTransition.reset('transitionJacobian')  # TODO: what is this for?
+        self._hasNewTransition.reset('transitionJacobian')
+
         return F
 
     def _computeTransitionMeanVar(self):
@@ -1265,20 +1321,25 @@ class SimulateOde(DeterministicOde):
         self._transitionMean = mu
         self._transitionVar = sigma2
 
+        # TODO: why do we compile them now? In other functions we save until later.
         # now we are going to compile them
-        f = self._SC.compileExprAndFormat
-        if self._isDifficult:
-            self._transitionMeanCompile = f(self._sp,
-                                            self._transitionMean,
-                                            modules='mpmath')
-            self._transitionVarCompile = f(self._sp,
-                                           self._transitionVar,
-                                           modules='mpmath')
-        else:
-            self._transitionMeanCompile = f(self._sp, self._transitionMean)
-            self._transitionVarCompile = f(self._sp, self._transitionVar)
+        # self.compile_sympy_object("_transitionMean", "_transitionMeanCompile")
+        # self.compile_sympy_object("_transitionVar", "_transitionVarCompile")
 
-        self._hasNewTransition.reset('computeTransitionMeanVar')
+
+        # f = self._SC.compileExprAndFormat
+        # if self._isDifficult:
+        #     self._transitionMeanCompile = f(self._sp,
+        #                                     self._transitionMean,
+        #                                     modules='mpmath')
+        #     self._transitionVarCompile = f(self._sp,
+        #                                    self._transitionVar,
+        #                                    modules='mpmath')
+        # else:
+        #     self._transitionMeanCompile = f(self._sp, self._transitionMean)
+        #     self._transitionVarCompile = f(self._sp, self._transitionVar)
+
+        # self._hasNewTransition.reset('computeTransitionMeanVar')
 
         return None
 
