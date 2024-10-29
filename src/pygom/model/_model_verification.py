@@ -1,10 +1,15 @@
 import numpy as np
 
+from sympy import parse_expr
+
 # Although reimporting * is not generally recommended
 # we have to do it here so that it has all the mathematical
 # functions ready to use when evaluating the equations.
 # An alternative is to check for all the maths functions, such
 # as exp, log, trigonometric etc.. and convert them to sympy
+
+# TODO: is the above comment still relevant? Can't see any * import.
+
 from sympy.functions.elementary.exponential import (exp_polar, exp, log,
     LambertW)
 ln = log
@@ -72,7 +77,7 @@ def checkEquation(input_str, input_var, derived_var, subs_derived=True):
     An symbol starting with an underscore is not allowed, and should be
     checked prior to using this function
     """
-    
+
     if isinstance(input_str, str):
         input_str = [input_str]
     assert hasattr(input_str, '__iter__'), "Expecting an iterable"
@@ -82,7 +87,9 @@ def checkEquation(input_str, input_var, derived_var, subs_derived=True):
         assert isinstance(_inputStr, str), "Equation should be in string format"
         # create the symbols in the local environment
         for _d in input_var:
+            #print(_d)
             for _s in _d.keys():
+                #print(_s)
                 if isinstance(_d[_s], tuple):
                     # only the first element, as we made this as a vector
                     _isReal = True if _d[_s][0].is_real else False
@@ -92,13 +99,15 @@ def checkEquation(input_str, input_var, derived_var, subs_derived=True):
                 else:
                     _isReal = True if _d[_s].is_real else False
                     exec("""%s = symbols('%s', real=%s)""" % (_s, _s, _isReal))
+            #print("\n")
         for _key, _value in derived_var.items():
             _isReal = True if _value.is_real else False
             exec("""%s = symbols('%s', real=%s)""" % (_key, _key, _isReal))
         # if the evaluation fails then there is a problem with the
         # variables (either state or parameters), success means that
         # it returns a symbolic expression 
-        _eqn = eval(_inputStr)
+        # _eqn = eval(_inputStr)
+        _eqn = parse_expr(_inputStr, locals())
         # print _inputStr, type(_eqn), isinstance(_eqn, Expr)
         if subs_derived:
             # because these are the derived parameters, we need to substitute
@@ -107,6 +116,8 @@ def checkEquation(input_str, input_var, derived_var, subs_derived=True):
                 for _key, _value in derived_var.items():
                     _eqn = eval("_eqn.subs(%s, %s)" % (_key, _value))
         list_out.append(_eqn)
+        # print(_eqn)
+        # print(_eqn.free_symbols)
 
     if len(list_out) == 1:
         return list_out[0]

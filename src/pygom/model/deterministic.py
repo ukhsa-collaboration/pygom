@@ -63,7 +63,6 @@ class DeterministicOde(BaseOdeModel):
         '''
         Constructor that is built on top of a BaseOdeModel
         '''
-
         super(DeterministicOde, self).__init__(state,
                                                param,
                                                derived_param,
@@ -98,22 +97,26 @@ class DeterministicOde(BaseOdeModel):
         # sp = state + t + param
         # the latter is required to compile the symbolic code
         # to the numeric setting
-        self._s = self._stateList + [self._t]
-        self._sp = self._s + self._paramList
 
-        # Calls to the autowrap method can't take ODEVariable class objects
-        # Better to convert the objects in self._sp back to sympy objects
-        # This code will convert any ODEVariable object in either the stateDict
-        # or paramDict dictonary
-        for i, item in enumerate(self._sp):
-            try:
-                 self._sp[i] = self._stateDict[item.ID]
-            except Exception:
-                 pass
-            try:
-                 self._sp[i] = self._paramDict[item.ID]
-            except Exception:
-                 pass
+        # # Trial updating this when params/states are updates.
+        # self._s = self._stateList + [self._t]
+        # self._sp = self._s + self._paramList
+
+        # print(self._s)
+
+        # # Calls to the autowrap method can't take ODEVariable class objects
+        # # Better to convert the objects in self._sp back to sympy objects
+        # # This code will convert any ODEVariable object in either the stateDict
+        # # or paramDict dictonary
+        # for i, item in enumerate(self._sp):
+        #     try:
+        #          self._sp[i] = self._stateDict[item.ID]
+        #     except Exception:
+        #          pass
+        #     try:
+        #          self._sp[i] = self._paramDict[item.ID]
+        #     except Exception:
+        #          pass
 
         # information regarding the integration.  We want an internal
         # storage so we can invoke the plot method within the same class
@@ -133,7 +136,9 @@ class DeterministicOde(BaseOdeModel):
         self._SAUtil = ode_utils.shapeAdjust(self.num_state, self.num_param)
         # compile the code.  Note that we need the class because we
         # compile both the formatted and unformatted version.
-        self._SC = ode_utils.compileCode()
+
+        #self._SC = ode_utils.compileCode()
+        self._SC = ode_utils.compileCode(backend="cython")
 
     def __eq__(self, other):
         if isinstance(other, DeterministicOde):

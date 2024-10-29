@@ -487,6 +487,7 @@ def tauLeap(x,
             x_lims,
             t,
             state_change_mat,
+            reactant_mat,
             transition_func,
             transition_mean_func,
             transition_var_func,
@@ -576,13 +577,18 @@ def tauLeap(x,
     #         the probability that a realization exceeds the observations and further
     #         decrease the time step.
     # TODO: consider how Cao implemented this
-    # tau_scale, safe = _cy_test_tau_leap_safety(x.astype(np.float64, copy=False),
-    #                                            reactant_mat.astype(np.int64, copy=False),
-    #                                            rates.astype(np.float64, copy=False),
-    #                                            float(tau_scale),
-    #                                            float(epsilon))
-    # if safe is False:
-    #     return x, t, False
+
+    loss_mat=reactant_mat.copy()
+    loss_mat[loss_mat==1]=0
+    loss_mat[loss_mat==-1]=1
+    
+    tau_scale, safe = _cy_test_tau_leap_safety(x.astype(np.float64, copy=False),
+                                               loss_mat.astype(np.int64, copy=False),
+                                               rates.astype(np.float64, copy=False),
+                                               float(tau_scale),
+                                               float(epsilon))
+    if safe is False:
+        return x, t, False
 
     # containers for output
     new_x = x.copy()                # updated state populations

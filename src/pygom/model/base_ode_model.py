@@ -115,7 +115,7 @@ class BaseOdeModel(object):
 
         # information about the ode in general
         # reactant, state change and the dependency graph matrix
-        self._lambdaMat = None
+        #self._lambdaMat = None
         self._vMat = None
         self._GMat = None
         self._lambdaMatOD = None # also trialing this matrix indicating if a state is an origin or destination in a transition
@@ -153,14 +153,16 @@ class BaseOdeModel(object):
                 # tests on validity of using ode
                 # if transition is not None:
                 if not ode_utils.none_or_empty_list(transition):
-                    raise InputError("Transition equations detected even " +
-                                     "though the set of ode is explicitly " +
-                                     "defined")
+                    print("ODE plus transition now ok")
+                    # raise InputError("Transition equations detected even " +
+                    #                  "though the set of ode is explicitly " +
+                    #                  "defined")
                 # if birth_death is not None:
                 if not ode_utils.none_or_empty_list(birth_death):
-                    raise InputError("Birth Death equations detected even " +
-                                     "though the set of ode is explicitly " +
-                                     "defined")
+                    print("ODE plus transition now ok")
+                    # raise InputError("Birth Death equations detected even " +
+                    #                  "though the set of ode is explicitly " +
+                    #                  "defined")
 
                 # set equations
                 self.ode_list = ode
@@ -193,6 +195,30 @@ class BaseOdeModel(object):
                 attr = re_split_string.split(attr)
                 attr = filter(lambda x: not len(x.strip()) == 0, attr)
             self.__setattr__(attr_list_name, list(attr))
+
+    def set_sp(self):
+        '''
+        Set sp attribute, which is collection of all states and vars
+        TODO: testing this out still
+        '''
+        self._s = self._stateList + [self._t]
+        self._sp = self._s + self._paramList
+
+        # Calls to the autowrap method can't take ODEVariable class objects
+        # Better to convert the objects in self._sp back to sympy objects
+        # This code will convert any ODEVariable object in either the stateDict
+        # or paramDict dictonary
+        for i, item in enumerate(self._sp):
+            try:
+                 self._sp[i] = self._stateDict[item.ID]
+            except Exception:
+                 pass
+            try:
+                 self._sp[i] = self._paramDict[item.ID]
+            except Exception:
+                 pass
+            
+        return None
 
     def _add_list_attr_tuple(self, attr, attr_list_name):
         """
@@ -378,6 +404,8 @@ class BaseOdeModel(object):
             index = self.get_param_index(key)
             self._paramValue[index] = val
 
+        self.set_sp()
+
     @property
     def state(self):
         """
@@ -419,6 +447,8 @@ class BaseOdeModel(object):
                 self._state = self._unrollState(state)
             else:
                 raise InputError(err_str)
+            
+            self.set_sp()
         else:
             raise InputError(err_str)
 
@@ -1091,6 +1121,36 @@ class BaseOdeModel(object):
                             self._vMat[_sec[0][0], j] += sympy.sympify(_sec[1])
                             
         return self._vMat
+
+    def _computeReactantMatrix(self):
+        """
+        The reactant matrix, where
+
+        .. math::
+            \\lambda_{i,j} = \\left\\{ 1, &if state i is involved in transition j, \\\\
+                                       0, &otherwise \\right.
+        """
+        # declare holder
+        self._lambdaMat = np.zeros((self.num_state, self.num_transitions), int)
+
+        _f, _t, eqn, sec = self._unrollTransitionList(self._getAllTransition())
+
+        for j in range(len(eqn)):
+            if j < self.num_pure_transitions:
+                for i in _f[j]:
+                    self._lambdaMat[i, j]-=1
+                for i in _t[j]:
+                    self._lambdaMat[i, j]+=1
+            else:
+                bdObj = self._birthDeathList[j - self.num_pure_transitions]
+                if bdObj.transition_type is TransitionType.B:
+                    for k1 in _f[j]:
+                        self._lambdaMat[k1, j] += 1
+                elif bdObj.transition_type is TransitionType.D:
+                    for k2 in _f[j]:
+                        self._lambdaMat[k2, j] -= 1
+
+        return self._lambdaMat
 
     # def _computeDependencyMatrix(self):
     #     """
