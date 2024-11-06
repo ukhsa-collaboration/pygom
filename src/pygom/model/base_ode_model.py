@@ -935,10 +935,15 @@ class BaseOdeModel(object):
         self._transitionMatrix = sympy.zeros(self.num_state, self.num_state)
         # going through the list of transitions
         pure_trans = self._getAllTransition(pureTransitions=True)
-        from_list, to, eqn, sec = self._unrollTransitionList(pure_trans)
-        for k, eqn in enumerate(eqn):
+        unrolled_trans_list= self._unrollTransitionList(pure_trans)
+
+        from_list = unrolled_trans_list["from_list"]
+        to_list = unrolled_trans_list["to_list"]
+        eqn_list = unrolled_trans_list["eqn_list"]
+
+        for k, eqn in enumerate(eqn_list):
             for i in from_list[k]:
-                for j in to[k]:
+                for j in to_list[k]:
                     self._transitionMatrix[i, j] += eqn
 
         return self._transitionMatrix
@@ -971,12 +976,20 @@ class BaseOdeModel(object):
         self._birthDeathVector = sympy.zeros(self.num_state, 1)
         # go through all the transition objects
         for bdObj in self._birthDeathList:
-            fromIndex, _toIndex, eqn = self._unrollTransition(bdObj)
+            unrolled_trans= self._unrollTransition(bdObj)
+            fromIndex = unrolled_trans["from_index"]
+            eqn = unrolled_trans["eqn"]
+            secondary_effects=unrolled_trans["secondary_effects"]
+
             for i in fromIndex:
                 if bdObj.transition_type is TransitionType.B:
                     self._birthDeathVector[i] += eqn
                 elif bdObj.transition_type is TransitionType.D:
                     self._birthDeathVector[i] -= eqn
+                if secondary_effects[i] is not None:
+                    for _sec in secondary_list[j]:
+                        if _sec is not None:
+                            self._vMat[_sec[0][0], j] += sympy.sympify(_sec[1])
 
         return self._birthDeathVector
 
@@ -1011,13 +1024,18 @@ class BaseOdeModel(object):
         # allow the end user to input more state than initially desired
         if len(self.ode_list) <= self.num_state:
             self._ode = sympy.zeros(self.num_state, 1)
-            fromList, _t, eqn, sec = self._unrollTransitionList(self.ode_list)
-            for i, eqn in enumerate(eqn):
-                if len(fromList[i]) > 1:
+            #fromList, _t, eqn, sec = self._unrollTransitionList(self.ode_list)
+
+            unrolled_trans_list= self._unrollTransitionList(self.ode_list)
+            from_list = unrolled_trans_list["from_list"]
+            eqn_list = unrolled_trans_list["eqn_list"]
+
+            for i, eqn in enumerate(eqn_list):
+                if len(from_list[i]) > 1:
                     raise InputError("An explicit ode cannot describe more " +
                                      "than a single state")
                 else:
-                    self._ode[fromList[i][0]] = eqn
+                    self._ode[from_list[i][0]] = eqn
         else:
             raise InputError("The total number of ode is %s " +
                              "where the number of state is %s" %
@@ -1031,9 +1049,12 @@ class BaseOdeModel(object):
         state transition then the birth death processes
         """
         self._transitionVector = sympy.zeros(self.num_transitions, 1)
-        _f, _t, eqn, sec = self._unrollTransitionList(self._getAllTransition())
+        #_f, _t, eqn, sec = self._unrollTransitionList(self._getAllTransition())
 
-        for i, eqn in enumerate(eqn):
+        unrolled_trans_list= self._unrollTransitionList(self._getAllTransition())
+        eqn_list = unrolled_trans_list["eqn_list"]
+
+        for i, eqn in enumerate(eqn_list):
             self._transitionVector[i] = eqn
 
         return self._transitionVector
@@ -1095,28 +1116,34 @@ class BaseOdeModel(object):
         # container for output
         self._vMat = sympy.zeros(self.num_state, self.num_transitions)
 
-        _f, _t, eqn, sec = self._unrollTransitionList(self._getAllTransition())
+        #_f, _t, eqn, sec = self._unrollTransitionList(self._getAllTransition())
 
-        for j in range(len(eqn)):
+        unrolled_trans_list= self._unrollTransitionList(self._getAllTransition())
+        from_list = unrolled_trans_list["from_list"]
+        to_list = unrolled_trans_list["to_list"]
+        eqn_list = unrolled_trans_list["eqn_list"]
+        secondary_list = unrolled_trans_list["secondary_list"]
+
+        for j in range(len(eqn_list)):
             if j < self.num_pure_transitions:
-                for i in _f[j]:
+                for i in from_list[j]:
                     self._vMat[i, j]-=sympy.sympify(1)
-                for i in _t[j]:
+                for i in to_list[j]:
                     self._vMat[i, j]+=sympy.sympify(1)
-                if sec[j] is not None:
-                    for _sec in sec[j]:
+                if secondary_list[j] is not None:
+                    for _sec in secondary_list[j]:
                         if _sec is not None:
                             self._vMat[_sec[0][0], j] += sympy.sympify(_sec[1])
             else:
                 bdObj = self._birthDeathList[j - self.num_pure_transitions]
                 if bdObj.transition_type is TransitionType.B:
-                    for k1 in _f[j]:
+                    for k1 in from_list[j]:
                         self._vMat[k1, j] += sympy.sympify(1)
                 elif bdObj.transition_type is TransitionType.D:
-                    for k2 in _f[j]:
+                    for k2 in from_list[j]:
                         self._vMat[k2, j] -= sympy.sympify(1)
-                if sec[j] is not None:
-                    for _sec in sec[j]:
+                if secondary_list[j] is not None:
+                    for _sec in secondary_list[j]:
                         if _sec is not None:
                             self._vMat[_sec[0][0], j] += sympy.sympify(_sec[1])
                             
@@ -1133,21 +1160,26 @@ class BaseOdeModel(object):
         # declare holder
         self._lambdaMat = np.zeros((self.num_state, self.num_transitions), int)
 
-        _f, _t, eqn, sec = self._unrollTransitionList(self._getAllTransition())
+        #_f, _t, eqn, sec = self._unrollTransitionList(self._getAllTransition())
 
-        for j in range(len(eqn)):
+        unrolled_trans_list= self._unrollTransitionList(self._getAllTransition())
+        from_list = unrolled_trans_list["from_list"]
+        to_list = unrolled_trans_list["to_list"]
+        eqn_list = unrolled_trans_list["eqn_list"]
+
+        for j in range(len(eqn_list)):
             if j < self.num_pure_transitions:
-                for i in _f[j]:
+                for i in from_list[j]:
                     self._lambdaMat[i, j]-=1
-                for i in _t[j]:
+                for i in to_list[j]:
                     self._lambdaMat[i, j]+=1
             else:
                 bdObj = self._birthDeathList[j - self.num_pure_transitions]
                 if bdObj.transition_type is TransitionType.B:
-                    for k1 in _f[j]:
+                    for k1 in from_list[j]:
                         self._lambdaMat[k1, j] += 1
                 elif bdObj.transition_type is TransitionType.D:
-                    for k2 in _f[j]:
+                    for k2 in from_list[j]:
                         self._lambdaMat[k2, j] -= 1
 
         return self._lambdaMat
@@ -1208,25 +1240,30 @@ class BaseOdeModel(object):
         """
         from_index = self._extractStateIndex(transition_obj.origin)
         to_index = self._extractStateIndex(transition_obj.destination)
-
         eqn = checkEquation(transition_obj.equation,
                             *self._getListOfVariablesDict())
+        isStochastic=transition_obj.stochastic
+        if transition_obj.secondary_effects is not None:
+            secondary_dest=[self._extractStateIndex(x[0]) for x in transition_obj.secondary_effects]
+            secondary_change=[x[1] for x in transition_obj.secondary_effects]
+            secondary_change=checkEquation(secondary_change, *self._getListOfVariablesDict())
+            if type(secondary_change) is not list:
+                secondary_change=[secondary_change]
+            secondary_effects=list(zip(secondary_dest, secondary_change))
+        else:
+            secondary_effects=None
 
-        return from_index, to_index, eqn
+        # Try returning as dict (should improve modularity over tuple output)
 
-    # def _unrollTransitionList(self, transition_list):
-    #     state_list = list()
-    #     change_list = list()
-    #     rate_list = list()
-    #     for t in transition_list:
-    #         state_list.append(self._extractStateIndex(t.vars))
-    #         change_list.append(t.diffs)
-    #         rate_list.append(t.react)
+        out= {
+            "from_index": from_index,
+            "to_index": to_index,
+            "eqn": eqn,
+            "secondary_effects": secondary_effects,
+            "isStochastic": isStochastic
+            }
 
-    #     rate_list = checkEquation(rate_list, *self._getListOfVariablesDict())
-    #     rate_list = rate_list if hasattr(rate_list, '__iter__') else [rate_list]
-
-    #     return state_list, change_list, rate_list
+        return out
 
     def _unrollTransitionList(self, transition_list):
         from_list = list()
@@ -1235,28 +1272,56 @@ class BaseOdeModel(object):
         secondary_list = list()
         stochastic_list = list()
 
-        for t in transition_list:
-            from_list.append(self._extractStateIndex(t.origin))
-            to_list.append(self._extractStateIndex(t.destination))
-            eqn_list.append(t.equation)
-            stochastic_list.append(t.stochastic)
-            if t.secondary_effects is not None:
-                secondary_dest=[self._extractStateIndex(x[0]) for x in t.secondary_effects]
-                secondary_change=[x[1] for x in t.secondary_effects]
-                secondary_change=checkEquation(secondary_change, *self._getListOfVariablesDict())
-                if type(secondary_change) is not list:
-                    secondary_change=[secondary_change]
-                secondary_effects=list(zip(secondary_dest, secondary_change))
-                secondary_list.append(secondary_effects)
-            else:
-                secondary_list.append(None)
+        for transition_obj in transition_list:
+            unrolled_transition=self._unrollTransition(transition_obj)
+            from_list.append(unrolled_transition["from_index"])
+            to_list.append(unrolled_transition["to_index"])
+            eqn_list.append(unrolled_transition["eqn"])
+            secondary_list.append(unrolled_transition["secondary_effects"])
+            stochastic_list.append(unrolled_transition["isStochastic"])
 
-        eqn_list = checkEquation(eqn_list, *self._getListOfVariablesDict())
         eqn_list = eqn_list if hasattr(eqn_list, '__iter__') else [eqn_list]
-
         self._stochasticTrans=stochastic_list
 
-        return from_list, to_list, eqn_list, secondary_list
+        out= {
+            "from_list": from_list,
+            "to_list": to_list,
+            "eqn_list": eqn_list,
+            "secondary_list": secondary_list,
+            "stochastic_list": stochastic_list
+            }
+
+        return out
+
+    # def _unrollTransitionList(self, transition_list):
+    #     from_list = list()
+    #     to_list = list()
+    #     eqn_list = list()
+    #     secondary_list = list()
+    #     stochastic_list = list()
+
+    #     for t in transition_list:
+    #         from_list.append(self._extractStateIndex(t.origin))
+    #         to_list.append(self._extractStateIndex(t.destination))
+    #         eqn_list.append(t.equation)
+    #         stochastic_list.append(t.stochastic)
+    #         if t.secondary_effects is not None:
+    #             secondary_dest=[self._extractStateIndex(x[0]) for x in t.secondary_effects]
+    #             secondary_change=[x[1] for x in t.secondary_effects]
+    #             secondary_change=checkEquation(secondary_change, *self._getListOfVariablesDict())
+    #             if type(secondary_change) is not list:
+    #                 secondary_change=[secondary_change]
+    #             secondary_effects=list(zip(secondary_dest, secondary_change))
+    #             secondary_list.append(secondary_effects)
+    #         else:
+    #             secondary_list.append(None)
+
+    #     eqn_list = checkEquation(eqn_list, *self._getListOfVariablesDict())
+    #     eqn_list = eqn_list if hasattr(eqn_list, '__iter__') else [eqn_list]
+
+    #     self._stochasticTrans=stochastic_list
+
+    #     return from_list, to_list, eqn_list, secondary_list
 
     def _getAllTransition(self, pureTransitions=False):
         assert isinstance(pureTransitions, bool), \

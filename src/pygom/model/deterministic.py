@@ -284,14 +284,23 @@ class DeterministicOde(BaseOdeModel):
             # convert the transition matrix into the set of ode
             self._ode = sympy.zeros(self.num_state, 1)
             pureTransitionList = self._getAllTransition(pureTransitions=True)
-            fromList, \
-                to, \
-                eqn = self._unrollTransitionList(pureTransitionList)
-            for i, eqn in enumerate(eqn):
-                for k in fromList[i]:
+            
+            unrolled_trans_list= self._unrollTransitionList(pureTransitionList)
+            from_list = unrolled_trans_list["from_list"]
+            to_list = unrolled_trans_list["to_list"]
+            eqn_list = unrolled_trans_list["eqn_list"]
+            secondary_list = unrolled_trans_list["secondary_list"]
+
+            for i, eqn in enumerate(eqn_list):
+                for k in from_list[i]:
                     self._ode[k] -= eqn
-                for k in to[i]:
+                for k in to_list[i]:
                     self._ode[k] += eqn
+                if secondary_list[i] is not None:
+                    for _sec in secondary_list[i]:
+                        if _sec is not None:
+                            rate_times_change=sympy.sympify(_sec[1])*eqn
+                            self._ode[_sec[0][0]] += rate_times_change
 
         # now we just need to add in the birth death processes
         super(DeterministicOde, self)._computeBirthDeathVector()
