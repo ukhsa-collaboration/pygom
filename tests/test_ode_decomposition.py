@@ -9,9 +9,9 @@ from pygom.model import common_models
 
 class TestOdeDecomposition(TestCase):
     def test_simple(self):
-        ode1 = Transition('S', '-beta*S*I', 'ode')
-        ode2 = Transition('I', 'beta*S*I - gamma * I', 'ode')
-        ode3 = Transition('R', 'gamma*I', 'ode')
+        ode1 = Transition(origin='S', equation='-beta*S*I', transition_type=TransitionType.ODE)
+        ode2 = Transition(origin='I', equation='beta*S*I - gamma * I', transition_type=TransitionType.ODE)
+        ode3 = Transition(origin='R', equation='gamma*I', transition_type=TransitionType.ODE)
         state_list = ['S', 'I', 'R']
         param_list = ['beta', 'gamma']
         ode = SimulateOde(state_list, param_list, ode=[ode1, ode2, ode3])
@@ -30,12 +30,12 @@ class TestOdeDecomposition(TestCase):
         state_list = ['S', 'L', 'I', 'A', 'R', 'D']
         param_list = ['beta', 'p', 'kappa', 'alpha', 'f', 'delta', 'epsilon', 'N']
         ode_list = [
-            Transition('S', '- beta * S/N * ( I + delta * A)', 'ODE'),
-            Transition('L', 'beta * S/N * (I + delta * A) - kappa * L', 'ODE'),
-            Transition('I', 'p * kappa * L - alpha * I', 'ODE'),
-            Transition('A', '(1-p) * kappa * L - epsilon * A', 'ODE'),
-            Transition('R', 'f * alpha * I + epsilon * A', 'ODE'),
-            Transition('D', '(1-f) * alpha * I', 'ODE')
+            Transition(origin='S', equation='- beta * S/N * ( I + delta * A)', transition_type=TransitionType.ODE),
+            Transition(origin='L', equation='beta * S/N * (I + delta * A) - kappa * L', transition_type=TransitionType.ODE),
+            Transition(origin='I', equation='p * kappa * L - alpha * I', transition_type=TransitionType.ODE),
+            Transition(origin='A', equation='(1-p) * kappa * L - epsilon * A', transition_type=TransitionType.ODE),
+            Transition(origin='R', equation='f * alpha * I + epsilon * A', transition_type=TransitionType.ODE),
+            Transition(origin='D', equation='(1-f) * alpha * I', transition_type=TransitionType.ODE)
             ]
 
         ode = SimulateOde(state_list, param_list, ode=ode_list)
@@ -56,7 +56,6 @@ class TestOdeDecomposition(TestCase):
                        equation='beta * S * I - gamma * I - mu * I',
                        transition_type=TransitionType.ODE),
             Transition(origin='R',
-                       destination='R',
                        equation='gamma * I',
                        transition_type=TransitionType.ODE)
             ]
@@ -74,13 +73,13 @@ class TestOdeDecomposition(TestCase):
         ode = common_models.Legrand_Ebola_SEIHFR()
 
         ode_list = [
-            Transition('S', '-(beta_I*S*I + beta_H_Time*S*H + beta_F_Time*S*F)'),
-            Transition('E', '(beta_I*S*I + beta_H_Time*S*H + beta_F_Time*S*F) - alpha*E'),
-            Transition('I', '-gamma_I*(1 - theta_1)*(1 - delta_1)*I - gamma_D*(1 - theta_1)*delta_1*I - gamma_H*theta_1*I + alpha*E'),
-            Transition('H', 'gamma_H*theta_1*I - gamma_DH*delta_2*H - gamma_IH*(1 - delta_2)*H'),
-            Transition('F', '- gamma_F*F + gamma_DH*delta_2*H + gamma_D*(1 - theta_1)*delta_1*I'),
-            Transition('R', 'gamma_I*(1 - theta_1)*(1 - delta_1)*I + gamma_F*F + gamma_IH*(1 - delta_2)*H'),
-            Transition('tau', '1')
+            Transition(origin='S', equation='-(beta_I*S*I + beta_H_Time*S*H + beta_F_Time*S*F)'),
+            Transition(origin='E', equation= '(beta_I*S*I + beta_H_Time*S*H + beta_F_Time*S*F) - alpha*E'),
+            Transition(origin='I', equation= '-gamma_I*(1 - theta_1)*(1 - delta_1)*I - gamma_D*(1 - theta_1)*delta_1*I - gamma_H*theta_1*I + alpha*E'),
+            Transition(origin='H', equation= 'gamma_H*theta_1*I - gamma_DH*delta_2*H - gamma_IH*(1 - delta_2)*H'),
+            Transition(origin='F', equation= '- gamma_F*F + gamma_DH*delta_2*H + gamma_D*(1 - theta_1)*delta_1*I'),
+            Transition(origin='R', equation= 'gamma_I*(1 - theta_1)*(1 - delta_1)*I + gamma_F*F + gamma_IH*(1 - delta_2)*H'),
+            Transition(origin='tau', equation= '1')
         ]
 
         ode1 = SimulateOde(ode.state_list, ode.param_list, ode._derivedParamEqn, ode=ode_list)

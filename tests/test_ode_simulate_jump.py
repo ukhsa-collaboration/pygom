@@ -46,11 +46,11 @@ class TestSimulateJump(TestCase):
 
         solution = self.odeS.integrate(self.t[1::])
         # random evaluation to see if the functions break down
-        self.odeS.transition_mean(self.x0, self.t[0])
-        self.odeS.transition_var(self.x0, self.t[0])
+        self.odeS.transitionMean(self.x0, self.t[0])
+        self.odeS.transitionVar(self.x0, self.t[0])
 
-        self.odeS.transition_mean(solution[self.index,:], self.t[self.index])
-        self.odeS.transition_var(solution[self.index,:], self.t[self.index])
+        self.odeS.transitionMean(solution[self.index,:], self.t[self.index])
+        self.odeS.transitionVar(solution[self.index,:], self.t[self.index])
 
         _simX, _simJump, _simT = self.odeS.solve_stochast(250, self.n_sim, parallel=False, full_output=True)
 

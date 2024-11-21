@@ -4,7 +4,7 @@ import numpy as np
 import scipy.optimize
 
 from pygom import PoissonLoss
-from pygom import Transition, TransitionType, DeterministicOde
+from pygom import Transition, TransitionType, SimulateOde
 
 
 class TestSIRDiscreteEstimate(TestCase):
@@ -28,7 +28,7 @@ class TestSIRDiscreteEstimate(TestCase):
                                      transition_type=TransitionType.T)
                           ]
         # initialize the model
-        self.ode = DeterministicOde(state_list, param_list, transition=transition_list)
+        self.ode = SimulateOde(state_list, param_list, transition=transition_list)
         self.ode.parameters = param_eval
         self.ode.initial_values = (self.x0, self.t[0])
 
