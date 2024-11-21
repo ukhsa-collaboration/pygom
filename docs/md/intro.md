@@ -6,16 +6,35 @@ PyGOM (Python Generic ODE Model) is a Python package which provides a simple int
 This is backed by a comprehensive and easy to use tool–box implementing functions to easily perform common operations such as parameter estimation and solving for deterministic or stochastic time evolution.
 The package source is freely available (hosted on [GitHub](https://github.com/ukhsa-collaboration/pygom)) and organized in a way that permits easy extension. With both the algebraic and numeric calculations performed automatically (but still accessible), the end user is freed to focus on model development.
 
-## What is new in this release?
+## Release notes:
 
-The main objective of the current release (0.1.8) is to provide more comprehensive documentation on how to use PyGOM.
+### [0.1.9] - 2024-11-30 (Latest release)
 
-The code underlying PyGOM's functionality is largely unchanged since the previous release, barring a few minor bug fixes.
-The only significant changes which previous users should be aware of are:
-- A move away from the {class}`DeterministicOde` class for deterministic simulations and instead employing {class}`SimulateOde` as our do-all class for deterministic or stochastic simulations as well as parameter fitting.
-- Running simulations with random parameters does not require a special simulation function. Instead, PyGOM now recognises the parameter types handed to it (fixed or random) and acts accordingly. This means that stochastic simulations can now be performed with random parameters.
+- Added
+    - Method {func}`solve_stochast` of {class}`SimulateOde` has 1 additional output (for a total of 3): the number of times each event occurs in between each time step. This is useful if you are interested in infection incidence rather than prevalence, for example.
+    - The adaptive tau leap can be bypassed and, instead, a constant step size for the tau leap algorithm can be specified with `SimulateOde._pre_tau`.
+    - When an output of a stochastic simulation needs to be mapped to the user defined time-points, this is performed via linear interpolation.
+- Changed
+    - The {class}`Event` class has replaced the {class}`Transition` class as the fundamental building block. This allows for more flexibility when dealing with correlated transitions, for example.
+    - Internal methods {func}`add_func` and {func}`add_compiled_sympy_object` make the compilation of sympy objects more modular.
+- Deprecated
+    - Models can still be defined via {class}`Transition` objects as before, but users are advised to switch to the {class}`Event` based approach. 
+    - The birth rate state can still be defined as an `origin`, but can now also (and more accurately) be described as a `destination`. In the next version, this may remove the need to specify the transition type since between state transitions will uniquely have an origin and destination, births will uniquely have just a destination and deaths just an origin.
+- Removed
+- Fixed
+    - Minor bug fixes
 
-Both these changes are outlined in more detail in the {doc}`Producing forecasts <solving>` section.
+### [0.1.8] - 2024-08-06
+
+- Added
+    - Comprehensive documentation of how to use PyGOM
+- Changed
+    - Running simulations with random parameters does not require a special simulation function. Instead, PyGOM now recognises the parameter types handed to it (fixed or random) and acts accordingly. This means that stochastic simulations can now be performed with random parameters.
+- Deprecated
+    - {class}`DeterministicOde` is deprecated with {class}`SimulateOde` now performing both deterministic and stochastic simulations.
+- Removed
+- Fixed
+    - Minor bug fixes
 
 ## Using this documentation
 This documentation is built using [JupyterBook](https://jupyterbook.org/en/stable/intro.html).
