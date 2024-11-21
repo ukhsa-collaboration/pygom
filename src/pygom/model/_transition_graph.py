@@ -4,12 +4,18 @@ from .base_ode_model import BaseOdeModel
 from .transition import TransitionType
 from sympy.matrices import MatrixBase
 from ._ode_composition import getMatchingExpressionVector, _hasExpression
+import matplotlib.pyplot as plt
+import sympy
+from ._model_verification import checkEquation
+
+import seaborn as sns
 
 # Functions to produce transition graph
 
 greekLetter = ('alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta',
                'iota', 'kappa', 'lambda', 'mu', 'nu', 'xi', 'omicron', 'pi', 'rho',
                'sigma', 'tau', 'upsilon', 'phi', 'chi', 'psi', 'omega')
+
 
 def generateTransitionGraph(ode_model, file_name=None):
     """
@@ -43,27 +49,77 @@ def generateTransitionGraph(ode_model, file_name=None):
     for s in states:
         dot.node(s)
 
-    transition = ode_model.transition_list
-    bd_list = ode_model.birth_death_list
+    events=ode_model.event_list
 
-    for transition in (transition + bd_list):
-        s1 = transition.origin
-        eq = _makeEquationPretty(transition.equation, param)
+    # get colors, TODO: limited to 9 colours, also experiment with linetype to assist
+    #                   with colourblind users
+    #                   pallette from: https://gist.github.com/thriveth/8560036
 
-        if transition.transition_type is TransitionType.T:
-            s2 = transition.destination
-            dot.edge(s1, s2, label=eq)
-        elif transition.transition_type is TransitionType.B:
-            # when we have a birth or death process, do not make the box
-            dot.node(eq, shape="plaintext", width="0", height="0", margin="0")
-            dot.edge(eq, s1)
-        elif transition.transition_type is TransitionType.D:
-            dot.node(eq, shape="plaintext", width="0", height="0", margin="0")
-            dot.edge(s1, eq)
-        else:
-            pass
+    cols = ['#377eb8', '#ff7f00', '#4daf4a', '#f781bf', '#a65628', '#984ea3', '#999999', '#e41a1c', '#dede00']
+
+    i=0
+    for e_number, event in enumerate(events):
+        
+        col="black"
+        linetype="solid"
+
+        if len(event.transition_list)>1:
+            col=cols[i]
+            i+=1
+
+        rate=_makeEquationPretty(event.rate, param)
+        for transition in event.transition_list:
+            mag_lab=""
+            if transition._magnitude!='1':
+                mag_lab=_makeEquationPretty(transition._magnitude, param)
+
+            if transition.transition_type==TransitionType.B:
+                destination=transition.destination
+                s1=destination
+                n0="birth"+s1+str(e_number)
+                dot.node(n0, label="", shape="none", height="0", width="0")
+                dot.edge(n0, s1, label=rate, headlabel=mag_lab, color=col, style=linetype)
+
+            elif transition.transition_type==TransitionType.D:
+                origin=transition.origin
+                s1=origin
+                n0="death"+s1+str(e_number)
+                dot.node(n0, label=mag_lab, shape="none", height="0", width="0")
+                dot.edge(s1, n0, label=rate, headlabel=mag_lab, color=col, style=linetype)
+
+            elif transition.transition_type==TransitionType.T:
+                origin=transition.origin
+                destination=transition.destination
+                s1=origin
+                s2=destination
+
+                dot.edge(s1, s2, label=rate, headlabel=mag_lab, color=col, style=linetype)
+            else:
+                pass
+
+    for ode in ode_model.ode_list:
+        col="black"
+        linetype="dashed"
+
+        origin=ode.origin
+        s1=origin
+
+        n0="ode"+s1
+
+        equation=ode.equation
+        
+        dot.node(n0, label="", shape="none", height="0", width="0")
+
+        # # If there is one term and it's negative, make it a death process.
+        # if equation[0]=="-" and len(sympy.Add.make_args(sympy.sympify(equation)))==1:
+        #     equation=equation[1:]
+        #     dot.edge(s1, n0, label=equation, color=col, style=linetype)
+        # else:
+        #     dot.edge(n0, s1, label=equation, color=col, style=linetype)
+        dot.edge(n0, s1, label=equation, color=col, style=linetype)
 
     return dot
+
 
 
 def _makeEquationPretty(eq, param):

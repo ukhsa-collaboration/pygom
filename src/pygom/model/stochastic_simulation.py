@@ -425,6 +425,7 @@ def firstReaction(x, x_lims, t, state_change_mat, transition_func, seed=None):
         Results in a change in both x and t if it is successful, no change otherwise.
     """
 
+    changes=state_change_mat(x, t)
     rates = transition_func(x, t)
     # For now we assume when all transition rates are zero, further simulation is not necessary.
     if all(rates==0):
@@ -436,7 +437,7 @@ def firstReaction(x, x_lims, t, state_change_mat, transition_func, seed=None):
         return x, t, False
     # first jump
     min_index = np.argmin(jump_times)
-    new_x = _updateStateWithJump(x, min_index, state_change_mat)
+    new_x = _updateStateWithJump(x, min_index, changes)
 
     # record which state the jump was in
     jumps=[0]*len(rates)
@@ -450,10 +451,11 @@ def nextReaction(x, t, state_change_mat, dependency_graph,
     The next reaction method
     """
 
+    changes=state_change_mat(x, t)
     # smallest time :)
     index = np.argmin(jump_times)
     # moving state and time
-    new_x = _updateStateWithJump(x, index, state_change_mat)
+    new_x = _updateStateWithJump(x, index, changes)
     t = jump_times[index]
     # recalculate the new transition matrix
     if hasattr(transition_func, '__call__'):
@@ -491,7 +493,7 @@ def tauLeap(x,
             transition_func,
             transition_mean_func,
             transition_var_func,
-            isStochastic,
+            pureOde,
             epsilon=0.03,
             seed=None,
             pre_tau=None):
@@ -554,6 +556,8 @@ def tauLeap(x,
         Results in a change in both x and t if it is successful, no change otherwise.
     """
 
+    determ_changes = pureOde(x, t)
+    changes = state_change_mat(x, t)
     rates = transition_func(x, t)
     # For now we assume when all transition rates are zero, further simulation is not necessary.
     if all(rates==0):
@@ -594,15 +598,15 @@ def tauLeap(x,
     new_x = x.copy()                # updated state populations
     jumps=[0]*len(rates)            # transitions
 
-    # take deterministic or stochastic step-
+    # take stochastic step
     for i, r in enumerate(rates):
-        if isStochastic[i]==False:
-            jumpQuantity = tau_scale*r
-        else:
-            jumpQuantity = rpois(1, tau_scale*r, seed=seed)
+        n_event_occurances = rpois(1, tau_scale*r, seed=seed)
+        jumps[i]=n_event_occurances
+        new_x = _updateStateWithJump(new_x, i, changes, n_event_occurances)
 
-        jumps[i]=jumpQuantity
-        new_x = _updateStateWithJump(new_x, i, state_change_mat, jumpQuantity)
+    # deterministic changes
+    new_x = new_x + determ_changes*tau_scale
+
 
     return  _checkJump(x, new_x, x_lims, t, tau_scale, jumps)
 
@@ -770,7 +774,7 @@ def _checkJump(x, x_new, x_lims, t, jump_time, jumps):
 
     failed_jump=False
     for i, x_lim in enumerate(x_lims):
-        if x_lim != [None, None]:
+        if x_lim != (None, None):
             x_min=x_lim[0]
             x_max=x_lim[1]
             if x_min is None:

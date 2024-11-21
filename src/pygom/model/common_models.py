@@ -7,7 +7,7 @@
 
 from collections import OrderedDict
 
-from .transition import TransitionType, Transition
+from .transition import TransitionType, Transition, Event
 #from .deterministic import DeterministicOde
 from .simulate import SimulateOde
 
@@ -32,23 +32,24 @@ def SIS(param=None):
     >>> ode.plot()
     """
 
-    state = ['S', 'I']
+    state_list = [('S', (0,None)), ('I', (0, None))]
     param_list = ['beta', 'gamma', 'N']
-    transition = [
-        Transition(origin='S', destination='I', equation='beta*S*I/N',transition_type=TransitionType.T),
-        Transition(origin='I', destination='S', equation='gamma*I',transition_type=TransitionType.T)
-        ]
-    # initialize the model
-    ode = SimulateOde(state,
-                      param_list,
-                      transition=transition)
 
-    # set return, depending on whether we have input the parameters
+    trans_inf=Transition(origin='S', destination='I',transition_type=TransitionType.T)
+    event_inf=Event(rate='beta*S*I/N', transition_list=[trans_inf])
+
+    trans_rec=Transition(origin='I', destination='S',transition_type=TransitionType.T)
+    event_rec=Event(rate='gamma*I', transition_list=[trans_rec])
+
+    model = SimulateOde(state=state_list,
+                        param=param_list,
+                        event=[event_inf, event_rec])
+
     if param is None:
-        return ode
+        return model
     else:
-        ode.parameters = param
-        return ode
+        model.parameters = param
+        return model
 
 
 def SIS_Periodic(param=None):
@@ -77,31 +78,26 @@ def SIS_Periodic(param=None):
     >>> ode.plot()
     """
 
-    state = ['I', 'tau']
+    state_list = [('S', (0,None)), ('I', (0, None))]
     param_list = ['gamma', 'beta0', 'delta', 'period', 'N']
-    # derived_param = [('betaT', '2 - 1.8*cos(5*tau)')]
-    derived_param = [('betaT', 'beta0*(1-delta*cos(2*3.14159*tau/period))')]
-    ode = [
-        Transition(origin='I',
-                   equation='(betaT - gamma)*I - (betaT*I*I/N)',
-                   transition_type=TransitionType.ODE),
-        Transition(origin='tau',
-                   equation='1',
-                   transition_type=TransitionType.ODE)
-        ]
-    # initialize the model
-    ode_obj = SimulateOde(state,
-                          param_list,
-                          derived_param=derived_param,
-                          ode=ode)
+    derived_param = [('betaT', 'beta0*(1-delta*cos(2*3.14159*t/period))')]
 
-    # set return, depending on whether we have input the parameters
+    trans_inf=Transition(origin='S', destination='I',transition_type=TransitionType.T)
+    event_inf=Event(rate='betaT*S*I/N', transition_list=[trans_inf])
+
+    trans_rec=Transition(origin='I', destination='S',transition_type=TransitionType.T)
+    event_rec=Event(rate='gamma*I', transition_list=[trans_rec])
+
+    model = SimulateOde(state=state_list,
+                        param=param_list,
+                        derived_param=derived_param,
+                        event=[event_inf, event_rec])
+
     if param is None:
-        return ode_obj
+        return model
     else:
-        ode_obj.parameters = param
-        return ode_obj
-
+        model.parameters = param
+        return model
 
 def SIR(param=None):
     """
@@ -130,188 +126,55 @@ def SIR(param=None):
     >>> ode.plot()
 
     """
-    state = ['S', 'I', 'R']
+
+    state_list = [('S', (0,None)), ('I', (0, None)), ('R', (0, None))]
     param_list = ['beta', 'gamma', 'N']
-    transition = [
-        Transition(origin='S', destination='I', equation='beta*S*I/N',
-                   transition_type=TransitionType.T),
-        Transition(origin='I', destination='R', equation='gamma*I',
-                   transition_type=TransitionType.T)
-        ]
-    # initialize the model
-    ode_obj = SimulateOde(state, param_list, transition=transition)
 
-    # set return, depending on whether we have input the parameters
+    trans_inf=Transition(origin='S', destination='I',transition_type=TransitionType.T)
+    event_inf=Event(rate='beta*S*I/N', transition_list=[trans_inf])
+
+    trans_rec=Transition(origin='I', destination='R',transition_type=TransitionType.T)
+    event_rec=Event(rate='gamma*I', transition_list=[trans_rec])
+
+    model = SimulateOde(state=state_list,
+                        param=param_list,
+                        event=[event_inf, event_rec])
+
     if param is None:
-        return ode_obj
+        return model
     else:
-        ode_obj.parameters = param
-        return ode_obj
+        model.parameters = param
+        return model
 
-
-def SIR_norm(param=None):
-    """
-    A normalized SIR model:
-
-    .. math::
-        \\frac{dS}{dt} &= -\\beta SI \\\\
-        \\frac{dI}{dt} &= \\beta SI - \\gamma I \\\\
-        \\frac{dR}{dt} &= \\gamma I
-
-
-    Examples
-    --------
-    The model that produced top two graph in Figure 1.3 of the reference above.
-    First, when everyone is susceptible and only one individual was infected.
-
-    >>> import numpy as np
-    >>> from pygom import common_models
-    >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
-    >>> t = np.linspace(0, 730, 1001)
-    >>> N = 7781984.0
-    >>> x0 = [1.0, 10/N, 0.0]
-    >>> ode.initial_values = (x0, t[0])
-    >>> solution = ode.integrate(t[1::])
-    >>> ode.plot()
-
-    Second model with a more *realistic* scenario
-
-    >>> import numpy as np
-    >>> from pygom import common_models
-    >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
-    >>> t = np.linspace(0, 730, 1001)
-    >>> N = 7781984.0
-    >>> x0 = [0.065, 123*(5.0/30.0)/N, 0.0]
-    >>> ode.initial_values = (x0, t[0])
-    >>> solution = ode.integrate(t[1::])
-    >>> ode.plot()
-
-    """
-    state = ['S', 'I', 'R']
-    param_list = ['beta', 'gamma']
-    transition = [
-        Transition(origin='S', destination='I', equation='beta*S*I',
-                   transition_type=TransitionType.T),
-        Transition(origin='I', destination='R', equation='gamma*I',
-                   transition_type=TransitionType.T)
-        ]
-    # initialize the model
-    ode_obj = SimulateOde(state, param_list, transition=transition)
-
-    # set return, depending on whether we have input the parameters
-    if param is None:
-        return ode_obj
-    else:
-        ode_obj.parameters = param
-        return ode_obj
-
-# def SIR_N(param=None, init=None):
-#     """
-#     A standard SIR model [Brauer2008]_ with population N
-
-#     .. math::
-#         \\frac{dS}{dt} &= -\\beta SI/N \\\\
-#         \\frac{dI}{dt} &= \\beta SI/N- \\gamma I \\\\
-#         \\frac{dR}{dt} &= \\gamma I
-
-#     """
-#     stateList = ['S', 'I', 'R']
-#     paramList = ['beta', 'gamma', 'N']
-#     transitionList = [Transition(origin='S', destination='I', equation='beta*S*I/N', transition_type=TransitionType.T),
-#                     Transition(origin='I', destination='R', equation='gamma*I', transition_type=TransitionType.T)]
-    
-#     # initialize the model
-#     ode_obj = SimulateOde(stateList, paramList, transition=transitionList)
-
-#     # set return, depending on whether we have input the parameters
-
-#     if param is not None:
-#         ode_obj.parameters = param
-
-#     if init is not None:
-#         ode_obj.initial_values = init
-
-#     return ode_obj
-
-
-def SEIR_N(param=None, init=None):
+def SEIR(param=None, init=None):
     """
     A standard SIR model [Brauer2008]_ with population N
 
     """
-    stateList = ['S', 'E', 'I', 'R']
-    paramList = ['beta', 'alpha', 'gamma', 'N']
-    transitionList = [Transition(origin='S', destination='E', equation='beta*S*I/N', transition_type=TransitionType.T),
-                      Transition(origin='E', destination='I', equation='alpha*E', transition_type=TransitionType.T),
-                      Transition(origin='I', destination='R', equation='gamma*I', transition_type=TransitionType.T)]
 
-    # initialize the model
-    ode_obj = SimulateOde(stateList, paramList, transition=transitionList)
+    state_list = [('S', (0,None)), ('E', (0,None)), ('I', (0, None)), ('R', (0, None))]
+    param_list = ['beta', 'alpha', 'gamma', 'N']
 
-    # set return, depending on whether we have input the parameters
-    if param is not None:
-        ode_obj.parameters = param
+    trans_exp=Transition(origin='S', destination='E',transition_type=TransitionType.T)
+    event_exp=Event(rate='beta*S*I/N', transition_list=[trans_exp])
 
-    if init is not None:
-        ode_obj.initial_values = init
+    trans_inf=Transition(origin='E', destination='I',transition_type=TransitionType.T)
+    event_inf=Event(rate='alpha*E', transition_list=[trans_inf])
 
-    return ode_obj
+    trans_rec=Transition(origin='I', destination='R',transition_type=TransitionType.T)
+    event_rec=Event(rate='gamma*I', transition_list=[trans_rec])
 
-# def SIR_N(param=None):
-#     """
-#     A standard SIR model [Brauer2008]_ with population N.  This is the unnormalized
-#     version of the SIR model.
+    model = SimulateOde(state=state_list,
+                        param=param_list,
+                        event=[event_exp,
+                               event_inf,
+                               event_rec])
 
-#     .. math::
-#         \\frac{dS}{dt} &= -\\beta SI/N \\\\
-#         \\frac{dI}{dt} &= \\beta SI/N- \\gamma I \\\\
-#         \\frac{dR}{dt} &= \\gamma I
-
-#     Examples
-#     --------
-#     The model that produced top two graph in Figure 1.3 of the reference above.
-#     First, when everyone is susceptible and only one individual was infected.
-
-#     >>> import numpy as np
-#     >>> from pygom import common_models
-#     >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
-#     >>> t = np.linspace(0, 730, 1001)
-#     >>> N = 7781984.0
-#     >>> x0 = [N, 1.0, 0.0]
-#     >>> ode.initial_values = (x0, t[0])
-#     >>> solution = ode.integrate(t[1::])
-#     >>> ode.plot()
-
-#     Second model with a more *realistic* scenario
-
-#     >>> import numpy as np
-#     >>> from pygom import common_models
-#     >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
-#     >>> t = np.linspace(0, 730, 1001)
-#     >>> N = 7781984.0
-#     >>> x0 = [int(0.065*N), 21.0, 0.0]
-#     >>> ode.initial_values = (x0, t[0])
-#     >>> solution = ode.integrate(t[1::])
-#     >>> ode.plot()
-#     """
-#     state = ['S', 'I', 'R']
-#     param_list = ['beta', 'gamma', 'N']
-#     transition = [
-#         Transition(origin='S', destination='I', equation='beta*S*I/N',
-#                    transition_type=TransitionType.T),
-#         Transition(origin='I', destination='R', equation='gamma*I',
-#                    transition_type=TransitionType.T)
-#         ]
-#     # initialize the model
-#     ode_obj = SimulateOde(state, param_list, transition=transition)
-
-#     # set return, depending on whether we have input the parameters
-#     if param is None:
-#         return ode_obj
-#     else:
-#         ode_obj.parameters = param
-#         return ode_obj
-
+    if param is None:
+        return model
+    else:
+        model.parameters = param
+        return model
 
 def SIR_Birth_Death(param=None):
     """
@@ -343,87 +206,54 @@ def SIR_Birth_Death(param=None):
     --------
     :func:`.SIR`
     """
-    state = ['S', 'I', 'R']
-    param_list = ['beta', 'gamma', 'mu', 'N']
-    transition = [
-        Transition(origin='S', destination='I', equation='beta*S*I/N',
-                   transition_type=TransitionType.T),
-        Transition(origin='I', destination='R', equation='gamma*I',
-                   transition_type=TransitionType.T)
-        ]
-    # our birth and deaths
-    birth_death = [
-        Transition(origin='S', equation='mu*N',
-                   transition_type=TransitionType.B),
-        Transition(origin='S', equation='mu*S',
-                   transition_type=TransitionType.D),
-        Transition(origin='I', equation='mu*I',
-                   transition_type=TransitionType.D),
-        Transition(origin='R', equation='mu*R',
-                   transition_type=TransitionType.D)
-        ]
 
-    # initialize the model
-    ode_obj = SimulateOde(state,
-                          param_list,
-                          birth_death=birth_death,
-                          transition=transition)
+    state_list = [('S', (0,None)), ('I', (0, None)), ('R', (0, None)), ('N', (0, None))]
+    param_list=['beta', 'gamma', 'mu']
 
-    # set return, depending on whether we have input the parameters
-    if param is None:
-        return ode_obj
-    else:
-        ode_obj.parameters = param
-        return ode_obj
+    # Infection
+    trans_inf=Transition(origin='S', destination='I', transition_type='T')
+    event_inf=Event(transition_list=[trans_inf], rate='beta*S*I/N')
+
+    # Recovery
+    trans_rec=Transition(origin='I', destination='R', transition_type='T')
+    event_rec=Event(transition_list=[trans_rec], rate='gamma*I')
+
+    # Transitions in and out of total population count
+    # These will be used in the following event definitions
+    birth_N=Transition(destination="N", transition_type="B")
+    death_N=Transition(origin="N", transition_type="D")
+
+    # 1) Birth event into S
+    birth=Transition(destination="S", transition_type="B")
+    event_birth=Event(transition_list=[birth, birth_N], rate='mu*N')
+
+    # 2) Death event of an S
+    death_S=Transition(origin="S", transition_type="D")
+    event_death_S=Event(transition_list=[death_S, death_N], rate='mu*S')
+
+    # 3) Death event of an I
+    death_I=Transition(origin="I", transition_type="D")
+    event_death_I=Event(transition_list=[death_I, death_N], rate='mu*I')
+
+    # 4) Death event of an R
+    death_R=Transition(origin="R", transition_type="D")
+    event_death_R=Event(transition_list=[death_R, death_N], rate='mu*R')
 
 
-def SEIR(param=None):
-    """
-    A standard SEIR model [Brauer2008]_, defined by the ode
-
-    .. math::
-        \\frac{dS}{dt} &= -\\beta SI \\\\
-        \\frac{dE}{dt} &= \\beta SI - \\alpha E \\\\
-        \\frac{dI}{dt} &= \\alpha E - \\gamma I \\\\
-        \\frac{dR}{dt} &= \\gamma I
-
-    Examples
-    --------
-
-    >>> import numpy as np
-    >>> from pygom import common_models
-    >>> ode = common_models.SEIR({'beta':1800, 'gamma':100, 'alpha':35.84})
-    >>> t = np.linspace(0, 50, 1001)
-    >>> x0 = [0.0658, 0.0007, 0.0002, 0.0]
-    >>> ode.initial_values = (x0, t[0])
-    >>> solution,output = ode.integrate(t[1::], full_output=True)
-    >>> ode.plot()
-
-    See also
-    --------
-    :func:`.SEIR_Birth_Death`
-    """
-
-    state = ['S', 'E', 'I', 'R']
-    param_list = ['beta', 'alpha', 'gamma', 'N']
-
-    transition = [
-        Transition(origin='S', destination='E', equation='beta*S*I/N',
-                   transition_type=TransitionType.T),
-        Transition(origin='E', destination='I', equation='alpha*E',
-                   transition_type=TransitionType.T),
-        Transition(origin='I', destination='R', equation='gamma*I',
-                   transition_type=TransitionType.T)
-        ]
-
-    ode_obj = SimulateOde(state, param_list, transition=transition)
+    model=SimulateOde(state=state_list,
+                      param=param_list,
+                      event=[event_inf,
+                             event_rec,
+                             event_birth,
+                             event_death_S,
+                             event_death_I,
+                             event_death_R])
 
     if param is None:
-        return ode_obj
+        return model
     else:
-        ode_obj.parameters = param
-        return ode_obj
-
+        model.parameters = param
+        return model
 
 def SEIR_Birth_Death(param=None):
     """
@@ -455,38 +285,63 @@ def SEIR_Birth_Death(param=None):
     :func:`.SEIR`
     """
 
-    state = ['S', 'E', 'I', 'R']
-    param_list = ['beta', 'alpha', 'gamma', 'mu', 'N']
+    state_list = [('S', (0,None)), ('E', (0,None)), ('I', (0, None)), ('R', (0, None)), ('N', (0, None))]
+    param_list = ['beta', 'alpha', 'gamma', 'mu']
 
-    transition = [
-        Transition(origin='S', destination='E', equation='beta*S*I/N',
-                   transition_type=TransitionType.T),
-        Transition(origin='E', destination='I', equation='alpha*E',
-                   transition_type=TransitionType.T),
-        Transition(origin='I', destination='R', equation='gamma*I',
-                   transition_type=TransitionType.T)
-        ]
+    # Exposure
+    trans_exp=Transition(origin='S', destination='E',transition_type=TransitionType.T)
+    event_exp=Event(rate='beta*S*I/N', transition_list=[trans_exp])
 
-    bd_list = [
-        Transition(origin='S', equation='mu*S',
-                   transition_type=TransitionType.D),
-        Transition(origin='E', equation='mu*E',
-                   transition_type=TransitionType.D),
-        Transition(origin='I', equation='mu*I',
-                   transition_type=TransitionType.D),
-        Transition(origin='S', equation='mu*N',
-                   transition_type=TransitionType.B)
-        ]
+    # Infectious
+    trans_inf=Transition(origin='E', destination='I',transition_type=TransitionType.T)
+    event_inf=Event(rate='alpha*E', transition_list=[trans_inf])
 
-    ode_obj = SimulateOde(state, param_list,
-                               transition=transition,
-                               birth_death=bd_list)
+    # Recovery
+    trans_rec=Transition(origin='I', destination='R',transition_type=TransitionType.T)
+    event_rec=Event(rate='gamma*I', transition_list=[trans_rec])
+
+    # Transitions in and out of total population count
+    # These will be used in the following event definitions
+    birth_N=Transition(destination="N", transition_type="B")
+    death_N=Transition(origin="N", transition_type="D")
+
+    # 1) Birth event into S
+    birth=Transition(destination="S", transition_type="B")
+    event_birth=Event(transition_list=[birth, birth_N], rate='mu*N')
+
+    # 2) Death event of an S
+    death_S=Transition(origin="S", transition_type="D")
+    event_death_S=Event(transition_list=[death_S, death_N], rate='mu*S')
+
+    # 3) Death event of an E
+    death_E=Transition(origin="E", transition_type="D")
+    event_death_E=Event(transition_list=[death_E, death_N], rate='mu*E')
+
+    # 4) Death event of an I
+    death_I=Transition(origin="I", transition_type="D")
+    event_death_I=Event(transition_list=[death_I, death_N], rate='mu*I')
+
+    # 5) Death event of an R
+    death_R=Transition(origin="R", transition_type="D")
+    event_death_R=Event(transition_list=[death_R, death_N], rate='mu*R')
+
+
+    model=SimulateOde(state=state_list,
+                      param=param_list,
+                      event=[event_exp,
+                             event_inf,
+                             event_rec,
+                             event_birth,
+                             event_death_S,
+                             event_death_E,
+                             event_death_I,
+                             event_death_R])
 
     if param is None:
-        return ode_obj
+        return model
     else:
-        ode_obj.parameters = param
-        return ode_obj
+        model.parameters = param
+        return model
 
 def SEIR_Birth_Death_Periodic(param=None):
     """
@@ -531,74 +386,139 @@ def SEIR_Birth_Death_Periodic(param=None):
     :func:`.SEIR`, :func:`.SEIR_Birth_Death`, :func:`.SIR_Periodic`
 
     """
-    state = ['S', 'E', 'I', 'tau']
-    param_list = ['mu', 'alpha', 'gamma', 'beta_0', 'beta_1']
-    derived_param = [('beta_S', 'beta_0 * (1 + beta_1*cos(2*pi*tau))')]
-    ode = [
-        Transition(origin='S', equation='mu - beta_S*S*I - mu*S',
-                   transition_type=TransitionType.ODE),
-        Transition(origin='E', equation='beta_S*S*I - (mu + alpha)*E',
-                   transition_type=TransitionType.ODE),
-        Transition(origin='I', equation='alpha*E - (mu + gamma)*I',
-                   transition_type=TransitionType.ODE),
-        Transition(origin='tau', equation='1',
-                   transition_type=TransitionType.ODE)
-        ]
-    # initialize the model
-    ode_obj = SimulateOde(state, param_list,
-                               derived_param=derived_param,
-                               ode=ode)
+    state_list = [('S', (0,None)), ('E', (0,None)), ('I', (0, None)), ('R', (0, None)), ('N', (0, None))]
+    param_list = ['beta0', 'delta', 'period', 'alpha', 'gamma', 'mu']
+    derived_param = [('betaT', 'beta0*(1-delta*cos(2*3.14159*t/period))')]
+
+    # Exposure
+    trans_exp=Transition(origin='S', destination='E',transition_type=TransitionType.T)
+    event_exp=Event(rate='betaT*S*I/N', transition_list=[trans_exp])
+
+    # Infectious
+    trans_inf=Transition(origin='E', destination='I',transition_type=TransitionType.T)
+    event_inf=Event(rate='alpha*E', transition_list=[trans_inf])
+
+    # Recovery
+    trans_rec=Transition(origin='I', destination='R',transition_type=TransitionType.T)
+    event_rec=Event(rate='gamma*I', transition_list=[trans_rec])
+
+    # Transitions in and out of total population count
+    # These will be used in the following event definitions
+    birth_N=Transition(destination="N", transition_type="B")
+    death_N=Transition(origin="N", transition_type="D")
+
+    # 1) Birth event into S
+    birth=Transition(destination="S", transition_type="B")
+    event_birth=Event(transition_list=[birth, birth_N], rate='mu*N')
+
+    # 2) Death event of an S
+    death_S=Transition(origin="S", transition_type="D")
+    event_death_S=Event(transition_list=[death_S, death_N], rate='mu*S')
+
+    # 3) Death event of an E
+    death_E=Transition(origin="E", transition_type="D")
+    event_death_E=Event(transition_list=[death_E, death_N], rate='mu*E')
+
+    # 4) Death event of an I
+    death_I=Transition(origin="I", transition_type="D")
+    event_death_I=Event(transition_list=[death_I, death_N], rate='mu*I')
+
+    # 5) Death event of an R
+    death_R=Transition(origin="R", transition_type="D")
+    event_death_R=Event(transition_list=[death_R, death_N], rate='mu*R')
+
+    model=SimulateOde(state=state_list,
+                      param=param_list,
+                      derived_param=derived_param,
+                      event=[event_exp,
+                             event_inf,
+                             event_rec,
+                             event_birth,
+                             event_death_S,
+                             event_death_E,
+                             event_death_I,
+                             event_death_R])
 
     if param is None:
-        return ode_obj
+        return model
     else:
-        ode_obj.parameters = param
-        return ode_obj
+        model.parameters = param
+        return model
 
 
 def SEIR_Birth_Death_Periodic_Waning_Intro(param=None):
-    state = ['S', 'E', 'I', 'R', 'tau']
-    param_list = ['mu', 'alpha', 'gamma', 'epsilon', 'w', 'beta0', 'delta', 'period', 'N']
+    '''
+    SEIR model with vital dynamics, periodic infectivity, immune waning and
+    external introductions
+    '''
+    state_list = [('S', (0,None)), ('E', (0,None)), ('I', (0, None)), ('R', (0, None)), ('N', (0, None))]
+    param_list = ['beta0', 'delta', 'period', 'alpha', 'gamma', 'mu', 'w', 'ar']
+    derived_param = [('betaT', 'beta0*(1-delta*cos(2*3.14159*t/period))')]
 
-    derived_param = [('betaT', 'beta0*(1-delta*cos(2*3.14159*tau/period))')]
+    # Exposure, internal transmission
+    trans_exp=Transition(origin='S', destination='E',transition_type=TransitionType.T)
+    event_exp=Event(rate='betaT*S*I/N', transition_list=[trans_exp])
 
-    transition = [
-        Transition(origin='S', destination='E', equation='betaT*S*I/N',
-                   transition_type=TransitionType.T),
-        Transition(origin='S', destination='E', equation='epsilon*S',
-                   transition_type=TransitionType.T),
-        Transition(origin='E', destination='I', equation='alpha*E',
-                   transition_type=TransitionType.T),
-        Transition(origin='I', destination='R', equation='gamma*I',
-                   transition_type=TransitionType.T),
-        Transition(origin='R', destination='S', equation='w*R',
-                   transition_type=TransitionType.T)
-        ]
+    # Exposure, external attack rate (ar)
+    trans_exp_ext=Transition(origin='S', destination='E',transition_type=TransitionType.T)
+    event_exp_ext=Event(rate='S*ar', transition_list=[trans_exp_ext])
 
-    bd_list = [
-        Transition(origin='S', equation='mu*S',
-                   transition_type=TransitionType.D),
-        Transition(origin='E', equation='mu*E',
-                   transition_type=TransitionType.D),
-        Transition(origin='I', equation='mu*I',
-                   transition_type=TransitionType.D),
-        Transition(origin='R', equation='mu*R',
-                   transition_type=TransitionType.D),
-        Transition(origin='S', equation='mu*N',
-                   transition_type=TransitionType.B),
-        Transition(origin='tau', equation='1',
-                   transition_type=TransitionType.B)
-        ]
+    # Infectious
+    trans_inf=Transition(origin='E', destination='I',transition_type=TransitionType.T)
+    event_inf=Event(rate='alpha*E', transition_list=[trans_inf])
 
-    ode_obj = SimulateOde(state, param_list, derived_param=derived_param,
-                               transition=transition,
-                               birth_death=bd_list)
+    # Recovery
+    trans_rec=Transition(origin='I', destination='R',transition_type=TransitionType.T)
+    event_rec=Event(rate='gamma*I', transition_list=[trans_rec])
+
+    # Waning
+    trans_wan=Transition(origin='R', destination='S',transition_type=TransitionType.T)
+    event_wan=Event(rate='w*R', transition_list=[trans_wan])
+
+    # Transitions in and out of total population count
+    # These will be used in the following event definitions
+    birth_N=Transition(destination="N", transition_type="B")
+    death_N=Transition(origin="N", transition_type="D")
+
+    # 1) Birth event into S
+    birth=Transition(destination="S", transition_type="B")
+    event_birth=Event(transition_list=[birth, birth_N], rate='mu*N')
+
+    # 2) Death event of an S
+    death_S=Transition(origin="S", transition_type="D")
+    event_death_S=Event(transition_list=[death_S, death_N], rate='mu*S')
+
+    # 3) Death event of an E
+    death_E=Transition(origin="E", transition_type="D")
+    event_death_E=Event(transition_list=[death_E, death_N], rate='mu*E')
+
+    # 4) Death event of an I
+    death_I=Transition(origin="I", transition_type="D")
+    event_death_I=Event(transition_list=[death_I, death_N], rate='mu*I')
+
+    # 5) Death event of an R
+    death_R=Transition(origin="R", transition_type="D")
+    event_death_R=Event(transition_list=[death_R, death_N], rate='mu*R')
+
+    model=SimulateOde(state=state_list,
+                      param=param_list,
+                      derived_param=derived_param,
+                      event=[event_exp,
+                             event_exp_ext,
+                             event_inf,
+                             event_rec,
+                             event_wan,
+                             event_birth,
+                             event_death_S,
+                             event_death_E,
+                             event_death_I,
+                             event_death_R])
 
     if param is None:
-        return ode_obj
+        return model
     else:
-        ode_obj.parameters = param
-        return ode_obj
+        model.parameters = param
+        return model
 
 def SEIR_Multiple(n=2, param=None):
     """
@@ -707,7 +627,7 @@ def SEIR_Multiple(n=2, param=None):
         ode_obj.parameters = param
         return ode_obj
 
-def Influenza_SLIARN(param=None):
+def Influenza_SLIARD(param=None):
     """
     A simple influenza model from [Brauer2008]_, page 323.
 
@@ -717,33 +637,59 @@ def Influenza_SLIARN(param=None):
         \\frac{dI}{dt} &= p \\kappa L - \\alpha I \\\\
         \\frac{dA}{dt} &= (1 - p) \\kappa L - \\eta A \\\\
         \\frac{dR}{dt} &= f \\alpha I + \\eta A \\\\
-        \\frac{dN}{dt} &= -(1 - f) \\alpha I
+        \\frac{dD}{dt} &= (1 - f) \\alpha I
     """
 
-    state = ['S', 'L', 'I', 'A', 'R', 'N']
-    param_list = ['beta', 'p', 'kappa', 'alpha', 'f', 'delta', 'epsilon']
-    ode = [
-        Transition(origin='S', equation='-beta*S*(I + delta*A)',
-                   transition_type=TransitionType.ODE),
-        Transition(origin='L', equation='beta*S*(I + delta*A) - kappa*L',
-                   transition_type=TransitionType.ODE),
-        Transition(origin='I', equation='p*kappa*L - alpha*I',
-                   transition_type=TransitionType.ODE),
-        Transition(origin='A', equation='(1 - p)*kappa*L - epsilon*A',
-                   transition_type=TransitionType.ODE),
-        Transition(origin='R', equation='f*alpha*I + epsilon*A',
-                   transition_type=TransitionType.ODE),
-        Transition(origin='N', equation='-(1 - f)*alpha*I',
-                   transition_type=TransitionType.ODE)
-    ]
-    # initialize the model
-    ode_obj = SimulateOde(state, param_list, ode=ode)
+
+    state_list = [('S', (0,None)),
+                  ('L', (0,None)),
+                  ('I', (0, None)),
+                  ('A', (0, None)),
+                  ('R', (0, None)),
+                  ('D', (0, None))]
+    
+    param_list = ['beta', 'delta', 'N', 'kappa', 'p', 'epsilon', 'alpha', 'f']
+
+    # 1) Susceptibles enter latent phase through:
+    ## (i) Encounters with symptomatic infectious, I
+    trans_exp_I=Transition(origin='S', destination='L',transition_type=TransitionType.T)
+    event_exp_I=Event(rate='beta*S*I/N', transition_list=[trans_exp_I])
+    ## (ii) Encounters with asymptomatic infectious, A
+    trans_exp_A=Transition(origin='S', destination='L',transition_type=TransitionType.T)
+    event_exp_A=Event(rate='beta*S*delta*A/N', transition_list=[trans_exp_A])
+    # 2) Latent phase ends
+    ## (i) A fraction, p, go on to become symptomatic infectious, I
+    trans_inf_I=Transition(origin='L', destination='I',transition_type=TransitionType.T)
+    event_inf_I=Event(rate='p*kappa*L', transition_list=[trans_inf_I])
+    ## (ii) The remaining (1-p) become asymptomatic infectious, A
+    trans_inf_A=Transition(origin='L', destination='A',transition_type=TransitionType.T)
+    event_inf_A=Event(rate='(1 - p)*kappa*L', transition_list=[trans_inf_A])
+    # 3) All asymptomatics recover
+    trans_rec_A=Transition(origin='A', destination='R',transition_type=TransitionType.T)
+    event_rec_A=Event(rate='epsilon*A', transition_list=[trans_rec_A])
+    # 4) For the symptomatics:
+    ## (i) A fraction, f, recover
+    trans_rec_I=Transition(origin='I', destination='R',transition_type=TransitionType.T)
+    event_rec_I=Event(rate='f*alpha*I', transition_list=[trans_rec_I])
+    ## (ii) The remaining 1-f die
+    trans_death_I=Transition(origin='I', destination='D',transition_type=TransitionType.T)
+    event_death_I=Event(rate='(1-f)*alpha*I', transition_list=[trans_death_I])
+
+    model = SimulateOde(state=state_list,
+                        param=param_list,
+                        event=[event_exp_I,
+                               event_exp_A,
+                               event_inf_I,
+                               event_inf_A,
+                               event_rec_A,
+                               event_rec_I,
+                               event_death_I])
 
     if param is None:
-        return ode_obj
+        return model
     else:
-        ode_obj.parameters = param
-        return ode_obj
+        model.parameters = param
+        return model
 
 
 def Legrand_Ebola_SEIHFR(param=None):
@@ -853,7 +799,6 @@ def Legrand_Ebola_SEIHFR(param=None):
         ode_obj.parameters = param
         return ode_obj
 
-
 def Lotka_Volterra(param=None):
     """
     Standard Lotka-Volterra model with two states and four parameters [Lotka1920]_
@@ -874,88 +819,191 @@ def Lotka_Volterra(param=None):
     >>> ode.plot()
     """
 
-    # our two state and four parameters
-    state = ['x', 'y']
-    # while these 4 are
-    param_list = ['alpha', 'beta', 'gamma', 'delta', 'A']
-    # then define the set of ode
-    # ode = [
-    #     Transition(origin='x', equation='alpha*x - c*x*y',
-    #                transition_type=TransitionType.ODE),
-    #     Transition(origin='y', equation='-delta*y + gamma*x*y',
-    #                transition_type=TransitionType.ODE)
-    #     ]
-    # ode_obj = SimulateOde(state, param_list, ode=ode)
+    state_list = [('x', (0,None)), ('y', (0,None))]         # x=prey, y=pred
+    param_list = ['alpha', 'beta', 'gamma', 'delta']
 
-    # Defining via transitions allows us to solve stochastically too
-    birth_death = [
-        Transition(origin='x', equation='alpha*x',
-                   transition_type=TransitionType.B),
-        Transition(origin='x', equation='beta*x*y/A',
-                   transition_type=TransitionType.D),
-        Transition(origin='y', equation='gamma*x*y/A',
-                   transition_type=TransitionType.B),
-        Transition(origin='y', equation='delta*y',
-                   transition_type=TransitionType.D)
-        ]
+    # 1) Birth of prey
+    birth_prey=Transition(destination="x", transition_type="B")
+    event_birth_prey=Event(transition_list=[birth_prey], rate='alpha*x')
 
-    # initialize the model
-    ode_obj = SimulateOde(state,
-                          param_list,
-                          birth_death=birth_death)
+    # 2) Death of prey
+    death_prey=Transition(origin="x", transition_type="D")
+    event_death_prey=Event(transition_list=[death_prey], rate='beta*x*y')
 
+    # 3) Birth of predator
+    birth_pred=Transition(destination="y", transition_type="B")
+    event_birth_pred=Event(transition_list=[birth_pred], rate='delta*x*y')
 
-    # set return, depending on whether we have input the parameters
+    # 4) Death of predator
+    death_pred=Transition(origin="y", transition_type="D")
+    event_death_pred=Event(transition_list=[death_pred], rate='gamma*y')
+
+    model=SimulateOde(state=state_list,
+                      param=param_list,
+                      event=[event_birth_prey,
+                             event_death_prey,
+                             event_birth_pred,
+                             event_death_pred])
+
     if param is None:
-        return ode_obj
+        return model
     else:
-        ode_obj.parameters = param
-        return ode_obj
+        model.parameters = param
+        return model
+
+# Doesn't seem like a very useful formulation. 
+
+# def Lotka_Volterra_4State(param=None):
+#     """
+#     The four state Lotka-Volterra model [Lotka1920]_. A common interpretation is that
+#     a = Grass, x = rabbits, y = foxes and b is the death of foxes.
+
+#     .. math::
+#         \\frac{da}{dt} &= k_{0} a x \\\\
+#         \\frac{dx}{dt} &= k_{0} a x - k_{1} x y \\\\
+#         \\frac{dy}{dt} &= k_{1} x y - k_{2} y \\\\
+#         \\frac{db}{dt} &= k_{2} y
+
+#     Examples
+#     --------
+#     >>> import numpy as np
+#     >>> from pygom import common_models
+#     >>> x0 = [150.0, 10.0, 10.0, 0.0]
+#     >>> t = np.linspace(0, 15, 100)
+#     >>> params = [0.01, 0.1, 1.0]
+#     >>> ode = common_models.Lotka_Volterra_4State(params)
+#     >>> ode.initial_values = (x0, t[0])
+#     >>> ode.integrate(t[1::])
+#     >>> ode.plot()
+#     """
+
+#     state_list = ['a', 'x', 'y']
+#     param_list = ['k0', 'k1', 'k2']
+
+#     # 1) Grass turning into rabbits
+#     trans_grazing=Transition(origin='a', destination='x',transition_type=TransitionType.T)
+#     event_grazing=Event(rate='k0*a*x', transition_list=[trans_grazing])
+
+#     # 2) Foxes eating rabbits
+#     trans_hunting=Transition(origin='x', destination='y',transition_type=TransitionType.T)
+#     event_hunting=Event(rate='k1*x*y', transition_list=[trans_hunting])
+
+#     # 3) Foxes natural death rate
+#     death_pred=Transition(origin="y", transition_type="D")
+#     event_death_pred=Event(transition_list=[death_pred], rate='k2*y')
+
+#     model=SimulateOde(state=state_list,
+#                       param=param_list,
+#                       event=[event_birth_prey,
+#                              event_death_prey,
+#                              event_birth_pred,
+#                              event_death_pred])
+
+#     if param is None:
+#         return model
+#     else:
+#         model.parameters = param
+#         return model
 
 
-def Lotka_Volterra_4State(param=None):
+def Robertson(param=None):
     """
-    The four state Lotka-Volterra model [Lotka1920]_. A common interpretation is that
-    a = Grass, x = rabbits, y = foxes and b is the death of foxes.
+    The so called Robertson problem [Robertson1966]_, which is a standard example used to
+    test stiff integrator.
 
     .. math::
-        \\frac{da}{dt} &= k_{0} a x \\\\
-        \\frac{dx}{dt} &= k_{0} a x - k_{1} x y \\\\
-        \\frac{dy}{dt} &= k_{1} x y - k_{2} y \\\\
-        \\frac{db}{dt} &= k_{2} y
+        \\frac{dy_{1}}{dt} &= -0.04 y_{1} + 1 \\cdot 10^{4} y_{2} y_{3} \\\\
+        \\frac{dy_{2}}{dt} &= 0.04 y_{1} - 1 \\cdot 10^{4} y_{2} y_{3} - 3 \\cdot 10^{7} y_{2}^{2}\\\\
+        \\frac{dy_{3}}{dt} &= 3 \\cdot 10^{7} y_{2}^{2}
 
     Examples
     --------
+
+    >>> from pygom import common_models
+    >>> import numpy
+    >>> t = numpy.append(0, 4*numpy.logspace(-6, 6, 1000))
+    >>> ode = common_models.Robertson()
+    >>> ode.initial_values = ([1.0,0.0,0.0], t[0])
+    >>> solution = ode.integrate(t[1::])
+    >>> ode.plot() # note that this is not being plotted in the log scale
+    """
+    # note how we have short handed the definition
+    state = ['y1:4']
+    # note that we do not have any parameters, or rather,
+    # we have hard coded in the parameters
+    param_list = []
+
+    trans_1_2=Transition(origin='y1', destination='y2',transition_type=TransitionType.T)
+    event_1_2=Event(rate='0.04*y1', transition_list=[trans_1_2])
+
+    trans_2_1=Transition(origin='y2', destination='y1',transition_type=TransitionType.T)
+    event_2_1=Event(rate='1e4*y2*y3', transition_list=[trans_2_1])
+
+    trans_2_3=Transition(origin='y2', destination='y3',transition_type=TransitionType.T)
+    event_2_3=Event(rate='3e7*y2*y2', transition_list=[trans_2_3])
+
+    # initialize the model
+    model = SimulateOde(state, param_list, event=[event_1_2,
+                                                  event_2_1,
+                                                  event_2_3])
+
+    if param is None:
+        return model
+    else:
+        raise Warning("Input parameters not used")
+
+#############################################
+# ODEs
+#############################################
+
+
+def SIR_norm(param=None):
+    """
+    A normalized SIR model:
+
+    .. math::
+        \\frac{dS}{dt} &= -\\beta SI \\\\
+        \\frac{dI}{dt} &= \\beta SI - \\gamma I \\\\
+        \\frac{dR}{dt} &= \\gamma I
+
+
+    Examples
+    --------
+    The model that produced top two graph in Figure 1.3 of the reference above.
+    First, when everyone is susceptible and only one individual was infected.
+
     >>> import numpy as np
     >>> from pygom import common_models
-    >>> x0 = [150.0, 10.0, 10.0, 0.0]
-    >>> t = np.linspace(0, 15, 100)
-    >>> params = [0.01, 0.1, 1.0]
-    >>> ode = common_models.Lotka_Volterra_4State(params)
+    >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
+    >>> t = np.linspace(0, 730, 1001)
+    >>> N = 7781984.0
+    >>> x0 = [1.0, 10/N, 0.0]
     >>> ode.initial_values = (x0, t[0])
-    >>> ode.integrate(t[1::])
+    >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
+
+    Second model with a more *realistic* scenario
+
+    >>> import numpy as np
+    >>> from pygom import common_models
+    >>> ode = common_models.SIR({'beta':3.6, 'gamma':0.2})
+    >>> t = np.linspace(0, 730, 1001)
+    >>> N = 7781984.0
+    >>> x0 = [0.065, 123*(5.0/30.0)/N, 0.0]
+    >>> ode.initial_values = (x0, t[0])
+    >>> solution = ode.integrate(t[1::])
+    >>> ode.plot()
+
     """
+    state = ['S', 'I', 'R']
+    param_list = ['beta', 'gamma']
 
-    # four states
-    state = ['a', 'x', 'y', 'b']
-    # three parameters
-    param_list = ['k0', 'k1', 'k2']
+    dSdt=Transition(origin='S', equation='-beta*S*I', transition_type=TransitionType.ODE)
+    dIdt=Transition(origin='I', equation='beta*S*I-gamma*I', transition_type=TransitionType.ODE)
+    dRdt=Transition(origin='R', equation='gamma*I', transition_type=TransitionType.ODE)
 
-    # then define the set of ode
-    transition = [
-        Transition(origin='a', destination='x',
-                   equation='k0*a*x',
-                   transition_type=TransitionType.T),
-        Transition(origin='x', destination='y',
-                   equation='k1*x*y',
-                   transition_type=TransitionType.T),
-        Transition(origin='y', destination='b',
-                   equation='k2*y',
-                   transition_type=TransitionType.T)
-        ]
-
-    ode_obj = SimulateOde(state, param_list, transition=transition)
+    # initialize the model
+    ode_obj = SimulateOde(state=state, param=param_list, ode=[dSdt, dIdt, dRdt])
 
     # set return, depending on whether we have input the parameters
     if param is None:
@@ -1103,49 +1151,3 @@ def vanDerPol(param=None):
     else:
         ode_obj.parameters = param
         return ode_obj
-
-
-def Robertson(param=None):
-    """
-    The so called Robertson problem [Robertson1966]_, which is a standard example used to
-    test stiff integrator.
-
-    .. math::
-        \\frac{dy_{1}}{dt} &= -0.04 y_{1} + 1 \\cdot 10^{4} y_{2} y_{3} \\\\
-        \\frac{dy_{2}}{dt} &= 0.04 y_{1} - 1 \\cdot 10^{4} y_{2} y_{3} - 3 \\cdot 10^{7} y_{2}^{2}\\\\
-        \\frac{dy_{3}}{dt} &= 3 \\cdot 10^{7} y_{2}^{2}
-
-    Examples
-    --------
-
-    >>> from pygom import common_models
-    >>> import numpy
-    >>> t = numpy.append(0, 4*numpy.logspace(-6, 6, 1000))
-    >>> ode = common_models.Robertson()
-    >>> ode.initial_values = ([1.0,0.0,0.0], t[0])
-    >>> solution = ode.integrate(t[1::])
-    >>> ode.plot() # note that this is not being plotted in the log scale
-    """
-    # note how we have short handed the definition
-    state = ['y1:4']
-    # note that we do not have any parameters, or rather,
-    # we have hard coded in the parameters
-    param_list = []
-    transition = [
-        Transition(origin='y1', destination='y2',
-                   equation='0.04*y1',
-                   transition_type=TransitionType.T),
-        Transition(origin='y2', destination='y1',
-                   equation='1e4*y2*y3',
-                   transition_type=TransitionType.T),
-        Transition(origin='y2', destination='y3',
-                   equation='3e7*y2*y2',
-                   transition_type=TransitionType.T)
-        ]
-    # initialize the model
-    ode_obj = SimulateOde(state, param_list, transition=transition)
-
-    if param is None:
-        return ode_obj
-    else:
-        raise Warning("Input parameters not used")
