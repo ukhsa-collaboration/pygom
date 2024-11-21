@@ -98,7 +98,7 @@ class BaseOdeModel(object):
 
         # # this three is not actually that useful
         # # but lets leave it here for now
-        # self._parameters = None
+        #self._parameters = None
         self._stochasticParam = None
         self._hasNewTransition = HasNewTransition()
 

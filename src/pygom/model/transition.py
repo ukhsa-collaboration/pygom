@@ -116,8 +116,8 @@ class Transition:
     '''
 
     def __init__(self,
-                 equation=None,                 # If equation is given
                  origin=None,
+                 equation=None,                 # If equation is given
                  transition_type='ODE',
                  destination=None,
                  magnitude='1',

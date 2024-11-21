@@ -1047,7 +1047,8 @@ class DeterministicOde(BaseOdeModel):
 
         if parameters is not None:
             self.parameters = parameters
-        elif self._parameters is None:
+        elif not hasattr(self, "_parameters") or self._parameters is None:
+        #elif self._parameters is None:
             if self.num_param == 0:
                 pass
             else:
