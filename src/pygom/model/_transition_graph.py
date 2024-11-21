@@ -8,8 +8,6 @@ import matplotlib.pyplot as plt
 import sympy
 from ._model_verification import checkEquation
 
-import seaborn as sns
-
 # Functions to produce transition graph
 
 greekLetter = ('alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta',
