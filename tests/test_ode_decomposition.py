@@ -8,7 +8,6 @@ from pygom.model import common_models
 
 
 class TestOdeDecomposition(TestCase):
-
     def test_simple(self):
         ode1 = Transition('S', '-beta*S*I', 'ode')
         ode2 = Transition('I', 'beta*S*I - gamma * I', 'ode')

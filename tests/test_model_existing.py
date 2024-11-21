@@ -48,11 +48,30 @@ class TestModelExisting(TestCase):
         '''
         Test the SEIR model from the set of pre-defined models in common_models
         '''
-        ode = common_models.SEIR_Birth_Death_Periodic()
+
+        # Set up PyGOM object
+        alpha=1/2
+        gamma=1/4
+        beta0=0.3
+        delta=0.2
+        period=365
+
+        ode = common_models.SEIR_Birth_Death_Periodic({'alpha':alpha,
+                                                       'gamma':gamma,
+                                                       'beta0':beta0,
+                                                       'delta':delta,
+                                                       'period':period})
+
+        N=1e4
+        E0=10
+        I0=0
+        R0=0
+        S0=N-(E0+I0+R0)
+        
+        x0 = [S0, E0, I0, R0, N]
+        ode.initial_values = (x0, 0)
+
         t = numpy.linspace(0, 100, 1001)
-        x0 = [0.0658, 0.0007, 0.0002, 0.]
-        ode.initial_values = (x0,0)
-        ode.parameters = [0.02, 35.84, 100, 1800, 0.27]
         # try to integrate to see if there is any problem
         _solution, _output = ode.integrate(t[1::], True)
 

@@ -58,7 +58,7 @@ class TestModelMultipleOrigin(TestCase):
 
         ode.parameters = self.param_eval
         ode.initial_values = (self.x0, self.t[0])
-        _simX, _simT = ode.simulate_jump(self.t, 5, parallel=False, full_output=True)
+        _simX, _simJump, _simT = ode.solve_stochast(self.t, 5, parallel=False, full_output=True)
 
     def tearDown(self):
         self.transitions = None

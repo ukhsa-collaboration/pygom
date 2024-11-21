@@ -52,7 +52,7 @@ class TestSimulateJump(TestCase):
         self.odeS.transition_mean(solution[self.index,:], self.t[self.index])
         self.odeS.transition_var(solution[self.index,:], self.t[self.index])
 
-        _simX, _simT = self.odeS.simulate_jump(250, self.n_sim, parallel=False, full_output=True)
+        _simX, _simJump, _simT = self.odeS.solve_stochast(250, self.n_sim, parallel=False, full_output=True)
 
     def test_simulate_jump_same_seed(self):
         """
@@ -68,11 +68,11 @@ class TestSimulateJump(TestCase):
         # But if we run it in serial then the seed will be used
         # and the output will be identical
         np.random.seed(seed)
-        simX1, simT1 = self.odeS.simulate_jump(self.t_seed[1::], self.n_sim,
-                                               parallel=False, full_output=True)
+        simX1, simJump1, simT1 = self.odeS.solve_stochast(self.t_seed[1::], self.n_sim,
+                                                          parallel=False, full_output=True)
         np.random.seed(seed)
-        simX2, simT2 = self.odeS.simulate_jump(self.t_seed[1::], self.n_sim,
-                                               parallel=False, full_output=True)
+        simX2, simJump2, simT2 = self.odeS.solve_stochast(self.t_seed[1::], self.n_sim,
+                                                          parallel=False, full_output=True)
 
         for i, xi in enumerate(simX1):
             self.assertTrue(np.allclose(simX2[i], xi))
@@ -83,11 +83,11 @@ class TestSimulateJump(TestCase):
         under a CTMC interpretation regardless of the backend.
         """
         np.random.seed(1)
-        simX1, simT1 = self.odeS.simulate_jump(self.t_seed[1::], self.n_sim,
-                                               parallel=False, full_output=True)
+        simX1, simJump1, simT1 = self.odeS.solve_stochast(self.t_seed[1::], self.n_sim,
+                                                          parallel=False, full_output=True)
         np.random.seed(2)
-        simX2, simT2 = self.odeS.simulate_jump(self.t_seed[1::], self.n_sim,
-                                               parallel=False, full_output=True)
+        simX2, simJump2, simT2 = self.odeS.solve_stochast(self.t_seed[1::], self.n_sim,
+                                                          parallel=False, full_output=True)
 
         for i, xi in enumerate(simX1):
             self.assertFalse(np.allclose(simX2[i], xi))
