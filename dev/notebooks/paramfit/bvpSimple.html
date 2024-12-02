@@ -544,53 +544,6 @@ We let the solver know which variable we are solving the initial condition for b
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">AttributeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">line</span> <span class="mi">8</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">20.0</span><span class="p">]</span>
-<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="n">initialState</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">]</span>
-<span class="ne">----&gt; </span><span class="mi">8</span> <span class="n">obj</span> <span class="o">=</span> <span class="n">SquareLoss</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span>
-<span class="g g-Whitespace">      </span><span class="mi">9</span>                  <span class="n">ode</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">10</span>                  <span class="n">t0</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x0</span><span class="o">=</span><span class="n">initialState</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">11</span>                  <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-<span class="g g-Whitespace">     </span><span class="mi">12</span>                  <span class="n">state_name</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">target_state</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">])</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/pygom/loss/ode_loss.py:27,</span> in <span class="ni">SquareLoss.__init__</span><span class="nt">(self, theta, ode, x0, t0, t, y, state_name, state_weight, target_param, target_state)</span>
-<span class="g g-Whitespace">     </span><span class="mi">25</span> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">ode</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">state_name</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">26</span>              <span class="n">state_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="ne">---&gt; </span><span class="mi">27</span>     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">ode</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">state_name</span><span class="p">,</span> <span class="n">state_weight</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">28</span>                      <span class="kc">None</span><span class="p">,</span> <span class="n">target_param</span><span class="p">,</span> <span class="n">target_state</span><span class="p">)</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/pygom/loss/base_loss.py:101,</span> in <span class="ni">BaseLoss.__init__</span><span class="nt">(self, theta, ode, x0, t0, t, y, state_name, state_weight, spread_param, target_param, target_state)</span>
-<span class="g g-Whitespace">     </span><span class="mi">89</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span> <span class="o">=</span> <span class="n">ode</span>
-<span class="g g-Whitespace">     </span><span class="mi">91</span> <span class="c1"># We are making a shitty check here because I screwed up (sort of)</span>
-<span class="g g-Whitespace">     </span><span class="mi">92</span> <span class="c1"># Should have been a base class where we do not have the target_param</span>
-<span class="g g-Whitespace">     </span><span class="mi">93</span> <span class="c1"># and target_state and another class extending it.  The only problem of</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">99</span> <span class="c1"># Basically, it will require a lot of work to make things sync and</span>
-<span class="g g-Whitespace">    </span><span class="mi">100</span> <span class="c1"># that is too much effort and time which I do not have</span>
-<span class="ne">--&gt; </span><span class="mi">101</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span><span class="o">.</span><span class="n">parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">102</span>     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span><span class="o">.</span><span class="n">num_param</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">103</span>         <span class="c1"># note that this is necessary because we want to make sure that</span>
-<span class="g g-Whitespace">    </span><span class="mi">104</span>         <span class="c1"># it is possible to only estimate part of the full parameter set</span>
-<span class="g g-Whitespace">    </span><span class="mi">105</span>         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Set the parameters of the ode first&quot;</span><span class="p">)</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/pygom/model/base_ode_model.py:166,</span> in <span class="ni">BaseOdeModel.parameters</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">156</span> <span class="nd">@property</span>
-<span class="g g-Whitespace">    </span><span class="mi">157</span> <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">158</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">159</span><span class="sd">     Returns</span>
-<span class="g g-Whitespace">    </span><span class="mi">160</span><span class="sd">     -------</span>
-<span class="sd">   (...)</span>
-<span class="g g-Whitespace">    </span><span class="mi">164</span><span class="sd"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">165</span><span class="sd">     &quot;&quot;&quot;</span>
-<span class="ne">--&gt; </span><span class="mi">166</span>     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span>
-
-<span class="ne">AttributeError</span>: &#39;SimulateOde&#39; object has no attribute &#39;_parameters&#39;
-</pre></div>
-</div>
-</div>
 </div>
 <p>And we use the <code class="xref py py-func docutils literal notranslate"><span class="pre">costIV()</span></code> function to let the solver know we are considering an initial value problem:</p>
 <div class="cell docutils container">
@@ -601,13 +554,16 @@ We let the solver know which variable we are solving the initial condition for b
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">thetaHat</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">costIV</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">theta</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="nb">print</span><span class="p">(</span><span class="n">thetaHat</span><span class="p">)</span>
-
-<span class="ne">NameError</span>: name &#39;obj&#39; is not defined
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  message: Optimization terminated successfully.
+  success: True
+   status: 0
+      fun: 4.987646893079144e-16
+        x: [ 1.500e+01]
+      nit: 4
+      jac: [ 1.122e-10]
+ hess_inv: [[ 5.556e-02]]
+     nfev: 10
+     njev: 5
 </pre></div>
 </div>
 </div>
@@ -627,16 +583,7 @@ We let the solver know which variable we are solving the initial condition for b
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">model</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">+</span> <span class="n">thetaHat</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::])</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="s1">&#39;constrained&#39;</span><span class="p">)</span>
-
-<span class="ne">NameError</span>: name &#39;thetaHat&#39; is not defined
-</pre></div>
-</div>
+<img alt="../../_images/cf4c2431c9cf94cb48b4994873671e352a515b97d47b2070dc7d4683ab1c43fa.png" src="../../_images/cf4c2431c9cf94cb48b4994873671e352a515b97d47b2070dc7d4683ab1c43fa.png" />
 </div>
 </div>
 </section>
