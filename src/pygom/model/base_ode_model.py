@@ -163,6 +163,8 @@ class BaseOdeModel(object):
             (:mod:`sympy.core.symbol`, numeric)
 
         """
+        if not hasattr(self, "_parameters"):
+            return None
         return self._parameters
 
     @parameters.setter
