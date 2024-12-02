@@ -480,6 +480,7 @@ class compileCode(object):
         those linked with Theano are not.
         '''
         if backend is None:
+            print("...Finding available backend...", end="")
             self._backend = None
             x = sympy.Symbol('x')
             expr = sympy.sin(x)/x
@@ -517,6 +518,7 @@ class compileCode(object):
                     # stuff in a parallel setting where we create objects in
                     # pure computation nodes with no compile mechanism
                     self._backend = 'lambda'
+            print("done: ", self._backend)
         else:
             self._backend = backend
 

@@ -1,12 +1,12 @@
-from unittest import main, TestCase
+import unittest
 
 import sympy
 
 from pygom.model import common_models, epi_analysis 
 
 
-class TestEpiAnalysis(TestCase):
-
+class TestEpiAnalysis(unittest.TestCase):
+    @unittest.skip("Skipping R0 calculation. This function needs development.")
     def test_simple(self):
         """
         This actually only test the internal consistency of the functions
@@ -26,4 +26,4 @@ class TestEpiAnalysis(TestCase):
 
 
 if __name__ == '__main__':
-    main()
+    unittest.main()

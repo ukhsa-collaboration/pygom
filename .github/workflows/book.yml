@@ -67,7 +67,7 @@ jobs:
             # deploy book to github-pages
             - name: GitHub Pages 
               uses: peaceiris/actions-gh-pages@v4
-              if: github.ref == 'refs/heads/main'
+              if: github.ref == 'refs/heads/master'
               with:
                 github_token: ${{ secrets.GITHUB_TOKEN }}
                 publish_dir: docs/_build/html

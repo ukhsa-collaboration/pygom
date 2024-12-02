@@ -13,7 +13,8 @@ class TestABC(TestCase):
         self.ode = common_models.SIR_norm({'beta':0.5, 'gamma':1.0/3.0})
         
         # the initial state, normalized to one
-        self.x0 = [1, 1.27e-6, 0]
+        i0=1.27e-6
+        self.x0 = [1-i0, i0, 0]
         # set the time sequence that we would like to observe
         self.t = np.linspace(0, 150, 100)
         self.ode.initial_values = (self.x0, self.t[0])
