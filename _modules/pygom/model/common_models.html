@@ -186,9 +186,15 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../../../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/solution.html">Mathematical description</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/model_spec_2.html">Defining a system of differential equations</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../notebooks/insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/extract_info.html">Extracting model information</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollSimple.html">Deducing transitions from equations</a></li>
@@ -397,7 +403,7 @@ document.write(`
 
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 
-<span class="kn">from</span> <span class="nn">.transition</span> <span class="kn">import</span> <span class="n">TransitionType</span><span class="p">,</span> <span class="n">Transition</span>
+<span class="kn">from</span> <span class="nn">.transition</span> <span class="kn">import</span> <span class="n">TransitionType</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">Event</span>
 <span class="c1">#from .deterministic import DeterministicOde</span>
 <span class="kn">from</span> <span class="nn">.simulate</span> <span class="kn">import</span> <span class="n">SimulateOde</span>
 
@@ -422,23 +428,24 @@ document.write(`
 <span class="sd">    &gt;&gt;&gt; ode.plot()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">]</span>
+    <span class="n">state_list</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">))]</span>
     <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">]</span>
-    <span class="n">transition</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I/N&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="p">]</span>
-    <span class="c1"># initialize the model</span>
-    <span class="n">ode</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="p">,</span>
-                      <span class="n">param_list</span><span class="p">,</span>
-                      <span class="n">transition</span><span class="o">=</span><span class="n">transition</span><span class="p">)</span>
 
-    <span class="c1"># set return, depending on whether we have input the parameters</span>
+    <span class="n">trans_inf</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_inf</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;beta*S*I/N&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_inf</span><span class="p">])</span>
+
+    <span class="n">trans_rec</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_rec</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_rec</span><span class="p">])</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state_list</span><span class="p">,</span>
+                        <span class="n">param</span><span class="o">=</span><span class="n">param_list</span><span class="p">,</span>
+                        <span class="n">event</span><span class="o">=</span><span class="p">[</span><span class="n">event_inf</span><span class="p">,</span> <span class="n">event_rec</span><span class="p">])</span>
+
     <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ode</span>
+        <span class="k">return</span> <span class="n">model</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ode</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
-        <span class="k">return</span> <span class="n">ode</span></div>
+        <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
+        <span class="k">return</span> <span class="n">model</span></div>
 
 
 <div class="viewcode-block" id="SIS_Periodic"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SIS_Periodic">[docs]</a><span class="k">def</span> <span class="nf">SIS_Periodic</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -467,31 +474,26 @@ document.write(`
 <span class="sd">    &gt;&gt;&gt; ode.plot()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">]</span>
+    <span class="n">state_list</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">))]</span>
     <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;beta0&#39;</span><span class="p">,</span> <span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="s1">&#39;period&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">]</span>
-    <span class="c1"># derived_param = [(&#39;betaT&#39;, &#39;2 - 1.8*cos(5*tau)&#39;)]</span>
-    <span class="n">derived_param</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;betaT&#39;</span><span class="p">,</span> <span class="s1">&#39;beta0*(1-delta*cos(2*3.14159*tau/period))&#39;</span><span class="p">)]</span>
-    <span class="n">ode</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span>
-                   <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;(betaT - gamma)*I - (betaT*I*I/N)&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;tau&#39;</span><span class="p">,</span>
-                   <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
-        <span class="p">]</span>
-    <span class="c1"># initialize the model</span>
-    <span class="n">ode_obj</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="p">,</span>
-                          <span class="n">param_list</span><span class="p">,</span>
-                          <span class="n">derived_param</span><span class="o">=</span><span class="n">derived_param</span><span class="p">,</span>
-                          <span class="n">ode</span><span class="o">=</span><span class="n">ode</span><span class="p">)</span>
+    <span class="n">derived_param</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;betaT&#39;</span><span class="p">,</span> <span class="s1">&#39;beta0*(1-delta*cos(2*3.14159*t/period))&#39;</span><span class="p">)]</span>
 
-    <span class="c1"># set return, depending on whether we have input the parameters</span>
+    <span class="n">trans_inf</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_inf</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;betaT*S*I/N&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_inf</span><span class="p">])</span>
+
+    <span class="n">trans_rec</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_rec</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_rec</span><span class="p">])</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state_list</span><span class="p">,</span>
+                        <span class="n">param</span><span class="o">=</span><span class="n">param_list</span><span class="p">,</span>
+                        <span class="n">derived_param</span><span class="o">=</span><span class="n">derived_param</span><span class="p">,</span>
+                        <span class="n">event</span><span class="o">=</span><span class="p">[</span><span class="n">event_inf</span><span class="p">,</span> <span class="n">event_rec</span><span class="p">])</span>
+
     <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ode_obj</span>
+        <span class="k">return</span> <span class="n">model</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
-        <span class="k">return</span> <span class="n">ode_obj</span></div>
-
+        <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
+        <span class="k">return</span> <span class="n">model</span></div>
 
 <div class="viewcode-block" id="SIR"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SIR">[docs]</a><span class="k">def</span> <span class="nf">SIR</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -520,188 +522,55 @@ document.write(`
 <span class="sd">    &gt;&gt;&gt; ode.plot()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">]</span>
+
+    <span class="n">state_list</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">))]</span>
     <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">]</span>
-    <span class="n">transition</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I/N&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="p">]</span>
-    <span class="c1"># initialize the model</span>
-    <span class="n">ode_obj</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span> <span class="n">transition</span><span class="o">=</span><span class="n">transition</span><span class="p">)</span>
 
-    <span class="c1"># set return, depending on whether we have input the parameters</span>
+    <span class="n">trans_inf</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_inf</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;beta*S*I/N&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_inf</span><span class="p">])</span>
+
+    <span class="n">trans_rec</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_rec</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_rec</span><span class="p">])</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state_list</span><span class="p">,</span>
+                        <span class="n">param</span><span class="o">=</span><span class="n">param_list</span><span class="p">,</span>
+                        <span class="n">event</span><span class="o">=</span><span class="p">[</span><span class="n">event_inf</span><span class="p">,</span> <span class="n">event_rec</span><span class="p">])</span>
+
     <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ode_obj</span>
+        <span class="k">return</span> <span class="n">model</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
-        <span class="k">return</span> <span class="n">ode_obj</span></div>
+        <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
+        <span class="k">return</span> <span class="n">model</span></div>
 
-
-<div class="viewcode-block" id="SIR_norm"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SIR_norm">[docs]</a><span class="k">def</span> <span class="nf">SIR_norm</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A normalized SIR model:</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">        \\frac{dS}{dt} &amp;= -\\beta SI \\\\</span>
-<span class="sd">        \\frac{dI}{dt} &amp;= \\beta SI - \\gamma I \\\\</span>
-<span class="sd">        \\frac{dR}{dt} &amp;= \\gamma I</span>
-
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    The model that produced top two graph in Figure 1.3 of the reference above.</span>
-<span class="sd">    First, when everyone is susceptible and only one individual was infected.</span>
-
-<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
-<span class="sd">    &gt;&gt;&gt; from pygom import common_models</span>
-<span class="sd">    &gt;&gt;&gt; ode = common_models.SIR({&#39;beta&#39;:3.6, &#39;gamma&#39;:0.2})</span>
-<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 730, 1001)</span>
-<span class="sd">    &gt;&gt;&gt; N = 7781984.0</span>
-<span class="sd">    &gt;&gt;&gt; x0 = [1.0, 10/N, 0.0]</span>
-<span class="sd">    &gt;&gt;&gt; ode.initial_values = (x0, t[0])</span>
-<span class="sd">    &gt;&gt;&gt; solution = ode.integrate(t[1::])</span>
-<span class="sd">    &gt;&gt;&gt; ode.plot()</span>
-
-<span class="sd">    Second model with a more *realistic* scenario</span>
-
-<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
-<span class="sd">    &gt;&gt;&gt; from pygom import common_models</span>
-<span class="sd">    &gt;&gt;&gt; ode = common_models.SIR({&#39;beta&#39;:3.6, &#39;gamma&#39;:0.2})</span>
-<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 730, 1001)</span>
-<span class="sd">    &gt;&gt;&gt; N = 7781984.0</span>
-<span class="sd">    &gt;&gt;&gt; x0 = [0.065, 123*(5.0/30.0)/N, 0.0]</span>
-<span class="sd">    &gt;&gt;&gt; ode.initial_values = (x0, t[0])</span>
-<span class="sd">    &gt;&gt;&gt; solution = ode.integrate(t[1::])</span>
-<span class="sd">    &gt;&gt;&gt; ode.plot()</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">]</span>
-    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">]</span>
-    <span class="n">transition</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="p">]</span>
-    <span class="c1"># initialize the model</span>
-    <span class="n">ode_obj</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span> <span class="n">transition</span><span class="o">=</span><span class="n">transition</span><span class="p">)</span>
-
-    <span class="c1"># set return, depending on whether we have input the parameters</span>
-    <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ode_obj</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
-        <span class="k">return</span> <span class="n">ode_obj</span></div>
-
-<span class="c1"># def SIR_N(param=None, init=None):</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     A standard SIR model [Brauer2008]_ with population N</span>
-
-<span class="c1">#     .. math::</span>
-<span class="c1">#         \\frac{dS}{dt} &amp;= -\\beta SI/N \\\\</span>
-<span class="c1">#         \\frac{dI}{dt} &amp;= \\beta SI/N- \\gamma I \\\\</span>
-<span class="c1">#         \\frac{dR}{dt} &amp;= \\gamma I</span>
-
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     stateList = [&#39;S&#39;, &#39;I&#39;, &#39;R&#39;]</span>
-<span class="c1">#     paramList = [&#39;beta&#39;, &#39;gamma&#39;, &#39;N&#39;]</span>
-<span class="c1">#     transitionList = [Transition(origin=&#39;S&#39;, destination=&#39;I&#39;, equation=&#39;beta*S*I/N&#39;, transition_type=TransitionType.T),</span>
-<span class="c1">#                     Transition(origin=&#39;I&#39;, destination=&#39;R&#39;, equation=&#39;gamma*I&#39;, transition_type=TransitionType.T)]</span>
-    
-<span class="c1">#     # initialize the model</span>
-<span class="c1">#     ode_obj = SimulateOde(stateList, paramList, transition=transitionList)</span>
-
-<span class="c1">#     # set return, depending on whether we have input the parameters</span>
-
-<span class="c1">#     if param is not None:</span>
-<span class="c1">#         ode_obj.parameters = param</span>
-
-<span class="c1">#     if init is not None:</span>
-<span class="c1">#         ode_obj.initial_values = init</span>
-
-<span class="c1">#     return ode_obj</span>
-
-
-<div class="viewcode-block" id="SEIR_N"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR_N">[docs]</a><span class="k">def</span> <span class="nf">SEIR_N</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SEIR"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR">[docs]</a><span class="k">def</span> <span class="nf">SEIR</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A standard SIR model [Brauer2008]_ with population N</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">stateList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">]</span>
-    <span class="n">paramList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">]</span>
-    <span class="n">transitionList</span> <span class="o">=</span> <span class="p">[</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I/N&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-                      <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;alpha*E&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-                      <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)]</span>
 
-    <span class="c1"># initialize the model</span>
-    <span class="n">ode_obj</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">stateList</span><span class="p">,</span> <span class="n">paramList</span><span class="p">,</span> <span class="n">transition</span><span class="o">=</span><span class="n">transitionList</span><span class="p">)</span>
+    <span class="n">state_list</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">))]</span>
+    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">]</span>
 
-    <span class="c1"># set return, depending on whether we have input the parameters</span>
-    <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
+    <span class="n">trans_exp</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_exp</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;beta*S*I/N&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_exp</span><span class="p">])</span>
 
-    <span class="k">if</span> <span class="n">init</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ode_obj</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="n">init</span>
+    <span class="n">trans_inf</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_inf</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;alpha*E&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_inf</span><span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">ode_obj</span></div>
+    <span class="n">trans_rec</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_rec</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_rec</span><span class="p">])</span>
 
-<span class="c1"># def SIR_N(param=None):</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     A standard SIR model [Brauer2008]_ with population N.  This is the unnormalized</span>
-<span class="c1">#     version of the SIR model.</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state_list</span><span class="p">,</span>
+                        <span class="n">param</span><span class="o">=</span><span class="n">param_list</span><span class="p">,</span>
+                        <span class="n">event</span><span class="o">=</span><span class="p">[</span><span class="n">event_exp</span><span class="p">,</span>
+                               <span class="n">event_inf</span><span class="p">,</span>
+                               <span class="n">event_rec</span><span class="p">])</span>
 
-<span class="c1">#     .. math::</span>
-<span class="c1">#         \\frac{dS}{dt} &amp;= -\\beta SI/N \\\\</span>
-<span class="c1">#         \\frac{dI}{dt} &amp;= \\beta SI/N- \\gamma I \\\\</span>
-<span class="c1">#         \\frac{dR}{dt} &amp;= \\gamma I</span>
-
-<span class="c1">#     Examples</span>
-<span class="c1">#     --------</span>
-<span class="c1">#     The model that produced top two graph in Figure 1.3 of the reference above.</span>
-<span class="c1">#     First, when everyone is susceptible and only one individual was infected.</span>
-
-<span class="c1">#     &gt;&gt;&gt; import numpy as np</span>
-<span class="c1">#     &gt;&gt;&gt; from pygom import common_models</span>
-<span class="c1">#     &gt;&gt;&gt; ode = common_models.SIR({&#39;beta&#39;:3.6, &#39;gamma&#39;:0.2})</span>
-<span class="c1">#     &gt;&gt;&gt; t = np.linspace(0, 730, 1001)</span>
-<span class="c1">#     &gt;&gt;&gt; N = 7781984.0</span>
-<span class="c1">#     &gt;&gt;&gt; x0 = [N, 1.0, 0.0]</span>
-<span class="c1">#     &gt;&gt;&gt; ode.initial_values = (x0, t[0])</span>
-<span class="c1">#     &gt;&gt;&gt; solution = ode.integrate(t[1::])</span>
-<span class="c1">#     &gt;&gt;&gt; ode.plot()</span>
-
-<span class="c1">#     Second model with a more *realistic* scenario</span>
-
-<span class="c1">#     &gt;&gt;&gt; import numpy as np</span>
-<span class="c1">#     &gt;&gt;&gt; from pygom import common_models</span>
-<span class="c1">#     &gt;&gt;&gt; ode = common_models.SIR({&#39;beta&#39;:3.6, &#39;gamma&#39;:0.2})</span>
-<span class="c1">#     &gt;&gt;&gt; t = np.linspace(0, 730, 1001)</span>
-<span class="c1">#     &gt;&gt;&gt; N = 7781984.0</span>
-<span class="c1">#     &gt;&gt;&gt; x0 = [int(0.065*N), 21.0, 0.0]</span>
-<span class="c1">#     &gt;&gt;&gt; ode.initial_values = (x0, t[0])</span>
-<span class="c1">#     &gt;&gt;&gt; solution = ode.integrate(t[1::])</span>
-<span class="c1">#     &gt;&gt;&gt; ode.plot()</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     state = [&#39;S&#39;, &#39;I&#39;, &#39;R&#39;]</span>
-<span class="c1">#     param_list = [&#39;beta&#39;, &#39;gamma&#39;, &#39;N&#39;]</span>
-<span class="c1">#     transition = [</span>
-<span class="c1">#         Transition(origin=&#39;S&#39;, destination=&#39;I&#39;, equation=&#39;beta*S*I/N&#39;,</span>
-<span class="c1">#                    transition_type=TransitionType.T),</span>
-<span class="c1">#         Transition(origin=&#39;I&#39;, destination=&#39;R&#39;, equation=&#39;gamma*I&#39;,</span>
-<span class="c1">#                    transition_type=TransitionType.T)</span>
-<span class="c1">#         ]</span>
-<span class="c1">#     # initialize the model</span>
-<span class="c1">#     ode_obj = SimulateOde(state, param_list, transition=transition)</span>
-
-<span class="c1">#     # set return, depending on whether we have input the parameters</span>
-<span class="c1">#     if param is None:</span>
-<span class="c1">#         return ode_obj</span>
-<span class="c1">#     else:</span>
-<span class="c1">#         ode_obj.parameters = param</span>
-<span class="c1">#         return ode_obj</span>
-
+    <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">model</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
+        <span class="k">return</span> <span class="n">model</span></div>
 
 <div class="viewcode-block" id="SIR_Birth_Death"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SIR_Birth_Death">[docs]</a><span class="k">def</span> <span class="nf">SIR_Birth_Death</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -733,87 +602,54 @@ document.write(`
 <span class="sd">    --------</span>
 <span class="sd">    :func:`.SIR`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">]</span>
-    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;mu&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">]</span>
-    <span class="n">transition</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I/N&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="p">]</span>
-    <span class="c1"># our birth and deaths</span>
-    <span class="n">birth_death</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu*N&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">B</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu*S&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu*I&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu*R&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">)</span>
-        <span class="p">]</span>
 
-    <span class="c1"># initialize the model</span>
-    <span class="n">ode_obj</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="p">,</span>
-                          <span class="n">param_list</span><span class="p">,</span>
-                          <span class="n">birth_death</span><span class="o">=</span><span class="n">birth_death</span><span class="p">,</span>
-                          <span class="n">transition</span><span class="o">=</span><span class="n">transition</span><span class="p">)</span>
+    <span class="n">state_list</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">))]</span>
+    <span class="n">param_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;mu&#39;</span><span class="p">]</span>
 
-    <span class="c1"># set return, depending on whether we have input the parameters</span>
-    <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ode_obj</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
-        <span class="k">return</span> <span class="n">ode_obj</span></div>
+    <span class="c1"># Infection</span>
+    <span class="n">trans_inf</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
+    <span class="n">event_inf</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_inf</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;beta*S*I/N&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Recovery</span>
+    <span class="n">trans_rec</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
+    <span class="n">event_rec</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_rec</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Transitions in and out of total population count</span>
+    <span class="c1"># These will be used in the following event definitions</span>
+    <span class="n">birth_N</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+    <span class="n">death_N</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 1) Birth event into S</span>
+    <span class="n">birth</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+    <span class="n">event_birth</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">birth</span><span class="p">,</span> <span class="n">birth_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*N&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 2) Death event of an S</span>
+    <span class="n">death_S</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_S</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_S</span><span class="p">,</span> <span class="n">death_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*S&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 3) Death event of an I</span>
+    <span class="n">death_I</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_I</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_I</span><span class="p">,</span> <span class="n">death_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*I&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 4) Death event of an R</span>
+    <span class="n">death_R</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_R</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_R</span><span class="p">,</span> <span class="n">death_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*R&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="SEIR"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR">[docs]</a><span class="k">def</span> <span class="nf">SEIR</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A standard SEIR model [Brauer2008]_, defined by the ode</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">        \\frac{dS}{dt} &amp;= -\\beta SI \\\\</span>
-<span class="sd">        \\frac{dE}{dt} &amp;= \\beta SI - \\alpha E \\\\</span>
-<span class="sd">        \\frac{dI}{dt} &amp;= \\alpha E - \\gamma I \\\\</span>
-<span class="sd">        \\frac{dR}{dt} &amp;= \\gamma I</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-
-<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
-<span class="sd">    &gt;&gt;&gt; from pygom import common_models</span>
-<span class="sd">    &gt;&gt;&gt; ode = common_models.SEIR({&#39;beta&#39;:1800, &#39;gamma&#39;:100, &#39;alpha&#39;:35.84})</span>
-<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 50, 1001)</span>
-<span class="sd">    &gt;&gt;&gt; x0 = [0.0658, 0.0007, 0.0002, 0.0]</span>
-<span class="sd">    &gt;&gt;&gt; ode.initial_values = (x0, t[0])</span>
-<span class="sd">    &gt;&gt;&gt; solution,output = ode.integrate(t[1::], full_output=True)</span>
-<span class="sd">    &gt;&gt;&gt; ode.plot()</span>
-
-<span class="sd">    See also</span>
-<span class="sd">    --------</span>
-<span class="sd">    :func:`.SEIR_Birth_Death`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">]</span>
-    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">]</span>
-
-    <span class="n">transition</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I/N&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;alpha*E&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="p">]</span>
-
-    <span class="n">ode_obj</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span> <span class="n">transition</span><span class="o">=</span><span class="n">transition</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state_list</span><span class="p">,</span>
+                      <span class="n">param</span><span class="o">=</span><span class="n">param_list</span><span class="p">,</span>
+                      <span class="n">event</span><span class="o">=</span><span class="p">[</span><span class="n">event_inf</span><span class="p">,</span>
+                             <span class="n">event_rec</span><span class="p">,</span>
+                             <span class="n">event_birth</span><span class="p">,</span>
+                             <span class="n">event_death_S</span><span class="p">,</span>
+                             <span class="n">event_death_I</span><span class="p">,</span>
+                             <span class="n">event_death_R</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ode_obj</span>
+        <span class="k">return</span> <span class="n">model</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
-        <span class="k">return</span> <span class="n">ode_obj</span></div>
-
+        <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
+        <span class="k">return</span> <span class="n">model</span></div>
 
 <div class="viewcode-block" id="SEIR_Birth_Death"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR_Birth_Death">[docs]</a><span class="k">def</span> <span class="nf">SEIR_Birth_Death</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -845,38 +681,63 @@ document.write(`
 <span class="sd">    :func:`.SEIR`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">]</span>
-    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;mu&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">]</span>
+    <span class="n">state_list</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">))]</span>
+    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;mu&#39;</span><span class="p">]</span>
 
-    <span class="n">transition</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I/N&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;alpha*E&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="p">]</span>
+    <span class="c1"># Exposure</span>
+    <span class="n">trans_exp</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_exp</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;beta*S*I/N&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_exp</span><span class="p">])</span>
 
-    <span class="n">bd_list</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu*S&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu*E&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu*I&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu*N&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">B</span><span class="p">)</span>
-        <span class="p">]</span>
+    <span class="c1"># Infectious</span>
+    <span class="n">trans_inf</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_inf</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;alpha*E&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_inf</span><span class="p">])</span>
 
-    <span class="n">ode_obj</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span>
-                               <span class="n">transition</span><span class="o">=</span><span class="n">transition</span><span class="p">,</span>
-                               <span class="n">birth_death</span><span class="o">=</span><span class="n">bd_list</span><span class="p">)</span>
+    <span class="c1"># Recovery</span>
+    <span class="n">trans_rec</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_rec</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_rec</span><span class="p">])</span>
+
+    <span class="c1"># Transitions in and out of total population count</span>
+    <span class="c1"># These will be used in the following event definitions</span>
+    <span class="n">birth_N</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+    <span class="n">death_N</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 1) Birth event into S</span>
+    <span class="n">birth</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+    <span class="n">event_birth</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">birth</span><span class="p">,</span> <span class="n">birth_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*N&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 2) Death event of an S</span>
+    <span class="n">death_S</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_S</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_S</span><span class="p">,</span> <span class="n">death_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*S&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 3) Death event of an E</span>
+    <span class="n">death_E</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_E</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_E</span><span class="p">,</span> <span class="n">death_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*E&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 4) Death event of an I</span>
+    <span class="n">death_I</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_I</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_I</span><span class="p">,</span> <span class="n">death_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*I&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 5) Death event of an R</span>
+    <span class="n">death_R</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_R</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_R</span><span class="p">,</span> <span class="n">death_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*R&#39;</span><span class="p">)</span>
+
+
+    <span class="n">model</span><span class="o">=</span><span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state_list</span><span class="p">,</span>
+                      <span class="n">param</span><span class="o">=</span><span class="n">param_list</span><span class="p">,</span>
+                      <span class="n">event</span><span class="o">=</span><span class="p">[</span><span class="n">event_exp</span><span class="p">,</span>
+                             <span class="n">event_inf</span><span class="p">,</span>
+                             <span class="n">event_rec</span><span class="p">,</span>
+                             <span class="n">event_birth</span><span class="p">,</span>
+                             <span class="n">event_death_S</span><span class="p">,</span>
+                             <span class="n">event_death_E</span><span class="p">,</span>
+                             <span class="n">event_death_I</span><span class="p">,</span>
+                             <span class="n">event_death_R</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ode_obj</span>
+        <span class="k">return</span> <span class="n">model</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
-        <span class="k">return</span> <span class="n">ode_obj</span></div>
+        <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
+        <span class="k">return</span> <span class="n">model</span></div>
 
 <div class="viewcode-block" id="SEIR_Birth_Death_Periodic"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR_Birth_Death_Periodic">[docs]</a><span class="k">def</span> <span class="nf">SEIR_Birth_Death_Periodic</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -921,74 +782,139 @@ document.write(`
 <span class="sd">    :func:`.SEIR`, :func:`.SEIR_Birth_Death`, :func:`.SIR_Periodic`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">]</span>
-    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mu&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;beta_0&#39;</span><span class="p">,</span> <span class="s1">&#39;beta_1&#39;</span><span class="p">]</span>
-    <span class="n">derived_param</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;beta_S&#39;</span><span class="p">,</span> <span class="s1">&#39;beta_0 * (1 + beta_1*cos(2*pi*tau))&#39;</span><span class="p">)]</span>
-    <span class="n">ode</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu - beta_S*S*I - mu*S&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta_S*S*I - (mu + alpha)*E&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;alpha*E - (mu + gamma)*I&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
-        <span class="p">]</span>
-    <span class="c1"># initialize the model</span>
-    <span class="n">ode_obj</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span>
-                               <span class="n">derived_param</span><span class="o">=</span><span class="n">derived_param</span><span class="p">,</span>
-                               <span class="n">ode</span><span class="o">=</span><span class="n">ode</span><span class="p">)</span>
+    <span class="n">state_list</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">))]</span>
+    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta0&#39;</span><span class="p">,</span> <span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="s1">&#39;period&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;mu&#39;</span><span class="p">]</span>
+    <span class="n">derived_param</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;betaT&#39;</span><span class="p">,</span> <span class="s1">&#39;beta0*(1-delta*cos(2*3.14159*t/period))&#39;</span><span class="p">)]</span>
+
+    <span class="c1"># Exposure</span>
+    <span class="n">trans_exp</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_exp</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;betaT*S*I/N&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_exp</span><span class="p">])</span>
+
+    <span class="c1"># Infectious</span>
+    <span class="n">trans_inf</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_inf</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;alpha*E&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_inf</span><span class="p">])</span>
+
+    <span class="c1"># Recovery</span>
+    <span class="n">trans_rec</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_rec</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_rec</span><span class="p">])</span>
+
+    <span class="c1"># Transitions in and out of total population count</span>
+    <span class="c1"># These will be used in the following event definitions</span>
+    <span class="n">birth_N</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+    <span class="n">death_N</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 1) Birth event into S</span>
+    <span class="n">birth</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+    <span class="n">event_birth</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">birth</span><span class="p">,</span> <span class="n">birth_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*N&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 2) Death event of an S</span>
+    <span class="n">death_S</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_S</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_S</span><span class="p">,</span> <span class="n">death_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*S&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 3) Death event of an E</span>
+    <span class="n">death_E</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_E</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_E</span><span class="p">,</span> <span class="n">death_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*E&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 4) Death event of an I</span>
+    <span class="n">death_I</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_I</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_I</span><span class="p">,</span> <span class="n">death_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*I&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 5) Death event of an R</span>
+    <span class="n">death_R</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_R</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_R</span><span class="p">,</span> <span class="n">death_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*R&#39;</span><span class="p">)</span>
+
+    <span class="n">model</span><span class="o">=</span><span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state_list</span><span class="p">,</span>
+                      <span class="n">param</span><span class="o">=</span><span class="n">param_list</span><span class="p">,</span>
+                      <span class="n">derived_param</span><span class="o">=</span><span class="n">derived_param</span><span class="p">,</span>
+                      <span class="n">event</span><span class="o">=</span><span class="p">[</span><span class="n">event_exp</span><span class="p">,</span>
+                             <span class="n">event_inf</span><span class="p">,</span>
+                             <span class="n">event_rec</span><span class="p">,</span>
+                             <span class="n">event_birth</span><span class="p">,</span>
+                             <span class="n">event_death_S</span><span class="p">,</span>
+                             <span class="n">event_death_E</span><span class="p">,</span>
+                             <span class="n">event_death_I</span><span class="p">,</span>
+                             <span class="n">event_death_R</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ode_obj</span>
+        <span class="k">return</span> <span class="n">model</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
-        <span class="k">return</span> <span class="n">ode_obj</span></div>
+        <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
+        <span class="k">return</span> <span class="n">model</span></div>
 
 
-<span class="k">def</span> <span class="nf">SEIR_Birth_Death_Periodic_Waning_Intro</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;tau&#39;</span><span class="p">]</span>
-    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mu&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;epsilon&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;beta0&#39;</span><span class="p">,</span> <span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="s1">&#39;period&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">]</span>
+<div class="viewcode-block" id="SEIR_Birth_Death_Periodic_Waning_Intro"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR_Birth_Death_Periodic_Waning_Intro">[docs]</a><span class="k">def</span> <span class="nf">SEIR_Birth_Death_Periodic_Waning_Intro</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    SEIR model with vital dynamics, periodic infectivity, immune waning and</span>
+<span class="sd">    external introductions</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">state_list</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">))]</span>
+    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta0&#39;</span><span class="p">,</span> <span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="s1">&#39;period&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;mu&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;ar&#39;</span><span class="p">]</span>
+    <span class="n">derived_param</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;betaT&#39;</span><span class="p">,</span> <span class="s1">&#39;beta0*(1-delta*cos(2*3.14159*t/period))&#39;</span><span class="p">)]</span>
 
-    <span class="n">derived_param</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;betaT&#39;</span><span class="p">,</span> <span class="s1">&#39;beta0*(1-delta*cos(2*3.14159*tau/period))&#39;</span><span class="p">)]</span>
+    <span class="c1"># Exposure, internal transmission</span>
+    <span class="n">trans_exp</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_exp</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;betaT*S*I/N&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_exp</span><span class="p">])</span>
 
-    <span class="n">transition</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;betaT*S*I/N&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;epsilon*S&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;alpha*E&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;w*R&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="p">]</span>
+    <span class="c1"># Exposure, external attack rate (ar)</span>
+    <span class="n">trans_exp_ext</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_exp_ext</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;S*ar&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_exp_ext</span><span class="p">])</span>
 
-    <span class="n">bd_list</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu*S&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu*E&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu*I&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu*R&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;mu*N&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">B</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;tau&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">B</span><span class="p">)</span>
-        <span class="p">]</span>
+    <span class="c1"># Infectious</span>
+    <span class="n">trans_inf</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_inf</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;alpha*E&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_inf</span><span class="p">])</span>
 
-    <span class="n">ode_obj</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span> <span class="n">derived_param</span><span class="o">=</span><span class="n">derived_param</span><span class="p">,</span>
-                               <span class="n">transition</span><span class="o">=</span><span class="n">transition</span><span class="p">,</span>
-                               <span class="n">birth_death</span><span class="o">=</span><span class="n">bd_list</span><span class="p">)</span>
+    <span class="c1"># Recovery</span>
+    <span class="n">trans_rec</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_rec</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_rec</span><span class="p">])</span>
+
+    <span class="c1"># Waning</span>
+    <span class="n">trans_wan</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_wan</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;w*R&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_wan</span><span class="p">])</span>
+
+    <span class="c1"># Transitions in and out of total population count</span>
+    <span class="c1"># These will be used in the following event definitions</span>
+    <span class="n">birth_N</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+    <span class="n">death_N</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 1) Birth event into S</span>
+    <span class="n">birth</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+    <span class="n">event_birth</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">birth</span><span class="p">,</span> <span class="n">birth_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*N&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 2) Death event of an S</span>
+    <span class="n">death_S</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_S</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_S</span><span class="p">,</span> <span class="n">death_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*S&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 3) Death event of an E</span>
+    <span class="n">death_E</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_E</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_E</span><span class="p">,</span> <span class="n">death_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*E&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 4) Death event of an I</span>
+    <span class="n">death_I</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_I</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_I</span><span class="p">,</span> <span class="n">death_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*I&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 5) Death event of an R</span>
+    <span class="n">death_R</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_R</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_R</span><span class="p">,</span> <span class="n">death_N</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;mu*R&#39;</span><span class="p">)</span>
+
+    <span class="n">model</span><span class="o">=</span><span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state_list</span><span class="p">,</span>
+                      <span class="n">param</span><span class="o">=</span><span class="n">param_list</span><span class="p">,</span>
+                      <span class="n">derived_param</span><span class="o">=</span><span class="n">derived_param</span><span class="p">,</span>
+                      <span class="n">event</span><span class="o">=</span><span class="p">[</span><span class="n">event_exp</span><span class="p">,</span>
+                             <span class="n">event_exp_ext</span><span class="p">,</span>
+                             <span class="n">event_inf</span><span class="p">,</span>
+                             <span class="n">event_rec</span><span class="p">,</span>
+                             <span class="n">event_wan</span><span class="p">,</span>
+                             <span class="n">event_birth</span><span class="p">,</span>
+                             <span class="n">event_death_S</span><span class="p">,</span>
+                             <span class="n">event_death_E</span><span class="p">,</span>
+                             <span class="n">event_death_I</span><span class="p">,</span>
+                             <span class="n">event_death_R</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ode_obj</span>
+        <span class="k">return</span> <span class="n">model</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
-        <span class="k">return</span> <span class="n">ode_obj</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
+        <span class="k">return</span> <span class="n">model</span></div>
 
 <div class="viewcode-block" id="SEIR_Multiple"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR_Multiple">[docs]</a><span class="k">def</span> <span class="nf">SEIR_Multiple</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1097,7 +1023,7 @@ document.write(`
         <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
         <span class="k">return</span> <span class="n">ode_obj</span></div>
 
-<div class="viewcode-block" id="Influenza_SLIARN"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Influenza_SLIARN">[docs]</a><span class="k">def</span> <span class="nf">Influenza_SLIARN</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Influenza_SLIARD"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Influenza_SLIARD">[docs]</a><span class="k">def</span> <span class="nf">Influenza_SLIARD</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A simple influenza model from [Brauer2008]_, page 323.</span>
 
@@ -1107,33 +1033,59 @@ document.write(`
 <span class="sd">        \\frac{dI}{dt} &amp;= p \\kappa L - \\alpha I \\\\</span>
 <span class="sd">        \\frac{dA}{dt} &amp;= (1 - p) \\kappa L - \\eta A \\\\</span>
 <span class="sd">        \\frac{dR}{dt} &amp;= f \\alpha I + \\eta A \\\\</span>
-<span class="sd">        \\frac{dN}{dt} &amp;= -(1 - f) \\alpha I</span>
+<span class="sd">        \\frac{dD}{dt} &amp;= (1 - f) \\alpha I</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">]</span>
-    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;kappa&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="s1">&#39;epsilon&#39;</span><span class="p">]</span>
-    <span class="n">ode</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;-beta*S*(I + delta*A)&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*(I + delta*A) - kappa*L&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;p*kappa*L - alpha*I&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;(1 - p)*kappa*L - epsilon*A&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;f*alpha*I + epsilon*A&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;-(1 - f)*alpha*I&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
-    <span class="p">]</span>
-    <span class="c1"># initialize the model</span>
-    <span class="n">ode_obj</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span> <span class="n">ode</span><span class="o">=</span><span class="n">ode</span><span class="p">)</span>
+
+    <span class="n">state_list</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)),</span>
+                  <span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)),</span>
+                  <span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span>
+                  <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span>
+                  <span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span>
+                  <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">))]</span>
+    
+    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;kappa&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;epsilon&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">]</span>
+
+    <span class="c1"># 1) Susceptibles enter latent phase through:</span>
+    <span class="c1">## (i) Encounters with symptomatic infectious, I</span>
+    <span class="n">trans_exp_I</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;L&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_exp_I</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;beta*S*I/N&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_exp_I</span><span class="p">])</span>
+    <span class="c1">## (ii) Encounters with asymptomatic infectious, A</span>
+    <span class="n">trans_exp_A</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;L&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_exp_A</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;beta*S*delta*A/N&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_exp_A</span><span class="p">])</span>
+    <span class="c1"># 2) Latent phase ends</span>
+    <span class="c1">## (i) A fraction, p, go on to become symptomatic infectious, I</span>
+    <span class="n">trans_inf_I</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_inf_I</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;p*kappa*L&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_inf_I</span><span class="p">])</span>
+    <span class="c1">## (ii) The remaining (1-p) become asymptomatic infectious, A</span>
+    <span class="n">trans_inf_A</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_inf_A</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;(1 - p)*kappa*L&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_inf_A</span><span class="p">])</span>
+    <span class="c1"># 3) All asymptomatics recover</span>
+    <span class="n">trans_rec_A</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_rec_A</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;epsilon*A&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_rec_A</span><span class="p">])</span>
+    <span class="c1"># 4) For the symptomatics:</span>
+    <span class="c1">## (i) A fraction, f, recover</span>
+    <span class="n">trans_rec_I</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_rec_I</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;f*alpha*I&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_rec_I</span><span class="p">])</span>
+    <span class="c1">## (ii) The remaining 1-f die</span>
+    <span class="n">trans_death_I</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_death_I</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;(1-f)*alpha*I&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_death_I</span><span class="p">])</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state_list</span><span class="p">,</span>
+                        <span class="n">param</span><span class="o">=</span><span class="n">param_list</span><span class="p">,</span>
+                        <span class="n">event</span><span class="o">=</span><span class="p">[</span><span class="n">event_exp_I</span><span class="p">,</span>
+                               <span class="n">event_exp_A</span><span class="p">,</span>
+                               <span class="n">event_inf_I</span><span class="p">,</span>
+                               <span class="n">event_inf_A</span><span class="p">,</span>
+                               <span class="n">event_rec_A</span><span class="p">,</span>
+                               <span class="n">event_rec_I</span><span class="p">,</span>
+                               <span class="n">event_death_I</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ode_obj</span>
+        <span class="k">return</span> <span class="n">model</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
-        <span class="k">return</span> <span class="n">ode_obj</span></div>
+        <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
+        <span class="k">return</span> <span class="n">model</span></div>
 
 
 <div class="viewcode-block" id="Legrand_Ebola_SEIHFR"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Legrand_Ebola_SEIHFR">[docs]</a><span class="k">def</span> <span class="nf">Legrand_Ebola_SEIHFR</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1243,7 +1195,6 @@ document.write(`
         <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
         <span class="k">return</span> <span class="n">ode_obj</span></div>
 
-
 <div class="viewcode-block" id="Lotka_Volterra"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Lotka_Volterra">[docs]</a><span class="k">def</span> <span class="nf">Lotka_Volterra</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Standard Lotka-Volterra model with two states and four parameters [Lotka1920]_</span>
@@ -1264,88 +1215,191 @@ document.write(`
 <span class="sd">    &gt;&gt;&gt; ode.plot()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># our two state and four parameters</span>
-    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">]</span>
-    <span class="c1"># while these 4 are</span>
-    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">]</span>
-    <span class="c1"># then define the set of ode</span>
-    <span class="c1"># ode = [</span>
-    <span class="c1">#     Transition(origin=&#39;x&#39;, equation=&#39;alpha*x - c*x*y&#39;,</span>
-    <span class="c1">#                transition_type=TransitionType.ODE),</span>
-    <span class="c1">#     Transition(origin=&#39;y&#39;, equation=&#39;-delta*y + gamma*x*y&#39;,</span>
-    <span class="c1">#                transition_type=TransitionType.ODE)</span>
-    <span class="c1">#     ]</span>
-    <span class="c1"># ode_obj = SimulateOde(state, param_list, ode=ode)</span>
+    <span class="n">state_list</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">)),</span> <span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">))]</span>         <span class="c1"># x=prey, y=pred</span>
+    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;delta&#39;</span><span class="p">]</span>
 
-    <span class="c1"># Defining via transitions allows us to solve stochastically too</span>
-    <span class="n">birth_death</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;alpha*x&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">B</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*x*y/A&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*x*y/A&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">B</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;delta*y&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">)</span>
-        <span class="p">]</span>
+    <span class="c1"># 1) Birth of prey</span>
+    <span class="n">birth_prey</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+    <span class="n">event_birth_prey</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">birth_prey</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;alpha*x&#39;</span><span class="p">)</span>
 
-    <span class="c1"># initialize the model</span>
-    <span class="n">ode_obj</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="p">,</span>
-                          <span class="n">param_list</span><span class="p">,</span>
-                          <span class="n">birth_death</span><span class="o">=</span><span class="n">birth_death</span><span class="p">)</span>
+    <span class="c1"># 2) Death of prey</span>
+    <span class="n">death_prey</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_prey</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_prey</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;beta*x*y&#39;</span><span class="p">)</span>
 
+    <span class="c1"># 3) Birth of predator</span>
+    <span class="n">birth_pred</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+    <span class="n">event_birth_pred</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">birth_pred</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;delta*x*y&#39;</span><span class="p">)</span>
 
-    <span class="c1"># set return, depending on whether we have input the parameters</span>
+    <span class="c1"># 4) Death of predator</span>
+    <span class="n">death_pred</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">event_death_pred</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">death_pred</span><span class="p">],</span> <span class="n">rate</span><span class="o">=</span><span class="s1">&#39;gamma*y&#39;</span><span class="p">)</span>
+
+    <span class="n">model</span><span class="o">=</span><span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state_list</span><span class="p">,</span>
+                      <span class="n">param</span><span class="o">=</span><span class="n">param_list</span><span class="p">,</span>
+                      <span class="n">event</span><span class="o">=</span><span class="p">[</span><span class="n">event_birth_prey</span><span class="p">,</span>
+                             <span class="n">event_death_prey</span><span class="p">,</span>
+                             <span class="n">event_birth_pred</span><span class="p">,</span>
+                             <span class="n">event_death_pred</span><span class="p">])</span>
+
     <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ode_obj</span>
+        <span class="k">return</span> <span class="n">model</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
-        <span class="k">return</span> <span class="n">ode_obj</span></div>
+        <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
+        <span class="k">return</span> <span class="n">model</span></div>
+
+<span class="c1"># Doesn&#39;t seem like a very useful formulation. </span>
+
+<span class="c1"># def Lotka_Volterra_4State(param=None):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     The four state Lotka-Volterra model [Lotka1920]_. A common interpretation is that</span>
+<span class="c1">#     a = Grass, x = rabbits, y = foxes and b is the death of foxes.</span>
+
+<span class="c1">#     .. math::</span>
+<span class="c1">#         \\frac{da}{dt} &amp;= k_{0} a x \\\\</span>
+<span class="c1">#         \\frac{dx}{dt} &amp;= k_{0} a x - k_{1} x y \\\\</span>
+<span class="c1">#         \\frac{dy}{dt} &amp;= k_{1} x y - k_{2} y \\\\</span>
+<span class="c1">#         \\frac{db}{dt} &amp;= k_{2} y</span>
+
+<span class="c1">#     Examples</span>
+<span class="c1">#     --------</span>
+<span class="c1">#     &gt;&gt;&gt; import numpy as np</span>
+<span class="c1">#     &gt;&gt;&gt; from pygom import common_models</span>
+<span class="c1">#     &gt;&gt;&gt; x0 = [150.0, 10.0, 10.0, 0.0]</span>
+<span class="c1">#     &gt;&gt;&gt; t = np.linspace(0, 15, 100)</span>
+<span class="c1">#     &gt;&gt;&gt; params = [0.01, 0.1, 1.0]</span>
+<span class="c1">#     &gt;&gt;&gt; ode = common_models.Lotka_Volterra_4State(params)</span>
+<span class="c1">#     &gt;&gt;&gt; ode.initial_values = (x0, t[0])</span>
+<span class="c1">#     &gt;&gt;&gt; ode.integrate(t[1::])</span>
+<span class="c1">#     &gt;&gt;&gt; ode.plot()</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+
+<span class="c1">#     state_list = [&#39;a&#39;, &#39;x&#39;, &#39;y&#39;]</span>
+<span class="c1">#     param_list = [&#39;k0&#39;, &#39;k1&#39;, &#39;k2&#39;]</span>
+
+<span class="c1">#     # 1) Grass turning into rabbits</span>
+<span class="c1">#     trans_grazing=Transition(origin=&#39;a&#39;, destination=&#39;x&#39;,transition_type=TransitionType.T)</span>
+<span class="c1">#     event_grazing=Event(rate=&#39;k0*a*x&#39;, transition_list=[trans_grazing])</span>
+
+<span class="c1">#     # 2) Foxes eating rabbits</span>
+<span class="c1">#     trans_hunting=Transition(origin=&#39;x&#39;, destination=&#39;y&#39;,transition_type=TransitionType.T)</span>
+<span class="c1">#     event_hunting=Event(rate=&#39;k1*x*y&#39;, transition_list=[trans_hunting])</span>
+
+<span class="c1">#     # 3) Foxes natural death rate</span>
+<span class="c1">#     death_pred=Transition(origin=&quot;y&quot;, transition_type=&quot;D&quot;)</span>
+<span class="c1">#     event_death_pred=Event(transition_list=[death_pred], rate=&#39;k2*y&#39;)</span>
+
+<span class="c1">#     model=SimulateOde(state=state_list,</span>
+<span class="c1">#                       param=param_list,</span>
+<span class="c1">#                       event=[event_birth_prey,</span>
+<span class="c1">#                              event_death_prey,</span>
+<span class="c1">#                              event_birth_pred,</span>
+<span class="c1">#                              event_death_pred])</span>
+
+<span class="c1">#     if param is None:</span>
+<span class="c1">#         return model</span>
+<span class="c1">#     else:</span>
+<span class="c1">#         model.parameters = param</span>
+<span class="c1">#         return model</span>
 
 
-<div class="viewcode-block" id="Lotka_Volterra_4State"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Lotka_Volterra_4State">[docs]</a><span class="k">def</span> <span class="nf">Lotka_Volterra_4State</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Robertson"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Robertson">[docs]</a><span class="k">def</span> <span class="nf">Robertson</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The four state Lotka-Volterra model [Lotka1920]_. A common interpretation is that</span>
-<span class="sd">    a = Grass, x = rabbits, y = foxes and b is the death of foxes.</span>
+<span class="sd">    The so called Robertson problem [Robertson1966]_, which is a standard example used to</span>
+<span class="sd">    test stiff integrator.</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        \\frac{da}{dt} &amp;= k_{0} a x \\\\</span>
-<span class="sd">        \\frac{dx}{dt} &amp;= k_{0} a x - k_{1} x y \\\\</span>
-<span class="sd">        \\frac{dy}{dt} &amp;= k_{1} x y - k_{2} y \\\\</span>
-<span class="sd">        \\frac{db}{dt} &amp;= k_{2} y</span>
+<span class="sd">        \\frac{dy_{1}}{dt} &amp;= -0.04 y_{1} + 1 \\cdot 10^{4} y_{2} y_{3} \\\\</span>
+<span class="sd">        \\frac{dy_{2}}{dt} &amp;= 0.04 y_{1} - 1 \\cdot 10^{4} y_{2} y_{3} - 3 \\cdot 10^{7} y_{2}^{2}\\\\</span>
+<span class="sd">        \\frac{dy_{3}}{dt} &amp;= 3 \\cdot 10^{7} y_{2}^{2}</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; from pygom import common_models</span>
+<span class="sd">    &gt;&gt;&gt; import numpy</span>
+<span class="sd">    &gt;&gt;&gt; t = numpy.append(0, 4*numpy.logspace(-6, 6, 1000))</span>
+<span class="sd">    &gt;&gt;&gt; ode = common_models.Robertson()</span>
+<span class="sd">    &gt;&gt;&gt; ode.initial_values = ([1.0,0.0,0.0], t[0])</span>
+<span class="sd">    &gt;&gt;&gt; solution = ode.integrate(t[1::])</span>
+<span class="sd">    &gt;&gt;&gt; ode.plot() # note that this is not being plotted in the log scale</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># note how we have short handed the definition</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;y1:4&#39;</span><span class="p">]</span>
+    <span class="c1"># note that we do not have any parameters, or rather,</span>
+    <span class="c1"># we have hard coded in the parameters</span>
+    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">trans_1_2</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_1_2</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;0.04*y1&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_1_2</span><span class="p">])</span>
+
+    <span class="n">trans_2_1</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_2_1</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;1e4*y2*y3&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_2_1</span><span class="p">])</span>
+
+    <span class="n">trans_2_3</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;y3&#39;</span><span class="p">,</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">event_2_3</span><span class="o">=</span><span class="n">Event</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="s1">&#39;3e7*y2*y2&#39;</span><span class="p">,</span> <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">trans_2_3</span><span class="p">])</span>
+
+    <span class="c1"># initialize the model</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="p">[</span><span class="n">event_1_2</span><span class="p">,</span>
+                                                  <span class="n">event_2_1</span><span class="p">,</span>
+                                                  <span class="n">event_2_3</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">model</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span><span class="s2">&quot;Input parameters not used&quot;</span><span class="p">)</span></div>
+
+<span class="c1">#############################################</span>
+<span class="c1"># ODEs</span>
+<span class="c1">#############################################</span>
+
+
+<div class="viewcode-block" id="SIR_norm"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SIR_norm">[docs]</a><span class="k">def</span> <span class="nf">SIR_norm</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A normalized SIR model:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\frac{dS}{dt} &amp;= -\\beta SI \\\\</span>
+<span class="sd">        \\frac{dI}{dt} &amp;= \\beta SI - \\gamma I \\\\</span>
+<span class="sd">        \\frac{dR}{dt} &amp;= \\gamma I</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    The model that produced top two graph in Figure 1.3 of the reference above.</span>
+<span class="sd">    First, when everyone is susceptible and only one individual was infected.</span>
+
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; from pygom import common_models</span>
-<span class="sd">    &gt;&gt;&gt; x0 = [150.0, 10.0, 10.0, 0.0]</span>
-<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 15, 100)</span>
-<span class="sd">    &gt;&gt;&gt; params = [0.01, 0.1, 1.0]</span>
-<span class="sd">    &gt;&gt;&gt; ode = common_models.Lotka_Volterra_4State(params)</span>
+<span class="sd">    &gt;&gt;&gt; ode = common_models.SIR({&#39;beta&#39;:3.6, &#39;gamma&#39;:0.2})</span>
+<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 730, 1001)</span>
+<span class="sd">    &gt;&gt;&gt; N = 7781984.0</span>
+<span class="sd">    &gt;&gt;&gt; x0 = [1.0, 10/N, 0.0]</span>
 <span class="sd">    &gt;&gt;&gt; ode.initial_values = (x0, t[0])</span>
-<span class="sd">    &gt;&gt;&gt; ode.integrate(t[1::])</span>
+<span class="sd">    &gt;&gt;&gt; solution = ode.integrate(t[1::])</span>
 <span class="sd">    &gt;&gt;&gt; ode.plot()</span>
+
+<span class="sd">    Second model with a more *realistic* scenario</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from pygom import common_models</span>
+<span class="sd">    &gt;&gt;&gt; ode = common_models.SIR({&#39;beta&#39;:3.6, &#39;gamma&#39;:0.2})</span>
+<span class="sd">    &gt;&gt;&gt; t = np.linspace(0, 730, 1001)</span>
+<span class="sd">    &gt;&gt;&gt; N = 7781984.0</span>
+<span class="sd">    &gt;&gt;&gt; x0 = [0.065, 123*(5.0/30.0)/N, 0.0]</span>
+<span class="sd">    &gt;&gt;&gt; ode.initial_values = (x0, t[0])</span>
+<span class="sd">    &gt;&gt;&gt; solution = ode.integrate(t[1::])</span>
+<span class="sd">    &gt;&gt;&gt; ode.plot()</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">]</span>
+    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">]</span>
 
-    <span class="c1"># four states</span>
-    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]</span>
-    <span class="c1"># three parameters</span>
-    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;k0&#39;</span><span class="p">,</span> <span class="s1">&#39;k1&#39;</span><span class="p">,</span> <span class="s1">&#39;k2&#39;</span><span class="p">]</span>
+    <span class="n">dSdt</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;-beta*S*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
+    <span class="n">dIdt</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;beta*S*I-gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
+    <span class="n">dRdt</span><span class="o">=</span><span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;gamma*I&#39;</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">)</span>
 
-    <span class="c1"># then define the set of ode</span>
-    <span class="n">transition</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span>
-                   <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;k0*a*x&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
-                   <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;k1*x*y&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span>
-                   <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;k2*y&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="p">]</span>
-
-    <span class="n">ode_obj</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span> <span class="n">transition</span><span class="o">=</span><span class="n">transition</span><span class="p">)</span>
+    <span class="c1"># initialize the model</span>
+    <span class="n">ode_obj</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="n">param_list</span><span class="p">,</span> <span class="n">ode</span><span class="o">=</span><span class="p">[</span><span class="n">dSdt</span><span class="p">,</span> <span class="n">dIdt</span><span class="p">,</span> <span class="n">dRdt</span><span class="p">])</span>
 
     <span class="c1"># set return, depending on whether we have input the parameters</span>
     <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1493,52 +1547,6 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
         <span class="k">return</span> <span class="n">ode_obj</span></div>
-
-
-<div class="viewcode-block" id="Robertson"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Robertson">[docs]</a><span class="k">def</span> <span class="nf">Robertson</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The so called Robertson problem [Robertson1966]_, which is a standard example used to</span>
-<span class="sd">    test stiff integrator.</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">        \\frac{dy_{1}}{dt} &amp;= -0.04 y_{1} + 1 \\cdot 10^{4} y_{2} y_{3} \\\\</span>
-<span class="sd">        \\frac{dy_{2}}{dt} &amp;= 0.04 y_{1} - 1 \\cdot 10^{4} y_{2} y_{3} - 3 \\cdot 10^{7} y_{2}^{2}\\\\</span>
-<span class="sd">        \\frac{dy_{3}}{dt} &amp;= 3 \\cdot 10^{7} y_{2}^{2}</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-
-<span class="sd">    &gt;&gt;&gt; from pygom import common_models</span>
-<span class="sd">    &gt;&gt;&gt; import numpy</span>
-<span class="sd">    &gt;&gt;&gt; t = numpy.append(0, 4*numpy.logspace(-6, 6, 1000))</span>
-<span class="sd">    &gt;&gt;&gt; ode = common_models.Robertson()</span>
-<span class="sd">    &gt;&gt;&gt; ode.initial_values = ([1.0,0.0,0.0], t[0])</span>
-<span class="sd">    &gt;&gt;&gt; solution = ode.integrate(t[1::])</span>
-<span class="sd">    &gt;&gt;&gt; ode.plot() # note that this is not being plotted in the log scale</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># note how we have short handed the definition</span>
-    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;y1:4&#39;</span><span class="p">]</span>
-    <span class="c1"># note that we do not have any parameters, or rather,</span>
-    <span class="c1"># we have hard coded in the parameters</span>
-    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">transition</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span>
-                   <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;0.04*y1&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;y1&#39;</span><span class="p">,</span>
-                   <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;1e4*y2*y3&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">),</span>
-        <span class="n">Transition</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;y2&#39;</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="s1">&#39;y3&#39;</span><span class="p">,</span>
-                   <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;3e7*y2*y2&#39;</span><span class="p">,</span>
-                   <span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="p">]</span>
-    <span class="c1"># initialize the model</span>
-    <span class="n">ode_obj</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span> <span class="n">transition</span><span class="o">=</span><span class="n">transition</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ode_obj</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span><span class="s2">&quot;Input parameters not used&quot;</span><span class="p">)</span></div>
 </pre></div>
 
                 </article>

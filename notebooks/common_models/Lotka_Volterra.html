@@ -189,9 +189,15 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../solution.html">Mathematical description</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../model_spec_2.html">Defining a system of differential equations</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../extract_info.html">Extracting model information</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unroll/unrollSimple.html">Deducing transitions from equations</a></li>
@@ -456,22 +462,30 @@ This decision to define in terms of population numbers, rather than densities, p
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">math</span>
 
-<span class="c1"># population density of predators and prey per square m</span>
-<span class="n">x0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>
+<span class="c1"># Initial populations</span>
+<span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span>
 
-<span class="c1"># total area we wish to consider</span>
-<span class="n">area</span><span class="o">=</span><span class="mi">200</span>
+<span class="c1"># Parameters from a snowshoe hare / Canadian lynx system</span>
+<span class="c1"># https://mc-stan.org/users/documentation/case-studies/lotka-volterra-predator-prey.html</span>
+<span class="n">alpha</span><span class="o">=</span><span class="mf">0.545</span>
+<span class="n">beta</span><span class="o">=</span><span class="mf">0.028</span>
+<span class="n">gamma</span><span class="o">=</span><span class="mf">0.803</span>
+<span class="n">delta</span><span class="o">=</span><span class="mf">0.024</span>
 
-<span class="c1"># total animal populations</span>
-<span class="n">x0</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="n">area</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">x0</span><span class="p">]</span>
+<span class="c1"># scale up the population (this will need scaling in the predation parameters)</span>
+<span class="n">scale</span><span class="o">=</span><span class="mi">10</span>
 
-<span class="n">ode</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">Lotka_Volterra</span><span class="p">({</span><span class="s1">&#39;alpha&#39;</span><span class="p">:</span><span class="mf">0.1</span><span class="p">,</span>
-                                    <span class="s1">&#39;beta&#39;</span><span class="p">:</span><span class="mf">0.2</span><span class="p">,</span>
-                                    <span class="s1">&#39;gamma&#39;</span><span class="p">:</span><span class="mf">0.3</span><span class="p">,</span>
-                                    <span class="s1">&#39;delta&#39;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">,</span>
-                                    <span class="s1">&#39;A&#39;</span><span class="p">:</span><span class="n">area</span><span class="p">})</span>
+<span class="n">x0</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="n">scale</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">x0</span><span class="p">]</span>
+<span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="o">/</span><span class="n">scale</span>
+<span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="o">/</span><span class="n">scale</span>
 
-<span class="n">tmax</span><span class="o">=</span><span class="mi">200</span>                              <span class="c1"># maximum time over which to run solver</span>
+
+<span class="n">ode</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">Lotka_Volterra</span><span class="p">({</span><span class="s1">&#39;alpha&#39;</span><span class="p">:</span><span class="n">alpha</span><span class="p">,</span>
+                                    <span class="s1">&#39;beta&#39;</span><span class="p">:</span><span class="n">beta</span><span class="p">,</span>
+                                    <span class="s1">&#39;gamma&#39;</span><span class="p">:</span><span class="n">gamma</span><span class="p">,</span>
+                                    <span class="s1">&#39;delta&#39;</span><span class="p">:</span><span class="n">delta</span><span class="p">})</span>
+
+<span class="n">tmax</span><span class="o">=</span><span class="mi">50</span>                               <span class="c1"># maximum time over which to run solver</span>
 <span class="n">dt</span><span class="o">=</span><span class="mf">0.1</span>                                <span class="c1"># timestep</span>
 <span class="n">n_timestep</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">tmax</span><span class="o">/</span><span class="n">dt</span><span class="p">)</span>         <span class="c1"># number of iterations</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">n_timestep</span><span class="p">)</span>  <span class="c1"># times at which solution will be evaluated</span>
@@ -497,14 +511,14 @@ This decision to define in terms of population numbers, rather than densities, p
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Population number&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;prey&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;predator&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/c6f35c2698b1e8f1e9cd045860ec2febefab589b087a9b34369a37744451ec42.png" src="../../_images/c6f35c2698b1e8f1e9cd045860ec2febefab589b087a9b34369a37744451ec42.png" />
+<img alt="../../_images/eff193c577f4e36b58da178992b36505eac96b55b7f39b297cdeb4063372aafe.png" src="../../_images/eff193c577f4e36b58da178992b36505eac96b55b7f39b297cdeb4063372aafe.png" />
 </div>
 </div>
 <p>We can also see how the system evolves stochastically</p>
@@ -513,7 +527,7 @@ This decision to define in terms of population numbers, rather than densities, p
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="n">n_sim</span><span class="o">=</span><span class="mi">1</span>
-<span class="n">solution</span><span class="p">,</span> <span class="n">simT</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">solve_stochast</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n_sim</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">solution</span><span class="p">,</span> <span class="n">jump</span><span class="p">,</span> <span class="n">simT</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">solve_stochast</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n_sim</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 
@@ -523,13 +537,13 @@ This decision to define in terms of population numbers, rather than densities, p
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Population number&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;prey&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;predator&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/fd2ea021ecf284a48b9f24f3415362e3e2ac96ed22ae0ff2248a6ef88f585254.png" src="../../_images/fd2ea021ecf284a48b9f24f3415362e3e2ac96ed22ae0ff2248a6ef88f585254.png" />
+<img alt="../../_images/86f23c6db6646e807b2e3e8e2517e9cfa0ff9e267d8df31bfd06b4c8438bacd5.png" src="../../_images/86f23c6db6646e807b2e3e8e2517e9cfa0ff9e267d8df31bfd06b4c8438bacd5.png" />
 </div>
 </div>
 <p>This appears to be unstable, since the populations undergo increasingly extreme peaks and troughs.
@@ -545,7 +559,7 @@ This can be confirmed by examining a phase diagram, whereby the trajectory in st
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/b8f5bc5a20af68888a1a2b0ba1d40fdef20011bb97002934341d6ae19789d4ad.png" src="../../_images/b8f5bc5a20af68888a1a2b0ba1d40fdef20011bb97002934341d6ae19789d4ad.png" />
+<img alt="../../_images/b33d3f7c247609005e173d814f19f392b2655205dbd2cb65def7ed78b692820f.png" src="../../_images/b33d3f7c247609005e173d814f19f392b2655205dbd2cb65def7ed78b692820f.png" />
 </div>
 </div>
 </section>

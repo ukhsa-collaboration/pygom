@@ -186,9 +186,15 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../../../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/solution.html">Mathematical description</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/model_spec_2.html">Defining a system of differential equations</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../notebooks/insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/extract_info.html">Extracting model information</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollSimple.html">Deducing transitions from equations</a></li>
@@ -418,15 +424,16 @@ document.write(`
 
 <span class="k">class</span> <span class="nc">HasNewTransition</span><span class="p">(</span><span class="n">ode_utils</span><span class="o">.</span><span class="n">CompileCanary</span><span class="p">):</span>
     <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ode&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;Jacobian&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;diffJacobian&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;jacobian&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;diff_jacobian&#39;</span><span class="p">,</span>
               <span class="s1">&#39;grad&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;GradJacobian&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;transitionMatrixCompile&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;transitionVector&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;birthDeathRateCompile&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;computeTransitionMeanVar&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;transitionJacobian&#39;</span><span class="p">]</span>
+              <span class="s1">&#39;grad_jacobian&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;transitionJacobian&#39;</span><span class="p">,</span>
+              <span class="s2">&quot;pureOdeVector&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;vMat&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;eventRateVector&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;transitionMean&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;transitionVar&quot;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="SimulateOde"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde">[docs]</a><span class="k">class</span> <span class="nc">SimulateOde</span><span class="p">(</span><span class="n">DeterministicOde</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
@@ -436,14 +443,16 @@ document.write(`
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    state: list</span>
-<span class="sd">        A list of states (string)</span>
+<span class="sd">        A list of states (string) or (string, (numeric, numeric)) if specifying limits</span>
 <span class="sd">    param: list</span>
 <span class="sd">        A list of the parameters (string)</span>
 <span class="sd">    derived_param: list</span>
 <span class="sd">        A list of the derived parameters (tuple of (string,string))</span>
 <span class="sd">    transition: list</span>
-<span class="sd">        A list of transition (:class:`Transition`)</span>
-<span class="sd">    birth_death: list</span>
+<span class="sd">        A list of transition (:class:`Transition`) #TODO Now this might actually only be deterministic ODE objects. Check.</span>
+<span class="sd">    transition: list</span>
+<span class="sd">        A list of events (:class:`Event`)</span>
+<span class="sd">    birth_death: list                              #TODO Now these are wrapped in events. Should try to make work for back compat.</span>
 <span class="sd">        A list of birth or death process (:class:`Transition`)</span>
 <span class="sd">    ode: list</span>
 <span class="sd">        A list of ode (:class:`Transition`)</span>
@@ -455,6 +464,7 @@ document.write(`
                  <span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">derived_param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">transition</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">birth_death</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">ode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
@@ -465,34 +475,41 @@ document.write(`
                                           <span class="n">param</span><span class="p">,</span>
                                           <span class="n">derived_param</span><span class="p">,</span>
                                           <span class="n">transition</span><span class="p">,</span>
+                                          <span class="n">event</span><span class="p">,</span>
                                           <span class="n">birth_death</span><span class="p">,</span>
                                           <span class="n">ode</span><span class="p">)</span>
 
+        <span class="c1"># Ledger keeping record of whether each important function is up to date with</span>
+        <span class="c1"># underlying model, or needs to be recompiled. Colloquially, each function has</span>
+        <span class="c1"># an associated canary and if True (dead) it means something needs to be done.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span> <span class="o">=</span> <span class="n">HasNewTransition</span><span class="p">()</span>
 
-        <span class="c1"># need a manual override because it is possible that we</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre_tau</span><span class="o">=</span><span class="kc">None</span>       <span class="c1"># If tau is set, then this overrides the adaptive tau leap.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="o">=</span><span class="mf">0.03</span>      <span class="c1"># Default parameter recommended by Cao et al.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span><span class="o">=</span><span class="kc">None</span>
+
+        <span class="c1"># TODO: I think the changes I&#39;ve made might result in compilation for every iteration</span>
+        <span class="c1">#       if working in parallel. Must check this.</span>
+
+        <span class="c1"># Compile the code.  Note that we need the class because we</span>
+        <span class="c1"># compile both the formatted and unformatted version.</span>
+        <span class="c1"># Need a manual override of backend because it is possible that we</span>
         <span class="c1"># want to perform simulation in a parallel/distributed manner</span>
         <span class="c1"># and there are issues with pickling fortran objects</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span> <span class="o">=</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">compileCode</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s1">&#39;cython&#39;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRate</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRateCompile</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="c1"># information required for the tau leap</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionJacobian</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMean</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMeanCompile</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVar</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVarCompile</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrixCompile</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="c1"># micro times for jumps</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tau</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tauDict</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Add templates of compiled sympy functions with:</span>
+        <span class="c1"># 1) Name of the compiled version of the sympy object</span>
+        <span class="c1"># 2) The function used to generate the underlying sympy object</span>
+        <span class="c1">#    (convention: starts with &quot;get_&quot;, in previous versions have</span>
+        <span class="c1">#     started with get_ or _compute)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_func</span><span class="p">(</span><span class="s2">&quot;vMat&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_StateChangeMatrix</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_func</span><span class="p">(</span><span class="s2">&quot;eventRateVector&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_EventRateVector</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_func</span><span class="p">(</span><span class="s2">&quot;transitionMean&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_TransitionMean</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_func</span><span class="p">(</span><span class="s2">&quot;transitionVar&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_TransitionVar</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_func</span><span class="p">(</span><span class="s2">&quot;pureOdeVector&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pureOdeVector</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_func</span><span class="p">(</span><span class="s2">&quot;transitionJacobian&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_TransitionJacobian</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;SimulateOde&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_model_str</span><span class="p">()</span>
@@ -511,8 +528,14 @@ document.write(`
 <span class="sd">        t1: double</span>
 <span class="sd">            final time</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">exact</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">,</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">exact</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vMat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eventRateVector</span><span class="p">,</span>
                      <span class="n">output_time</span><span class="o">=</span><span class="n">output_time</span><span class="p">))</span></div>
+
+    <span class="c1">###########################################################################</span>
+    <span class="c1">#</span>
+    <span class="c1"># Solver functions</span>
+    <span class="c1">#</span>
+    <span class="c1">###########################################################################</span>
 
 <div class="viewcode-block" id="SimulateOde.cle"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.cle">[docs]</a>    <span class="k">def</span> <span class="nf">cle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">output_time</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
@@ -533,7 +556,7 @@ document.write(`
 <span class="sd">        t1: double</span>
 <span class="sd">            final time</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">cle</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">,</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">cle</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vMat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eventRateVector</span><span class="p">,</span>
                    <span class="n">output_time</span><span class="o">=</span><span class="n">output_time</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="SimulateOde.hybrid"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.hybrid">[docs]</a>    <span class="k">def</span> <span class="nf">hybrid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">output_time</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -552,10 +575,10 @@ document.write(`
 <span class="sd">        t1: double</span>
 <span class="sd">            final time</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">hybrid</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lambdaMat</span><span class="p">,</span>
-                      <span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">,</span>
-                      <span class="bp">self</span><span class="o">.</span><span class="n">transition_mean</span><span class="p">,</span>
-                      <span class="bp">self</span><span class="o">.</span><span class="n">transition_var</span><span class="p">,</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">hybrid</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vMat</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">eventRateVector</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">transitionMean</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">transitionVar</span><span class="p">,</span>
                       <span class="n">output_time</span><span class="o">=</span><span class="n">output_time</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="SimulateOde.simulate_param"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.simulate_param">[docs]</a>    <span class="k">def</span> <span class="nf">simulate_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -584,8 +607,9 @@ document.write(`
 <span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="c1"># if our parameters not stochastic, then we are going to</span>
-        <span class="c1"># throw a warning because simulating a deterministic system is</span>
-        <span class="c1"># just plain stupid</span>
+        <span class="c1"># throw a warning because trying to  randomly draw parameters</span>
+        <span class="c1"># when they are set to be constant is just plain stupid</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Deterministic parameters.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">iteration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -719,7 +743,7 @@ document.write(`
 
     <span class="c1"># Same as function below, just trying out new naming convention</span>
 <div class="viewcode-block" id="SimulateOde.solve_stochast"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.solve_stochast">[docs]</a>    <span class="k">def</span> <span class="nf">solve_stochast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                      <span class="n">exact</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                       <span class="n">exact</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Simulate the ode using stochastic simulation.  It switches</span>
 <span class="sd">        between a first reaction method and a :math:`\\tau`-leap</span>
@@ -746,6 +770,8 @@ document.write(`
 <span class="sd">        sim_X: list</span>
 <span class="sd">            of length iteration each with (len(t),len(state)) if t is a vector,</span>
 <span class="sd">            else it outputs unequal shape that was record of all the jumps</span>
+<span class="sd">        sim_Jump: list of :class:`numpy.ndarray`</span>
+<span class="sd">            Number times each transition happens per timestep</span>
 <span class="sd">        sim_T: list or :class:`numpy.ndarray`</span>
 <span class="sd">            if t is a single value, it outputs unequal shape that was</span>
 <span class="sd">            record of all the jumps.  if t is a vector, it outputs t so that</span>
@@ -753,14 +779,14 @@ document.write(`
 
 <span class="sd">        &#39;&#39;&#39;</span>
 
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> \
-            <span class="s2">&quot;Currently only able to simulate when only transitions are present&quot;</span>
+        <span class="c1"># assert len(self._odeList) == 0, \</span>
+        <span class="c1">#     &quot;Currently only able to simulate when only transitions are present&quot;</span>
         <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span> \
             <span class="s2">&quot;Can only simulate a jump process with integer initial values&quot;</span>
 
-        <span class="c1"># this determines what type of output we want</span>
+        <span class="c1"># Determine if results are output to predefined timepoints or the timepoints</span>
+        <span class="c1"># as determined by the numerical solver</span>
         <span class="n">timePoint</span> <span class="o">=</span> <span class="kc">False</span>
-
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span><span class="c1">#, (int, float, np.int64, np.float64)):</span>
             <span class="n">finalT</span> <span class="o">=</span> <span class="n">t</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
@@ -775,9 +801,6 @@ document.write(`
             <span class="n">timePoint</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Unknown data type for time&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_compileTransitionVector</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">parallel</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -798,144 +821,52 @@ document.write(`
             <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Performing serial simulation&quot;</span><span class="p">)</span>
             <span class="n">xtmp</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump</span><span class="p">(</span><span class="n">finalT</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="n">exact</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">)]</span>
 
+        <span class="c1"># Unpack output</span>
         <span class="n">xmat</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">xtmp</span><span class="p">))</span>
-        <span class="n">simXList</span><span class="p">,</span> <span class="n">simTList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">xmat</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">list</span><span class="p">(</span><span class="n">xmat</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="c1">## print(&quot;Finish computation&quot;)</span>
-        <span class="c1"># now we want to fix our simulation, if they need fixing that is</span>
-        <span class="c1"># print timePoint</span>
+        <span class="n">simXList</span><span class="p">,</span> <span class="n">simJumpList</span><span class="p">,</span> <span class="n">simTList</span><span class="p">,</span> <span class="n">simdTList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">xmat</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">list</span><span class="p">(</span><span class="n">xmat</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">list</span><span class="p">(</span><span class="n">xmat</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="nb">list</span><span class="p">(</span><span class="n">xmat</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+        <span class="c1"># Process simulation output if user has specified target time steps</span>
         <span class="k">if</span> <span class="n">timePoint</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">simXList</span><span class="p">)):</span>
+                <span class="c1"># TODO: this seems like an overcomplicated way to do things</span>
+
                 <span class="c1"># unroll, always the first element</span>
                 <span class="c1"># it is easy to remember that we are accessing the first</span>
                 <span class="c1"># element because pop is spelt similar to poop and we</span>
                 <span class="c1"># all know that your execute first in first out when you</span>
                 <span class="c1"># poop!</span>
-                <span class="n">simX</span> <span class="o">=</span> <span class="n">simXList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">simT</span> <span class="o">=</span> <span class="n">simTList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractObservationAtTime</span><span class="p">(</span><span class="n">simX</span><span class="p">,</span> <span class="n">simT</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
-                <span class="n">simTList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-                <span class="n">simXList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="c1"># Get time points of run _i</span>
+                <span class="n">simT</span> <span class="o">=</span> <span class="n">simTList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>      <span class="c1"># get timepoints and remove (temporarily)</span>
+
+                <span class="c1"># 1. Process states</span>
+                <span class="n">simX</span> <span class="o">=</span> <span class="n">simXList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>      <span class="c1"># get states and remove (will be appended after processing)</span>
+                <span class="k">if</span> <span class="n">exact</span><span class="p">:</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractObservationAtTime</span><span class="p">(</span><span class="n">simX</span><span class="p">,</span> <span class="n">simT</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolateObservationAtTime</span><span class="p">(</span><span class="n">simX</span><span class="p">,</span> <span class="n">simT</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+                <span class="n">simXList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>          <span class="c1"># processed results now go at the end of the list</span>
+
+                <span class="c1"># 2. Process jumps</span>
+                <span class="n">simJump</span> <span class="o">=</span> <span class="n">simJumpList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">jump</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_addJumpsBetweenTime</span><span class="p">(</span><span class="n">simJump</span><span class="p">,</span> <span class="n">simT</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">exact</span><span class="p">)</span>
+                <span class="n">simJumpList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jump</span><span class="p">)</span>    <span class="c1"># processed results go at end of list</span>
+
+                <span class="c1"># If user has specified timesteps then this is not a useful step, will probably delete</span>
+                <span class="c1"># # 3. Process timesteps (essentially send to back of list to match new X and jump positions)</span>
+                <span class="c1"># dt=simdTList.pop(0)         # send dt to back too</span>
+                <span class="c1"># simdTList.append(dt)</span>
+                <span class="c1"># simTList.append(t)          # do same with timepoints</span>
+
         <span class="c1"># note that we have to remain in list form because the number of</span>
         <span class="c1"># simulation will be different if we are not dealing with</span>
         <span class="c1"># a specific set of time points</span>
 
         <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">timePoint</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">simXList</span><span class="p">,</span> <span class="n">t</span>
+                <span class="k">return</span> <span class="n">simXList</span><span class="p">,</span> <span class="n">simJumpList</span><span class="p">,</span> <span class="n">t</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">simXList</span><span class="p">,</span> <span class="n">simTList</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">simXList</span></div>
-
-
-<div class="viewcode-block" id="SimulateOde.simulate_jump"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.simulate_jump">[docs]</a>    <span class="k">def</span> <span class="nf">simulate_jump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                      <span class="n">exact</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Simulate the ode using stochastic simulation.  It switches</span>
-<span class="sd">        between a first reaction method and a :math:`\\tau`-leap</span>
-<span class="sd">        algorithm internally. When a parallel backend exists, then a new random</span>
-<span class="sd">        state (seed) will be used for each processor.  This is due to a lack</span>
-<span class="sd">        of appropriate parallel seed random number generator in python.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        t: array like</span>
-<span class="sd">            the range of time points which we want to see the result of</span>
-<span class="sd">            or the final time point</span>
-<span class="sd">        iteration: int</span>
-<span class="sd">            number of iterations you wish to simulate</span>
-<span class="sd">        parallel: bool, optional</span>
-<span class="sd">            Defaults to True</span>
-<span class="sd">        exact: bool, optional</span>
-<span class="sd">            True if exact simulation is desired, defaults to False</span>
-<span class="sd">        full_output: bool, optional</span>
-<span class="sd">            if we want additional information, sim_T</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        sim_X: list</span>
-<span class="sd">            of length iteration each with (len(t),len(state)) if t is a vector,</span>
-<span class="sd">            else it outputs unequal shape that was record of all the jumps</span>
-<span class="sd">        sim_T: list or :class:`numpy.ndarray`</span>
-<span class="sd">            if t is a single value, it outputs unequal shape that was</span>
-<span class="sd">            record of all the jumps.  if t is a vector, it outputs t so that</span>
-<span class="sd">            it is a :class:`numpy.ndarray` instead</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> \
-            <span class="s2">&quot;Currently only able to simulate when only transitions are present&quot;</span>
-        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span> \
-            <span class="s2">&quot;Can only simulate a jump process with integer initial values&quot;</span>
-
-        <span class="c1"># this determines what type of output we want</span>
-        <span class="n">timePoint</span> <span class="o">=</span> <span class="kc">False</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span><span class="c1">#, (int, float, np.int64, np.float64)):</span>
-            <span class="n">finalT</span> <span class="o">=</span> <span class="n">t</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-            <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">finalT</span> <span class="o">=</span> <span class="n">t</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">finalT</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
-                <span class="n">timePoint</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">finalT</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="n">timePoint</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Unknown data type for time&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_compileTransitionVector</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="n">parallel</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="kn">import</span> <span class="nn">dask.bag</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using Dask for parallel simulation&quot;</span><span class="p">)</span>
-                <span class="k">def</span> <span class="nf">jump_partial</span><span class="p">(</span><span class="n">final_t</span><span class="p">):</span> <span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump</span><span class="p">(</span><span class="n">final_t</span><span class="p">,</span>
-                                                             <span class="n">exact</span><span class="o">=</span><span class="n">exact</span><span class="p">,</span>
-                                                             <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                                             <span class="n">seed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-
-                <span class="n">xtmp</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">bag</span><span class="o">.</span><span class="n">from_sequence</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">iteration</span><span class="p">)</span><span class="o">*</span><span class="n">finalT</span><span class="p">)</span>
-                <span class="n">xtmp</span> <span class="o">=</span> <span class="n">xtmp</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">jump_partial</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">e</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Parallel simulation failed reverting to serial&quot;</span><span class="p">)</span>
-                <span class="n">xtmp</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump</span><span class="p">(</span><span class="n">finalT</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="n">exact</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">)]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Performing serial simulation&quot;</span><span class="p">)</span>
-            <span class="n">xtmp</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump</span><span class="p">(</span><span class="n">finalT</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="n">exact</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">)]</span>
-
-        <span class="n">xmat</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">xtmp</span><span class="p">))</span>
-        <span class="n">simXList</span><span class="p">,</span> <span class="n">simTList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">xmat</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">list</span><span class="p">(</span><span class="n">xmat</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="c1">## print(&quot;Finish computation&quot;)</span>
-        <span class="c1"># now we want to fix our simulation, if they need fixing that is</span>
-        <span class="c1"># print timePoint</span>
-        <span class="k">if</span> <span class="n">timePoint</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">simXList</span><span class="p">)):</span>
-                <span class="c1"># unroll, always the first element</span>
-                <span class="c1"># it is easy to remember that we are accessing the first</span>
-                <span class="c1"># element because pop is spelt similar to poop and we</span>
-                <span class="c1"># all know that your execute first in first out when you</span>
-                <span class="c1"># poop!</span>
-                <span class="n">simX</span> <span class="o">=</span> <span class="n">simXList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">simT</span> <span class="o">=</span> <span class="n">simTList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractObservationAtTime</span><span class="p">(</span><span class="n">simX</span><span class="p">,</span> <span class="n">simT</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
-                <span class="n">simTList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-                <span class="n">simXList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="c1"># note that we have to remain in list form because the number of</span>
-        <span class="c1"># simulation will be different if we are not dealing with</span>
-        <span class="c1"># a specific set of time points</span>
-
-        <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">timePoint</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">simXList</span><span class="p">,</span> <span class="n">t</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">simXList</span><span class="p">,</span> <span class="n">simTList</span>
+                <span class="k">return</span> <span class="n">simXList</span><span class="p">,</span> <span class="n">simJumpList</span><span class="p">,</span> <span class="n">simTList</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">simXList</span></div>
 
@@ -943,6 +874,7 @@ document.write(`
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Jumps from the initial time self._t0 to the input time finalT</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span>
 
@@ -954,347 +886,275 @@ document.write(`
         <span class="n">x</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x0</span><span class="p">)</span>
 
         <span class="c1"># holders and record information</span>
-        <span class="n">xList</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()]</span>
-        <span class="n">tList</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="n">xList</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()]</span>          <span class="c1"># states</span>
+        <span class="n">tList</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">]</span>                 <span class="c1"># timepoints</span>
+        <span class="n">dtList</span><span class="o">=</span><span class="p">[]</span>                   <span class="c1"># timesteps (can be inferred from timepoints, but useful for now to debug tau leap)</span>
+        <span class="n">jumpList</span><span class="o">=</span><span class="p">[]</span>                 <span class="c1"># transitions</span>
 
-        <span class="c1"># we want to construct some jump times (TODO: doesn&#39;t seem like _GMat is used anywhere)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GMat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_computeDependencyMatrix</span><span class="p">()</span>
+        <span class="c1"># We explicitly update self._lambdaMat since it doesn&#39;t have a canary</span>
+        <span class="c1"># TODO: (1) Should non compiled objects also have canaries?</span>
+        <span class="c1">#       (2) self._lambdaMat might not be useful anyway though...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_ReactantMatrix</span><span class="p">()</span>
 
-        <span class="c1"># keep jumping, Whoop Whoop (put your hands up!).</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="n">firstReaction</span>
+        <span class="c1"># keep jumping, Whoop Whoop (put your hands up!)</span>
         <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">finalT</span><span class="p">:</span>
-            <span class="c1"># print(t)</span>
+            <span class="c1"># Take a timetep</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">exact</span><span class="p">:</span>
-                    <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+                    <span class="c1"># Use Gillespie algorithm for entire simulation</span>
+                    <span class="n">t</span><span class="p">,</span> <span class="n">jump_time</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">jumps</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="n">firstReaction</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                                                                    <span class="bp">self</span><span class="o">.</span><span class="n">_state_lims</span><span class="p">,</span>
+                                                                    <span class="n">t</span><span class="p">,</span>
+                                                                    <span class="bp">self</span><span class="o">.</span><span class="n">vMat</span><span class="p">,</span>
+                                                                    <span class="bp">self</span><span class="o">.</span><span class="n">eventRateVector</span><span class="p">,</span>
+                                                                    <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">success</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+                        <span class="k">break</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
-                        <span class="n">x_tmp</span><span class="p">,</span> <span class="n">t_tmp</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="n">tauLeap</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span>
-                                                <span class="c1"># self._vMat, self._lambdaMat,</span>
-                                                <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lambdaMatOD</span><span class="p">,</span>  <span class="c1"># I think that the wrong matrix has been used, trying this one instead</span>
-                                                <span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">,</span>
-                                                <span class="bp">self</span><span class="o">.</span><span class="n">transition_mean</span><span class="p">,</span>
-                                                <span class="bp">self</span><span class="o">.</span><span class="n">transition_var</span><span class="p">,</span>
-                                                <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
-                            <span class="n">x</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">x_tmp</span><span class="p">,</span> <span class="n">t_tmp</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span>
-                                              <span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+                    <span class="c1">#if np.min(x) &lt; 10:</span>
+                    <span class="c1">#Use tau leap when population of any state is small.</span>
+                    <span class="c1"># TODO: Why? If e.g. one state always has a population zero then we force ourselves</span>
+                    <span class="c1">#       to use Gillespie. We also have a safety procedure to stop variables going</span>
+                    <span class="c1">#       outside their bounds anyway, so not sure what this achieves.</span>
+                    <span class="n">t_new</span><span class="p">,</span> <span class="n">jump_time</span><span class="p">,</span> <span class="n">x_new</span><span class="p">,</span> <span class="n">jumps</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="n">tauLeap</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                                                                      <span class="bp">self</span><span class="o">.</span><span class="n">_state_lims</span><span class="p">,</span>
+                                                                      <span class="n">t</span><span class="p">,</span>
+                                                                      <span class="bp">self</span><span class="o">.</span><span class="n">vMat</span><span class="p">,</span>
+                                                                      <span class="bp">self</span><span class="o">.</span><span class="n">_lambdaMat</span><span class="p">,</span>
+                                                                      <span class="bp">self</span><span class="o">.</span><span class="n">eventRateVector</span><span class="p">,</span>
+                                                                      <span class="bp">self</span><span class="o">.</span><span class="n">transitionMean</span><span class="p">,</span>
+                                                                      <span class="bp">self</span><span class="o">.</span><span class="n">transitionVar</span><span class="p">,</span>
+                                                                      <span class="bp">self</span><span class="o">.</span><span class="n">pureOdeVector</span><span class="p">,</span>
+                                                                      <span class="n">epsilon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span>
+                                                                      <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+                                                                      <span class="n">pre_tau</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pre_tau</span><span class="p">)</span>
+                    
+                    <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+                        <span class="c1"># Jump results in all states within their limits, continue.</span>
+                        <span class="n">t</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">t_new</span><span class="p">,</span> <span class="n">x_new</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">,</span>
-                                          <span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+                        <span class="c1"># Retry with first reaction method.</span>
+                        <span class="n">t</span><span class="p">,</span> <span class="n">jump_time</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">jumps</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="n">firstReaction</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                                                                        <span class="bp">self</span><span class="o">.</span><span class="n">_state_lims</span><span class="p">,</span>
+                                                                        <span class="n">t</span><span class="p">,</span>
+                                                                        <span class="bp">self</span><span class="o">.</span><span class="n">vMat</span><span class="p">,</span>
+                                                                        <span class="bp">self</span><span class="o">.</span><span class="n">eventRateVector</span><span class="p">,</span>
+                                                                        <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+                        
+                        <span class="k">if</span> <span class="n">success</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+                            <span class="k">break</span>
+
                 <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
-                    <span class="n">xList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+                    <span class="n">xList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>     <span class="c1"># TODO: why is x a copy and the rest not?</span>
                     <span class="n">tList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+                    <span class="n">dtList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jump_time</span><span class="p">)</span>
+                    <span class="n">jumpList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jumps</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">break</span>
-                    <span class="c1">## print(&quot;x: %s, t: %s&quot; % (x, t))</span>
-                    <span class="c1">## raise Exception(&#39;WTF&#39;)</span>
             <span class="k">except</span> <span class="n">SimulationError</span><span class="p">:</span>
                 <span class="k">break</span>
 
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xList</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tList</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xList</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">jumpList</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tList</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dtList</span><span class="p">)</span>
+
+    <span class="c1">###########################################################################</span>
+    <span class="c1">#</span>
+    <span class="c1"># Functions to process simulation output</span>
+    <span class="c1">#</span>
+    <span class="c1">###########################################################################</span>
 
     <span class="k">def</span> <span class="nf">_extractObservationAtTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">targetTime</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Given simulation and a set of time points which we would like to</span>
 <span class="sd">        observe, we extract the observations :math:`x_{t}` with</span>
 <span class="sd">        :math:`\\min\\{ \\abs( t - targetTime) \\}`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            t (list): Timepoints of simulation</span>
+<span class="sd">            X (list of lists): State values at each timepoint</span>
+<span class="sd">            targetTime (list): Desired timepoints</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            X_out (np.array): Value of states at targetTime </span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="c1"># maxTime = max(t)</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">targetTime</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">i</span><span class="p">):</span>
-                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">X_out</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">t_target</span> <span class="ow">in</span> <span class="n">targetTime</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">t_target</span><span class="p">):</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">t_target</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-            <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">t_target</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">X_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X_out</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_interpolateObservationAtTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">targetTime</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Given simulation and a set of time points which we would like to</span>
+<span class="sd">        observe, we interpolate the observations onto the desired grid.</span>
 
-    <span class="c1">########################################################################</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            t (list): Timepoints of simulation</span>
+<span class="sd">            X (list of lists): State values at each timepoint</span>
+<span class="sd">            targetTime (list): Desired timepoints</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            X_out (np.array): Value of states at targetTime </span>
+<span class="sd">                    </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">X</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>   <span class="c1"># Convert to numpy array so we can interpolate between timepoints</span>
+
+        <span class="n">dims</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span>    <span class="c1"># Get dimensions of data (timepoints x vars)</span>
+        <span class="n">n_state</span><span class="o">=</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">X_out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">targetTime</span><span class="p">),</span> <span class="n">n_state</span><span class="p">))</span>  <span class="c1"># empty matrix to receive scaled data = (new timepoints x vars)</span>
+
+        <span class="c1"># linearly interpolate to new timepoints</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_state</span><span class="p">):</span>
+            <span class="n">X_out</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">targetTime</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">X</span><span class="p">[:,</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">X_out</span>
+
+    <span class="k">def</span> <span class="nf">_addJumpsBetweenTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dX</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">targetTime</span><span class="p">,</span> <span class="n">exact</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Given number of events occuring at certain times find total</span>
+<span class="sd">        number of occurrances between the desired timepoints.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            t (list): Timepoints that events occurred</span>
+<span class="sd">            dX (list of lists): Number of events at each timepoint</span>
+<span class="sd">            targetTime (list): Desired timepoints</span>
+<span class="sd">            exact (bool): If first reaction method used (otherwise tau assumed)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            X_out (np.array): Value of states at targetTime </span>
+<span class="sd">                    </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">dX</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dX</span><span class="p">)</span>   <span class="c1"># convert to numpy array so we can interpolate between timepoints</span>
+
+        <span class="n">dims</span><span class="o">=</span><span class="n">dX</span><span class="o">.</span><span class="n">shape</span>         <span class="c1"># Get dimensions of data (timepoints x n_trans)</span>
+        <span class="n">n_trans</span><span class="o">=</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># empty matrix to receive scaled data = (new timepoints x n_trans)</span>
+        <span class="c1"># minus one because we are looking at jumps which occur betwen timepoints</span>
+        <span class="c1"># (e.g. 2 timepoints =1 jump, 10 timepoints =9)</span>
+        <span class="n">X_out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">targetTime</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_trans</span><span class="p">))</span>
+
+        <span class="c1"># if exact, each point corresponds to a transitions and has weight 1.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_trans</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">exact</span><span class="p">:</span>
+                <span class="n">hist</span><span class="p">,</span> <span class="n">bin_edges</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">targetTime</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">hist</span><span class="p">,</span> <span class="n">bin_edges</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">bins</span><span class="o">=</span><span class="n">targetTime</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">dX</span><span class="p">[:,</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">X_out</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">hist</span>            
+
+        <span class="k">return</span> <span class="n">X_out</span>
+
+    <span class="c1">###########################################################################</span>
     <span class="c1">#</span>
-    <span class="c1"># Operators with regard to the transition matrix</span>
+    <span class="c1"># Functions to compute sympy objects and also compile them</span>
     <span class="c1">#</span>
-    <span class="c1">########################################################################</span>
+    <span class="c1">###########################################################################</span>
 
-<div class="viewcode-block" id="SimulateOde.get_transition_matrix"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_transition_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">get_transition_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulateOde.get_TransitionJacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_TransitionJacobian">[docs]</a>    <span class="k">def</span> <span class="nf">get_TransitionJacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Returns the transition matrix in algebraic form.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`sympy.matrices.matrices`</span>
-<span class="sd">            A matrix of dimension [number of state x number of state]</span>
-
+<span class="sd">        Evaluate equation (7) from https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf</span>
+<span class="sd">        where F_[i,j] is the change in transition rate a[i], if a transition of type j occurs:</span>
+<span class="sd">        F_[i,j] = sum_k diff(a[i], x_k) v_[k,j]</span>
+<span class="sd">        where k=state and v[k,j] is how much state x_k changes by if transition of type j occurs.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">super</span><span class="p">(</span><span class="n">SimulateOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_computeTransitionMatrix</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrixCompile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
-           <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">transitionMatrixCompile</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrix</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">SimulateOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_computeTransitionMatrix</span><span class="p">()</span></div>
+        <span class="c1"># Ensure objects, vMat and eventRateVector, are up to date</span>
+        <span class="c1"># TODO: Maybe a better naming convention, where generator function and the object</span>
+        <span class="c1">#       it creates have some similarity.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_StateChangeMatrix</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_EventRateVector</span><span class="p">()</span>
 
-<div class="viewcode-block" id="SimulateOde.get_transition_vector"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_transition_vector">[docs]</a>    <span class="k">def</span> <span class="nf">get_transition_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_events</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_events</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">event_index_i</span><span class="p">,</span> <span class="n">rate</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRateVector</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">event_index_j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_events</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">state_index</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iterStateList</span><span class="p">()):</span>             
+                    <span class="n">diffEqn</span><span class="p">,</span> <span class="n">isDifficult</span> <span class="o">=</span> <span class="n">simplifyEquation</span><span class="p">(</span> <span class="n">sympy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">rate</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="p">)</span>  <span class="c1"># diff(a_i, x_k)</span>
+                    <span class="n">F</span><span class="p">[</span><span class="n">event_index_i</span><span class="p">,</span> <span class="n">event_index_j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">diffEqn</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">[</span><span class="n">state_index</span><span class="p">,</span> <span class="n">event_index_j</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="ow">or</span> <span class="n">isDifficult</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionJacobian</span> <span class="o">=</span> <span class="n">F</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionJacobian</span>    </div>
+
+<div class="viewcode-block" id="SimulateOde.get_TransitionMean"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_TransitionMean">[docs]</a>    <span class="k">def</span> <span class="nf">get_TransitionMean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Returns the set of transitions in a single vector, transitions</span>
-<span class="sd">        between state to state first then the birth and death process</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`sympy.matrices.matrices`</span>
-<span class="sd">            A matrix of dimension [total number of transitions x 1]</span>
-
+<span class="sd">        This is the mean and variance of the changes in the transition rates</span>
+<span class="sd">        (aka propensity funtions) after a potential timestep:</span>
+<span class="sd">        equations (8a) and (8b) from https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf</span>
+<span class="sd">        For n transitions the outputs are 2 vectors, each of length n.</span>
+<span class="sd">        Outputs are added to self as mu and sigma2</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
-           <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">transitionVector</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVector</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">SimulateOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_computeTransitionVector</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="SimulateOde.transition_matrix"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.transition_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">transition_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="c1"># Ensure objects are up to date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_TransitionJacobian</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_EventRateVector</span><span class="p">()</span>
+
+        <span class="n">F</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionJacobian</span>
+
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_events</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">event_index_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_events</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">event_index_j</span><span class="p">,</span> <span class="n">rate_j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRateVector</span><span class="p">):</span>
+                <span class="n">mu</span><span class="p">[</span><span class="n">event_index_i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">F</span><span class="p">[</span><span class="n">event_index_i</span><span class="p">,</span> <span class="n">event_index_j</span><span class="p">]</span> <span class="o">*</span> <span class="n">rate_j</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMean</span> <span class="o">=</span> <span class="n">mu</span>
+
+        <span class="c1"># TODO: Propensity functions also change if there is time dependence</span>
+        <span class="c1">#       This will be addressed better in the next version where tau</span>
+        <span class="c1">#       leaping will be updated.</span>
+        <span class="c1"># # If time dependence, add in another term to reflect this:</span>
+        <span class="c1"># timelike_symbols=[symb for symb in eqn_i.free_symbols if str(symb)==&#39;t&#39;]</span>
+        <span class="c1"># is_time_dependent=len(timelike_symbols)&gt;0</span>
+        <span class="c1"># if is_time_dependent and self.tstep:</span>
+        <span class="c1">#     time_variable = [timelike_symbols][0]</span>
+        <span class="c1">#     mu[i] += sympy.diff(eqn_i, time_variable, 1) # mean changes but sd does not, TODO: check this</span>
+
+        <span class="k">return</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMean</span></div>
+
+
+<div class="viewcode-block" id="SimulateOde.get_TransitionVar"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_TransitionVar">[docs]</a>    <span class="k">def</span> <span class="nf">get_TransitionVar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the transition matrix given state and time</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        state: array like</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-<span class="sd">        t: double</span>
-<span class="sd">            The current time</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.ndarray`</span>
-<span class="sd">            a 2d array of size (M,M) where M is the number</span>
-<span class="sd">            of transitions</span>
-
+<span class="sd">        This is the mean and variance of the changes in the transition rates</span>
+<span class="sd">        (aka propensity funtions) after a potential timestep:</span>
+<span class="sd">        equations (8a) and (8b) from https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf</span>
+<span class="sd">        For n transitions the outputs are 2 vectors, each of length n.</span>
+<span class="sd">        Outputs are added to self as mu and sigma2</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_transition_matrix</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SimulateOde.eval_transition_matrix"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.eval_transition_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">eval_transition_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the transition matrix given parameters, state and time. Note</span>
-<span class="sd">        that the output is not in sparse format</span>
+        <span class="c1"># Ensure objects are up to date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_TransitionJacobian</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_EventRateVector</span><span class="p">()</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        parameters: list</span>
-<span class="sd">            see :meth:`.setParameters`</span>
-<span class="sd">        time: double</span>
-<span class="sd">            The current time</span>
-<span class="sd">        state: array list</span>
-<span class="sd">            The current numerical value for the states which can</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionJacobian</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.matrix` or :class:`mpmath.matrix`</span>
-<span class="sd">            Matrix of dimension [number of state x number of state]</span>
+        <span class="n">sigma2</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_events</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">event_index_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_events</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">event_index_j</span><span class="p">,</span> <span class="n">rate_j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRateVector</span><span class="p">):</span>
+                <span class="n">sigma2</span><span class="p">[</span><span class="n">event_index_i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">F</span><span class="p">[</span><span class="n">event_index_i</span><span class="p">,</span> <span class="n">event_index_j</span><span class="p">]</span> <span class="o">*</span> <span class="n">F</span><span class="p">[</span><span class="n">event_index_i</span><span class="p">,</span> <span class="n">event_index_j</span><span class="p">]</span> <span class="o">*</span> <span class="n">rate_j</span>
 
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrixCompile</span> <span class="ow">is</span> <span class="kc">None</span> \
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">transitionMatrixCompile</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_compileTransitionMatrix</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVar</span> <span class="o">=</span> <span class="n">sigma2</span>
 
-        <span class="n">eval_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrixCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span></div>
+        <span class="k">return</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVar</span></div>
 
-    <span class="k">def</span> <span class="nf">_compileTransitionMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        We would also need to compile the function so that</span>
-<span class="sd">        it can be evaluated faster.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrix</span> <span class="ow">is</span> <span class="kc">None</span> \
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">transitionMatrixCompile</span><span class="p">:</span>
-            <span class="nb">super</span><span class="p">(</span><span class="n">SimulateOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_computeTransitionMatrix</span><span class="p">()</span>
 
-        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrixCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                              <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrix</span><span class="p">,</span>
-                                              <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrixCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                              <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMatrix</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;transitionMatrixCompile&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="kc">None</span>
-
-<div class="viewcode-block" id="SimulateOde.transition_vector"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.transition_vector">[docs]</a>    <span class="k">def</span> <span class="nf">transition_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the transition vector given state and time</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        state: array like</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-<span class="sd">        t: double</span>
-<span class="sd">            The current time</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.ndarray`</span>
-<span class="sd">            a 1d array of size K where K is the number of between</span>
-<span class="sd">            states transitions and the number of birth death</span>
-<span class="sd">            processes</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_transition_vector</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="SimulateOde.eval_transition_vector"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.eval_transition_vector">[docs]</a>    <span class="k">def</span> <span class="nf">eval_transition_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the transition vector given parameters, state and time. Note</span>
-<span class="sd">        that the output is not in sparse format</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        parameters: list</span>
-<span class="sd">            see :meth:`.setParameters`</span>
-<span class="sd">        time: double</span>
-<span class="sd">            The current time</span>
-<span class="sd">        state: array list</span>
-<span class="sd">            The current numerical value for the states which can</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.matrix` or :class:`mpmath.matrix`</span>
-<span class="sd">            vector of dimension [total number of transitions]</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span> <span class="ow">is</span> <span class="kc">None</span> \
-           <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">transitionVector</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_compileTransitionVector</span><span class="p">()</span>
-
-        <span class="n">eval_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_compileTransitionVector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        We would also need to compile the function so that</span>
-<span class="sd">        it can be evaluated faster.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVector</span> <span class="ow">is</span> <span class="kc">None</span> \
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">transitionVector</span><span class="p">:</span>
-            <span class="nb">super</span><span class="p">(</span><span class="n">SimulateOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_computeTransitionVector</span><span class="p">()</span>
-
-        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                              <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVector</span><span class="p">,</span>
-                                              <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVectorCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                              <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVector</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;transitionVector&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span>
-
-<div class="viewcode-block" id="SimulateOde.get_birth_death_rate"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_birth_death_rate">[docs]</a>    <span class="k">def</span> <span class="nf">get_birth_death_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Find the algebraic equations of birth and death processes</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`sympy.matrices.matrices`</span>
-<span class="sd">            birth death process in matrix form</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRate</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_computeBirthDeathRate</span><span class="p">()</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRate</span></div>
-
-<div class="viewcode-block" id="SimulateOde.birth_death_rate"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.birth_death_rate">[docs]</a>    <span class="k">def</span> <span class="nf">birth_death_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the birth death rates given state and time</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        state: array like</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`np.ndarray` or :class:`list`</span>
-<span class="sd">        t: double</span>
-<span class="sd">            The current time</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.ndarray`</span>
-<span class="sd">            an array of size (M,M) where M is the number</span>
-<span class="sd">            of birth and death actions</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_birth_death_rate</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="SimulateOde.eval_birth_death_rate"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.eval_birth_death_rate">[docs]</a>    <span class="k">def</span> <span class="nf">eval_birth_death_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the birth and death rates given parameters, state and time.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        parameters: list</span>
-<span class="sd">            see :meth:`.setParameters`</span>
-<span class="sd">        time: double</span>
-<span class="sd">            The current time</span>
-<span class="sd">        state: array list</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.matrix` or :class:`mpmath.matrix`</span>
-<span class="sd">            Matrix of dimension [number of birth and death rates x 1]</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRateCompile</span> <span class="ow">is</span> <span class="kc">None</span> \
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">birthDeathRateCompile</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_computeBirthDeathRate</span><span class="p">()</span>
-
-        <span class="n">eval_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRateCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_computeBirthDeathRate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Note that this is different to _birthDeathVector because</span>
-<span class="sd">        this is of length (number of birth and death process) while</span>
-<span class="sd">        _birthDeathVector in baseOdeModel has the same length as</span>
-<span class="sd">        the number of states</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_birth_deaths</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_birth_deaths</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-
-            <span class="c1"># go through all the transition objects</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">bd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">birth_death_list</span><span class="p">):</span>
-                <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_checkEquation</span><span class="p">(</span><span class="n">bd</span><span class="o">.</span><span class="n">equation</span><span class="p">()))</span>
-
-        <span class="c1"># assign back</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRate</span> <span class="o">=</span> <span class="n">A</span>
-        <span class="c1"># compilation of the symbolic calculation.  Note here that we are</span>
-        <span class="c1"># going to recompile the total transitions because it might</span>
-        <span class="c1"># have changed</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRateCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                            <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRate</span><span class="p">,</span>
-                                            <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRateCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                            <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathRate</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;birthDeathRateCompile&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="kc">None</span>
+    <span class="c1">###########################################################################</span>
+    <span class="c1">#</span>
+    <span class="c1"># Other functions, depending on the compiled sympy objects</span>
+    <span class="c1">#</span>
+    <span class="c1">###########################################################################</span>
 
 <div class="viewcode-block" id="SimulateOde.total_transition"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.total_transition">[docs]</a>    <span class="k">def</span> <span class="nf">total_transition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
@@ -1314,172 +1174,16 @@ document.write(`
 <span class="sd">            total rate</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transition_vector</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eventRateVector</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="SimulateOde.transition_mean"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.transition_mean">[docs]</a>    <span class="k">def</span> <span class="nf">transition_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the mean of the transitions given state and time.  For</span>
-<span class="sd">        m transitions and n states, we have</span>
-
-<span class="sd">        .. math::</span>
-<span class="sd">            f_{j,k} &amp;= \\sum_{i=1}^{n} \\frac{\\partial a_{j}(x)}{\\partial x_{i}} v_{i,k} \\\\</span>
-<span class="sd">            \\mu_{j} &amp;= \\sum_{k=1}^{m} f_{j,k}(x)a_{k}(x) \\\\</span>
-<span class="sd">            \\sigma^{2}_{j}(x) &amp;= \\sum_{k=1}^{m} f_{j,k}^{2}(x) a_{k}(x)</span>
-
-<span class="sd">        where :math:`v_{i,k}` is the state change matrix.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        state: array like</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-<span class="sd">        t: double</span>
-<span class="sd">            The current time</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.ndarray`</span>
-<span class="sd">            an array of size m where m is the number of transition</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_transition_mean</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="SimulateOde.eval_transition_mean"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.eval_transition_mean">[docs]</a>    <span class="k">def</span> <span class="nf">eval_transition_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the transition mean given parameters, state and time.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        parameters: list</span>
-<span class="sd">            see :meth:`.setParameters`</span>
-<span class="sd">        time: double</span>
-<span class="sd">            The current time</span>
-<span class="sd">        state: array list</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.matrix` or :class:`mpmath.matrix`</span>
-<span class="sd">            Matrix of dimension [number of state x number of state]</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMeanCompile</span> <span class="ow">is</span> <span class="kc">None</span> \
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">computeTransitionMeanVar</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_computeTransitionMeanVar</span><span class="p">()</span>
-
-        <span class="n">eval_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMeanCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="SimulateOde.transition_var"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.transition_var">[docs]</a>    <span class="k">def</span> <span class="nf">transition_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the variance of the transitions given state and time</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        state: array like</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-<span class="sd">        t: double</span>
-<span class="sd">            The current time</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.ndarray`</span>
-<span class="sd">            an array of size M where M is the number of transition</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_transition_var</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="SimulateOde.eval_transition_var"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.eval_transition_var">[docs]</a>    <span class="k">def</span> <span class="nf">eval_transition_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the transition variance given parameters, state and time.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        parameters: list</span>
-<span class="sd">            see :meth:`.setParameters`</span>
-<span class="sd">        time: double</span>
-<span class="sd">            The current time</span>
-<span class="sd">        state: array list</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.matrix` or :class:`mpmath.matrix`</span>
-<span class="sd">            Matrix of dimension [number of state x number of state]</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVarCompile</span> <span class="ow">is</span> <span class="kc">None</span> \
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">computeTransitionMeanVar</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_computeTransitionMeanVar</span><span class="p">()</span>
-
-        <span class="n">eval_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVarCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_computeTransitionJacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GMat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_computeDependencyMatrix</span><span class="p">()</span>
-
-        <span class="n">F</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_transitions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_transitions</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_transitions</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">eqn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transitionVector</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iterStateList</span><span class="p">()):</span>
-                    <span class="n">diffEqn</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">eqn</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-                    <span class="n">tempEqn</span><span class="p">,</span> <span class="n">isDifficult</span> <span class="o">=</span> <span class="n">simplifyEquation</span><span class="p">(</span><span class="n">diffEqn</span><span class="p">)</span>
-                    <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">tempEqn</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_vMat</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="ow">or</span> <span class="n">isDifficult</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionJacobian</span> <span class="o">=</span> <span class="n">F</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;transitionJacobian&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">F</span>
-
-    <span class="k">def</span> <span class="nf">_computeTransitionMeanVar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        This is the mean and variance information that we need</span>
-<span class="sd">        for the :math:`\\tau`-Leap</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionJacobian</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">transitionJacobian</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_computeTransitionJacobian</span><span class="p">()</span>
-
-        <span class="n">F</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionJacobian</span>
-        <span class="c1"># holders</span>
-        <span class="n">mu</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_transitions</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">sigma2</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_transitions</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="c1"># we calculate the mean and variance</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_transitions</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">eqn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transitionVector</span><span class="p">):</span>
-                <span class="n">mu</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">eqn</span>
-                <span class="n">sigma2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">eqn</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMean</span> <span class="o">=</span> <span class="n">mu</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVar</span> <span class="o">=</span> <span class="n">sigma2</span>
-
-        <span class="c1"># now we are going to compile them</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMeanCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMean</span><span class="p">,</span>
-                                            <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVarCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                           <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVar</span><span class="p">,</span>
-                                           <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMeanCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMean</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVarCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionVar</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;computeTransitionMeanVar&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="c1">########################################################################</span>
+    <span class="c1">###########################################################################</span>
     <span class="c1">#</span>
     <span class="c1"># Unrolling of ode to transitions</span>
     <span class="c1">#</span>
-    <span class="c1">########################################################################</span>
+    <span class="c1"># TODO: I doubt any of this works with the event based framework</span>
+    <span class="c1">#       but it didn&#39;t work perfectly anyway. Will be a challenge</span>
+    <span class="c1">#       now we are dealing with more general systems.</span>
+    <span class="c1">###########################################################################</span>
 
 <div class="viewcode-block" id="SimulateOde.get_unrolled_obj"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_unrolled_obj">[docs]</a>    <span class="k">def</span> <span class="nf">get_unrolled_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
@@ -1587,7 +1291,7 @@ document.write(`
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Plot the results of a simulation</span>
 
-<span class="sd">        Takes the output of a function like `simulate_jump`</span>
+<span class="sd">        Takes the output of a function like `solve_stochast`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>

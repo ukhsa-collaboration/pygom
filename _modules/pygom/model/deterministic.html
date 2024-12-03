@@ -186,9 +186,15 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../../../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/solution.html">Mathematical description</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/model_spec_2.html">Defining a system of differential equations</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../notebooks/insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/extract_info.html">Extracting model information</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollSimple.html">Deducing transitions from equations</a></li>
@@ -398,6 +404,8 @@ document.write(`
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;DeterministicOde&#39;</span><span class="p">]</span>
 
+<span class="c1"># TODO: check through these dependencies</span>
+
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">io</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
@@ -409,17 +417,17 @@ document.write(`
 
 <span class="kn">from</span> <span class="nn">sympy.core.function</span> <span class="kn">import</span> <span class="n">diff</span>
 
+<span class="kn">from</span> <span class="nn">.transition</span> <span class="kn">import</span> <span class="n">TransitionType</span>
+
 <span class="kn">from</span> <span class="nn">.base_ode_model</span> <span class="kn">import</span> <span class="n">BaseOdeModel</span>
 <span class="kn">from</span> <span class="nn">._model_errors</span> <span class="kn">import</span> <span class="n">ArrayError</span><span class="p">,</span> <span class="n">InputError</span><span class="p">,</span> \
     <span class="n">IntegrationError</span><span class="p">,</span> <span class="n">InitializeError</span>
-<span class="kn">from</span> <span class="nn">._model_verification</span> <span class="kn">import</span> <span class="n">simplifyEquation</span>
+<span class="kn">from</span> <span class="nn">._model_verification</span> <span class="kn">import</span> <span class="n">simplifyEquation</span><span class="p">,</span> <span class="n">checkEquation</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ode_utils</span>
-<span class="c1"># from . import _ode_composition</span>
+
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_transition_graph</span>
 
-<span class="k">class</span> <span class="nc">HasNewTransition</span><span class="p">(</span><span class="n">ode_utils</span><span class="o">.</span><span class="n">CompileCanary</span><span class="p">):</span>
-    <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ode&#39;</span><span class="p">,</span> <span class="s1">&#39;Jacobian&#39;</span><span class="p">,</span> <span class="s1">&#39;diffJacobian&#39;</span><span class="p">,</span> <span class="s1">&#39;grad&#39;</span><span class="p">,</span> <span class="s1">&#39;GradJacobian&#39;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="DeterministicOde"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde">[docs]</a><span class="k">class</span> <span class="nc">DeterministicOde</span><span class="p">(</span><span class="n">BaseOdeModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
@@ -448,82 +456,58 @@ document.write(`
                  <span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">derived_param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">transition</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">birth_death</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">ode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Constructor that is built on top of a BaseOdeModel</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-
         <span class="nb">super</span><span class="p">(</span><span class="n">DeterministicOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state</span><span class="p">,</span>
                                                <span class="n">param</span><span class="p">,</span>
                                                <span class="n">derived_param</span><span class="p">,</span>
                                                <span class="n">transition</span><span class="p">,</span>
+                                               <span class="n">event</span><span class="p">,</span>
                                                <span class="n">birth_death</span><span class="p">,</span>
                                                <span class="n">ode</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span> <span class="o">=</span> <span class="n">HasNewTransition</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_odeCompile</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="c1"># and we assume initially that we don&#39;t want the Jacobian</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_JacobianCompile</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="c1"># wtf... why!</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_diffJacobian</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_diffJacobianCompile</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># # First, set up system of odes upon instance being initialised</span>
+        <span class="c1"># self.get_ode_eqn()</span>
 
-        <span class="c1"># Information... yea, what else would you expect</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_Grad</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_GradCompile</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="c1"># more information....</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_GradJacobian</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_GradJacobianCompile</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="c1"># More information!! ROAR! I think this is useless though</span>
-        <span class="c1"># because this is the hessian of the ode which most of the</span>
-        <span class="c1"># time we don&#39;t really care</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_Hessian</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_HessianWithParam</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Tell pygom what it needs if it wants to compile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_func</span><span class="p">(</span><span class="s2">&quot;ode&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">,</span> <span class="n">oT</span><span class="o">=</span><span class="s2">&quot;vec&quot;</span><span class="p">,</span> <span class="n">is_master_canary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_func</span><span class="p">(</span><span class="s2">&quot;jacobian&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_jacobian_eqn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_func</span><span class="p">(</span><span class="s2">&quot;diff_jacobian&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_diff_jacobian_eqn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_func</span><span class="p">(</span><span class="s2">&quot;grad&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_grad_eqn</span><span class="p">,</span> <span class="n">oT</span><span class="o">=</span><span class="s2">&quot;mat&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_func</span><span class="p">(</span><span class="s2">&quot;grad_jacobian&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_grad_jacobian_eqn</span><span class="p">)</span>
+        <span class="c1"># TODO: update _Hessian and _HessianWithParam to this framework.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Hessian</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_HessianWithParam</span><span class="o">=</span><span class="kc">None</span>
 
         <span class="c1"># all the symbols that we need in order to compile</span>
         <span class="c1"># s = state + t</span>
         <span class="c1"># sp = state + t + param</span>
         <span class="c1"># the latter is required to compile the symbolic code</span>
         <span class="c1"># to the numeric setting</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateList</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paramList</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_sp</span><span class="p">()</span>
 
-        <span class="c1"># Calls to the autowrap method can&#39;t take ODEVariable class objects</span>
-        <span class="c1"># Better to convert the objects in self._sp back to sympy objects</span>
-        <span class="c1"># This code will convert any ODEVariable object in either the stateDict</span>
-        <span class="c1"># or paramDict dictonary</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                 <span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateDict</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">ID</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                 <span class="k">pass</span>
-            <span class="k">try</span><span class="p">:</span>
-                 <span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paramDict</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">ID</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                 <span class="k">pass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
 
         <span class="c1"># information regarding the integration.  We want an internal</span>
         <span class="c1"># storage so we can invoke the plot method within the same class</span>
+        <span class="c1"># TODO: unsure if this is necessary</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_odeOutput</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span> <span class="o">=</span> <span class="kc">None</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_intName</span> <span class="o">=</span> <span class="kc">None</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_paramValue</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_paramList</span><span class="p">)</span>
+
         <span class="c1"># the class for shape re-adjustment. We would always like to</span>
         <span class="c1"># operate in the matrix form if possible as it takes up less</span>
         <span class="c1"># memory when operating, but the output is required to be of</span>
         <span class="c1"># the vector form</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_SAUtil</span> <span class="o">=</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">shapeAdjust</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_param</span><span class="p">)</span>
-        <span class="c1"># compile the code.  Note that we need the class because we</span>
-        <span class="c1"># compile both the formatted and unformatted version.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span> <span class="o">=</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">compileCode</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">DeterministicOde</span><span class="p">):</span>
@@ -537,7 +521,7 @@ document.write(`
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;DeterministicOde&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_model_str</span><span class="p">()</span>
     
-    <span class="c1">## Funcitons  to allow pickling and unpickling</span>
+    <span class="c1">## Funcitons  to allow pickling and unpickling      TODO: are these being utilised?</span>
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Grab the class&#39;s dict and remove the compiled objects</span>
@@ -560,9 +544,130 @@ document.write(`
 
     <span class="c1">########################################################################</span>
     <span class="c1">#</span>
-    <span class="c1"># Information about the ode</span>
+    <span class="c1"># Methods to add compiled functions</span>
     <span class="c1">#</span>
     <span class="c1">########################################################################</span>
+
+<div class="viewcode-block" id="DeterministicOde.add_func"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.add_func">[docs]</a>    <span class="k">def</span> <span class="nf">add_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">sympy_obj_generator_func</span><span class="p">,</span> <span class="n">oT</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_master_canary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Template to add a method, called with method_name, which gives the numerical output of</span>
+<span class="sd">        compiled_fn_name, which is the compiled version of the sympy object</span>
+<span class="sd">        generated by sympy_obj_generator_func.</span>
+<span class="sd">        This carries out the essential check to see if recompilation is necessary</span>
+<span class="sd">        and acts accordingly.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">compiled_obj_name</span><span class="o">=</span><span class="n">method_name</span><span class="o">+</span><span class="s2">&quot;Compiled&quot;</span>
+
+        <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+            <span class="c1"># Check if compiled function is being created for the first time or</span>
+            <span class="c1"># corresponding canary is dead (True) indicating underlying ODE&#39;s have changed and</span>
+            <span class="c1"># we need to update both the sympy and compiled objects.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compiled_obj_name</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="p">,</span> <span class="n">method_name</span><span class="p">):</span>
+                <span class="c1"># Make new sympy object and compiled it</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_compiled_sympy_object</span><span class="p">(</span><span class="n">method_name</span><span class="p">,</span> <span class="n">compiled_obj_name</span><span class="p">,</span> <span class="n">sympy_obj_generator_func</span><span class="p">,</span> <span class="n">oT</span><span class="p">,</span> <span class="n">is_master_canary</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compiled_obj_name</span><span class="p">)(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="DeterministicOde.add_compiled_sympy_object"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.add_compiled_sympy_object">[docs]</a>    <span class="k">def</span> <span class="nf">add_compiled_sympy_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">compiled_obj_name</span><span class="p">,</span> <span class="n">sympy_obj_generator_func</span><span class="p">,</span> <span class="n">oT</span><span class="p">,</span> <span class="n">is_master_canary</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Take sympy_obj_generator_func</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Make the sympy object</span>
+        <span class="n">sympy_obj</span><span class="o">=</span><span class="n">sympy_obj_generator_func</span><span class="p">()</span>
+
+        <span class="c1"># Compile the sympy object</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;... Compiling sympy object with name:&quot;</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span><span class="p">:</span>
+            <span class="n">compiled_obj</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
+                        <span class="n">sympy_obj</span><span class="p">,</span>
+                        <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">,</span>
+                        <span class="n">outType</span><span class="o">=</span><span class="n">oT</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">compiled_obj</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
+                        <span class="n">sympy_obj</span><span class="p">,</span>
+                        <span class="n">outType</span><span class="o">=</span><span class="n">oT</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Wrap the compiled object</span>
+        <span class="k">def</span> <span class="nf">comp_obj</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">compiled_obj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+
+        <span class="c1"># Add this as an attribute in the right place</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compiled_obj_name</span><span class="p">,</span> <span class="n">comp_obj</span><span class="p">)</span>
+
+        <span class="c1"># If all other objects depend on this one, kill all their canaries </span>
+        <span class="c1"># (set to True) to indicate something needs to be done.</span>
+        <span class="k">if</span> <span class="n">is_master_canary</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">trip</span><span class="p">()</span>
+
+        <span class="c1"># Replace the corresponding dead canary with a live one (True to False)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">method_name</span><span class="p">)</span></div>
+
+    <span class="c1">########################################################################</span>
+    <span class="c1">#</span>
+    <span class="c1"># ODE functions (define/visualise etc...)</span>
+    <span class="c1">#</span>
+    <span class="c1">########################################################################</span>
+
+<div class="viewcode-block" id="DeterministicOde.get_ode_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_ode_eqn">[docs]</a>    <span class="k">def</span> <span class="nf">get_ode_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Build the algebraic system of ODE&#39;s given the transitions and events.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Containers for different contributions to ODE</span>
+        <span class="n">between_state_ode</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">birth_death_ode</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">pure_ode</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Extract all info from events</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_list</span><span class="p">:</span>
+            <span class="n">rate</span><span class="o">=</span><span class="n">checkEquation</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">rate</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_getListOfVariablesDict</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">transition</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">transition_list</span><span class="p">:</span>
+                <span class="n">magnitude</span><span class="o">=</span><span class="n">checkEquation</span><span class="p">(</span><span class="n">transition</span><span class="o">.</span><span class="n">_magnitude</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_getListOfVariablesDict</span><span class="p">())</span>
+                <span class="n">rate_of_change</span><span class="o">=</span><span class="n">magnitude</span><span class="o">*</span><span class="n">rate</span>
+                <span class="k">if</span> <span class="n">transition</span><span class="o">.</span><span class="n">transition_type</span><span class="o">==</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">B</span><span class="p">:</span>
+                    <span class="n">destination_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">transition</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span>
+                    <span class="n">birth_death_ode</span><span class="p">[</span><span class="n">destination_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">rate_of_change</span>
+                <span class="k">elif</span> <span class="n">transition</span><span class="o">.</span><span class="n">transition_type</span><span class="o">==</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">:</span>
+                    <span class="n">origin_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">transition</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+                    <span class="n">birth_death_ode</span><span class="p">[</span><span class="n">origin_index</span><span class="p">]</span> <span class="o">-=</span> <span class="n">rate_of_change</span>
+                <span class="k">elif</span> <span class="n">transition</span><span class="o">.</span><span class="n">transition_type</span><span class="o">==</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">:</span>
+                    <span class="n">origin_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">transition</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+                    <span class="n">destination_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">transition</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span>
+                    <span class="n">between_state_ode</span><span class="p">[</span><span class="n">origin_index</span><span class="p">]</span> <span class="o">-=</span> <span class="n">rate_of_change</span>
+                    <span class="n">between_state_ode</span><span class="p">[</span><span class="n">destination_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">rate_of_change</span>
+
+        <span class="c1"># Now extract any ODE contributions from ODE type transitions</span>
+        <span class="k">for</span> <span class="n">ode</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode_list</span><span class="p">:</span>
+            <span class="n">origin_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ode</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+            <span class="n">pure_ode</span><span class="p">[</span><span class="n">origin_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">checkEquation</span><span class="p">(</span><span class="n">ode</span><span class="o">.</span><span class="n">equation</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_getListOfVariablesDict</span><span class="p">())</span>
+
+        <span class="c1"># Collect together contributions and make attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span> <span class="o">=</span> <span class="n">between_state_ode</span> <span class="o">+</span> <span class="n">birth_death_ode</span> <span class="o">+</span> <span class="n">pure_ode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathVector</span> <span class="o">=</span> <span class="n">birth_death_ode</span>
+
+        <span class="c1"># # Set list of states and params</span>
+        <span class="c1"># # TODO: should this be handled externally? i.e. how does it know here if params change?</span>
+        <span class="c1"># # TODO: why iter lists here?</span>
+        <span class="c1"># self._s = [s for s in self._iterStateList()] + [self._t]</span>
+        <span class="c1"># self._sp = self._s + [p for p in self._iterParamList()]</span>
+
+        <span class="c1"># tests to see whether we have an autonomous system.  Need to</span>
+        <span class="c1"># convert a non-autonmous system into an autonomous.  Note that</span>
+        <span class="c1"># we will not do the conversion internally and require the</span>
+        <span class="c1"># user to do this.  May consider this a feature in the future.</span>
+        <span class="c1"># TODO: I think autonomous systems are allowed? Maybe not deterministically?</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">eqn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ode</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="ow">in</span> <span class="n">eqn</span><span class="o">.</span><span class="n">atoms</span><span class="p">():</span>      <span class="c1"># TODO: maybe this check doesn&#39;t work anyway, for namespace reasons?</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Input is a non-autonomous system. &quot;</span> <span class="o">+</span>
+                                <span class="s2">&quot;We can only deal with an autonomous &quot;</span> <span class="o">+</span>
+                                <span class="s2">&quot;system at this moment in time&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">isDifficult</span> <span class="o">=</span> <span class="n">simplifyEquation</span><span class="p">(</span><span class="n">eqn</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="ow">or</span> <span class="n">isDifficult</span>
+            
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span></div>
 
     <span class="c1"># TODO: check and see whether it is linear correctly!</span>
 <div class="viewcode-block" id="DeterministicOde.linear_ode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.linear_ode">[docs]</a>    <span class="k">def</span> <span class="nf">linear_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -579,12 +684,11 @@ document.write(`
         <span class="c1"># scheme is a waste of time</span>
         <span class="n">is_linear</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="c1"># if we do not current possess the jacobian, we find it! ROAR!</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_jacobian_eqn</span><span class="p">()</span>
+        <span class="n">J</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_jacobian_eqn</span><span class="p">()</span>
 
         <span class="c1"># a really stupid way to determining whether it is linear.</span>
         <span class="c1"># have not figured out a better way yet...</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian</span><span class="o">.</span><span class="n">atoms</span><span class="p">()</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">J</span><span class="o">.</span><span class="n">atoms</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateDict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
                 <span class="n">is_linear</span> <span class="o">=</span> <span class="kc">False</span>
@@ -604,34 +708,11 @@ document.write(`
     <span class="c1"># jacobian is actually singular, i.e. if it can be a DAE</span>
     <span class="c1"># def canDAE(self,x0,t0):</span>
 
-    <span class="c1">########################################################################</span>
-    <span class="c1">#</span>
-    <span class="c1"># Information about the ode</span>
-    <span class="c1">#</span>
-    <span class="c1">########################################################################</span>
-
-<div class="viewcode-block" id="DeterministicOde.get_ode_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_ode_eqn">[docs]</a>    <span class="k">def</span> <span class="nf">get_ode_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_sub</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.ode_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_T">[docs]</a>    <span class="k">def</span> <span class="nf">ode_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Find the algebraic equations of the ode system.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`sympy.matrices.matrices`</span>
-<span class="sd">            ode in matrix form</span>
-
+<span class="sd">        Same as :meth:`ode` but with t as the first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_findOde</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">ode</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_findOde</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">pass</span>
-
-        <span class="k">if</span> <span class="n">param_sub</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DeterministicOde.print_ode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.print_ode">[docs]</a>    <span class="k">def</span> <span class="nf">print_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latex_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
@@ -656,68 +737,6 @@ document.write(`
                               <span class="n">inv_trig_style</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sympy</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">(</span><span class="n">B</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_findOde</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># lets see how we have defined our ode</span>
-        <span class="c1"># if it is explicit, then we go straight to the easy case</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_explicitOde</span><span class="p">:</span>
-            <span class="c1"># we have explicit ode and we should obtain them directly</span>
-            <span class="nb">super</span><span class="p">(</span><span class="n">DeterministicOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_computeOdeVector</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># super(DeterministicOde, self)._computeTransitionMatrix()</span>
-            <span class="c1"># super(DeterministicOde, self)._computeTransitionVector()</span>
-            <span class="c1"># convert the transition matrix into the set of ode</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">pureTransitionList</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getAllTransition</span><span class="p">(</span><span class="n">pureTransitions</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">fromList</span><span class="p">,</span> \
-                <span class="n">to</span><span class="p">,</span> \
-                <span class="n">eqn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unrollTransitionList</span><span class="p">(</span><span class="n">pureTransitionList</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">eqn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">eqn</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">fromList</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-=</span> <span class="n">eqn</span>
-                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">to</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">eqn</span>
-
-        <span class="c1"># now we just need to add in the birth death processes</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">DeterministicOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_computeBirthDeathVector</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_birthDeathVector</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterStateList</span><span class="p">()]</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">+</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterParamList</span><span class="p">()]</span>
-
-        <span class="c1"># tests to see whether we have an autonomous system.  Need to</span>
-        <span class="c1"># convert a non-autonmous system into an autonomous.  Note that</span>
-        <span class="c1"># we will not do the conversion internally and require the</span>
-        <span class="c1"># user to do this.  May consider this a feature in the future.</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">eqn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ode</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="ow">in</span> <span class="n">eqn</span><span class="o">.</span><span class="n">atoms</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Input is a non-autonomous system. &quot;</span> <span class="o">+</span>
-                                <span class="s2">&quot;We can only deal with an autonomous &quot;</span> <span class="o">+</span>
-                                <span class="s2">&quot;system at this moment in time&quot;</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span> <span class="n">_ode</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">isDifficult</span> <span class="o">=</span> <span class="n">simplifyEquation</span><span class="p">(</span><span class="n">eqn</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="ow">or</span> <span class="n">isDifficult</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_odeCompile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                                             <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span><span class="p">,</span>
-                                                             <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">,</span>
-                                                             <span class="n">outType</span><span class="o">=</span><span class="s2">&quot;vec&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_odeCompile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                                             <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span><span class="p">,</span>
-                                                             <span class="n">outType</span><span class="o">=</span><span class="s2">&quot;vec&quot;</span><span class="p">)</span>
-        <span class="c1"># assign None to all others because we have reset the set of equations.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">trip</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_Grad</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_Hessian</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_diffJacobian</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="c1"># happy!</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;ode&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span>
 
 <div class="viewcode-block" id="DeterministicOde.get_transition_graph"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_transition_graph">[docs]</a>    <span class="k">def</span> <span class="nf">get_transition_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
@@ -746,76 +765,10 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">dot</span></div>
 
-    <span class="c1">#</span>
-    <span class="c1"># this is the main ode solver</span>
-    <span class="c1">#</span>
-<div class="viewcode-block" id="DeterministicOde.ode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode">[docs]</a>    <span class="k">def</span> <span class="nf">ode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the ode given state and time</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        state: array like</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-<span class="sd">        t: double</span>
-<span class="sd">            The current time</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.ndarray`</span>
-<span class="sd">            output of the same length as the ode</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_ode</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="DeterministicOde.ode_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_T">[docs]</a>    <span class="k">def</span> <span class="nf">ode_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Same as :meth:`ode` but with t as the first parameter</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="DeterministicOde.eval_ode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_ode">[docs]</a>    <span class="k">def</span> <span class="nf">eval_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Evaluate the ode given time, state and parameters.  An extension</span>
-<span class="sd">        of :meth:`ode` but now also include the parameters.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        parameters: list</span>
-<span class="sd">            see :meth:`.parameters`</span>
-<span class="sd">        time: numeric</span>
-<span class="sd">            The current time</span>
-<span class="sd">        state: array like</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.matrix` or :class:`mpmath.matrix`</span>
-<span class="sd">            output of the same length as the ode.</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        There are differences between the output of this function and</span>
-<span class="sd">        :meth:`.ode`.  Name and order of state and time are also</span>
-<span class="sd">        different.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        :meth:`.ode`</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">ode</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
-
-        <span class="n">eval_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span></div>
-
 
     <span class="c1">########################################################################</span>
     <span class="c1">#</span>
-    <span class="c1"># jacobian related operations</span>
+    <span class="c1"># Jacobian related operations</span>
     <span class="c1">#</span>
     <span class="c1">########################################################################</span>
 
@@ -869,38 +822,6 @@ document.write(`
 
         <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">J</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the jacobian given state and time</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        state: array like</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-<span class="sd">        t: double</span>
-<span class="sd">            The current time</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.ndarray`</span>
-<span class="sd">            Matrix of dimension [number of state x number of state]</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_jacobian</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="DeterministicOde.jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.jacobian_T">[docs]</a>    <span class="k">def</span> <span class="nf">jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Same as :meth:`jacobian` but with t as first parameter</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">jacobian</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_Jacobian_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evalJacobian_NoCheck</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_JacobianT_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian_NoCheck</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
-
 <div class="viewcode-block" id="DeterministicOde.get_jacobian_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_jacobian_eqn">[docs]</a>    <span class="k">def</span> <span class="nf">get_jacobian_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns the jacobian in algebraic form</span>
@@ -911,72 +832,20 @@ document.write(`
 <span class="sd">            A matrix of dimension [number of state x number of state]</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
-            <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterStateList</span><span class="p">()]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span><span class="o">.</span><span class="n">jacobian</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">):</span>
-                    <span class="n">eqn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
-                    <span class="k">if</span>  <span class="n">eqn</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">],</span> <span class="n">isDifficult</span> <span class="o">=</span> <span class="n">simplifyEquation</span><span class="p">(</span><span class="n">eqn</span><span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="ow">or</span> <span class="n">isDifficult</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterStateList</span><span class="p">()]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span><span class="o">.</span><span class="n">jacobian</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
 
-        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_JacobianCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian</span><span class="p">,</span>
-                                      <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_JacobianCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;Jacobian&#39;</span><span class="p">)</span>
+        <span class="c1"># Process output: (1) check if &quot;difficult&quot; and (2) simplify</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">):</span>
+                <span class="n">eqn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+                <span class="k">if</span>  <span class="n">eqn</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">],</span> <span class="n">isDifficult</span> <span class="o">=</span> <span class="n">simplifyEquation</span><span class="p">(</span><span class="n">eqn</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="ow">or</span> <span class="n">isDifficult</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian</span></div>
-
-<div class="viewcode-block" id="DeterministicOde.eval_jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">eval_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the jacobian given parameters, state and time. An extension</span>
-<span class="sd">        of :meth:`.jacobian` but now also include the parameters.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        parameters: list</span>
-<span class="sd">            see :meth:`.parameters`</span>
-<span class="sd">        time: double</span>
-<span class="sd">            The current time</span>
-<span class="sd">        state: array list</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.matrix` or :class:`mpmath.matrix`</span>
-<span class="sd">            Matrix of dimension [number of state x number of state]</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        Name and order of state and time are also different.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        :meth:`.jacobian`</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">Jacobian</span><span class="p">:</span>
-            <span class="c1">#self.get_ode_eqn()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_jacobian_eqn</span><span class="p">()</span>
-
-        <span class="n">eval_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_JacobianCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_evalJacobian_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Same as :meth:`eval_jacobian` but without the checks</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">eval_param</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">time</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paramValue</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_JacobianCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span>
 
     <span class="c1">######  the sum of jacobian, i.e a_{i} = \sum_{j=1}^{d} J_{i,j}</span>
 
@@ -1006,12 +875,6 @@ document.write(`
         <span class="n">sens</span> <span class="o">=</span> <span class="n">state_param</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">::]</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_sens_jacobian_state</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span> <span class="n">sens</span><span class="o">=</span><span class="n">sens</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="DeterministicOde.sens_jacobian_state_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.sens_jacobian_state_T">[docs]</a>    <span class="k">def</span> <span class="nf">sens_jacobian_state_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Same as :meth:`sens_jacobian_state_T` but with t as first parameter</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sens_jacobian_state</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DeterministicOde.eval_sens_jacobian_state"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_sens_jacobian_state">[docs]</a>    <span class="k">def</span> <span class="nf">eval_sens_jacobian_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sens</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
@@ -1056,32 +919,6 @@ document.write(`
 
     <span class="c1">############################## derivative of jacobian</span>
 
-<div class="viewcode-block" id="DeterministicOde.diff_jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.diff_jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">diff_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the differential of jacobian given state and time</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        state: array like</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-<span class="sd">        t: double</span>
-<span class="sd">            The current time</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.ndarray`</span>
-<span class="sd">            Matrix of dimension [number of state x number of state]</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_diff_jacobian</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="DeterministicOde.diff_jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.diff_jacobian_T">[docs]</a>    <span class="k">def</span> <span class="nf">diff_jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Same as :meth:`diff_jacobian` but with t as first parameter</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">diff_jacobian</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="DeterministicOde.get_diff_jacobian_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_diff_jacobian_eqn">[docs]</a>    <span class="k">def</span> <span class="nf">get_diff_jacobian_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns the jacobian differentiate w.r.t. states in algebraic form</span>
@@ -1094,78 +931,57 @@ document.write(`
 <span class="sd">            [number of state x number of state]</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diffJacobian</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
-            <span class="n">diffJac</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
-            <span class="k">for</span> <span class="n">eqn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span><span class="p">:</span>
-                <span class="n">J</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">si</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iterStateList</span><span class="p">()):</span>
-                    <span class="n">diffEqn</span><span class="p">,</span> <span class="n">D1</span> <span class="o">=</span> <span class="n">simplifyEquation</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">eqn</span><span class="p">,</span> <span class="n">si</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-                    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">sj</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iterStateList</span><span class="p">()):</span>
-                        <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">],</span> <span class="n">D2</span> <span class="o">=</span> <span class="n">simplifyEquation</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">diffEqn</span><span class="p">,</span> <span class="n">sj</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="ow">or</span> <span class="n">D1</span> <span class="ow">or</span> <span class="n">D2</span>
-                <span class="c1">#binding.</span>
-                <span class="n">diffJac</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
+        <span class="n">diffJac</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
-            <span class="c1"># extract first matrix as base.  we have to get the first element</span>
-            <span class="c1"># as base if we want to use the class method of the object</span>
-            <span class="n">diffJacMatrix</span> <span class="o">=</span> <span class="n">diffJac</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">diffJac</span><span class="p">)):</span>
-                <span class="c1"># sympy internal matrix joining</span>
-                <span class="n">diffJacMatrix</span> <span class="o">=</span> <span class="n">diffJacMatrix</span><span class="o">.</span><span class="n">col_join</span><span class="p">(</span><span class="n">diffJac</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">eqn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span><span class="p">:</span>
+            <span class="n">J</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">si</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iterStateList</span><span class="p">()):</span>
+                <span class="n">diffEqn</span><span class="p">,</span> <span class="n">D1</span> <span class="o">=</span> <span class="n">simplifyEquation</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">eqn</span><span class="p">,</span> <span class="n">si</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">sj</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iterStateList</span><span class="p">()):</span>
+                    <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">],</span> <span class="n">D2</span> <span class="o">=</span> <span class="n">simplifyEquation</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">diffEqn</span><span class="p">,</span> <span class="n">sj</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="ow">or</span> <span class="n">D1</span> <span class="ow">or</span> <span class="n">D2</span>
+            <span class="c1">#binding.</span>
+            <span class="n">diffJac</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_diffJacobian</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">diffJacMatrix</span><span class="p">)</span>
+        <span class="c1"># extract first matrix as base.  we have to get the first element</span>
+        <span class="c1"># as base if we want to use the class method of the object</span>
+        <span class="n">diffJacMatrix</span> <span class="o">=</span> <span class="n">diffJac</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">diffJac</span><span class="p">)):</span>
+            <span class="c1"># sympy internal matrix joining</span>
+            <span class="n">diffJacMatrix</span> <span class="o">=</span> <span class="n">diffJacMatrix</span><span class="o">.</span><span class="n">col_join</span><span class="p">(</span><span class="n">diffJac</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
-        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_diffJacobianCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                          <span class="bp">self</span><span class="o">.</span><span class="n">_diffJacobian</span><span class="p">,</span>
-                                          <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_diffJacobianCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                          <span class="bp">self</span><span class="o">.</span><span class="n">_diffJacobian</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;diffJacobian&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_diffJacobian</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">diffJacMatrix</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diffJacobian</span></div>
+    
+    <span class="c1"># Some additional maybe not necessary functions....</span>
 
-<div class="viewcode-block" id="DeterministicOde.eval_diff_jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_diff_jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">eval_diff_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.jacobian_T">[docs]</a>    <span class="k">def</span> <span class="nf">jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the differential of the jacobian given parameters,</span>
-<span class="sd">        state and time. An extension of :meth:`.diff_jacobian` but now</span>
-<span class="sd">        also include the parameters.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        parameters: list</span>
-<span class="sd">            see :meth:`.parameters`</span>
-<span class="sd">        time: double</span>
-<span class="sd">            The current time</span>
-<span class="sd">        state: array list</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.matrix` or :class:`mpmath.matrix`</span>
-<span class="sd">            Matrix of dimension [number of state x number of state]</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        Name and order of state and time are also different.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        :meth:`.jacobian`</span>
-
+<span class="sd">        Same as :meth:`jacobian` but with t as first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diffJacobian</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">diffJacobian</span><span class="p">:</span>
-            <span class="c1">#self.get_ode_eqn()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_diff_jacobian_eqn</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">jacobian</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
 
-        <span class="n">eval_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diffJacobianCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">_Jacobian_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evalJacobian_NoCheck</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_JacobianT_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian_NoCheck</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DeterministicOde.sens_jacobian_state_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.sens_jacobian_state_T">[docs]</a>    <span class="k">def</span> <span class="nf">sens_jacobian_state_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Same as :meth:`sens_jacobian_state_T` but with t as first parameter</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sens_jacobian_state</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DeterministicOde.diff_jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.diff_jacobian_T">[docs]</a>    <span class="k">def</span> <span class="nf">diff_jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Same as :meth:`diff_jacobian` but with t as first parameter</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">diff_jacobian</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
+
 
     <span class="c1">########################################################################</span>
     <span class="c1">#</span>
@@ -1183,94 +999,25 @@ document.write(`
 <span class="sd">            A matrix of dimension [number of state x number of parameters]</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="c1"># finds</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Grad</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_Grad</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_param</span><span class="p">)</span>
+        <span class="n">ode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Grad</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_param</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">):</span>
-                <span class="c1"># need to adjust such that the first index is not</span>
-                <span class="c1"># included because it correspond to time</span>
-                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iterParamList</span><span class="p">()):</span>
-                    <span class="n">eqn</span><span class="p">,</span> <span class="n">isDifficult</span> <span class="o">=</span> <span class="n">simplifyEquation</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">ode</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">p</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_Grad</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">eqn</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="ow">or</span> <span class="n">isDifficult</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_GradCompile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                                              <span class="bp">self</span><span class="o">.</span><span class="n">_Grad</span><span class="p">,</span>
-                                                              <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">,</span>
-                                                              <span class="n">outType</span><span class="o">=</span><span class="s2">&quot;mat&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_GradCompile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                                              <span class="bp">self</span><span class="o">.</span><span class="n">_Grad</span><span class="p">,</span>
-                                                              <span class="n">outType</span><span class="o">=</span><span class="s2">&quot;mat&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;grad&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">):</span>
+            <span class="c1"># need to adjust such that the first index is not</span>
+            <span class="c1"># included because it correspond to time</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iterParamList</span><span class="p">()):</span>
+                <span class="n">eqn</span><span class="p">,</span> <span class="n">isDifficult</span> <span class="o">=</span> <span class="n">simplifyEquation</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">ode</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">p</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_Grad</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">eqn</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="ow">or</span> <span class="n">isDifficult</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Grad</span></div>
-
-<div class="viewcode-block" id="DeterministicOde.grad"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.grad">[docs]</a>    <span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Evaluate the gradient given state and time</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        state: array like</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-<span class="sd">        t: numeric</span>
-<span class="sd">            The current time</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.ndarray`</span>
-<span class="sd">            Matrix of dimension [number of state x number of parameters]</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_grad</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DeterministicOde.grad_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.grad_T">[docs]</a>    <span class="k">def</span> <span class="nf">grad_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`grad_T` but with t as first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="DeterministicOde.eval_grad"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_grad">[docs]</a>    <span class="k">def</span> <span class="nf">eval_grad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the gradient given parameters, state and time. An extension</span>
-<span class="sd">        of :meth:`grad` but now also include the parameters.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        parameters: list</span>
-<span class="sd">            see :meth:`.parameters`</span>
-<span class="sd">        time: double</span>
-<span class="sd">            The current time</span>
-<span class="sd">        state: array list</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.matrix` or :class:`mpmath.matrix`</span>
-<span class="sd">            Matrix of dimension [number of state x number of state]</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        Name and order of state and time are also different.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        :meth:`.grad`</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Grad</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">grad</span><span class="p">:</span>
-            <span class="c1">#self.get_ode_eqn()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_grad_eqn</span><span class="p">()</span>
-
-        <span class="n">eval_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GradCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span></div>
 
     <span class="c1">#</span>
     <span class="c1"># jacobian of the Gradiant</span>
@@ -1291,98 +1038,25 @@ document.write(`
 <span class="sd">        :meth:`.get_grad_eqn`</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GradJacobian</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_GradJacobian</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">num_param</span><span class="p">,</span>
-                                             <span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">)</span>
-            <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_grad_eqn</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_param</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">):</span>
-                    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iterStateList</span><span class="p">()):</span>
-                        <span class="n">z</span> <span class="o">=</span> <span class="n">k</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span> <span class="o">+</span> <span class="n">i</span>
-                        <span class="n">eqn</span><span class="p">,</span> <span class="n">isDifficult</span> <span class="o">=</span> <span class="n">simplifyEquation</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">G</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">],</span> <span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_GradJacobian</span><span class="p">[</span><span class="n">z</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">eqn</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="ow">or</span> <span class="n">isDifficult</span>
-            <span class="c1"># end of the triple loop.  All elements are now filled</span>
-
-        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SC</span><span class="o">.</span><span class="n">compileExprAndFormat</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_GradJacobianCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                          <span class="bp">self</span><span class="o">.</span><span class="n">_GradJacobian</span><span class="p">,</span>
-                                          <span class="n">modules</span><span class="o">=</span><span class="s1">&#39;mpmath&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_GradJacobianCompile</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp</span><span class="p">,</span>
-                                         <span class="bp">self</span><span class="o">.</span><span class="n">_GradJacobian</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="s1">&#39;GradJacobian&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_GradJacobian</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">num_param</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">)</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_grad_eqn</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_param</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iterStateList</span><span class="p">()):</span>
+                    <span class="n">z</span> <span class="o">=</span> <span class="n">k</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span> <span class="o">+</span> <span class="n">i</span>
+                    <span class="n">eqn</span><span class="p">,</span> <span class="n">isDifficult</span> <span class="o">=</span> <span class="n">simplifyEquation</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">G</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">],</span> <span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_GradJacobian</span><span class="p">[</span><span class="n">z</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">eqn</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isDifficult</span> <span class="ow">or</span> <span class="n">isDifficult</span>
+        <span class="c1"># end of the triple loop.  All elements are now filled</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GradJacobian</span></div>
-
-<div class="viewcode-block" id="DeterministicOde.grad_jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.grad_jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">grad_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Evaluate the Jacobian of the gradient given state and time</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        state: array like</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-<span class="sd">        t: numeric</span>
-<span class="sd">            The current time</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.ndarray`</span>
-<span class="sd">            Matrix of dimension [number of state x number of parameters]</span>
-
-<span class="sd">        See also</span>
-<span class="sd">        --------</span>
-<span class="sd">        :meth:`.grad`</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_grad_jacobian</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DeterministicOde.grad_jacobianT"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.grad_jacobianT">[docs]</a>    <span class="k">def</span> <span class="nf">grad_jacobianT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`grad_jacobian` but with t as first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grad_jacobian</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="DeterministicOde.eval_grad_jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_grad_jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">eval_grad_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Evaluate the jacobian of the gradient given parameters,</span>
-<span class="sd">        state and time. An extension of :meth:`.grad_jacobian`</span>
-<span class="sd">        but now also include the parameters.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        parameters: list</span>
-<span class="sd">            see :meth:`.parameters`</span>
-<span class="sd">        time: double</span>
-<span class="sd">            The current time</span>
-<span class="sd">        state: array list</span>
-<span class="sd">            The current numerical value for the states which can be</span>
-<span class="sd">            :class:`numpy.ndarray` or :class:`list`</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        :class:`numpy.matrix` or :class:`mpmath.matrix`</span>
-<span class="sd">            Matrix of dimension [number of state x number of state]</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        Name and order of state and time are also different.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        :meth:`.grad_jacobian`, :meth:`.get_grad_jacobian_eqn`</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GradJacobian</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasNewTransition</span><span class="o">.</span><span class="n">GradJacobian</span><span class="p">:</span>
-            <span class="c1">#self.get_ode_eqn()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_grad_jacobian_eqn</span><span class="p">()</span>
-
-        <span class="n">eval_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GradJacobianCompile</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span></div>
 
     <span class="c1">########################################################################</span>
     <span class="c1">#</span>
@@ -1510,6 +1184,286 @@ document.write(`
             <span class="n">H</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1">########################################################################</span>
+    <span class="c1">#</span>
+    <span class="c1"># Initial conditions, integrations and result plots</span>
+    <span class="c1">#</span>
+    <span class="c1">########################################################################</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Return the initial state values</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span>
+
+    <span class="nd">@initial_state</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Set the initial state values</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x0: array like</span>
+<span class="sd">             initial condition of x at time 0</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">err_str</span> <span class="o">=</span> <span class="s2">&quot;More than one state in the defined system&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span> <span class="o">=</span> <span class="n">x0</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_state</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InitializeError</span><span class="p">(</span><span class="n">err_str</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InitializeError</span><span class="p">(</span><span class="s2">&quot;err_str&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x0</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Number of state is &quot;</span> <span class="o">+</span>
+                            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">)</span><span class="o">+</span> <span class="s2">&quot; but &quot;</span> <span class="o">+</span>
+                            <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x0</span><span class="p">))</span><span class="o">+</span> <span class="s2">&quot; detected&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">initial_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Return the initial time</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span>
+
+    <span class="nd">@initial_time</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">initial_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Set the initial time</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t0: numeric</span>
+<span class="sd">            initial time where x0 is observed</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">err_str</span> <span class="o">=</span> <span class="s2">&quot;Initial time should be a &quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">=</span> <span class="n">t0</span>
+        <span class="k">elif</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">is_list_like</span><span class="p">(</span><span class="n">t0</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t0</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Number</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">=</span> <span class="n">t0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">InitializeError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;numeric value&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InitializeError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;single value&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t0</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InitializeError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;single value&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InitializeError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;numeric value&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">initial_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns the initial values, both time and state as a tuple (x0, t0)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_time</span><span class="p">)</span>
+
+    <span class="nd">@initial_values</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">initial_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0t0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Set the initial values, both time and state</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x0t0: array like</span>
+<span class="sd">            initial condition of x at time t and the initial time t where x</span>
+<span class="sd">            is observed</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x0t0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Initial values require (x0, t0)&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_state</span> <span class="o">=</span> <span class="n">x0t0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_time</span> <span class="o">=</span> <span class="n">x0t0</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<div class="viewcode-block" id="DeterministicOde.integrate"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.integrate">[docs]</a>    <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Integrate over a range of t when t is an array and a output at time t</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t: array like</span>
+<span class="sd">            the range of time points which we want to see the result of</span>
+<span class="sd">        full_output: bool</span>
+<span class="sd">            if we want additional information</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># type checking</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setIntegrateTime</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="c1"># if our parameters are stochastic, then we are going to generate</span>
+        <span class="c1"># another set of parameters to run</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># this should always be true.  If not, then we have screwed up</span>
+            <span class="c1"># somewhere within this class.</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span><span class="p">,</span> <span class="n">full_output</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DeterministicOde.integrate2"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.integrate2">[docs]</a>    <span class="k">def</span> <span class="nf">integrate2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Integrate over a range of t when t is an array and a output</span>
+<span class="sd">        at time t.  Select a suitable method to integrate when</span>
+<span class="sd">        method is None.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t: array like</span>
+<span class="sd">            the range of time points which we want to see the result of</span>
+<span class="sd">        full_output: bool</span>
+<span class="sd">            if we want additional information</span>
+<span class="sd">        method: str, optional</span>
+<span class="sd">            the integration method.  All those available in</span>
+<span class="sd">            :class:`ode &lt;scipy.integrate.ode&gt;` are allowed with &#39;vode&#39;</span>
+<span class="sd">            and &#39;ivode&#39; representing the non-stiff and stiff version</span>
+<span class="sd">            respectively.  Defaults to None, which tries to choose the</span>
+<span class="sd">            integration method via eigenvalue analysis (only one) using</span>
+<span class="sd">            the initial conditions</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setIntegrateTime</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="c1"># if our parameters are stochastic, then we are going to generate</span>
+        <span class="c1"># another set of parameters to run</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># this should always be true</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrate2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span><span class="p">,</span> <span class="n">full_output</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_setIntegrateTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Set the full set of integration time including the origin</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Initial time not set&quot;</span>
+
+        <span class="k">if</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">is_list_like</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Number</span><span class="p">):</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_t0</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ArrayError</span><span class="p">(</span><span class="s2">&quot;Expecting a list of numeric value&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_t0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ArrayError</span><span class="p">(</span><span class="s2">&quot;Expecting an array like input or a single &quot;</span> <span class="o">+</span>
+                             <span class="s2">&quot;numeric value&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span> <span class="o">=</span> <span class="n">t</span>
+
+    <span class="k">def</span> <span class="nf">_integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Integrate using :class:`scipy.integrate.odeint` underneath</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Initial time not set&quot;</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">integrate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeOutput</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                               <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span><span class="p">,</span>
+                                               <span class="n">t</span><span class="p">,</span>
+                                               <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeOutput</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span>
+
+    <span class="k">def</span> <span class="nf">_integrate2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Integrate using :class:`scipy.integrate.ode` underneath</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Initial state not set&quot;</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">integrateFuncJac</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeOutput</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ode_T</span><span class="p">,</span>
+                                               <span class="bp">self</span><span class="o">.</span><span class="n">jacobian_T</span><span class="p">,</span>
+                                               <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span><span class="p">,</span>
+                                               <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::],</span>
+                                               <span class="n">includeOrigin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                               <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                               <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeOutput</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span>
+
+<div class="viewcode-block" id="DeterministicOde.plot"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Plot the results of the integration</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        If we have 3 states or more, it will always be arrange such</span>
+<span class="sd">        that it has 3 columns.  Uses the operation from</span>
+<span class="sd">        :mod:`odeutils`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># just need to make sure that we have</span>
+        <span class="c1"># already gotten the solution to the integration</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span><span class="p">)</span>
+                <span class="n">ode_utils</span><span class="o">.</span><span class="n">plot_det</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateList</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">IntegrationError</span><span class="p">(</span><span class="s2">&quot;Have not performed the integration yet&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ode_utils</span><span class="o">.</span><span class="n">plot_det</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateList</span><span class="p">)</span></div>
+
+    <span class="c1">########################################################################</span>
+    <span class="c1"># Unrolling of the information from vector to sympy</span>
+    <span class="c1"># t</span>
+    <span class="c1"># state</span>
+    <span class="c1">########################################################################</span>
+
+    <span class="k">def</span> <span class="nf">_addTimeEvalParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_param</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="n">eval_param</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">eval_param</span>
+
+    <span class="k">def</span> <span class="nf">_addStateEvalParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_param</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DeterministicOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">eval_param</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span>
+
+        <span class="k">return</span> <span class="n">eval_param</span>
+
+    <span class="k">def</span> <span class="nf">_getEvalParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Have to input both state and time&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_parameters&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1">#elif self._parameters is None:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_param</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Have not set the parameters yet&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">eval_param</span> <span class="o">=</span> <span class="n">state</span> <span class="o">+</span> <span class="p">[</span><span class="n">time</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+            <span class="n">eval_param</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">time</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">eval_param</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">time</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">eval_param</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paramValue</span>
+
+
+
+    <span class="c1"># TODO: half of this class is sensitivity related functions</span>
+    <span class="c1">#       we are probably better off defininig these elsewhere</span>
+    <span class="c1">#       bu that&#39;s a task for another day.</span>
 
     <span class="c1">########################################################################</span>
     <span class="c1">#</span>
@@ -2335,280 +2289,7 @@ document.write(`
 <span class="sd">        Same as :meth:`ode_and_forwardforward_jacobian` but</span>
 <span class="sd">        with t being the first parameters</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode_and_forwardforward_jacobian</span><span class="p">(</span><span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
-
-    <span class="c1">########################################################################</span>
-    <span class="c1">#</span>
-    <span class="c1"># Initial conditions, integrations and result plots</span>
-    <span class="c1">#</span>
-    <span class="c1">########################################################################</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Return the initial state values</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span>
-
-    <span class="nd">@initial_state</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Set the initial state values</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x0: array like</span>
-<span class="sd">             initial condition of x at time 0</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">err_str</span> <span class="o">=</span> <span class="s2">&quot;More than one state in the defined system&quot;</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span> <span class="o">=</span> <span class="n">x0</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_state</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x0</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">InitializeError</span><span class="p">(</span><span class="n">err_str</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InitializeError</span><span class="p">(</span><span class="s2">&quot;err_str&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x0</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Number of state is &quot;</span> <span class="o">+</span>
-                            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">)</span><span class="o">+</span> <span class="s2">&quot; but &quot;</span> <span class="o">+</span>
-                            <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x0</span><span class="p">))</span><span class="o">+</span> <span class="s2">&quot; detected&quot;</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">initial_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Return the initial time</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span>
-
-    <span class="nd">@initial_time</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">initial_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t0</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Set the initial time</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        t0: numeric</span>
-<span class="sd">            initial time where x0 is observed</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-
-        <span class="n">err_str</span> <span class="o">=</span> <span class="s2">&quot;Initial time should be a &quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">=</span> <span class="n">t0</span>
-        <span class="k">elif</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">is_list_like</span><span class="p">(</span><span class="n">t0</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t0</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Number</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">=</span> <span class="n">t0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">InitializeError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;numeric value&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">InitializeError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;single value&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t0</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">InitializeError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;single value&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InitializeError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;numeric value&quot;</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">initial_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Returns the initial values, both time and state as a tuple (x0, t0)</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_time</span><span class="p">)</span>
-
-    <span class="nd">@initial_values</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">initial_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0t0</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Set the initial values, both time and state</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x0t0: array like</span>
-<span class="sd">            initial condition of x at time t and the initial time t where x</span>
-<span class="sd">            is observed</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x0t0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Initial values require (x0, t0)&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">initial_state</span> <span class="o">=</span> <span class="n">x0t0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">initial_time</span> <span class="o">=</span> <span class="n">x0t0</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
-<div class="viewcode-block" id="DeterministicOde.integrate"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.integrate">[docs]</a>    <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Integrate over a range of t when t is an array and a output at time t</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        t: array like</span>
-<span class="sd">            the range of time points which we want to see the result of</span>
-<span class="sd">        full_output: bool</span>
-<span class="sd">            if we want additional information</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="c1"># type checking</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_setIntegrateTime</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-        <span class="c1"># if our parameters are stochastic, then we are going to generate</span>
-        <span class="c1"># another set of parameters to run</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># this should always be true.  If not, then we have screwed up</span>
-            <span class="c1"># somewhere within this class.</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span><span class="p">,</span> <span class="n">full_output</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="DeterministicOde.integrate2"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.integrate2">[docs]</a>    <span class="k">def</span> <span class="nf">integrate2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Integrate over a range of t when t is an array and a output</span>
-<span class="sd">        at time t.  Select a suitable method to integrate when</span>
-<span class="sd">        method is None.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        t: array like</span>
-<span class="sd">            the range of time points which we want to see the result of</span>
-<span class="sd">        full_output: bool</span>
-<span class="sd">            if we want additional information</span>
-<span class="sd">        method: str, optional</span>
-<span class="sd">            the integration method.  All those available in</span>
-<span class="sd">            :class:`ode &lt;scipy.integrate.ode&gt;` are allowed with &#39;vode&#39;</span>
-<span class="sd">            and &#39;ivode&#39; representing the non-stiff and stiff version</span>
-<span class="sd">            respectively.  Defaults to None, which tries to choose the</span>
-<span class="sd">            integration method via eigenvalue analysis (only one) using</span>
-<span class="sd">            the initial conditions</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_setIntegrateTime</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-        <span class="c1"># if our parameters are stochastic, then we are going to generate</span>
-        <span class="c1"># another set of parameters to run</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># this should always be true</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochasticParam</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrate2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span><span class="p">,</span> <span class="n">full_output</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_setIntegrateTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Set the full set of integration time including the origin</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Initial time not set&quot;</span>
-
-        <span class="k">if</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">is_list_like</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Number</span><span class="p">):</span>
-                <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_t0</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ArrayError</span><span class="p">(</span><span class="s2">&quot;Expecting a list of numeric value&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
-            <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_t0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ArrayError</span><span class="p">(</span><span class="s2">&quot;Expecting an array like input or a single &quot;</span> <span class="o">+</span>
-                             <span class="s2">&quot;numeric value&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span> <span class="o">=</span> <span class="n">t</span>
-
-    <span class="k">def</span> <span class="nf">_integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Integrate using :class:`scipy.integrate.odeint` underneath</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Initial time not set&quot;</span>
-
-        <span class="n">f</span> <span class="o">=</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">integrate</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeOutput</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                                               <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span><span class="p">,</span>
-                                               <span class="n">t</span><span class="p">,</span>
-                                               <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeOutput</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span>
-
-    <span class="k">def</span> <span class="nf">_integrate2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Integrate using :class:`scipy.integrate.ode` underneath</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Initial state not set&quot;</span>
-
-        <span class="n">f</span> <span class="o">=</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">integrateFuncJac</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeOutput</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ode_T</span><span class="p">,</span>
-                                               <span class="bp">self</span><span class="o">.</span><span class="n">jacobian_T</span><span class="p">,</span>
-                                               <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span><span class="p">,</span>
-                                               <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::],</span>
-                                               <span class="n">includeOrigin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                               <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                               <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeOutput</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span>
-
-<div class="viewcode-block" id="DeterministicOde.plot"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Plot the results of the integration</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        If we have 3 states or more, it will always be arrange such</span>
-<span class="sd">        that it has 3 columns.  Uses the operation from</span>
-<span class="sd">        :mod:`odeutils`</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-
-        <span class="c1"># just need to make sure that we have</span>
-        <span class="c1"># already gotten the solution to the integration</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span><span class="p">)</span>
-                <span class="n">ode_utils</span><span class="o">.</span><span class="n">plot_det</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateList</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">IntegrationError</span><span class="p">(</span><span class="s2">&quot;Have not performed the integration yet&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ode_utils</span><span class="o">.</span><span class="n">plot_det</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateList</span><span class="p">)</span></div>
-
-    <span class="c1">########################################################################</span>
-    <span class="c1"># Unrolling of the information from vector to sympy</span>
-    <span class="c1"># t</span>
-    <span class="c1"># state</span>
-    <span class="c1">########################################################################</span>
-
-    <span class="k">def</span> <span class="nf">_addTimeEvalParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_param</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-        <span class="n">eval_param</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">eval_param</span>
-
-    <span class="k">def</span> <span class="nf">_addStateEvalParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_param</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">DeterministicOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">state</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">eval_param</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span>
-
-        <span class="k">return</span> <span class="n">eval_param</span>
-
-    <span class="k">def</span> <span class="nf">_getEvalParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Have to input both state and time&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_param</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">pass</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Have not set the parameters yet&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">eval_param</span> <span class="o">=</span> <span class="n">state</span> <span class="o">+</span> <span class="p">[</span><span class="n">time</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
-            <span class="n">eval_param</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">time</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">eval_param</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">time</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">eval_param</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paramValue</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode_and_forwardforward_jacobian</span><span class="p">(</span><span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div></div>
 </pre></div>
 
                 </article>

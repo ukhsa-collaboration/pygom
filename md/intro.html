@@ -188,9 +188,15 @@
 
 <li class="toctree-l1"><a class="reference internal" href="building_doc.html">Building the documentation locally</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/solution.html">Mathematical description</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/model_spec_2.html">Defining a system of differential equations</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../notebooks/insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/extract_info.html">Extracting model information</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/unroll/unrollSimple.html">Deducing transitions from equations</a></li>
@@ -436,7 +442,11 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-does-this-package-do">What does this package do?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-new-in-this-release">What is new in this release?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-notes">Release notes:</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#latest-release">[0.1.9] - 2024-11-30 (Latest release)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">[0.1.8] - 2024-08-06</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-this-documentation">Using this documentation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing-to-pygom">Contributing to PyGOM</a></li>
 </ul>
@@ -458,16 +468,64 @@ document.write(`
 This is backed by a comprehensive and easy to use tool–box implementing functions to easily perform common operations such as parameter estimation and solving for deterministic or stochastic time evolution.
 The package source is freely available (hosted on <a class="reference external" href="https://github.com/ukhsa-collaboration/pygom">GitHub</a>) and organized in a way that permits easy extension. With both the algebraic and numeric calculations performed automatically (but still accessible), the end user is freed to focus on model development.</p>
 </section>
-<section id="what-is-new-in-this-release">
-<h2>What is new in this release?<a class="headerlink" href="#what-is-new-in-this-release" title="Permalink to this heading">#</a></h2>
-<p>The main objective of the current release (0.1.8) is to provide more comprehensive documentation on how to use PyGOM.</p>
-<p>The code underlying PyGOM’s functionality is largely unchanged since the previous release, barring a few minor bug fixes.
-The only significant changes which previous users should be aware of are:</p>
+<section id="release-notes">
+<h2>Release notes:<a class="headerlink" href="#release-notes" title="Permalink to this heading">#</a></h2>
+<section id="latest-release">
+<h3>[0.1.9] - 2024-11-30 (Latest release)<a class="headerlink" href="#latest-release" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
-<li><p>A move away from the <code class="xref py py-class docutils literal notranslate"><span class="pre">DeterministicOde</span></code> class for deterministic simulations and instead employing <code class="xref py py-class docutils literal notranslate"><span class="pre">SimulateOde</span></code> as our do-all class for deterministic or stochastic simulations as well as parameter fitting.</p></li>
+<li><p>Added</p>
+<ul>
+<li><p>Method <code class="xref py py-func docutils literal notranslate"><span class="pre">solve_stochast()</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">SimulateOde</span></code> has 1 additional output (for a total of 3): the number of times each event occurs in between each time step. This is useful if you are interested in infection incidence rather than prevalence, for example.</p></li>
+<li><p>The adaptive tau leap can be bypassed and, instead, a constant step size for the tau leap algorithm can be specified with <code class="docutils literal notranslate"><span class="pre">SimulateOde._pre_tau</span></code>.</p></li>
+<li><p>When an output of a stochastic simulation needs to be mapped to the user defined time-points, this is performed via linear interpolation.</p></li>
+</ul>
+</li>
+<li><p>Changed</p>
+<ul>
+<li><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code> class has replaced the <code class="xref py py-class docutils literal notranslate"><span class="pre">Transition</span></code> class as the fundamental building block. This allows for more flexibility when dealing with correlated transitions, for example.</p></li>
+<li><p>Internal methods <code class="xref py py-func docutils literal notranslate"><span class="pre">add_func()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">add_compiled_sympy_object()</span></code> make the compilation of sympy objects more modular.</p></li>
+</ul>
+</li>
+<li><p>Deprecated</p>
+<ul>
+<li><p>Models can still be defined via <code class="xref py py-class docutils literal notranslate"><span class="pre">Transition</span></code> objects as before, but users are advised to switch to the <code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code> based approach.</p></li>
+<li><p>The birth rate state can still be defined as an <code class="docutils literal notranslate"><span class="pre">origin</span></code>, but can now also (and more accurately) be described as a <code class="docutils literal notranslate"><span class="pre">destination</span></code>. In the next version, this may remove the need to specify the transition type since between state transitions will uniquely have an origin and destination, births will uniquely have just a destination and deaths just an origin.</p></li>
+</ul>
+</li>
+<li><p>Removed</p></li>
+<li><p>Fixed</p>
+<ul>
+<li><p>Minor bug fixes</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id1">
+<h3>[0.1.8] - 2024-08-06<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Added</p>
+<ul>
+<li><p>Comprehensive documentation of how to use PyGOM</p></li>
+</ul>
+</li>
+<li><p>Changed</p>
+<ul>
 <li><p>Running simulations with random parameters does not require a special simulation function. Instead, PyGOM now recognises the parameter types handed to it (fixed or random) and acts accordingly. This means that stochastic simulations can now be performed with random parameters.</p></li>
 </ul>
-<p>Both these changes are outlined in more detail in the <a class="reference internal" href="solving.html"><span class="doc">Producing forecasts</span></a> section.</p>
+</li>
+<li><p>Deprecated</p>
+<ul>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DeterministicOde</span></code> is deprecated with <code class="xref py py-class docutils literal notranslate"><span class="pre">SimulateOde</span></code> now performing both deterministic and stochastic simulations.</p></li>
+</ul>
+</li>
+<li><p>Removed</p></li>
+<li><p>Fixed</p>
+<ul>
+<li><p>Minor bug fixes</p></li>
+</ul>
+</li>
+</ul>
+</section>
 </section>
 <section id="using-this-documentation">
 <h2>Using this documentation<a class="headerlink" href="#using-this-documentation" title="Permalink to this heading">#</a></h2>
@@ -486,6 +544,8 @@ To use the contents of a notebook as a starting point for trialling or developin
 <li><p>How we will acknowledge your contributions</p></li>
 </ul>
 </section>
+<div class="toctree-wrapper compound">
+</div>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
@@ -556,7 +616,11 @@ To use the contents of a notebook as a starting point for trialling or developin
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-does-this-package-do">What does this package do?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-new-in-this-release">What is new in this release?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-notes">Release notes:</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#latest-release">[0.1.9] - 2024-11-30 (Latest release)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">[0.1.8] - 2024-08-06</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-this-documentation">Using this documentation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing-to-pygom">Contributing to PyGOM</a></li>
 </ul>

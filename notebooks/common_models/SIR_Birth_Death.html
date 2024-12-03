@@ -189,9 +189,15 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../solution.html">Mathematical description</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../model_spec_2.html">Defining a system of differential equations</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../extract_info.html">Extracting model information</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unroll/unrollSimple.html">Deducing transitions from equations</a></li>
@@ -453,8 +459,8 @@ The equations are as follows:</p>
 \end{aligned}\end{split}\]</div>
 <p>As an example, we study stochastic evolution of this system with measles-like parameters in 3 differently sized populations.
 This provides a demonstration of threshold population sizes in order to support endemic circulation of certain pathogens.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">common_models</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -471,7 +477,7 @@ This provides a demonstration of threshold population sizes in order to support 
 <span class="n">R0</span><span class="o">=</span><span class="mi">15</span>
 <span class="n">beta</span><span class="o">=</span><span class="n">R0</span><span class="o">*</span><span class="n">gamma</span>
 
-<span class="n">ode</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SIR_Birth_Death</span><span class="p">({</span><span class="s1">&#39;beta&#39;</span><span class="p">:</span><span class="n">beta</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span><span class="n">gamma</span><span class="p">,</span> <span class="s1">&#39;mu&#39;</span><span class="p">:</span><span class="n">mu</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">:</span><span class="n">n_pop</span><span class="p">})</span>
+<span class="n">ode</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SIR_Birth_Death</span><span class="p">({</span><span class="s1">&#39;beta&#39;</span><span class="p">:</span><span class="n">beta</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span><span class="n">gamma</span><span class="p">,</span> <span class="s1">&#39;mu&#39;</span><span class="p">:</span><span class="n">mu</span><span class="p">})</span>
 
 <span class="c1"># Time range and increments</span>
 <span class="n">tmax</span><span class="o">=</span><span class="mi">365</span><span class="o">*</span><span class="mi">10</span>                           <span class="c1"># maximum time over which to run solver</span>
@@ -484,7 +490,7 @@ This provides a demonstration of threshold population sizes in order to support 
     <span class="n">s0</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">gamma</span><span class="o">+</span><span class="n">mu</span><span class="p">)</span><span class="o">*</span><span class="n">n_pop</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span>
     <span class="n">i0</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">mu</span><span class="o">*</span><span class="p">(</span><span class="n">n_pop</span><span class="o">-</span><span class="n">s0</span><span class="p">)</span><span class="o">*</span><span class="n">n_pop</span><span class="o">/</span><span class="p">(</span><span class="n">beta</span><span class="o">*</span><span class="n">s0</span><span class="p">))</span>
     <span class="n">r0</span><span class="o">=</span><span class="n">n_pop</span><span class="o">-</span><span class="p">(</span><span class="n">s0</span><span class="o">+</span><span class="n">i0</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">s0</span><span class="p">,</span> <span class="n">i0</span><span class="p">,</span> <span class="n">r0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">s0</span><span class="p">,</span> <span class="n">i0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">n_pop</span><span class="p">]</span>
 
 <span class="n">x0</span><span class="o">=</span><span class="n">sir_bd_endemic_eq</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">n_pop</span><span class="p">)</span>
 <span class="n">ode</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -495,31 +501,60 @@ This provides a demonstration of threshold population sizes in order to support 
 <span class="n">n_sim</span><span class="o">=</span><span class="mi">10</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">solution</span><span class="p">,</span> <span class="n">simT</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">solve_stochast</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n_sim</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">solution</span><span class="p">,</span> <span class="n">jumps</span><span class="p">,</span> <span class="n">simT</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">solve_stochast</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n_sim</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
 
 <span class="c1">############################</span>
 <span class="c1"># try larger population size</span>
 <span class="c1">############################</span>
 <span class="n">n_pop</span><span class="o">=</span><span class="mf">1e5</span>
-<span class="n">ode</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SIR_Birth_Death</span><span class="p">({</span><span class="s1">&#39;beta&#39;</span><span class="p">:</span><span class="n">beta</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span><span class="n">gamma</span><span class="p">,</span> <span class="s1">&#39;mu&#39;</span><span class="p">:</span><span class="n">mu</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">:</span><span class="n">n_pop</span><span class="p">})</span>  <span class="c1"># update parameter</span>
+<span class="n">ode</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SIR_Birth_Death</span><span class="p">({</span><span class="s1">&#39;beta&#39;</span><span class="p">:</span><span class="n">beta</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span><span class="n">gamma</span><span class="p">,</span> <span class="s1">&#39;mu&#39;</span><span class="p">:</span><span class="n">mu</span><span class="p">})</span>  <span class="c1"># update parameter</span>
 <span class="n">x0</span><span class="o">=</span><span class="n">sir_bd_endemic_eq</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">n_pop</span><span class="p">)</span>  <span class="c1"># recalculate IC&#39;s</span>
 <span class="n">ode</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">solution_2</span><span class="p">,</span> <span class="n">simT_2</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">solve_stochast</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n_sim</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># simulate</span>
+<span class="n">solution_2</span><span class="p">,</span> <span class="n">jumps_2</span><span class="p">,</span> <span class="n">simT_2</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">solve_stochast</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n_sim</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># simulate</span>
 <span class="n">y_2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">solution_2</span><span class="p">)</span>
 
 <span class="c1">#################################</span>
 <span class="c1"># try even larger population size</span>
 <span class="c1">#################################</span>
 <span class="n">n_pop</span><span class="o">=</span><span class="mf">1e6</span>
-<span class="n">ode</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SIR_Birth_Death</span><span class="p">({</span><span class="s1">&#39;beta&#39;</span><span class="p">:</span><span class="n">beta</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span><span class="n">gamma</span><span class="p">,</span> <span class="s1">&#39;mu&#39;</span><span class="p">:</span><span class="n">mu</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">:</span><span class="n">n_pop</span><span class="p">})</span>  <span class="c1"># update parameter</span>
+<span class="n">ode</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SIR_Birth_Death</span><span class="p">({</span><span class="s1">&#39;beta&#39;</span><span class="p">:</span><span class="n">beta</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span><span class="n">gamma</span><span class="p">,</span> <span class="s1">&#39;mu&#39;</span><span class="p">:</span><span class="n">mu</span><span class="p">})</span>  <span class="c1"># update parameter</span>
 <span class="n">x0</span><span class="o">=</span><span class="n">sir_bd_endemic_eq</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">n_pop</span><span class="p">)</span>  <span class="c1"># recalculate IC&#39;s</span>
 <span class="n">ode</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">solution_3</span><span class="p">,</span> <span class="n">simT_3</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">solve_stochast</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n_sim</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># simulate</span>
+<span class="n">solution_3</span><span class="p">,</span> <span class="n">jumps_3</span><span class="p">,</span> <span class="n">simT_3</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">solve_stochast</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n_sim</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># simulate</span>
 <span class="n">y_3</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">solution_3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Illegal jump, x: [7.09700e+03 1.00000e+00 9.30670e+04 1.00165e+05], new x: [ 7.32000e+03 -1.00000e+00  9.28500e+04  1.00169e+05]
+Illegal jump, x: [5.61400e+03 1.10000e+01 9.45900e+04 1.00215e+05], new x: [ 5.64400e+03 -2.00000e+00  9.45700e+04  1.00212e+05]
+Illegal jump, x: [5.9840e+03 7.0000e+00 9.4239e+04 1.0023e+05], new x: [ 6.04100e+03 -1.00000e+00  9.41940e+04  1.00234e+05]
+Illegal jump, x: [6.56600e+03 1.00000e+00 9.36870e+04 1.00254e+05], new x: [ 6.84900e+03 -2.00000e+00  9.34250e+04  1.00272e+05]
+Illegal jump, x: [6.3660e+03 1.0000e+00 9.3599e+04 9.9966e+04], new x: [ 6.66900e+03 -1.00000e+00  9.33380e+04  1.00006e+05]
+Illegal jump, x: [6.3670e+03 1.0000e+00 9.3599e+04 9.9967e+04], new x: [ 6.6540e+03 -2.0000e+00  9.3328e+04  9.9980e+04]
+Illegal jump, x: [6.8920e+03 3.0000e+00 9.3063e+04 9.9958e+04], new x: [ 6.9610e+03 -1.0000e+00  9.2983e+04  9.9943e+04]
+Illegal jump, x: [6.2920e+03 1.0000e+00 9.3601e+04 9.9894e+04], new x: [ 6.6070e+03 -1.0000e+00  9.3314e+04  9.9920e+04]
+Illegal jump, x: [5.91700e+03 4.00000e+00 9.42530e+04 1.00174e+05], new x: [ 6.00000e+03 -2.00000e+00  9.41790e+04  1.00177e+05]
+Illegal jump, x: [6.76200e+03 1.00000e+00 9.34790e+04 1.00242e+05], new x: [ 7.03200e+03 -2.00000e+00  9.31890e+04  1.00219e+05]
+Illegal jump, x: [7.33400e+03 3.00000e+00 9.28890e+04 1.00226e+05], new x: [ 7.39300e+03 -1.00000e+00  9.28110e+04  1.00203e+05]
+Illegal jump, x: [7.1960e+03 4.0000e+00 9.2763e+04 9.9963e+04], new x: [ 7.2500e+03 -3.0000e+00  9.2704e+04  9.9951e+04]
+Illegal jump, x: [6.4420e+03 1.0000e+00 9.3554e+04 9.9997e+04], new x: [ 6.74300e+03 -1.00000e+00  9.32660e+04  1.00008e+05]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Illegal jump, x: [6.35540e+04 3.20000e+01 9.36019e+05 9.99605e+05], new x: [ 7.28980e+04 -5.20000e+01  9.26926e+05  9.99772e+05]
+Illegal jump, x: [6.363800e+04 2.300000e+01 9.366510e+05 1.000312e+06], new x: [ 7.666500e+04 -1.300000e+01  9.237850e+05  1.000437e+06]
+Illegal jump, x: [6.363900e+04 2.300000e+01 9.366510e+05 1.000313e+06], new x: [ 7.645400e+04 -3.400000e+01  9.239020e+05  1.000322e+06]
+Illegal jump, x: [6.363900e+04 2.300000e+01 9.366500e+05 1.000312e+06], new x: [ 7.638700e+04 -7.000000e+00  9.239390e+05  1.000319e+06]
+</pre></div>
+</div>
+</div>
+</details>
 </div>
 <p>Plotting the results, we see that for populations of sizes 10,000 and 100,000, the infected population is critically close to zero, such that stochastic fluctuations eventually lead to disease extinction.
 This is of course signified by the infected class reaching zero, but also by the recovered and susceptible classes undergoing stable linear growth due to population turnover.
@@ -560,7 +595,7 @@ When the population size is 1,000,000, we see that the infected subset, of typic
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/d1f93ebeed4cc27d1ba55d07e777e769398db80e78cd8f7d54b363e6c1f62860.png" src="../../_images/d1f93ebeed4cc27d1ba55d07e777e769398db80e78cd8f7d54b363e6c1f62860.png" />
+<img alt="../../_images/d4d898ce866679f4db8bd21ae385121a4f121489d0dce5028cc583c6368444c5.png" src="../../_images/d4d898ce866679f4db8bd21ae385121a4f121489d0dce5028cc583c6368444c5.png" />
 </div>
 </div>
 </section>

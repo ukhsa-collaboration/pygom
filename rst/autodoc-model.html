@@ -189,9 +189,15 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/solution.html">Mathematical description</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/model_spec_2.html">Defining a system of differential equations</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../notebooks/insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/extract_info.html">Extracting model information</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/unroll/unrollSimple.html">Deducing transitions from equations</a></li>
@@ -443,6 +449,8 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DFE"><code class="docutils literal notranslate"><span class="pre">DFE()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde"><code class="docutils literal notranslate"><span class="pre">DeterministicOde</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.add_compiled_sympy_object"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.add_compiled_sympy_object()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.add_func"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.add_func()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.adjoint"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.adjoint()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.adjoint_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.adjoint_T()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.adjoint_interpolate"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.adjoint_interpolate()</span></code></a></li>
@@ -451,15 +459,9 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.adjoint_interpolate_jacobian_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.adjoint_interpolate_jacobian_T()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.adjoint_jacobian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.adjoint_jacobian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.adjoint_jacobian_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.adjoint_jacobian_T()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.diff_jacobian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.diff_jacobian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.diff_jacobian_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.diff_jacobian_T()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_diff_jacobian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_diff_jacobian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_forwardforward"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_forwardforward()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_grad"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_grad()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_grad_jacobian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_grad_jacobian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_hessian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_hessian()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_jacobian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_jacobian()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_ode"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_ode()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_sens_jacobian_state"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_sens_jacobian_state()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_sensitivity"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_sensitivity()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_sensitivityIV"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_sensitivityIV()</span></code></a></li>
@@ -472,9 +474,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.get_jacobian_eqn"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.get_jacobian_eqn()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.get_ode_eqn"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.get_ode_eqn()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.get_transition_graph"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.get_transition_graph()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.grad"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.grad()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.grad_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.grad_T()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.grad_jacobian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.grad_jacobian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.grad_jacobianT"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.grad_jacobianT()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.hessian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.hessian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.initial_state"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.initial_state</span></code></a></li>
@@ -483,11 +483,9 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.integrate"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.integrate()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.integrate2"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.integrate2()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.is_stiff"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.is_stiff()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.jacobian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.jacobian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.jacobian_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.jacobian_T()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.jacobian_eigenvalue"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.jacobian_eigenvalue()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.linear_ode"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.linear_ode()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.ode"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.ode()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.ode_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.ode_T()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.ode_and_forwardforward"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.ode_and_forwardforward()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.ode_and_forwardforward_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.ode_and_forwardforward_T()</span></code></a></li>
@@ -511,12 +509,12 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.sensitivity_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.sensitivity_T()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Event"><code class="docutils literal notranslate"><span class="pre">Event</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.FitzHugh"><code class="docutils literal notranslate"><span class="pre">FitzHugh()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Influenza_SLIARN"><code class="docutils literal notranslate"><span class="pre">Influenza_SLIARN()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Influenza_SLIARD"><code class="docutils literal notranslate"><span class="pre">Influenza_SLIARD()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Legrand_Ebola_SEIHFR"><code class="docutils literal notranslate"><span class="pre">Legrand_Ebola_SEIHFR()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Lorenz"><code class="docutils literal notranslate"><span class="pre">Lorenz()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Lotka_Volterra"><code class="docutils literal notranslate"><span class="pre">Lotka_Volterra()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Lotka_Volterra_4State"><code class="docutils literal notranslate"><span class="pre">Lotka_Volterra_4State()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.ODEVariable"><code class="docutils literal notranslate"><span class="pre">ODEVariable</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.OrderedDict"><code class="docutils literal notranslate"><span class="pre">OrderedDict</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.OrderedDict.clear"><code class="docutils literal notranslate"><span class="pre">OrderedDict.clear()</span></code></a></li>
@@ -538,39 +536,28 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SEIR"><code class="docutils literal notranslate"><span class="pre">SEIR()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SEIR_Birth_Death"><code class="docutils literal notranslate"><span class="pre">SEIR_Birth_Death()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SEIR_Birth_Death_Periodic"><code class="docutils literal notranslate"><span class="pre">SEIR_Birth_Death_Periodic()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SEIR_Birth_Death_Periodic_Waning_Intro"><code class="docutils literal notranslate"><span class="pre">SEIR_Birth_Death_Periodic_Waning_Intro()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SEIR_Multiple"><code class="docutils literal notranslate"><span class="pre">SEIR_Multiple()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SEIR_N"><code class="docutils literal notranslate"><span class="pre">SEIR_N()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SIR"><code class="docutils literal notranslate"><span class="pre">SIR()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SIR_Birth_Death"><code class="docutils literal notranslate"><span class="pre">SIR_Birth_Death()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SIR_norm"><code class="docutils literal notranslate"><span class="pre">SIR_norm()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SIS"><code class="docutils literal notranslate"><span class="pre">SIS()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SIS_Periodic"><code class="docutils literal notranslate"><span class="pre">SIS_Periodic()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde"><code class="docutils literal notranslate"><span class="pre">SimulateOde</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.birth_death_rate"><code class="docutils literal notranslate"><span class="pre">SimulateOde.birth_death_rate()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.cle"><code class="docutils literal notranslate"><span class="pre">SimulateOde.cle()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.eval_birth_death_rate"><code class="docutils literal notranslate"><span class="pre">SimulateOde.eval_birth_death_rate()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.eval_transition_matrix"><code class="docutils literal notranslate"><span class="pre">SimulateOde.eval_transition_matrix()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.eval_transition_mean"><code class="docutils literal notranslate"><span class="pre">SimulateOde.eval_transition_mean()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.eval_transition_var"><code class="docutils literal notranslate"><span class="pre">SimulateOde.eval_transition_var()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.eval_transition_vector"><code class="docutils literal notranslate"><span class="pre">SimulateOde.eval_transition_vector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.exact"><code class="docutils literal notranslate"><span class="pre">SimulateOde.exact()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_TransitionJacobian"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_TransitionJacobian()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_TransitionMean"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_TransitionMean()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_TransitionVar"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_TransitionVar()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_bd_from_ode"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_bd_from_ode()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_birth_death_rate"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_birth_death_rate()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_transition_matrix"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_transition_matrix()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_transition_vector"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_transition_vector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_transitions_from_ode"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_transitions_from_ode()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_unrolled_obj"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_unrolled_obj()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.hybrid"><code class="docutils literal notranslate"><span class="pre">SimulateOde.hybrid()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.plot"><code class="docutils literal notranslate"><span class="pre">SimulateOde.plot()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.simulate_jump"><code class="docutils literal notranslate"><span class="pre">SimulateOde.simulate_jump()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.simulate_param"><code class="docutils literal notranslate"><span class="pre">SimulateOde.simulate_param()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.solve_determ"><code class="docutils literal notranslate"><span class="pre">SimulateOde.solve_determ()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.solve_stochast"><code class="docutils literal notranslate"><span class="pre">SimulateOde.solve_stochast()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.total_transition"><code class="docutils literal notranslate"><span class="pre">SimulateOde.total_transition()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.transition_matrix"><code class="docutils literal notranslate"><span class="pre">SimulateOde.transition_matrix()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.transition_mean"><code class="docutils literal notranslate"><span class="pre">SimulateOde.transition_mean()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.transition_var"><code class="docutils literal notranslate"><span class="pre">SimulateOde.transition_var()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.transition_vector"><code class="docutils literal notranslate"><span class="pre">SimulateOde.transition_vector()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Transition"><code class="docutils literal notranslate"><span class="pre">Transition</span></code></a><ul class="nav section-nav flex-column">
@@ -578,6 +565,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Transition.equation"><code class="docutils literal notranslate"><span class="pre">Transition.equation</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Transition.is_between_state"><code class="docutils literal notranslate"><span class="pre">Transition.is_between_state()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Transition.origin"><code class="docutils literal notranslate"><span class="pre">Transition.origin</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Transition.stochastic"><code class="docutils literal notranslate"><span class="pre">Transition.stochastic</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Transition.transition_type"><code class="docutils literal notranslate"><span class="pre">Transition.transition_type</span></code></a></li>
 </ul>
 </li>
@@ -673,7 +661,7 @@ a direct assignment (they may not be tripped in this way).</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pygom.model.DeterministicOde">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">DeterministicOde</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">derived_param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">birth_death</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">DeterministicOde</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">derived_param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">birth_death</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde" title="Permalink to this definition">#</a></dt>
 <dd><p>This contains the interface and operation
 built above the already defined set of ode</p>
 <dl class="field-list simple">
@@ -688,6 +676,22 @@ built above the already defined set of ode</p>
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygom.model.DeterministicOde.add_compiled_sympy_object">
+<span class="sig-name descname"><span class="pre">add_compiled_sympy_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compiled_obj_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sympy_obj_generator_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_master_canary</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.add_compiled_sympy_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.add_compiled_sympy_object" title="Permalink to this definition">#</a></dt>
+<dd><p>Take sympy_obj_generator_func</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygom.model.DeterministicOde.add_func">
+<span class="sig-name descname"><span class="pre">add_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sympy_obj_generator_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oT</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_master_canary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.add_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.add_func" title="Permalink to this definition">#</a></dt>
+<dd><p>Template to add a method, called with method_name, which gives the numerical output of
+compiled_fn_name, which is the compiled version of the sympy object
+generated by sympy_obj_generator_func.
+This carries out the essential check to see if recompilation is necessary
+and acts accordingly.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="pygom.model.DeterministicOde.adjoint">
 <span class="sig-name descname"><span class="pre">adjoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.adjoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.adjoint" title="Permalink to this definition">#</a></dt>
@@ -850,60 +854,9 @@ first parameter</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.DeterministicOde.diff_jacobian">
-<span class="sig-name descname"><span class="pre">diff_jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.diff_jacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.diff_jacobian" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the differential of jacobian given state and time</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>state</strong> (<em>array like</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p><strong>t</strong> (<em>double</em>) – The current time</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Matrix of dimension [number of state x number of state]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pygom.model.DeterministicOde.diff_jacobian_T">
 <span class="sig-name descname"><span class="pre">diff_jacobian_T</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.diff_jacobian_T"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.diff_jacobian_T" title="Permalink to this definition">#</a></dt>
-<dd><p>Same as <a class="reference internal" href="#pygom.model.DeterministicOde.diff_jacobian" title="pygom.model.DeterministicOde.diff_jacobian"><code class="xref py py-meth docutils literal notranslate"><span class="pre">diff_jacobian()</span></code></a> but with t as first parameter</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.DeterministicOde.eval_diff_jacobian">
-<span class="sig-name descname"><span class="pre">eval_diff_jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.eval_diff_jacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.eval_diff_jacobian" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the differential of the jacobian given parameters,
-state and time. An extension of <a class="reference internal" href="#pygom.model.DeterministicOde.diff_jacobian" title="pygom.model.DeterministicOde.diff_jacobian"><code class="xref py py-meth docutils literal notranslate"><span class="pre">diff_jacobian()</span></code></a> but now
-also include the parameters.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parameters</strong> (<em>list</em>) – see <code class="xref py py-meth docutils literal notranslate"><span class="pre">parameters()</span></code></p></li>
-<li><p><strong>time</strong> (<em>double</em>) – The current time</p></li>
-<li><p><strong>state</strong> (<em>array list</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Matrix of dimension [number of state x number of state]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.matrix</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">mpmath.matrix</span></code></p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>Name and order of state and time are also different.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#pygom.model.DeterministicOde.jacobian" title="pygom.model.DeterministicOde.jacobian"><code class="xref py py-meth docutils literal notranslate"><span class="pre">jacobian()</span></code></a></p>
-</div>
+<dd><p>Same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">diff_jacobian()</span></code> but with t as first parameter</p>
 </dd></dl>
 
 <dl class="py method">
@@ -927,65 +880,6 @@ also include the parameters.</p>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.DeterministicOde.eval_grad">
-<span class="sig-name descname"><span class="pre">eval_grad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.eval_grad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.eval_grad" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the gradient given parameters, state and time. An extension
-of <a class="reference internal" href="#pygom.model.DeterministicOde.grad" title="pygom.model.DeterministicOde.grad"><code class="xref py py-meth docutils literal notranslate"><span class="pre">grad()</span></code></a> but now also include the parameters.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parameters</strong> (<em>list</em>) – see <code class="xref py py-meth docutils literal notranslate"><span class="pre">parameters()</span></code></p></li>
-<li><p><strong>time</strong> (<em>double</em>) – The current time</p></li>
-<li><p><strong>state</strong> (<em>array list</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Matrix of dimension [number of state x number of state]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.matrix</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">mpmath.matrix</span></code></p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>Name and order of state and time are also different.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#pygom.model.DeterministicOde.grad" title="pygom.model.DeterministicOde.grad"><code class="xref py py-meth docutils literal notranslate"><span class="pre">grad()</span></code></a></p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.DeterministicOde.eval_grad_jacobian">
-<span class="sig-name descname"><span class="pre">eval_grad_jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.eval_grad_jacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.eval_grad_jacobian" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the jacobian of the gradient given parameters,
-state and time. An extension of <a class="reference internal" href="#pygom.model.DeterministicOde.grad_jacobian" title="pygom.model.DeterministicOde.grad_jacobian"><code class="xref py py-meth docutils literal notranslate"><span class="pre">grad_jacobian()</span></code></a>
-but now also include the parameters.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parameters</strong> (<em>list</em>) – see <code class="xref py py-meth docutils literal notranslate"><span class="pre">parameters()</span></code></p></li>
-<li><p><strong>time</strong> (<em>double</em>) – The current time</p></li>
-<li><p><strong>state</strong> (<em>array list</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Matrix of dimension [number of state x number of state]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.matrix</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">mpmath.matrix</span></code></p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>Name and order of state and time are also different.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#pygom.model.DeterministicOde.grad_jacobian" title="pygom.model.DeterministicOde.grad_jacobian"><code class="xref py py-meth docutils literal notranslate"><span class="pre">grad_jacobian()</span></code></a>, <a class="reference internal" href="#pygom.model.DeterministicOde.get_grad_jacobian_eqn" title="pygom.model.DeterministicOde.get_grad_jacobian_eqn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_grad_jacobian_eqn()</span></code></a></p>
-</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1013,67 +907,7 @@ of <a class="reference internal" href="#pygom.model.DeterministicOde.hessian" ti
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#pygom.model.DeterministicOde.grad" title="pygom.model.DeterministicOde.grad"><code class="xref py py-meth docutils literal notranslate"><span class="pre">grad()</span></code></a>, <a class="reference internal" href="#pygom.model.DeterministicOde.eval_grad" title="pygom.model.DeterministicOde.eval_grad"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eval_grad()</span></code></a></p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.DeterministicOde.eval_jacobian">
-<span class="sig-name descname"><span class="pre">eval_jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.eval_jacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.eval_jacobian" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the jacobian given parameters, state and time. An extension
-of <a class="reference internal" href="#pygom.model.DeterministicOde.jacobian" title="pygom.model.DeterministicOde.jacobian"><code class="xref py py-meth docutils literal notranslate"><span class="pre">jacobian()</span></code></a> but now also include the parameters.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parameters</strong> (<em>list</em>) – see <code class="xref py py-meth docutils literal notranslate"><span class="pre">parameters()</span></code></p></li>
-<li><p><strong>time</strong> (<em>double</em>) – The current time</p></li>
-<li><p><strong>state</strong> (<em>array list</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Matrix of dimension [number of state x number of state]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.matrix</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">mpmath.matrix</span></code></p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>Name and order of state and time are also different.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#pygom.model.DeterministicOde.jacobian" title="pygom.model.DeterministicOde.jacobian"><code class="xref py py-meth docutils literal notranslate"><span class="pre">jacobian()</span></code></a></p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.DeterministicOde.eval_ode">
-<span class="sig-name descname"><span class="pre">eval_ode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.eval_ode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.eval_ode" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the ode given time, state and parameters.  An extension
-of <a class="reference internal" href="#pygom.model.DeterministicOde.ode" title="pygom.model.DeterministicOde.ode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ode()</span></code></a> but now also include the parameters.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parameters</strong> (<em>list</em>) – see <code class="xref py py-meth docutils literal notranslate"><span class="pre">parameters()</span></code></p></li>
-<li><p><strong>time</strong> (<em>numeric</em>) – The current time</p></li>
-<li><p><strong>state</strong> (<em>array like</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>output of the same length as the ode.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.matrix</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">mpmath.matrix</span></code></p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>There are differences between the output of this function and
-<a class="reference internal" href="#pygom.model.DeterministicOde.ode" title="pygom.model.DeterministicOde.ode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ode()</span></code></a>.  Name and order of state and time are also
-different.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#pygom.model.DeterministicOde.ode" title="pygom.model.DeterministicOde.ode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ode()</span></code></a></p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">grad()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">eval_grad()</span></code></p>
 </div>
 </dd></dl>
 
@@ -1130,7 +964,7 @@ that we have a block diagonal structure</p></li>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>It is different to <a class="reference internal" href="#pygom.model.DeterministicOde.eval_ode" title="pygom.model.DeterministicOde.eval_ode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eval_ode()</span></code></a> and <a class="reference internal" href="#pygom.model.DeterministicOde.eval_jacobian" title="pygom.model.DeterministicOde.eval_jacobian"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eval_jacobian()</span></code></a> in
+<p>It is different to <code class="xref py py-meth docutils literal notranslate"><span class="pre">eval_ode()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">eval_jacobian()</span></code> in
 that the extra input argument is not a parameter</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1164,7 +998,7 @@ depending on whether the initial conditions are also variables.</p></li>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>It is different to <a class="reference internal" href="#pygom.model.DeterministicOde.eval_ode" title="pygom.model.DeterministicOde.eval_ode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eval_ode()</span></code></a> and <a class="reference internal" href="#pygom.model.DeterministicOde.eval_jacobian" title="pygom.model.DeterministicOde.eval_jacobian"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eval_jacobian()</span></code></a> in
+<p>It is different to <code class="xref py py-meth docutils literal notranslate"><span class="pre">eval_ode()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">eval_jacobian()</span></code> in
 that the extra input argument is not a parameter.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1286,16 +1120,8 @@ tensor to avoid confusion</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pygom.model.DeterministicOde.get_ode_eqn">
-<span class="sig-name descname"><span class="pre">get_ode_eqn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_sub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.get_ode_eqn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.get_ode_eqn" title="Permalink to this definition">#</a></dt>
-<dd><p>Find the algebraic equations of the ode system.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>ode in matrix form</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">sympy.matrices.matrices</span></code></p>
-</dd>
-</dl>
+<span class="sig-name descname"><span class="pre">get_ode_eqn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.get_ode_eqn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.get_ode_eqn" title="Permalink to this definition">#</a></dt>
+<dd><p>Build the algebraic system of ODE’s given the transitions and events.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1316,61 +1142,15 @@ tensor to avoid confusion</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.DeterministicOde.grad">
-<span class="sig-name descname"><span class="pre">grad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.grad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.grad" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the gradient given state and time</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>state</strong> (<em>array like</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p><strong>t</strong> (<em>numeric</em>) – The current time</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Matrix of dimension [number of state x number of parameters]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pygom.model.DeterministicOde.grad_T">
 <span class="sig-name descname"><span class="pre">grad_T</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.grad_T"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.grad_T" title="Permalink to this definition">#</a></dt>
 <dd><p>Same as <a class="reference internal" href="#pygom.model.DeterministicOde.grad_T" title="pygom.model.DeterministicOde.grad_T"><code class="xref py py-meth docutils literal notranslate"><span class="pre">grad_T()</span></code></a> but with t as first parameter</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.DeterministicOde.grad_jacobian">
-<span class="sig-name descname"><span class="pre">grad_jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.grad_jacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.grad_jacobian" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the Jacobian of the gradient given state and time</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>state</strong> (<em>array like</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p><strong>t</strong> (<em>numeric</em>) – The current time</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Matrix of dimension [number of state x number of parameters]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#pygom.model.DeterministicOde.grad" title="pygom.model.DeterministicOde.grad"><code class="xref py py-meth docutils literal notranslate"><span class="pre">grad()</span></code></a></p>
-</div>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pygom.model.DeterministicOde.grad_jacobianT">
 <span class="sig-name descname"><span class="pre">grad_jacobianT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.grad_jacobianT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.grad_jacobianT" title="Permalink to this definition">#</a></dt>
-<dd><p>Same as <a class="reference internal" href="#pygom.model.DeterministicOde.grad_jacobian" title="pygom.model.DeterministicOde.grad_jacobian"><code class="xref py py-meth docutils literal notranslate"><span class="pre">grad_jacobian()</span></code></a> but with t as first parameter</p>
+<dd><p>Same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">grad_jacobian()</span></code> but with t as first parameter</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1473,30 +1253,9 @@ problem as stiff if any of the eigenvalues are positive</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.DeterministicOde.jacobian">
-<span class="sig-name descname"><span class="pre">jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.jacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.jacobian" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the jacobian given state and time</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>state</strong> (<em>array like</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p><strong>t</strong> (<em>double</em>) – The current time</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Matrix of dimension [number of state x number of state]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pygom.model.DeterministicOde.jacobian_T">
 <span class="sig-name descname"><span class="pre">jacobian_T</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.jacobian_T"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.jacobian_T" title="Permalink to this definition">#</a></dt>
-<dd><p>Same as <a class="reference internal" href="#pygom.model.DeterministicOde.jacobian" title="pygom.model.DeterministicOde.jacobian"><code class="xref py py-meth docutils literal notranslate"><span class="pre">jacobian()</span></code></a> but with t as first parameter</p>
+<dd><p>Same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">jacobian()</span></code> but with t as first parameter</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1536,30 +1295,9 @@ None is given, the initial values are used.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.DeterministicOde.ode">
-<span class="sig-name descname"><span class="pre">ode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.ode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.ode" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the ode given state and time</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>state</strong> (<em>array like</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p><strong>t</strong> (<em>double</em>) – The current time</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>output of the same length as the ode</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pygom.model.DeterministicOde.ode_T">
 <span class="sig-name descname"><span class="pre">ode_T</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/deterministic.html#DeterministicOde.ode_T"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.DeterministicOde.ode_T" title="Permalink to this definition">#</a></dt>
-<dd><p>Same as <a class="reference internal" href="#pygom.model.DeterministicOde.ode" title="pygom.model.DeterministicOde.ode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ode()</span></code></a> but with t as the first parameter</p>
+<dd><p>Same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">ode()</span></code> but with t as the first parameter</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1647,7 +1385,7 @@ sensitivity. Both are of type <code class="xref py py-class docutils literal not
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#pygom.model.DeterministicOde.sensitivity" title="pygom.model.DeterministicOde.sensitivity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sensitivity()</span></code></a>, <a class="reference internal" href="#pygom.model.DeterministicOde.ode" title="pygom.model.DeterministicOde.ode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ode()</span></code></a></p>
+<p><a class="reference internal" href="#pygom.model.DeterministicOde.sensitivity" title="pygom.model.DeterministicOde.sensitivity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sensitivity()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">ode()</span></code></p>
 </div>
 </dd></dl>
 
@@ -1676,7 +1414,7 @@ of them are of type
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#pygom.model.DeterministicOde.sensitivity" title="pygom.model.DeterministicOde.sensitivity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sensitivity()</span></code></a>, <a class="reference internal" href="#pygom.model.DeterministicOde.ode" title="pygom.model.DeterministicOde.ode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ode()</span></code></a></p>
+<p><a class="reference internal" href="#pygom.model.DeterministicOde.sensitivity" title="pygom.model.DeterministicOde.sensitivity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sensitivity()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">ode()</span></code></p>
 </div>
 </dd></dl>
 
@@ -1894,6 +1632,12 @@ initial condition.  The latter is an identity matrix at time zero.</p></li>
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="pygom.model.Event">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">Event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transition_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/transition.html#Event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.Event" title="Permalink to this definition">#</a></dt>
+<dd><p>Class to contain transitions</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="pygom.model.FitzHugh">
 <span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">FitzHugh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#FitzHugh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.FitzHugh" title="Permalink to this definition">#</a></dt>
@@ -1915,8 +1659,8 @@ initial condition.  The latter is an identity matrix at time zero.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pygom.model.Influenza_SLIARN">
-<span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">Influenza_SLIARN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#Influenza_SLIARN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.Influenza_SLIARN" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="pygom.model.Influenza_SLIARD">
+<span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">Influenza_SLIARD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#Influenza_SLIARD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.Influenza_SLIARD" title="Permalink to this definition">#</a></dt>
 <dd><p>A simple influenza model from <span id="id2">[Brauer2008]</span>, page 323.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\frac{dS}{dt} &amp;= -S \beta (I + \delta A) \\
@@ -1924,7 +1668,7 @@ initial condition.  The latter is an identity matrix at time zero.</p></li>
 \frac{dI}{dt} &amp;= p \kappa L - \alpha I \\
 \frac{dA}{dt} &amp;= (1 - p) \kappa L - \eta A \\
 \frac{dR}{dt} &amp;= f \alpha I + \eta A \\
-\frac{dN}{dt} &amp;= -(1 - f) \alpha I\end{split}\]</div>
+\frac{dD}{dt} &amp;= (1 - f) \alpha I\end{split}\]</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1993,30 +1737,6 @@ as per <span id="id4">[Lorenz1963]</span>.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ode</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">([</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ode</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ode</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pygom.model.Lotka_Volterra_4State">
-<span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">Lotka_Volterra_4State</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#Lotka_Volterra_4State"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.Lotka_Volterra_4State" title="Permalink to this definition">#</a></dt>
-<dd><p>The four state Lotka-Volterra model <span id="id6">[Lotka1920]</span>. A common interpretation is that
-a = Grass, x = rabbits, y = foxes and b is the death of foxes.</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\frac{da}{dt} &amp;= k_{0} a x \\
-\frac{dx}{dt} &amp;= k_{0} a x - k_{1} x y \\
-\frac{dy}{dt} &amp;= k_{1} x y - k_{2} y \\
-\frac{db}{dt} &amp;= k_{2} y\end{split}\]</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">common_models</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">150.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ode</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">Lotka_Volterra_4State</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ode</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ode</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ode</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -2168,7 +1888,7 @@ to None which assumes that <span class="math notranslate nohighlight">\(F,V\)</s
 <dl class="py function">
 <dt class="sig sig-object py" id="pygom.model.Robertson">
 <span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">Robertson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#Robertson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.Robertson" title="Permalink to this definition">#</a></dt>
-<dd><p>The so called Robertson problem <span id="id7">[Robertson1966]</span>, which is a standard example used to
+<dd><p>The so called Robertson problem <span id="id6">[Robertson1966]</span>, which is a standard example used to
 test stiff integrator.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\frac{dy_{1}}{dt} &amp;= -0.04 y_{1} + 1 \cdot 10^{4} y_{2} y_{3} \\
@@ -2188,34 +1908,14 @@ test stiff integrator.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pygom.model.SEIR">
-<span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">SEIR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#SEIR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SEIR" title="Permalink to this definition">#</a></dt>
-<dd><p>A standard SEIR model <span id="id8">[Brauer2008]</span>, defined by the ode</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\frac{dS}{dt} &amp;= -\beta SI \\
-\frac{dE}{dt} &amp;= \beta SI - \alpha E \\
-\frac{dI}{dt} &amp;= \alpha E - \gamma I \\
-\frac{dR}{dt} &amp;= \gamma I\end{split}\]</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">common_models</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ode</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SEIR</span><span class="p">({</span><span class="s1">&#39;beta&#39;</span><span class="p">:</span><span class="mi">1800</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">:</span><span class="mf">35.84</span><span class="p">})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">1001</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0658</span><span class="p">,</span> <span class="mf">0.0007</span><span class="p">,</span> <span class="mf">0.0002</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ode</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">solution</span><span class="p">,</span><span class="n">output</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::],</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ode</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#pygom.model.SEIR_Birth_Death" title="pygom.model.SEIR_Birth_Death"><code class="xref py py-func docutils literal notranslate"><span class="pre">SEIR_Birth_Death()</span></code></a></p>
-</div>
+<span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">SEIR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#SEIR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SEIR" title="Permalink to this definition">#</a></dt>
+<dd><p>A standard SIR model <span id="id7">[Brauer2008]</span> with population N</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pygom.model.SEIR_Birth_Death">
 <span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">SEIR_Birth_Death</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#SEIR_Birth_Death"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SEIR_Birth_Death" title="Permalink to this definition">#</a></dt>
-<dd><p>A standard SEIR model with birth and death <span id="id9">[Aron1984]</span>, defined by the ode</p>
+<dd><p>A standard SEIR model with birth and death <span id="id8">[Aron1984]</span>, defined by the ode</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\frac{dS}{dt} &amp;= \mu - \beta SI - \mu S \\
 \frac{dE}{dt} &amp;= \beta SI - (\mu + \alpha) E \\
@@ -2244,7 +1944,7 @@ apart from <span class="math notranslate nohighlight">\(\mu\)</span> which is ne
 <dl class="py function">
 <dt class="sig sig-object py" id="pygom.model.SEIR_Birth_Death_Periodic">
 <span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">SEIR_Birth_Death_Periodic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#SEIR_Birth_Death_Periodic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SEIR_Birth_Death_Periodic" title="Permalink to this definition">#</a></dt>
-<dd><p>A SEIR birth death model with periodic contact <span id="id10">[Aron1984]</span>, defined by the ode</p>
+<dd><p>A SEIR birth death model with periodic contact <span id="id9">[Aron1984]</span>, defined by the ode</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\frac{dS}{dt} &amp;= \mu - \beta(t)SI - \mu S \\
 \frac{dE}{dt} &amp;= \beta(t)SI - (\mu + \alpha) E \\
@@ -2281,11 +1981,18 @@ through time.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="pygom.model.SEIR_Birth_Death_Periodic_Waning_Intro">
+<span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">SEIR_Birth_Death_Periodic_Waning_Intro</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#SEIR_Birth_Death_Periodic_Waning_Intro"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SEIR_Birth_Death_Periodic_Waning_Intro" title="Permalink to this definition">#</a></dt>
+<dd><p>SEIR model with vital dynamics, periodic infectivity, immune waning and
+external introductions</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pygom.model.SEIR_Multiple">
 <span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">SEIR_Multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#SEIR_Multiple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SEIR_Multiple" title="Permalink to this definition">#</a></dt>
-<dd><p>An SEIR model that describe spatial heterogeneity <span id="id11">[Brauer2008]</span>, page 180.
-The model originated from <span id="id12">[Lloyd1996]</span> and notations used here
-follows <span id="id13">[Brauer2008]</span>.</p>
+<dd><p>An SEIR model that describe spatial heterogeneity <span id="id10">[Brauer2008]</span>, page 180.
+The model originated from <span id="id11">[Lloyd1996]</span> and notations used here
+follows <span id="id12">[Brauer2008]</span>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\frac{dS_{i}}{dt} &amp;= dN_{i} - dS_{i} - \lambda_{i} S_{i} \\
 \frac{dE_{i}}{dt} &amp;= \lambda_{i}S_{i} - (d + \epsilon) E_{i} \\
@@ -2297,7 +2004,7 @@ follows <span id="id13">[Brauer2008]</span>.</p>
 <p>with <span class="math notranslate nohighlight">\(n\)</span> being the number of patch and <span class="math notranslate nohighlight">\(p\)</span> the coupled factor.</p>
 <p class="rubric">Examples</p>
 <p>Use the initial conditions that were derived from the stationary condition
-specified in <span id="id14">[Brauer2008]</span>.</p>
+specified in <span id="id13">[Brauer2008]</span>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">common_models</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">paramEval</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;beta_00&#39;</span><span class="p">:</span><span class="mf">0.0010107</span><span class="p">,</span> <span class="s1">&#39;beta_01&#39;</span><span class="p">:</span><span class="mf">0.0010107</span><span class="p">,</span>
@@ -2321,15 +2028,9 @@ specified in <span id="id14">[Brauer2008]</span>.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pygom.model.SEIR_N">
-<span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">SEIR_N</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#SEIR_N"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SEIR_N" title="Permalink to this definition">#</a></dt>
-<dd><p>A standard SIR model <span id="id15">[Brauer2008]</span> with population N</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="pygom.model.SIR">
 <span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">SIR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#SIR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SIR" title="Permalink to this definition">#</a></dt>
-<dd><p>A standard SIR model as per <span id="id16">[Brauer2008]</span></p>
+<dd><p>A standard SIR model as per <span id="id14">[Brauer2008]</span></p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\frac{dS}{dt} &amp;= -\ \frac{beta SI}{N} \\
 \frac{dI}{dt} &amp;= \ \frac{beta SI}{N} - \gamma I \\
@@ -2354,7 +2055,7 @@ First, when everyone is susceptible and only one individual was infected.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pygom.model.SIR_Birth_Death">
 <span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">SIR_Birth_Death</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#SIR_Birth_Death"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SIR_Birth_Death" title="Permalink to this definition">#</a></dt>
-<dd><p>Extension of the standard SIR model <span id="id17">[Brauer2008]</span> to also include birth and death</p>
+<dd><p>Extension of the standard SIR model <span id="id15">[Brauer2008]</span> to also include birth and death</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\frac{dS}{dt} &amp;= B -\beta SI - \mu S \\
 \frac{dI}{dt} &amp;= \beta SI - \gamma I - \mu I \\
@@ -2439,7 +2140,7 @@ First, when everyone is susceptible and only one individual was infected.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pygom.model.SIS_Periodic">
 <span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">SIS_Periodic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#SIS_Periodic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SIS_Periodic" title="Permalink to this definition">#</a></dt>
-<dd><p>A SIS model with periodic contact, defined by the ode as per <span id="id18">[Hethcote1973]</span></p>
+<dd><p>A SIS model with periodic contact, defined by the ode as per <span id="id16">[Hethcote1973]</span></p>
 <div class="math notranslate nohighlight">
 \[\frac{dI}{dt} = (\beta(t)N - \alpha) I - \beta(t)I^{2}\]</div>
 <p>where</p>
@@ -2461,43 +2162,22 @@ First, when everyone is susceptible and only one individual was infected.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pygom.model.SimulateOde">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">SimulateOde</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">derived_param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">birth_death</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">SimulateOde</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">derived_param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">birth_death</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde" title="Permalink to this definition">#</a></dt>
 <dd><p>This builds on top of <a class="reference internal" href="#pygom.model.DeterministicOde" title="pygom.model.DeterministicOde"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeterministicOde</span></code></a> which we
 simulate the outcome instead of solving it deterministically</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>state</strong> (<em>list</em>) – A list of states (string)</p></li>
+<li><p><strong>state</strong> (<em>list</em>) – A list of states (string) or (string, (numeric, numeric)) if specifying limits</p></li>
 <li><p><strong>param</strong> (<em>list</em>) – A list of the parameters (string)</p></li>
 <li><p><strong>derived_param</strong> (<em>list</em>) – A list of the derived parameters (tuple of (string,string))</p></li>
-<li><p><strong>transition</strong> (<em>list</em>) – A list of transition (<a class="reference internal" href="#pygom.model.Transition" title="pygom.model.Transition"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transition</span></code></a>)</p></li>
-<li><p><strong>birth_death</strong> (<em>list</em>) – A list of birth or death process (<a class="reference internal" href="#pygom.model.Transition" title="pygom.model.Transition"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transition</span></code></a>)</p></li>
+<li><p><strong>transition</strong> (<em>list</em>) – A list of transition (<a class="reference internal" href="#pygom.model.Transition" title="pygom.model.Transition"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transition</span></code></a>) #TODO Now this might actually only be deterministic ODE objects. Check.</p></li>
+<li><p><strong>transition</strong> – A list of events (<a class="reference internal" href="#pygom.model.Event" title="pygom.model.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a>)</p></li>
+<li><p><strong>birth_death</strong> (<em>list                              #TODO Now these are wrapped in events. Should try to make work for back compat.</em>) – A list of birth or death process (<a class="reference internal" href="#pygom.model.Transition" title="pygom.model.Transition"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transition</span></code></a>)</p></li>
 <li><p><strong>ode</strong> (<em>list</em>) – A list of ode (<a class="reference internal" href="#pygom.model.Transition" title="pygom.model.Transition"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transition</span></code></a>)</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.SimulateOde.birth_death_rate">
-<span class="sig-name descname"><span class="pre">birth_death_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.birth_death_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.birth_death_rate" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the birth death rates given state and time</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>state</strong> (<em>array like</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p><strong>t</strong> (<em>double</em>) – The current time</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an array of size (M,M) where M is the number
-of birth and death actions</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pygom.model.SimulateOde.cle">
 <span class="sig-name descname"><span class="pre">cle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.cle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.cle" title="Permalink to this definition">#</a></dt>
@@ -2520,118 +2200,6 @@ with <span class="math notranslate nohighlight">\(Z\)</span> being standard norm
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.SimulateOde.eval_birth_death_rate">
-<span class="sig-name descname"><span class="pre">eval_birth_death_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.eval_birth_death_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.eval_birth_death_rate" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the birth and death rates given parameters, state and time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parameters</strong> (<em>list</em>) – see <code class="xref py py-meth docutils literal notranslate"><span class="pre">setParameters()</span></code></p></li>
-<li><p><strong>time</strong> (<em>double</em>) – The current time</p></li>
-<li><p><strong>state</strong> (<em>array list</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Matrix of dimension [number of birth and death rates x 1]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.matrix</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">mpmath.matrix</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.SimulateOde.eval_transition_matrix">
-<span class="sig-name descname"><span class="pre">eval_transition_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.eval_transition_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.eval_transition_matrix" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the transition matrix given parameters, state and time. Note
-that the output is not in sparse format</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parameters</strong> (<em>list</em>) – see <code class="xref py py-meth docutils literal notranslate"><span class="pre">setParameters()</span></code></p></li>
-<li><p><strong>time</strong> (<em>double</em>) – The current time</p></li>
-<li><p><strong>state</strong> (<em>array list</em>) – The current numerical value for the states which can
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Matrix of dimension [number of state x number of state]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.matrix</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">mpmath.matrix</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.SimulateOde.eval_transition_mean">
-<span class="sig-name descname"><span class="pre">eval_transition_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.eval_transition_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.eval_transition_mean" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the transition mean given parameters, state and time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parameters</strong> (<em>list</em>) – see <code class="xref py py-meth docutils literal notranslate"><span class="pre">setParameters()</span></code></p></li>
-<li><p><strong>time</strong> (<em>double</em>) – The current time</p></li>
-<li><p><strong>state</strong> (<em>array list</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Matrix of dimension [number of state x number of state]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.matrix</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">mpmath.matrix</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.SimulateOde.eval_transition_var">
-<span class="sig-name descname"><span class="pre">eval_transition_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.eval_transition_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.eval_transition_var" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the transition variance given parameters, state and time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parameters</strong> (<em>list</em>) – see <code class="xref py py-meth docutils literal notranslate"><span class="pre">setParameters()</span></code></p></li>
-<li><p><strong>time</strong> (<em>double</em>) – The current time</p></li>
-<li><p><strong>state</strong> (<em>array list</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Matrix of dimension [number of state x number of state]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.matrix</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">mpmath.matrix</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.SimulateOde.eval_transition_vector">
-<span class="sig-name descname"><span class="pre">eval_transition_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.eval_transition_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.eval_transition_vector" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the transition vector given parameters, state and time. Note
-that the output is not in sparse format</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parameters</strong> (<em>list</em>) – see <code class="xref py py-meth docutils literal notranslate"><span class="pre">setParameters()</span></code></p></li>
-<li><p><strong>time</strong> (<em>double</em>) – The current time</p></li>
-<li><p><strong>state</strong> (<em>array list</em>) – The current numerical value for the states which can
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>vector of dimension [total number of transitions]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.matrix</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">mpmath.matrix</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pygom.model.SimulateOde.exact">
 <span class="sig-name descname"><span class="pre">exact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.exact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.exact" title="Permalink to this definition">#</a></dt>
 <dd><p>Stochastic simulation using an exact method starting from time
@@ -2648,54 +2216,40 @@ t0 to t1 with the starting state values of x0</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pygom.model.SimulateOde.get_TransitionJacobian">
+<span class="sig-name descname"><span class="pre">get_TransitionJacobian</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.get_TransitionJacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.get_TransitionJacobian" title="Permalink to this definition">#</a></dt>
+<dd><p>Evaluate equation (7) from <a class="reference external" href="https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf">https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf</a>
+where F_[i,j] is the change in transition rate a[i], if a transition of type j occurs:
+F_[i,j] = sum_k diff(a[i], x_k) v_[k,j]
+where k=state and v[k,j] is how much state x_k changes by if transition of type j occurs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygom.model.SimulateOde.get_TransitionMean">
+<span class="sig-name descname"><span class="pre">get_TransitionMean</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.get_TransitionMean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.get_TransitionMean" title="Permalink to this definition">#</a></dt>
+<dd><p>This is the mean and variance of the changes in the transition rates
+(aka propensity funtions) after a potential timestep:
+equations (8a) and (8b) from <a class="reference external" href="https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf">https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf</a>
+For n transitions the outputs are 2 vectors, each of length n.
+Outputs are added to self as mu and sigma2</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygom.model.SimulateOde.get_TransitionVar">
+<span class="sig-name descname"><span class="pre">get_TransitionVar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.get_TransitionVar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.get_TransitionVar" title="Permalink to this definition">#</a></dt>
+<dd><p>This is the mean and variance of the changes in the transition rates
+(aka propensity funtions) after a potential timestep:
+equations (8a) and (8b) from <a class="reference external" href="https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf">https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf</a>
+For n transitions the outputs are 2 vectors, each of length n.
+Outputs are added to self as mu and sigma2</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pygom.model.SimulateOde.get_bd_from_ode">
 <span class="sig-name descname"><span class="pre">get_bd_from_ode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.get_bd_from_ode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.get_bd_from_ode" title="Permalink to this definition">#</a></dt>
 <dd><p>Returns a list of:class:<cite>Transition</cite> from this object by unrolling
 the odes.  All the elements are of TransitionType.B or
 TransitionType.D</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.SimulateOde.get_birth_death_rate">
-<span class="sig-name descname"><span class="pre">get_birth_death_rate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.get_birth_death_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.get_birth_death_rate" title="Permalink to this definition">#</a></dt>
-<dd><p>Find the algebraic equations of birth and death processes</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>birth death process in matrix form</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">sympy.matrices.matrices</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.SimulateOde.get_transition_matrix">
-<span class="sig-name descname"><span class="pre">get_transition_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.get_transition_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.get_transition_matrix" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the transition matrix in algebraic form.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A matrix of dimension [number of state x number of state]</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">sympy.matrices.matrices</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.SimulateOde.get_transition_vector">
-<span class="sig-name descname"><span class="pre">get_transition_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.get_transition_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.get_transition_vector" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the set of transitions in a single vector, transitions
-between state to state first then the birth and death process</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A matrix of dimension [total number of transitions x 1]</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">sympy.matrices.matrices</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2735,7 +2289,7 @@ t0 to t1 with the starting state values of x0.</p>
 <dt class="sig sig-object py" id="pygom.model.SimulateOde.plot">
 <span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.plot" title="Permalink to this definition">#</a></dt>
 <dd><p>Plot the results of a simulation</p>
-<p>Takes the output of a function like <cite>simulate_jump</cite></p>
+<p>Takes the output of a function like <cite>solve_stochast</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2753,38 +2307,6 @@ plot the deterministic ODE</p>
 <p>If we have 3 states or more, it will always be arrange such
 that it has 3 columns.  Uses the operation from
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">odeutils</span></code></p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.SimulateOde.simulate_jump">
-<span class="sig-name descname"><span class="pre">simulate_jump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exact</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.simulate_jump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.simulate_jump" title="Permalink to this definition">#</a></dt>
-<dd><p>Simulate the ode using stochastic simulation.  It switches
-between a first reaction method and a <span class="math notranslate nohighlight">\(\tau\)</span>-leap
-algorithm internally. When a parallel backend exists, then a new random
-state (seed) will be used for each processor.  This is due to a lack
-of appropriate parallel seed random number generator in python.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>t</strong> (<em>array like</em>) – the range of time points which we want to see the result of
-or the final time point</p></li>
-<li><p><strong>iteration</strong> (<em>int</em>) – number of iterations you wish to simulate</p></li>
-<li><p><strong>parallel</strong> (<em>bool</em><em>, </em><em>optional</em>) – Defaults to True</p></li>
-<li><p><strong>exact</strong> (<em>bool</em><em>, </em><em>optional</em>) – True if exact simulation is desired, defaults to False</p></li>
-<li><p><strong>full_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – if we want additional information, sim_T</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>sim_X</strong> (<em>list</em>) – of length iteration each with (len(t),len(state)) if t is a vector,
-else it outputs unequal shape that was record of all the jumps</p></li>
-<li><p><strong>sim_T</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – if t is a single value, it outputs unequal shape that was
-record of all the jumps.  if t is a vector, it outputs t so that
-it is a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> instead</p></li>
-</ul>
-</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2860,6 +2382,7 @@ or the final time point</p></li>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>sim_X</strong> (<em>list</em>) – of length iteration each with (len(t),len(state)) if t is a vector,
 else it outputs unequal shape that was record of all the jumps</p></li>
+<li><p><strong>sim_Jump</strong> (list of <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – Number times each transition happens per timestep</p></li>
 <li><p><strong>sim_T</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – if t is a single value, it outputs unequal shape that was
 record of all the jumps.  if t is a vector, it outputs t so that
 it is a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> instead</p></li>
@@ -2890,104 +2413,11 @@ it is a <code class="xref py py-class docutils literal notranslate"><span class=
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.SimulateOde.transition_matrix">
-<span class="sig-name descname"><span class="pre">transition_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.transition_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.transition_matrix" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the transition matrix given state and time</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>state</strong> (<em>array like</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p><strong>t</strong> (<em>double</em>) – The current time</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a 2d array of size (M,M) where M is the number
-of transitions</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.SimulateOde.transition_mean">
-<span class="sig-name descname"><span class="pre">transition_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.transition_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.transition_mean" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the mean of the transitions given state and time.  For
-m transitions and n states, we have</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}f_{j,k} &amp;= \sum_{i=1}^{n} \frac{\partial a_{j}(x)}{\partial x_{i}} v_{i,k} \\
-\mu_{j} &amp;= \sum_{k=1}^{m} f_{j,k}(x)a_{k}(x) \\
-\sigma^{2}_{j}(x) &amp;= \sum_{k=1}^{m} f_{j,k}^{2}(x) a_{k}(x)\end{split}\]</div>
-<p>where <span class="math notranslate nohighlight">\(v_{i,k}\)</span> is the state change matrix.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>state</strong> (<em>array like</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p><strong>t</strong> (<em>double</em>) – The current time</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an array of size m where m is the number of transition</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.SimulateOde.transition_var">
-<span class="sig-name descname"><span class="pre">transition_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.transition_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.transition_var" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the variance of the transitions given state and time</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>state</strong> (<em>array like</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p><strong>t</strong> (<em>double</em>) – The current time</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an array of size M where M is the number of transition</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygom.model.SimulateOde.transition_vector">
-<span class="sig-name descname"><span class="pre">transition_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/simulate.html#SimulateOde.transition_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.SimulateOde.transition_vector" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate the transition vector given state and time</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>state</strong> (<em>array like</em>) – The current numerical value for the states which can be
-<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p><strong>t</strong> (<em>double</em>) – The current time</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a 1d array of size K where K is the number of between
-states transitions and the number of birth death
-processes</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pygom.model.Transition">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">Transition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">equation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transition_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ODE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ID</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/transition.html#Transition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.Transition" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">Transition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">equation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transition_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ODE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magnitude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ID</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/transition.html#Transition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.Transition" title="Permalink to this definition">#</a></dt>
 <dd><p>This class carries the information for transitions defined
 for an ode, which includes the ode itself, a birth death
 process where only one state is involved and also a transition
@@ -3056,6 +2486,20 @@ False if it is only related to the origin state</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The origin state</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pygom.model.Transition.stochastic">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stochastic</span></span><a class="headerlink" href="#pygom.model.Transition.stochastic" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the secondary effects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The destination state</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>string</p>
@@ -3200,7 +2644,7 @@ rate respectively.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>(F, V)</strong> – The progression matrices.  If diff=False, then we return the
-<span class="math notranslate nohighlight">\(F_{i}\)</span> and <span class="math notranslate nohighlight">\(V_{i}\)</span> matrices as per <span id="id19">[Brauer2008]</span>.</p>
+<span class="math notranslate nohighlight">\(F_{i}\)</span> and <span class="math notranslate nohighlight">\(V_{i}\)</span> matrices as per <span id="id17">[Brauer2008]</span>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>tuple</p>
@@ -3444,7 +2888,7 @@ is a string, then we convert it to a list.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pygom.model.vanDerPol">
 <span class="sig-prename descclassname"><span class="pre">pygom.model.</span></span><span class="sig-name descname"><span class="pre">vanDerPol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/model/common_models.html#vanDerPol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.model.vanDerPol" title="Permalink to this definition">#</a></dt>
-<dd><p>The van der Pol equation <span id="id20">[vanderpol1926]</span>, a second order ode</p>
+<dd><p>The van der Pol equation <span id="id18">[vanderpol1926]</span>, a second order ode</p>
 <div class="math notranslate nohighlight">
 \[y^{\prime\prime} - \mu (1-y^{2}) y^{\prime} + y = 0\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mu &gt; 0\)</span>.  This can be converted to a first
@@ -3550,6 +2994,8 @@ y^{\prime} &amp;= x\end{split}\]</div>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DFE"><code class="docutils literal notranslate"><span class="pre">DFE()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde"><code class="docutils literal notranslate"><span class="pre">DeterministicOde</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.add_compiled_sympy_object"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.add_compiled_sympy_object()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.add_func"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.add_func()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.adjoint"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.adjoint()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.adjoint_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.adjoint_T()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.adjoint_interpolate"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.adjoint_interpolate()</span></code></a></li>
@@ -3558,15 +3004,9 @@ y^{\prime} &amp;= x\end{split}\]</div>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.adjoint_interpolate_jacobian_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.adjoint_interpolate_jacobian_T()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.adjoint_jacobian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.adjoint_jacobian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.adjoint_jacobian_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.adjoint_jacobian_T()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.diff_jacobian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.diff_jacobian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.diff_jacobian_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.diff_jacobian_T()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_diff_jacobian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_diff_jacobian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_forwardforward"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_forwardforward()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_grad"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_grad()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_grad_jacobian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_grad_jacobian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_hessian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_hessian()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_jacobian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_jacobian()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_ode"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_ode()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_sens_jacobian_state"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_sens_jacobian_state()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_sensitivity"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_sensitivity()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.eval_sensitivityIV"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.eval_sensitivityIV()</span></code></a></li>
@@ -3579,9 +3019,7 @@ y^{\prime} &amp;= x\end{split}\]</div>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.get_jacobian_eqn"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.get_jacobian_eqn()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.get_ode_eqn"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.get_ode_eqn()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.get_transition_graph"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.get_transition_graph()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.grad"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.grad()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.grad_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.grad_T()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.grad_jacobian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.grad_jacobian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.grad_jacobianT"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.grad_jacobianT()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.hessian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.hessian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.initial_state"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.initial_state</span></code></a></li>
@@ -3590,11 +3028,9 @@ y^{\prime} &amp;= x\end{split}\]</div>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.integrate"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.integrate()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.integrate2"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.integrate2()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.is_stiff"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.is_stiff()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.jacobian"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.jacobian()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.jacobian_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.jacobian_T()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.jacobian_eigenvalue"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.jacobian_eigenvalue()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.linear_ode"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.linear_ode()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.ode"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.ode()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.ode_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.ode_T()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.ode_and_forwardforward"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.ode_and_forwardforward()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.ode_and_forwardforward_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.ode_and_forwardforward_T()</span></code></a></li>
@@ -3618,12 +3054,12 @@ y^{\prime} &amp;= x\end{split}\]</div>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.DeterministicOde.sensitivity_T"><code class="docutils literal notranslate"><span class="pre">DeterministicOde.sensitivity_T()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Event"><code class="docutils literal notranslate"><span class="pre">Event</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.FitzHugh"><code class="docutils literal notranslate"><span class="pre">FitzHugh()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Influenza_SLIARN"><code class="docutils literal notranslate"><span class="pre">Influenza_SLIARN()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Influenza_SLIARD"><code class="docutils literal notranslate"><span class="pre">Influenza_SLIARD()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Legrand_Ebola_SEIHFR"><code class="docutils literal notranslate"><span class="pre">Legrand_Ebola_SEIHFR()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Lorenz"><code class="docutils literal notranslate"><span class="pre">Lorenz()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Lotka_Volterra"><code class="docutils literal notranslate"><span class="pre">Lotka_Volterra()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Lotka_Volterra_4State"><code class="docutils literal notranslate"><span class="pre">Lotka_Volterra_4State()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.ODEVariable"><code class="docutils literal notranslate"><span class="pre">ODEVariable</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.OrderedDict"><code class="docutils literal notranslate"><span class="pre">OrderedDict</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.OrderedDict.clear"><code class="docutils literal notranslate"><span class="pre">OrderedDict.clear()</span></code></a></li>
@@ -3645,39 +3081,28 @@ y^{\prime} &amp;= x\end{split}\]</div>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SEIR"><code class="docutils literal notranslate"><span class="pre">SEIR()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SEIR_Birth_Death"><code class="docutils literal notranslate"><span class="pre">SEIR_Birth_Death()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SEIR_Birth_Death_Periodic"><code class="docutils literal notranslate"><span class="pre">SEIR_Birth_Death_Periodic()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SEIR_Birth_Death_Periodic_Waning_Intro"><code class="docutils literal notranslate"><span class="pre">SEIR_Birth_Death_Periodic_Waning_Intro()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SEIR_Multiple"><code class="docutils literal notranslate"><span class="pre">SEIR_Multiple()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SEIR_N"><code class="docutils literal notranslate"><span class="pre">SEIR_N()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SIR"><code class="docutils literal notranslate"><span class="pre">SIR()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SIR_Birth_Death"><code class="docutils literal notranslate"><span class="pre">SIR_Birth_Death()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SIR_norm"><code class="docutils literal notranslate"><span class="pre">SIR_norm()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SIS"><code class="docutils literal notranslate"><span class="pre">SIS()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SIS_Periodic"><code class="docutils literal notranslate"><span class="pre">SIS_Periodic()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde"><code class="docutils literal notranslate"><span class="pre">SimulateOde</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.birth_death_rate"><code class="docutils literal notranslate"><span class="pre">SimulateOde.birth_death_rate()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.cle"><code class="docutils literal notranslate"><span class="pre">SimulateOde.cle()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.eval_birth_death_rate"><code class="docutils literal notranslate"><span class="pre">SimulateOde.eval_birth_death_rate()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.eval_transition_matrix"><code class="docutils literal notranslate"><span class="pre">SimulateOde.eval_transition_matrix()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.eval_transition_mean"><code class="docutils literal notranslate"><span class="pre">SimulateOde.eval_transition_mean()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.eval_transition_var"><code class="docutils literal notranslate"><span class="pre">SimulateOde.eval_transition_var()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.eval_transition_vector"><code class="docutils literal notranslate"><span class="pre">SimulateOde.eval_transition_vector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.exact"><code class="docutils literal notranslate"><span class="pre">SimulateOde.exact()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_TransitionJacobian"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_TransitionJacobian()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_TransitionMean"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_TransitionMean()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_TransitionVar"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_TransitionVar()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_bd_from_ode"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_bd_from_ode()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_birth_death_rate"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_birth_death_rate()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_transition_matrix"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_transition_matrix()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_transition_vector"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_transition_vector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_transitions_from_ode"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_transitions_from_ode()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.get_unrolled_obj"><code class="docutils literal notranslate"><span class="pre">SimulateOde.get_unrolled_obj()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.hybrid"><code class="docutils literal notranslate"><span class="pre">SimulateOde.hybrid()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.plot"><code class="docutils literal notranslate"><span class="pre">SimulateOde.plot()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.simulate_jump"><code class="docutils literal notranslate"><span class="pre">SimulateOde.simulate_jump()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.simulate_param"><code class="docutils literal notranslate"><span class="pre">SimulateOde.simulate_param()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.solve_determ"><code class="docutils literal notranslate"><span class="pre">SimulateOde.solve_determ()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.solve_stochast"><code class="docutils literal notranslate"><span class="pre">SimulateOde.solve_stochast()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.total_transition"><code class="docutils literal notranslate"><span class="pre">SimulateOde.total_transition()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.transition_matrix"><code class="docutils literal notranslate"><span class="pre">SimulateOde.transition_matrix()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.transition_mean"><code class="docutils literal notranslate"><span class="pre">SimulateOde.transition_mean()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.transition_var"><code class="docutils literal notranslate"><span class="pre">SimulateOde.transition_var()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.SimulateOde.transition_vector"><code class="docutils literal notranslate"><span class="pre">SimulateOde.transition_vector()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Transition"><code class="docutils literal notranslate"><span class="pre">Transition</span></code></a><ul class="nav section-nav flex-column">
@@ -3685,6 +3110,7 @@ y^{\prime} &amp;= x\end{split}\]</div>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Transition.equation"><code class="docutils literal notranslate"><span class="pre">Transition.equation</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Transition.is_between_state"><code class="docutils literal notranslate"><span class="pre">Transition.is_between_state()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Transition.origin"><code class="docutils literal notranslate"><span class="pre">Transition.origin</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Transition.stochastic"><code class="docutils literal notranslate"><span class="pre">Transition.stochastic</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.model.Transition.transition_type"><code class="docutils literal notranslate"><span class="pre">Transition.transition_type</span></code></a></li>
 </ul>
 </li>

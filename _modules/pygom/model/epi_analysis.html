@@ -186,9 +186,15 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../../../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/solution.html">Mathematical description</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/model_spec_2.html">Defining a system of differential equations</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../notebooks/insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/extract_info.html">Extracting model information</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollSimple.html">Deducing transitions from equations</a></li>
@@ -398,7 +404,7 @@ document.write(`
 
 <span class="kn">import</span> <span class="nn">sympy</span>
 
-<span class="kn">from</span> <span class="nn">.simulate</span> <span class="kn">import</span> <span class="n">SimulateOde</span>
+<span class="kn">from</span> <span class="nn">.simulate</span> <span class="kn">import</span> <span class="n">SimulateOde</span><span class="p">,</span> <span class="n">TransitionType</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
            <span class="s1">&#39;DFE&#39;</span><span class="p">,</span>
@@ -539,12 +545,16 @@ document.write(`
             <span class="n">state_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
     <span class="n">FList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ode</span><span class="o">.</span><span class="n">transition_list</span><span class="p">:</span>
-        <span class="n">orig</span> <span class="o">=</span> <span class="n">_get_single_state_name</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
-        <span class="n">dest</span> <span class="o">=</span> <span class="n">_get_single_state_name</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">orig</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">orig</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">disease_state</span> <span class="ow">and</span> <span class="n">dest</span> <span class="ow">in</span> <span class="n">disease_state</span><span class="p">:</span>
-                <span class="n">FList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">ode</span><span class="o">.</span><span class="n">event_list</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">trans</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">transition_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">trans</span><span class="o">.</span><span class="n">transition_type</span><span class="o">==</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">:</span>
+                <span class="n">orig</span> <span class="o">=</span> <span class="n">_get_single_state_name</span><span class="p">(</span><span class="n">trans</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+                <span class="n">dest</span> <span class="o">=</span> <span class="n">_get_single_state_name</span><span class="p">(</span><span class="n">trans</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">orig</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">orig</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">disease_state</span> <span class="ow">and</span> <span class="n">dest</span> <span class="ow">in</span> <span class="n">disease_state</span><span class="p">:</span>
+                        <span class="n">trans</span><span class="o">.</span><span class="n">_equation</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">rate</span>
+                        <span class="n">FList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
 
     <span class="n">ode2</span> <span class="o">=</span> <span class="n">SimulateOde</span><span class="p">(</span><span class="n">ode</span><span class="o">.</span><span class="n">state_list</span><span class="p">,</span> <span class="n">ode</span><span class="o">.</span><span class="n">param_list</span><span class="p">,</span> <span class="n">transition</span><span class="o">=</span><span class="n">FList</span><span class="p">)</span>
 

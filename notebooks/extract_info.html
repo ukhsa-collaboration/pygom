@@ -189,9 +189,15 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="solution.html">Mathematical description</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_spec_2.html">Defining a system of differential equations</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="insights.html">ODE Insights</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Extracting model information</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unroll/unrollSimple.html">Deducing transitions from equations</a></li>
@@ -459,7 +465,7 @@ Here we initialise a <code class="docutils literal notranslate"><span class="pre
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">common_models</span>
-<span class="n">ode</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SIR</span><span class="p">()</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SIR</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -469,7 +475,7 @@ Here we initialise a <code class="docutils literal notranslate"><span class="pre
 <p>As seen previously, the <code class="xref py py-func docutils literal notranslate"><span class="pre">get_ode_eqn()</span></code> function allows us to verify that our ODE equations are as we’d expect:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ode</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -484,8 +490,7 @@ Here we initialise a <code class="docutils literal notranslate"><span class="pre
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ode</span><span class="o">.</span><span class="n">print_ode</span><span class="p">()</span>
-<span class="n">ode</span><span class="o">.</span><span class="n">print_ode</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">print_ode</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -499,34 +504,56 @@ Here we initialise a <code class="docutils literal notranslate"><span class="pre
 ⎢                 N  ⎥
 ⎢                    ⎥
 ⎣dR/dt=      I⋅γ     ⎦
-\begin{array}{cc}dS/dt= &amp; - \frac{I S \beta}{N}\\dI/dt= &amp; - I \gamma + \frac{I S \beta}{N}\\dR/dt= &amp; I \gamma\end{array}
 </pre></div>
 </div>
 </div>
 </div>
-<p>We can check the model definition in terms of a transition matrix:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ode</span><span class="o">.</span><span class="n">get_transition_matrix</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">print_ode</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>\begin{array}{cc}dS/dt= &amp; - \frac{I S \beta}{N}\\dI/dt= &amp; - I \gamma + \frac{I S \beta}{N}\\dR/dt= &amp; I \gamma\end{array}
+</pre></div>
+</div>
+</div>
+</div>
+<p>Also as seen before, we can check how each state changes due to each event occurring</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">get_StateChangeMatrix</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\begin{split}\displaystyle \left[\begin{matrix}0 &amp; \frac{I S \beta}{N} &amp; 0\\0 &amp; 0 &amp; I \gamma\\0 &amp; 0 &amp; 0\end{matrix}\right]\end{split}\]</div>
+\[\begin{split}\displaystyle \left[\begin{matrix}-1 &amp; 0\\1 &amp; -1\\0 &amp; 1\end{matrix}\right]\end{split}\]</div>
 </div>
 </div>
-<p>where only the upper off diagonal triangle is necessary to fully define the system.</p>
-<p>We can even inspect the transitions graphically:</p>
+<p>and the rate at which events occur:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ode</span><span class="o">.</span><span class="n">get_transition_graph</span><span class="p">();</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">get_EventRateVector</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/e42a333907759856ccde70f6ad48532486a27a4412392cec660ba77450a0ae4d.png" src="../_images/e42a333907759856ccde70f6ad48532486a27a4412392cec660ba77450a0ae4d.png" />
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{split}\displaystyle \left[\begin{matrix}\frac{I S \beta}{N}\\I \gamma\end{matrix}\right]\end{split}\]</div>
 </div>
+</div>
+<p>Again, graphical representation can help with verification:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">graph</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">get_transition_graph</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">graph</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/bac0eab1042e0db61dd2eecf6896d4aecb93c067a976055b079bb181760cfbe3.svg" src="../_images/bac0eab1042e0db61dd2eecf6896d4aecb93c067a976055b079bb181760cfbe3.svg" /></div>
 </div>
 </section>
 <section id="algebraic-insights">
@@ -534,7 +561,7 @@ Here we initialise a <code class="docutils literal notranslate"><span class="pre
 <p>We briefly outline some of the algebraic results which can be quickly accessed by PyGOM. Firstly, we can check if our system is linear:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ode</span><span class="o">.</span><span class="n">linear_ode</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">linear_ode</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -551,7 +578,7 @@ Here we initialise a <code class="docutils literal notranslate"><span class="pre
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ode</span><span class="o">.</span><span class="n">get_jacobian_eqn</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">get_jacobian_eqn</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -562,7 +589,7 @@ Here we initialise a <code class="docutils literal notranslate"><span class="pre
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ode</span><span class="o">.</span><span class="n">get_hessian_eqn</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">get_hessian_eqn</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -585,7 +612,7 @@ Here we initialise a <code class="docutils literal notranslate"><span class="pre
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ode</span><span class="o">.</span><span class="n">get_grad_eqn</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">get_grad_eqn</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -604,7 +631,7 @@ We must specify which state represents the <em>infectious state</em>, which in t
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom.model.epi_analysis</span> <span class="kn">import</span> <span class="o">*</span>
 
-<span class="n">F</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">disease_progression_matrices</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">)</span>
+<span class="n">F</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">disease_progression_matrices</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">)</span>
 <span class="n">e</span> <span class="o">=</span> <span class="n">R0_from_matrix</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 </pre></div>

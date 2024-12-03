@@ -186,9 +186,15 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../../../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/solution.html">Mathematical description</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/model_spec_2.html">Defining a system of differential equations</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../notebooks/insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/extract_info.html">Extracting model information</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollSimple.html">Deducing transitions from equations</a></li>
@@ -397,6 +403,7 @@ document.write(`
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Event&#39;</span><span class="p">,</span>
     <span class="s1">&#39;Transition&#39;</span><span class="p">,</span>
     <span class="s1">&#39;TransitionType&#39;</span>
     <span class="p">]</span>
@@ -415,7 +422,73 @@ document.write(`
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">pass</span>
 
-<div class="viewcode-block" id="Transition"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Transition">[docs]</a><span class="k">class</span> <span class="nc">Transition</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Event"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Event">[docs]</a><span class="k">class</span> <span class="nc">Event</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Class to contain transitions</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">transition_list</span><span class="p">,</span>
+                 <span class="n">rate</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        
+        <span class="c1"># If one solitary unlisted transition provided, gather it into a list</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transition_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transition_list</span><span class="p">,</span> <span class="n">Transition</span><span class="p">):</span>
+                <span class="n">transition_list</span><span class="o">=</span><span class="p">[</span><span class="n">transition_list</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;Transition object provided not of class Transition&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Check each transition is of the type, Transition</span>
+        <span class="k">for</span> <span class="n">transition</span> <span class="ow">in</span> <span class="n">transition_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transition</span><span class="p">,</span> <span class="n">Transition</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;At least one Transition object provided not of class Transition&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check that ODE&#39;s have not been supplied</span>
+        <span class="k">for</span> <span class="n">transition</span> <span class="ow">in</span> <span class="n">transition_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">transition</span><span class="o">.</span><span class="n">transition_type</span> <span class="o">==</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;ODEs cannot be wrapped in an Event class. To pass pure ODEs to&quot;</span><span class="o">+</span>
+                                      <span class="s2">&quot;SimulateOde, use the ode argument&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check enough information has been provided and unpack it.</span>
+        <span class="c1"># Sufficient input consists of either:</span>
+        <span class="c1"># 1) One transition with an equation + no rate</span>
+        <span class="c1"># 2) One transition without an equation + rate</span>
+        <span class="c1"># 3) Multiple transitions each without equations + rate</span>
+        <span class="c1"># 4) Multiple transitions where only 1 has equation + no rate</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">transition_list</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">transition</span><span class="o">.</span><span class="n">equation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">rate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;Event rate dictates the rate at which its&quot;</span><span class="o">+</span>
+                                          <span class="s2">&quot;member Transitions occur. It is superfluous for transitions&quot;</span><span class="o">+</span>
+                                          <span class="s2">&quot;to declare their own rate and would be incorrect if it differed&quot;</span><span class="o">+</span>
+                                          <span class="s2">&quot;from that in the Event anyway.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">rate</span><span class="o">=</span><span class="n">transition</span><span class="o">.</span><span class="n">equation</span>
+            <span class="k">elif</span> <span class="n">rate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;Rate cannot be found in Event or Transitions&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rate</span><span class="o">=</span><span class="n">rate</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_eq</span><span class="o">=</span><span class="mi">0</span>
+            <span class="k">for</span> <span class="n">transition</span> <span class="ow">in</span> <span class="n">transition_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">transition</span><span class="o">.</span><span class="n">equation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">n_eq</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="k">if</span> <span class="n">n_eq</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;Zero or one equations needed, but &quot;</span><span class="p">,</span> <span class="n">n_eq</span><span class="p">,</span> <span class="s2">&quot; provided&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">n_eq</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">rate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;Rate and equation defined, but only one should be provided&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">n_eq</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">rate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;Rate cannot be found in Event or Transitions&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rate</span><span class="o">=</span><span class="n">rate</span>
+                
+        <span class="bp">self</span><span class="o">.</span><span class="n">transition_list</span><span class="o">=</span><span class="n">transition_list</span></div>
+            
+
+                    
+
+<div class="viewcode-block" id="Transition"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Transition">[docs]</a><span class="k">class</span> <span class="nc">Transition</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This class carries the information for transitions defined</span>
 <span class="sd">    for an ode, which includes the ode itself, a birth death</span>
@@ -438,67 +511,84 @@ document.write(`
 <span class="sd">        it throws an error</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">equation</span><span class="p">,</span> <span class="n">transition_type</span><span class="o">=</span><span class="s1">&#39;ODE&#39;</span><span class="p">,</span>
-                 <span class="n">destination</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ID</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">equation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                 <span class="c1"># If equation is given</span>
+                 <span class="n">transition_type</span><span class="o">=</span><span class="s1">&#39;ODE&#39;</span><span class="p">,</span>
+                 <span class="n">destination</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">magnitude</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span>
+                 <span class="n">ID</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Constructor for the class.</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">ID</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="c1"># we naturally assume that the between state transition</span>
-        <span class="c1"># is false, i.e. everything is either an ode or a birth</span>
-        <span class="c1"># death process type _equation</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_betweenStateTransition</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_transition_type</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_setTransitionType</span><span class="p">(</span><span class="n">transition_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setMagnitude</span><span class="p">(</span><span class="n">magnitude</span><span class="p">)</span>   
 
-        <span class="c1"># private variables</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_orig_state</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dest_state</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_equation</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Check origins and destinations are consistent with transition type</span>
 
-        <span class="k">if</span> <span class="n">destination</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_type</span> <span class="o">==</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">destination</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;Please define ODEs with the dependant variable as the origin&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;Please define ODEs with the dependant variable as the origin&quot;</span><span class="p">)</span>          
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setOrigState</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_type</span> <span class="o">==</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">B</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># TODO: This warning can be really annoying, I want it to just appear once.</span>
+                <span class="c1"># print(&quot;Update: In the latest version, you should define births as having a destination state instead of an origin.&quot;)</span>
+                <span class="n">destination</span><span class="o">=</span><span class="n">origin</span>
+            <span class="k">elif</span> <span class="n">destination</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;Birth process has no origin or destination&quot;</span><span class="p">)</span>
+            <span class="c1"># if destination is None:</span>
+            <span class="c1">#     raise InputStateError(&quot;Birth process requires destination&quot;)</span>
+            <span class="c1"># if origin is not None:</span>
+            <span class="c1">#     raise InputStateError(&quot;Birth process can only have a destination, please remove origin&quot;)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setDestState</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_type</span> <span class="o">==</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;Death process requires origin&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">destination</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;Death process can only have an origin, please remove destination&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setOrigState</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_type</span> <span class="o">==</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">destination</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;No origin, but transition type is between 2 compartments&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;No origin or destination, but transition type is between 2 compartments&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">destination</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;No destination, but transition type is between 2 compartments&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">origin</span> <span class="o">==</span> <span class="n">destination</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_type</span> <span class="o">!=</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_setOrigState</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_setEquation</span><span class="p">(</span><span class="n">equation</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;Input have the same state for &quot;</span> <span class="o">+</span>
-                                          <span class="s2">&quot;the origin and destination, but &quot;</span> <span class="o">+</span>
-                                          <span class="s2">&quot;transition type is &quot;</span> <span class="o">+</span>
-                                          <span class="bp">self</span><span class="o">.</span><span class="n">_transition_type</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_type</span> <span class="o">==</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_setOrigState</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_setDestState</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_setEquation</span><span class="p">(</span><span class="n">equation</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;Input have both origin and &quot;</span> <span class="o">+</span>
-                                          <span class="s2">&quot;destination state but transition &quot;</span> <span class="o">+</span>
-                                          <span class="s2">&quot;type is &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transition_type</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span> <span class="c1"># no destination</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_type</span> <span class="o">!=</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_setOrigState</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_setEquation</span><span class="p">(</span><span class="n">equation</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;Input only have origin, but &quot;</span> <span class="o">+</span>
-                                      <span class="s2">&quot;transition type is &quot;</span> <span class="o">+</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_transition_type</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">InputStateError</span><span class="p">(</span><span class="s2">&quot;Origin and destination cannot be the same&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setOrigState</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setDestState</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span>
+
+        <span class="c1"># If we get this far, then origin/destination checks have been successful</span>
+        <span class="c1"># Now add equation if it has been provided</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setEquation</span><span class="p">(</span><span class="n">equation</span><span class="p">)</span>
+        <span class="c1"># if equation is not None:</span>
+        <span class="c1">#     # TODO: We need to create an event class somehow.</span>
+        <span class="c1">#     self._setEquation(equation)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_type</span> <span class="o">==</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">&#39;Transition from </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> \
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_orig_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dest_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_equation</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s1">&#39;Transition of size </span><span class="si">%s</span><span class="s1"> from </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_magnitude</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orig_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dest_state</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_type</span> <span class="o">==</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;ODE for </span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_orig_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_equation</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_type</span> <span class="o">==</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">B</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">&#39;Birth process to </span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_orig_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_equation</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s1">&#39;Birth process of size </span><span class="si">%s</span><span class="s1"> into </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_magnitude</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orig_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_equation</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_type</span> <span class="o">==</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">D</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">&#39;Death process from </span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_orig_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_equation</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s1">&#39;Death process of size </span><span class="si">%s</span><span class="s1"> from </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_magnitude</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orig_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_equation</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transition_type</span> <span class="o">==</span> <span class="n">TransitionType</span><span class="o">.</span><span class="n">T</span><span class="p">:</span>
             <span class="n">repr_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Transition(&#39;</span><span class="si">%s</span><span class="s2">&#39;, &#39;</span><span class="si">%s</span><span class="s2">&#39;, &#39;T&#39;, &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;&quot;&quot;</span> <span class="o">%</span> \
                       <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_orig_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_equation</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dest_state</span><span class="p">)</span>
@@ -566,6 +656,19 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dest_state</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">stochastic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Return the secondary effects</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        string</span>
+<span class="sd">            The destination state</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stochastic</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">equation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Return the transition _equation</span>
@@ -629,6 +732,22 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_dest_state</span> <span class="o">=</span> <span class="n">dest_state</span>
         <span class="k">return</span> <span class="bp">self</span>
 
+    <span class="k">def</span> <span class="nf">_setMagnitude</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the magnitude</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_magnitude</span> <span class="o">=</span> <span class="n">magnitude</span>
+        <span class="k">return</span> <span class="bp">self</span> 
+    
+    <span class="k">def</span> <span class="nf">_setStochastic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stochastic</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the destination state</span>
+<span class="sd">        :param destination: Destination State</span>
+<span class="sd">        :type destination: String</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stochastic</span> <span class="o">=</span> <span class="n">stochastic</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
     <span class="k">def</span> <span class="nf">_setEquation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">equation</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Set the transition _equation</span>
@@ -639,7 +758,9 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">_setTransitionType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transition_type</span><span class="p">):</span>
-        <span class="c1"># we also need the transition type</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Set the transition type</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transition_type</span><span class="p">,</span> <span class="n">TransitionType</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_transition_type</span> <span class="o">=</span> <span class="n">transition_type</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transition_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>

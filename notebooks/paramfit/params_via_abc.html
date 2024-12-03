@@ -189,9 +189,15 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../solution.html">Mathematical description</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../model_spec_2.html">Defining a system of differential equations</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../extract_info.html">Extracting model information</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unroll/unrollSimple.html">Deducing transitions from equations</a></li>
@@ -484,7 +490,7 @@ As an example, we use synthetic data produced by PyGOM’s <a class="reference i
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/276bf6cebc08b589bce718025cddaf9975fbac1feda20c7cc0fa28754b06c405.png" src="../../_images/276bf6cebc08b589bce718025cddaf9975fbac1feda20c7cc0fa28754b06c405.png" />
+<img alt="../../_images/e5347a01a872567241392422c81777107474b2c0c8f5d114d77963ae0ee2dbef.png" src="../../_images/e5347a01a872567241392422c81777107474b2c0c8f5d114d77963ae0ee2dbef.png" />
 </div>
 </div>
 <div class="admonition note">
@@ -519,7 +525,7 @@ Thus, even though the other parameters (<span class="math notranslate nohighligh
 <span class="n">n_pop</span><span class="o">=</span><span class="mf">1e4</span>
 <span class="n">paramEval</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">n_pop</span><span class="p">)]</span>
 
-<span class="n">ode_SEIR</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SEIR_N</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="n">paramEval</span><span class="p">)</span>
+<span class="n">ode_SEIR</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SEIR</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="n">paramEval</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -638,8 +644,8 @@ Let’s perform 2 additional iterations:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/c671a3fb3e07ac64016b77102c690b6475e113fe4a3d4b418aa92ee918b43504.png" src="../../_images/c671a3fb3e07ac64016b77102c690b6475e113fe4a3d4b418aa92ee918b43504.png" />
-<img alt="../../_images/6b83db20b7b52e362ca261ab7cac31d8a2745619dfaa6a3f21d69708cb38204f.png" src="../../_images/6b83db20b7b52e362ca261ab7cac31d8a2745619dfaa6a3f21d69708cb38204f.png" />
+<img alt="../../_images/3c7869ca2809cefbeb57d07cd6660449c95659bbe223d13c84ef773c59c60096.png" src="../../_images/3c7869ca2809cefbeb57d07cd6660449c95659bbe223d13c84ef773c59c60096.png" />
+<img alt="../../_images/ee6fcc16fc71e3203f3c879e0d4ac3fa217b9a2909f26eb5e854f23ab2b56262.png" src="../../_images/ee6fcc16fc71e3203f3c879e0d4ac3fa217b9a2909f26eb5e854f23ab2b56262.png" />
 </div>
 </div>
 <p>The posterior draws are contained within <code class="docutils literal notranslate"><span class="pre">abcSIR.res</span></code>.
@@ -725,8 +731,8 @@ We do this and run the ABC algorithm for 8 generations.</p>
  acceptance rate = 7.85%
 </pre></div>
 </div>
-<img alt="../../_images/0c83e998e1f9bba3ece61428a84eaf493dd0c6a8bc7538418a6e4e1bdce969f4.png" src="../../_images/0c83e998e1f9bba3ece61428a84eaf493dd0c6a8bc7538418a6e4e1bdce969f4.png" />
-<img alt="../../_images/5a823765a84f46916d4196a6d2664561af07ad1b984727c8bb678766e94b4856.png" src="../../_images/5a823765a84f46916d4196a6d2664561af07ad1b984727c8bb678766e94b4856.png" />
+<img alt="../../_images/2af942f91f462e913482574948d7f06c322b9ff68c1ba9929b6e4f388f610d9a.png" src="../../_images/2af942f91f462e913482574948d7f06c322b9ff68c1ba9929b6e4f388f610d9a.png" />
+<img alt="../../_images/8a031468fb3823a451897700e724ee324d9d2733353973b2a0797fbf2e9e87e9.png" src="../../_images/8a031468fb3823a451897700e724ee324d9d2733353973b2a0797fbf2e9e87e9.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -816,8 +822,8 @@ We follow similar steps as before, but now specifying an SIR model:</p>
  acceptance rate = 31.69%
 </pre></div>
 </div>
-<img alt="../../_images/e9d9cfb7caf2b9ba189db9a03ab89a66fe2f61df0a8af246606ce580287a66d3.png" src="../../_images/e9d9cfb7caf2b9ba189db9a03ab89a66fe2f61df0a8af246606ce580287a66d3.png" />
-<img alt="../../_images/817704a259dc491635ee55996b7435eba77e33b1c5b840d65d3db69b80999bce.png" src="../../_images/817704a259dc491635ee55996b7435eba77e33b1c5b840d65d3db69b80999bce.png" />
+<img alt="../../_images/608f88b361f4df23468888faf04a5ddc8615f37a4165cd811fbc46a617b93fa7.png" src="../../_images/608f88b361f4df23468888faf04a5ddc8615f37a4165cd811fbc46a617b93fa7.png" />
+<img alt="../../_images/6cd2ef532b949f4573862da9fcc3ee781d6aed94b73d0066a03026010aa8602c.png" src="../../_images/6cd2ef532b949f4573862da9fcc3ee781d6aed94b73d0066a03026010aa8602c.png" />
 </div>
 </div>
 <p>Although we see smaller credible intervals, this actually reflects the restriction in model fitting, rather than increased precision.
@@ -921,8 +927,8 @@ Again, we still need to pass variables even if they are unknown - in this case t
  acceptance rate = 0.64%
 </pre></div>
 </div>
-<img alt="../../_images/246e942500bfc04444e36c97ec5abbc6ab07b356488811cfe450bcdf2649d390.png" src="../../_images/246e942500bfc04444e36c97ec5abbc6ab07b356488811cfe450bcdf2649d390.png" />
-<img alt="../../_images/d313f484e490b5b9f83634b6b462025a20ba48993b9a711881f914b1a1c1e118.png" src="../../_images/d313f484e490b5b9f83634b6b462025a20ba48993b9a711881f914b1a1c1e118.png" />
+<img alt="../../_images/1d7e839ae8545b19cebb33719ad9b43a12beceba69e6d2f64051e5934e8e7569.png" src="../../_images/1d7e839ae8545b19cebb33719ad9b43a12beceba69e6d2f64051e5934e8e7569.png" />
+<img alt="../../_images/fa1e039161ef6c8e9461b4244afea438e429c1a2410d24b45d01edc771fcdf44.png" src="../../_images/fa1e039161ef6c8e9461b4244afea438e429c1a2410d24b45d01edc771fcdf44.png" />
 </div>
 </div>
 <div class="cell docutils container">

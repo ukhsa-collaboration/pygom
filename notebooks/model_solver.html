@@ -189,9 +189,15 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="solution.html">Mathematical description</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_spec_2.html">Defining a system of differential equations</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="extract_info.html">Extracting model information</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unroll/unrollSimple.html">Deducing transitions from equations</a></li>
@@ -598,7 +604,7 @@ We begin with the simple (and likely familiar) case of fixed parameters.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/3d8fa4820b48932dd81dbec711d84e14a91607ed753fc7db1a9150ca67740152.png" src="../_images/3d8fa4820b48932dd81dbec711d84e14a91607ed753fc7db1a9150ca67740152.png" />
+<img alt="../_images/20651971a63218f4a4629a2298392395949795bd190a5230a8db39cde8861f35.png" src="../_images/20651971a63218f4a4629a2298392395949795bd190a5230a8db39cde8861f35.png" />
 </div>
 </div>
 </section>
@@ -692,7 +698,7 @@ using the IPython.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/6b962e9c27aaf8754b0941dfd0c0fc764737ad3c7ebe43e170b9993df4d847cd.png" src="../_images/6b962e9c27aaf8754b0941dfd0c0fc764737ad3c7ebe43e170b9993df4d847cd.png" />
+<img alt="../_images/e43a1ec82151103fea32d391be1707da4b7dadb9cc7cb6f64f3b37053c9aaf21.png" src="../_images/e43a1ec82151103fea32d391be1707da4b7dadb9cc7cb6f64f3b37053c9aaf21.png" />
 </div>
 </div>
 <!-- ```{tip}
@@ -726,7 +732,15 @@ However, this time we employ the function <code class="docutils literal notransl
 
 <span class="n">n_sim</span><span class="o">=</span><span class="mi">1000</span>  <span class="c1"># number of simulations</span>
 <span class="n">ode_S_F</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">fixed_param_set</span>
-<span class="n">solution_S_F</span><span class="p">,</span> <span class="n">simT</span> <span class="o">=</span> <span class="n">ode_S_F</span><span class="o">.</span><span class="n">solve_stochast</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n_sim</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">solution_S_F</span><span class="p">,</span> <span class="n">simJump</span><span class="p">,</span> <span class="n">simT</span> <span class="o">=</span> <span class="n">ode_S_F</span><span class="o">.</span><span class="n">solve_stochast</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n_sim</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Illegal jump, x: [4.769e+03 1.000e+00 5.230e+03], new x: [ 4.769e+03 -1.000e+00  5.232e+03]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Illegal jump, x: [5.032e+03 1.000e+00 4.967e+03], new x: [ 5.032e+03 -1.000e+00  4.969e+03]
 </pre></div>
 </div>
 </div>
@@ -753,7 +767,7 @@ However, this time we employ the function <code class="docutils literal notransl
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/ed766c30538f0e15807081fe274666a94865ae4ed6a4bc384ec18c3cc22e6d63.png" src="../_images/ed766c30538f0e15807081fe274666a94865ae4ed6a4bc384ec18c3cc22e6d63.png" />
+<img alt="../_images/24a05ac25cf90efe5431cd477d62b4bc6c9a30d578aae47e5bd7c680b2163bf0.png" src="../_images/24a05ac25cf90efe5431cd477d62b4bc6c9a30d578aae47e5bd7c680b2163bf0.png" />
 </div>
 </div>
 <p>We see that 28 of the 1000 simulations (2.8%) have final sizes very close to zero.
@@ -780,7 +794,7 @@ In these cases, the chain of infections reaches stochastic extinction before an 
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/ab7c578c5d5caac5c9ba170c201532d2cc5edd03e25512c0206f98c22fecd75c.png" src="../_images/ab7c578c5d5caac5c9ba170c201532d2cc5edd03e25512c0206f98c22fecd75c.png" />
+<img alt="../_images/e9c93f6f74c6182c31b348b5014bedc2278ef3d9e7ce18887962b92de8ea31f2.png" src="../_images/e9c93f6f74c6182c31b348b5014bedc2278ef3d9e7ce18887962b92de8ea31f2.png" />
 </div>
 </div>
 <p>We proceed to eliminate these when plotting our simulation outputs, since we’d like to compare the output here with our deterministic results (which, by definition, do not exhibit stochastic extinction):</p>
@@ -845,7 +859,7 @@ In these cases, the chain of infections reaches stochastic extinction before an 
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/d029f9bf005cf2109c0125e7695aa2fed065ff2962d03673083c757c9af86415.png" src="../_images/d029f9bf005cf2109c0125e7695aa2fed065ff2962d03673083c757c9af86415.png" />
+<img alt="../_images/e74e17af4037026c88f454564c3377c46da8ea78d1c7312b1b669eebbd58e97c.png" src="../_images/e74e17af4037026c88f454564c3377c46da8ea78d1c7312b1b669eebbd58e97c.png" />
 </div>
 </div>
 </section>
@@ -861,7 +875,7 @@ Using the random parameter set, <code class="docutils literal notranslate"><span
 
 <span class="c1"># In this case n_sim and n_param_draw mean the same thing since we have new parameter set per simulation</span>
 <span class="n">ode_S_R</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">random_param_set</span>
-<span class="n">solution_S_R</span><span class="p">,</span> <span class="n">simT</span> <span class="o">=</span> <span class="n">ode_S_R</span><span class="o">.</span><span class="n">solve_stochast</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n_sim</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">solution_S_R</span><span class="p">,</span> <span class="n">simJump</span><span class="p">,</span> <span class="n">simT</span> <span class="o">=</span> <span class="n">ode_S_R</span><span class="o">.</span><span class="n">solve_stochast</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n_sim</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -888,7 +902,7 @@ Using the random parameter set, <code class="docutils literal notranslate"><span
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/6761b6c5121b26105faf348bfeae7552405d6363f07d4e187fca5c39b861eb25.png" src="../_images/6761b6c5121b26105faf348bfeae7552405d6363f07d4e187fca5c39b861eb25.png" />
+<img alt="../_images/66ea05a7466e1d6f31f16b586b2383f339e4f68001ae5dcbd55641618f74ffa7.png" src="../_images/66ea05a7466e1d6f31f16b586b2383f339e4f68001ae5dcbd55641618f74ffa7.png" />
 </div>
 </div>
 <p>We see that the final size distribution is much more spread out, owing to increased variation in the parameters.
@@ -954,7 +968,7 @@ Again, eliminating the failed epidemics we plot the model output</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/0a867855408cdb33367ecf7cb6a88082794a89c21511860cb780bd16bec4ed58.png" src="../_images/0a867855408cdb33367ecf7cb6a88082794a89c21511860cb780bd16bec4ed58.png" />
+<img alt="../_images/309943f637a127892088ab370f40822458f2983dc980db7d0ec60dd4fb6c0447.png" src="../_images/309943f637a127892088ab370f40822458f2983dc980db7d0ec60dd4fb6c0447.png" />
 </div>
 </div>
 </section>
@@ -1003,7 +1017,7 @@ We plot these results side by side for the infected compartment to provide an il
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/d0b49870d1a6a81ef3d1268004849bed4245bf100a3fdb1f06b2eb48e67efb48.png" src="../_images/d0b49870d1a6a81ef3d1268004849bed4245bf100a3fdb1f06b2eb48e67efb48.png" />
+<img alt="../_images/e2e9a216941e08302da1f19acc3729108edcc05d5eb7f8b7071820d5cb7fa1fe.png" src="../_images/e2e9a216941e08302da1f19acc3729108edcc05d5eb7f8b7071820d5cb7fa1fe.png" />
 </div>
 </div>
 <!-- ## Repeatable Simulation

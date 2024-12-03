@@ -189,9 +189,15 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../../md/building_doc.html">Building the documentation locally</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../solution.html">Mathematical description</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../model_spec.html">Defining an ODE system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../model_spec_2.html">Defining a system of differential equations</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../extract_info.html">Extracting model information</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unroll/unrollSimple.html">Deducing transitions from equations</a></li>
@@ -488,7 +494,7 @@ For the current example, this means specifying <span class="math notranslate noh
 <span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]</span>  <span class="c1"># initial guess for [beta, alpha, gamma]</span>
 
 <span class="n">paramEval</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">n_pop</span><span class="p">)]</span>
-<span class="n">ode_SEIR</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SEIR_N</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="n">paramEval</span><span class="p">)</span>
+<span class="n">ode_SEIR</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SEIR</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="n">paramEval</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -534,7 +540,7 @@ First, let’s compare the outputs of the two methods when evaluated at the init
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-3473286.37537513  -648419.19492932  3962185.9873881 ]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-3439949.96665263  -651037.89808302  3920356.14337017]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-3439949.96665267  -651037.89808304  3920356.14337022]
 </pre></div>
 </div>
 </div>
@@ -547,7 +553,7 @@ First, let’s compare the outputs of the two methods when evaluated at the init
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>30.3 ms ± 226 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>32.3 ms ± 229 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 </pre></div>
 </div>
 </div>
@@ -559,7 +565,7 @@ First, let’s compare the outputs of the two methods when evaluated at the init
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>268 ms ± 1.18 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>254 ms ± 1.05 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
 </pre></div>
 </div>
 </div>
@@ -630,7 +636,7 @@ We can also use methods that accepts the exact Hessian such as <em>trust-ncg</em
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pars</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="n">x</span>
 
-<span class="n">ode_est</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SEIR_N</span><span class="p">([(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="n">pars</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="n">pars</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="n">pars</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">n_pop</span><span class="p">)])</span>
+<span class="n">ode_est</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SEIR</span><span class="p">([(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="n">pars</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="n">pars</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="n">pars</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">n_pop</span><span class="p">)])</span>
 <span class="n">ode_est</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">solution</span> <span class="o">=</span> <span class="n">ode_est</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::])</span>
 
@@ -652,7 +658,7 @@ We can also use methods that accepts the exact Hessian such as <em>trust-ncg</em
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/9d10cb95bafc8c3e2fd3d6831f65890d521a6d41c985dd4b9806f453fec72c76.png" src="../../_images/9d10cb95bafc8c3e2fd3d6831f65890d521a6d41c985dd4b9806f453fec72c76.png" />
+<img alt="../../_images/9c7841674ea45e75e28626e5c63e7493d9bed0a26d4749a8bd27d19f693defad.png" src="../../_images/9c7841674ea45e75e28626e5c63e7493d9bed0a26d4749a8bd27d19f693defad.png" />
 </div>
 </div>
 </section>
