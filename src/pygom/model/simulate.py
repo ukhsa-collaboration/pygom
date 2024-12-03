@@ -28,15 +28,16 @@ from . import ode_utils
 
 class HasNewTransition(ode_utils.CompileCanary):
     states = ['ode',
-              'Jacobian',
-              'diffJacobian',
+              'jacobian',
+              'diff_jacobian',
               'grad',
-              'GradJacobian',
-              'transitionMatrixCompile',
-              'transitionVector',
-              'birthDeathRateCompile',
-              'computeTransitionMeanVar',
-              'transitionJacobian']
+              'grad_jacobian',
+              'transitionJacobian',
+              "pureOdeVector",
+              "vMat",
+              "eventRateVector",
+              "transitionMean",
+              "transitionVar"]
 
 class SimulateOde(DeterministicOde):
     '''
@@ -46,14 +47,16 @@ class SimulateOde(DeterministicOde):
     Parameters
     ----------
     state: list
-        A list of states (string)
+        A list of states (string) or (string, (numeric, numeric)) if specifying limits
     param: list
         A list of the parameters (string)
     derived_param: list
         A list of the derived parameters (tuple of (string,string))
     transition: list
-        A list of transition (:class:`Transition`)
-    birth_death: list
+        A list of transition (:class:`Transition`) #TODO Now this might actually only be deterministic ODE objects. Check.
+    transition: list
+        A list of events (:class:`Event`)
+    birth_death: list                              #TODO Now these are wrapped in events. Should try to make work for back compat.
         A list of birth or death process (:class:`Transition`)
     ode: list
         A list of ode (:class:`Transition`)
@@ -65,6 +68,7 @@ class SimulateOde(DeterministicOde):
                  param=None,
                  derived_param=None,
                  transition=None,
+                 event=None,
                  birth_death=None,
                  ode=None):
         '''
@@ -75,34 +79,41 @@ class SimulateOde(DeterministicOde):
                                           param,
                                           derived_param,
                                           transition,
+                                          event,
                                           birth_death,
                                           ode)
 
+        # Ledger keeping record of whether each important function is up to date with
+        # underlying model, or needs to be recompiled. Colloquially, each function has
+        # an associated canary and if True (dead) it means something needs to be done.
         self._hasNewTransition = HasNewTransition()
 
-        # need a manual override because it is possible that we
+        self.pre_tau=None       # If tau is set, then this overrides the adaptive tau leap.
+        self._epsilon=0.03      # Default parameter recommended by Cao et al.
+
+        self._stochasticParam=None
+
+        # TODO: I think the changes I've made might result in compilation for every iteration
+        #       if working in parallel. Must check this.
+
+        # Compile the code.  Note that we need the class because we
+        # compile both the formatted and unformatted version.
+        # Need a manual override of backend because it is possible that we
         # want to perform simulation in a parallel/distributed manner
         # and there are issues with pickling fortran objects
         self._SC = ode_utils.compileCode(backend='cython')
 
-        self._birthDeathRate = None
-        self._birthDeathRateCompile = None
-
-        # information required for the tau leap
-        self._transitionJacobian = None
-
-        self._transitionMean = None
-        self._transitionMeanCompile = None
-
-        self._transitionVar = None
-        self._transitionVarCompile = None
-
-        self._transitionVectorCompile = None
-        self._transitionMatrixCompile = None
-
-        # micro times for jumps
-        self._tau = None
-        self._tauDict = None
+        # Add templates of compiled sympy functions with:
+        # 1) Name of the compiled version of the sympy object
+        # 2) The function used to generate the underlying sympy object
+        #    (convention: starts with "get_", in previous versions have
+        #     started with get_ or _compute)
+        self.add_func("vMat", self.get_StateChangeMatrix)
+        self.add_func("eventRateVector", self.get_EventRateVector)
+        self.add_func("transitionMean", self.get_TransitionMean)
+        self.add_func("transitionVar", self.get_TransitionVar)
+        self.add_func("pureOdeVector", self.get_pureOdeVector)
+        self.add_func("transitionJacobian", self.get_TransitionJacobian)
 
     def __repr__(self):
         return "SimulateOde" + self._get_model_str()
@@ -121,8 +132,14 @@ class SimulateOde(DeterministicOde):
         t1: double
             final time
         '''
-        return(exact(x0, t0, t1, self._vMat, self.transition_vector,
+        return(exact(x0, t0, t1, self.vMat, self.eventRateVector,
                      output_time=output_time))
+
+    ###########################################################################
+    #
+    # Solver functions
+    #
+    ###########################################################################
 
     def cle(self, x0, t0, t1, output_time=False):
         '''
@@ -143,7 +160,7 @@ class SimulateOde(DeterministicOde):
         t1: double
             final time
         '''
-        return(cle(x0, t0, t1, self._vMat, self.transition_vector,
+        return(cle(x0, t0, t1, self.vMat, self.eventRateVector,
                    output_time=output_time))
 
     def hybrid(self, x0, t0, t1, output_time=False):
@@ -162,10 +179,10 @@ class SimulateOde(DeterministicOde):
         t1: double
             final time
         '''
-        return(hybrid(x0, t0, t1, self._vMat, self._lambdaMat,
-                      self.transition_vector,
-                      self.transition_mean,
-                      self.transition_var,
+        return(hybrid(x0, t0, t1, self.vMat,
+                      self.eventRateVector,
+                      self.transitionMean,
+                      self.transitionVar,
                       output_time=output_time))
 
     def simulate_param(self, t, iteration, parallel=False, full_output=False):
@@ -194,8 +211,9 @@ class SimulateOde(DeterministicOde):
         '''
 
         # if our parameters not stochastic, then we are going to
-        # throw a warning because simulating a deterministic system is
-        # just plain stupid
+        # throw a warning because trying to  randomly draw parameters
+        # when they are set to be constant is just plain stupid
+
         if self._stochasticParam is None:
             raise InputError("Deterministic parameters.")
         if iteration is None:
@@ -329,7 +347,7 @@ class SimulateOde(DeterministicOde):
 
     # Same as function below, just trying out new naming convention
     def solve_stochast(self, t, iteration, parallel=False,
-                      exact=False, full_output=False):
+                       exact=False, full_output=False):
         '''
         Simulate the ode using stochastic simulation.  It switches
         between a first reaction method and a :math:`\\tau`-leap
@@ -356,6 +374,8 @@ class SimulateOde(DeterministicOde):
         sim_X: list
             of length iteration each with (len(t),len(state)) if t is a vector,
             else it outputs unequal shape that was record of all the jumps
+        sim_Jump: list of :class:`numpy.ndarray`
+            Number times each transition happens per timestep
         sim_T: list or :class:`numpy.ndarray`
             if t is a single value, it outputs unequal shape that was
             record of all the jumps.  if t is a vector, it outputs t so that
@@ -363,14 +383,14 @@ class SimulateOde(DeterministicOde):
 
         '''
 
-        assert len(self._odeList) == 0, \
-            "Currently only able to simulate when only transitions are present"
+        # assert len(self._odeList) == 0, \
+        #     "Currently only able to simulate when only transitions are present"
         assert np.all(np.mod(self._x0, 1) == 0), \
             "Can only simulate a jump process with integer initial values"
 
-        # this determines what type of output we want
+        # Determine if results are output to predefined timepoints or the timepoints
+        # as determined by the numerical solver
         timePoint = False
-
         if isinstance(t, Number):#, (int, float, np.int64, np.float64)):
             finalT = t
         elif isinstance(t, (list, tuple)):
@@ -385,9 +405,6 @@ class SimulateOde(DeterministicOde):
             timePoint = True
         else:
             raise InputError("Unknown data type for time")
-
-        if self._transitionVectorCompile is None:
-            self._compileTransitionVector()
 
         if parallel:
             try:
@@ -408,144 +425,52 @@ class SimulateOde(DeterministicOde):
             logging.debug("Performing serial simulation")
             xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
 
+        # Unpack output
         xmat = list(zip(*xtmp))
-        simXList, simTList = list(xmat[0]), list(xmat[1])
-        ## print("Finish computation")
-        # now we want to fix our simulation, if they need fixing that is
-        # print timePoint
+        simXList, simJumpList, simTList, simdTList = list(xmat[0]), list(xmat[1]), list(xmat[2]), list(xmat[3])
+
+        # Process simulation output if user has specified target time steps
         if timePoint:
             for _i in range(len(simXList)):
+                # TODO: this seems like an overcomplicated way to do things
+
                 # unroll, always the first element
                 # it is easy to remember that we are accessing the first
                 # element because pop is spelt similar to poop and we
                 # all know that your execute first in first out when you
                 # poop!
-                simX = simXList.pop(0)
-                simT = simTList.pop(0)
 
-                x = self._extractObservationAtTime(simX, simT, t)
-                simTList.append(t)
-                simXList.append(x)
+                # Get time points of run _i
+                simT = simTList.pop(0)      # get timepoints and remove (temporarily)
+
+                # 1. Process states
+                simX = simXList.pop(0)      # get states and remove (will be appended after processing)
+                if exact:
+                    x = self._extractObservationAtTime(simX, simT, t)
+                else:
+                    x = self._interpolateObservationAtTime(simX, simT, t)
+                simXList.append(x)          # processed results now go at the end of the list
+
+                # 2. Process jumps
+                simJump = simJumpList.pop(0)
+                jump=self._addJumpsBetweenTime(simJump, simT, t, exact)
+                simJumpList.append(jump)    # processed results go at end of list
+
+                # If user has specified timesteps then this is not a useful step, will probably delete
+                # # 3. Process timesteps (essentially send to back of list to match new X and jump positions)
+                # dt=simdTList.pop(0)         # send dt to back too
+                # simdTList.append(dt)
+                # simTList.append(t)          # do same with timepoints
+
         # note that we have to remain in list form because the number of
         # simulation will be different if we are not dealing with
         # a specific set of time points
 
         if full_output:
             if timePoint:
-                return simXList, t
+                return simXList, simJumpList, t
             else:
-                return simXList, simTList
-        else:
-            return simXList
-
-
-    def simulate_jump(self, t, iteration, parallel=False,
-                      exact=False, full_output=False):
-        '''
-        Simulate the ode using stochastic simulation.  It switches
-        between a first reaction method and a :math:`\\tau`-leap
-        algorithm internally. When a parallel backend exists, then a new random
-        state (seed) will be used for each processor.  This is due to a lack
-        of appropriate parallel seed random number generator in python.
-
-        Parameters
-        ----------
-        t: array like
-            the range of time points which we want to see the result of
-            or the final time point
-        iteration: int
-            number of iterations you wish to simulate
-        parallel: bool, optional
-            Defaults to True
-        exact: bool, optional
-            True if exact simulation is desired, defaults to False
-        full_output: bool, optional
-            if we want additional information, sim_T
-
-        Returns
-        -------
-        sim_X: list
-            of length iteration each with (len(t),len(state)) if t is a vector,
-            else it outputs unequal shape that was record of all the jumps
-        sim_T: list or :class:`numpy.ndarray`
-            if t is a single value, it outputs unequal shape that was
-            record of all the jumps.  if t is a vector, it outputs t so that
-            it is a :class:`numpy.ndarray` instead
-
-        '''
-
-        assert len(self._odeList) == 0, \
-            "Currently only able to simulate when only transitions are present"
-        assert np.all(np.mod(self._x0, 1) == 0), \
-            "Can only simulate a jump process with integer initial values"
-
-        # this determines what type of output we want
-        timePoint = False
-
-        if isinstance(t, Number):#, (int, float, np.int64, np.float64)):
-            finalT = t
-        elif isinstance(t, (list, tuple)):
-            t = np.array(t)
-            if len(t) == 1:
-                finalT = t
-            else:
-                finalT = t[-1:]
-                timePoint = True
-        elif isinstance(t, np.ndarray):
-            finalT = t[-1:]
-            timePoint = True
-        else:
-            raise InputError("Unknown data type for time")
-
-        if self._transitionVectorCompile is None:
-            self._compileTransitionVector()
-
-        if parallel:
-            try:
-                import dask.bag
-                logging.debug("Using Dask for parallel simulation")
-                def jump_partial(final_t): return(self._jump(final_t,
-                                                             exact=exact,
-                                                             full_output=True,
-                                                             seed=True))
-
-                xtmp = dask.bag.from_sequence(np.ones(iteration)*finalT)
-                xtmp = xtmp.map(jump_partial).compute()
-            except Exception as e:
-                raise e
-                logging.warning("Parallel simulation failed reverting to serial")
-                xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
-        else:
-            logging.debug("Performing serial simulation")
-            xtmp = [self._jump(finalT, exact=exact, full_output=True) for _i in range(iteration)]
-
-        xmat = list(zip(*xtmp))
-        simXList, simTList = list(xmat[0]), list(xmat[1])
-        ## print("Finish computation")
-        # now we want to fix our simulation, if they need fixing that is
-        # print timePoint
-        if timePoint:
-            for _i in range(len(simXList)):
-                # unroll, always the first element
-                # it is easy to remember that we are accessing the first
-                # element because pop is spelt similar to poop and we
-                # all know that your execute first in first out when you
-                # poop!
-                simX = simXList.pop(0)
-                simT = simTList.pop(0)
-
-                x = self._extractObservationAtTime(simX, simT, t)
-                simTList.append(t)
-                simXList.append(x)
-        # note that we have to remain in list form because the number of
-        # simulation will be different if we are not dealing with
-        # a specific set of time points
-
-        if full_output:
-            if timePoint:
-                return simXList, t
-            else:
-                return simXList, simTList
+                return simXList, simJumpList, simTList
         else:
             return simXList
 
@@ -553,6 +478,7 @@ class SimulateOde(DeterministicOde):
         '''
         Jumps from the initial time self._t0 to the input time finalT
         '''
+
         if isinstance(self._stochasticParam, dict):
             self.parameters = self._stochasticParam
 
@@ -564,347 +490,275 @@ class SimulateOde(DeterministicOde):
         x = copy.deepcopy(self._x0)
 
         # holders and record information
-        xList = [x.copy()]
-        tList = [t]
+        xList = [x.copy()]          # states
+        tList = [t]                 # timepoints
+        dtList=[]                   # timesteps (can be inferred from timepoints, but useful for now to debug tau leap)
+        jumpList=[]                 # transitions
 
-        # we want to construct some jump times (TODO: doesn't seem like _GMat is used anywhere)
-        if self._GMat is None:
-            self._computeDependencyMatrix()
+        # We explicitly update self._lambdaMat since it doesn't have a canary
+        # TODO: (1) Should non compiled objects also have canaries?
+        #       (2) self._lambdaMat might not be useful anyway though...
+        self.get_ReactantMatrix()
 
-        # keep jumping, Whoop Whoop (put your hands up!).
-        f = firstReaction
+        # keep jumping, Whoop Whoop (put your hands up!)
         while t < finalT:
-            # print(t)
+            # Take a timetep
             try:
                 if exact:
-                    x, t, success = f(x, t, self._vMat,
-                                      self.transition_vector, seed=seed)
+                    # Use Gillespie algorithm for entire simulation
+                    t, jump_time, x, jumps, success = firstReaction(x,
+                                                                    self._state_lims,
+                                                                    t,
+                                                                    self.vMat,
+                                                                    self.eventRateVector,
+                                                                    seed=seed)
+                    if success==False:
+                        break
                 else:
-                    if np.min(x) > 10:
-                        x_tmp, t_tmp, success = tauLeap(x, t,
-                                                # self._vMat, self._lambdaMat,
-                                                self._vMat, self._lambdaMatOD,  # I think that the wrong matrix has been used, trying this one instead
-                                                self.transition_vector,
-                                                self.transition_mean,
-                                                self.transition_var,
-                                                seed=seed)
-                        if success:
-                            x, t = x_tmp, t_tmp
-                        else:
-                            x, t, success = f(x, t, self._vMat,
-                                              self.transition_vector, seed=seed)
+                    #if np.min(x) < 10:
+                    #Use tau leap when population of any state is small.
+                    # TODO: Why? If e.g. one state always has a population zero then we force ourselves
+                    #       to use Gillespie. We also have a safety procedure to stop variables going
+                    #       outside their bounds anyway, so not sure what this achieves.
+                    t_new, jump_time, x_new, jumps, success = tauLeap(x,
+                                                                      self._state_lims,
+                                                                      t,
+                                                                      self.vMat,
+                                                                      self._lambdaMat,
+                                                                      self.eventRateVector,
+                                                                      self.transitionMean,
+                                                                      self.transitionVar,
+                                                                      self.pureOdeVector,
+                                                                      epsilon=self._epsilon,
+                                                                      seed=seed,
+                                                                      pre_tau=self.pre_tau)
+                    
+                    if success:
+                        # Jump results in all states within their limits, continue.
+                        t, x = t_new, x_new
                     else:
-                        x, t, success = f(x, t, self._vMat,
-                                          self.transition_vector, seed=seed)
+                        # Retry with first reaction method.
+                        t, jump_time, x, jumps, success = firstReaction(x,
+                                                                        self._state_lims,
+                                                                        t,
+                                                                        self.vMat,
+                                                                        self.eventRateVector,
+                                                                        seed=seed)
+                        
+                        if success==False:
+                            break
+
                 if success:
-                    xList.append(x.copy())
+                    xList.append(x.copy())     # TODO: why is x a copy and the rest not?
                     tList.append(t)
+                    dtList.append(jump_time)
+                    jumpList.append(jumps)
                 else:
                     break
-                    ## print("x: %s, t: %s" % (x, t))
-                    ## raise Exception('WTF')
             except SimulationError:
                 break
 
-        return np.array(xList), np.array(tList)
+        return np.array(xList), np.array(jumpList), np.array(tList), np.array(dtList)
+
+    ###########################################################################
+    #
+    # Functions to process simulation output
+    #
+    ###########################################################################
 
     def _extractObservationAtTime(self, X, t, targetTime):
         '''
         Given simulation and a set of time points which we would like to
         observe, we extract the observations :math:`x_{t}` with
         :math:`\\min\\{ \\abs( t - targetTime) \\}`
+
+        Parameters
+        ----------
+            t (list): Timepoints of simulation
+            X (list of lists): State values at each timepoint
+            targetTime (list): Desired timepoints
+
+        Returns
+        -------
+            X_out (np.array): Value of states at targetTime 
         '''
-        y = list()
-        # maxTime = max(t)
-        index = 0
-        for i in targetTime:
-            if np.any(t == i):
-                index = np.where(t == i)[0][0]
+        X_out = []
+        
+        for t_target in targetTime:
+            if np.any(t == t_target):
+                index = np.where(t == t_target)[0][0]
             else:
-                index = np.searchsorted(t, i) - 1
-            y.append(X[index])
+                index = max(np.searchsorted(t, t_target) - 1, 0)
+            X_out.append(X[index])
 
-        return np.array(y)
+        return np.array(X_out)
+    
+    def _interpolateObservationAtTime(self, X, t, targetTime):
+        '''
+        Given simulation and a set of time points which we would like to
+        observe, we interpolate the observations onto the desired grid.
 
-    ########################################################################
+        Parameters
+        ----------
+            t (list): Timepoints of simulation
+            X (list of lists): State values at each timepoint
+            targetTime (list): Desired timepoints
+
+        Returns
+        -------
+            X_out (np.array): Value of states at targetTime 
+                    
+        '''
+
+        X=np.array(X)   # Convert to numpy array so we can interpolate between timepoints
+
+        dims=X.shape    # Get dimensions of data (timepoints x vars)
+        n_state=dims[1]
+
+        X_out=np.zeros((len(targetTime), n_state))  # empty matrix to receive scaled data = (new timepoints x vars)
+
+        # linearly interpolate to new timepoints
+        for i in range(n_state):
+            X_out[:,i]=np.interp(targetTime, t, X[:,i])
+
+        return X_out
+
+    def _addJumpsBetweenTime(self, dX, t, targetTime, exact):
+        '''
+        Given number of events occuring at certain times find total
+        number of occurrances between the desired timepoints.
+
+        Parameters
+        ----------
+            t (list): Timepoints that events occurred
+            dX (list of lists): Number of events at each timepoint
+            targetTime (list): Desired timepoints
+            exact (bool): If first reaction method used (otherwise tau assumed)
+
+        Returns
+        -------
+            X_out (np.array): Value of states at targetTime 
+                    
+        '''
+
+        dX=np.array(dX)   # convert to numpy array so we can interpolate between timepoints
+
+        dims=dX.shape         # Get dimensions of data (timepoints x n_trans)
+        n_trans=dims[1]
+
+        # empty matrix to receive scaled data = (new timepoints x n_trans)
+        # minus one because we are looking at jumps which occur betwen timepoints
+        # (e.g. 2 timepoints =1 jump, 10 timepoints =9)
+        X_out=np.zeros((len(targetTime)-1, n_trans))
+
+        # if exact, each point corresponds to a transitions and has weight 1.
+        for i in range(n_trans):
+            if exact:
+                hist, bin_edges=np.histogram(t, bins=targetTime)
+            else:
+                hist, bin_edges=np.histogram(t[1:], bins=targetTime, weights=dX[:,i])
+            X_out[:,i]=hist            
+
+        return X_out
+
+    ###########################################################################
     #
-    # Operators with regard to the transition matrix
+    # Functions to compute sympy objects and also compile them
     #
-    ########################################################################
+    ###########################################################################
 
-    def get_transition_matrix(self):
+    def get_TransitionJacobian(self):
         '''
-        Returns the transition matrix in algebraic form.
-
-        Returns
-        -------
-        :class:`sympy.matrices.matrices`
-            A matrix of dimension [number of state x number of state]
-
+        Evaluate equation (7) from https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf
+        where F_[i,j] is the change in transition rate a[i], if a transition of type j occurs:
+        F_[i,j] = sum_k diff(a[i], x_k) v_[k,j]
+        where k=state and v[k,j] is how much state x_k changes by if transition of type j occurs.
         '''
-        if self._transitionMatrix is None:
-            super(SimulateOde, self)._computeTransitionMatrix()
 
-        if self._transitionMatrixCompile is not None \
-           or not self._hasNewTransition.transitionMatrixCompile:
-            return self._transitionMatrix
-        else:
-            return super(SimulateOde, self)._computeTransitionMatrix()
+        # Ensure objects, vMat and eventRateVector, are up to date
+        # TODO: Maybe a better naming convention, where generator function and the object
+        #       it creates have some similarity.
+        self.get_StateChangeMatrix()
+        self.get_EventRateVector()
 
-    def get_transition_vector(self):
+        F = sympy.zeros(self.num_events, self.num_events)
+
+        for event_index_i, rate in enumerate(self._eventRateVector):
+            for event_index_j in range(self.num_events):
+                for state_index, state in enumerate(self._iterStateList()):             
+                    diffEqn, isDifficult = simplifyEquation( sympy.diff(rate, state, 1)  )  # diff(a_i, x_k)
+                    F[event_index_i, event_index_j] += diffEqn*self._vMat[state_index, event_index_j]
+                    self._isDifficult = self._isDifficult or isDifficult
+
+        self._transitionJacobian = F
+
+        return self._transitionJacobian    
+
+    def get_TransitionMean(self):
         '''
-        Returns the set of transitions in a single vector, transitions
-        between state to state first then the birth and death process
-
-        Returns
-        -------
-        :class:`sympy.matrices.matrices`
-            A matrix of dimension [total number of transitions x 1]
-
+        This is the mean and variance of the changes in the transition rates
+        (aka propensity funtions) after a potential timestep:
+        equations (8a) and (8b) from https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf
+        For n transitions the outputs are 2 vectors, each of length n.
+        Outputs are added to self as mu and sigma2
         '''
-        if self._transitionVectorCompile is not None \
-           or not self._hasNewTransition.transitionVector:
-            return self._transitionVector
-        else:
-            return super(SimulateOde, self)._computeTransitionVector()
 
-    def transition_matrix(self, state, t):
+        # Ensure objects are up to date
+        self.get_TransitionJacobian()
+        self.get_EventRateVector()
+
+        F = self._transitionJacobian
+
+        mu = sympy.zeros(self.num_events, 1)
+        for event_index_i in range(self.num_events):
+            for event_index_j, rate_j in enumerate(self._eventRateVector):
+                mu[event_index_i] += F[event_index_i, event_index_j] * rate_j
+
+        self._transitionMean = mu
+
+        # TODO: Propensity functions also change if there is time dependence
+        #       This will be addressed better in the next version where tau
+        #       leaping will be updated.
+        # # If time dependence, add in another term to reflect this:
+        # timelike_symbols=[symb for symb in eqn_i.free_symbols if str(symb)=='t']
+        # is_time_dependent=len(timelike_symbols)>0
+        # if is_time_dependent and self.tstep:
+        #     time_variable = [timelike_symbols][0]
+        #     mu[i] += sympy.diff(eqn_i, time_variable, 1) # mean changes but sd does not, TODO: check this
+
+        return  self._transitionMean
+
+
+    def get_TransitionVar(self):
         '''
-        Evaluate the transition matrix given state and time
-
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-        t: double
-            The current time
-
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            a 2d array of size (M,M) where M is the number
-            of transitions
-
+        This is the mean and variance of the changes in the transition rates
+        (aka propensity funtions) after a potential timestep:
+        equations (8a) and (8b) from https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf
+        For n transitions the outputs are 2 vectors, each of length n.
+        Outputs are added to self as mu and sigma2
         '''
-        return self.eval_transition_matrix(time=t, state=state)
 
-    def eval_transition_matrix(self, parameters=None, time=None, state=None):
-        '''
-        Evaluate the transition matrix given parameters, state and time. Note
-        that the output is not in sparse format
+        # Ensure objects are up to date
+        self.get_TransitionJacobian()
+        self.get_EventRateVector()
 
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.setParameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can
-            :class:`numpy.ndarray` or :class:`list`
+        F = self._transitionJacobian
 
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            Matrix of dimension [number of state x number of state]
+        sigma2 = sympy.zeros(self.num_events, 1)
+        for event_index_i in range(self.num_events):
+            for event_index_j, rate_j in enumerate(self._eventRateVector):
+                sigma2[event_index_i] += F[event_index_i, event_index_j] * F[event_index_i, event_index_j] * rate_j
 
-        '''
-        if self._transitionMatrixCompile is None \
-            or self._hasNewTransition.transitionMatrixCompile:
-            self._compileTransitionMatrix()
+        self._transitionVar = sigma2
 
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._transitionMatrixCompile(eval_param)
+        return  self._transitionVar
 
-    def _compileTransitionMatrix(self):
-        '''
-        We would also need to compile the function so that
-        it can be evaluated faster.
-        '''
-        if self._transitionMatrix is None \
-            or self._hasNewTransition.transitionMatrixCompile:
-            super(SimulateOde, self)._computeTransitionMatrix()
 
-        f = self._SC.compileExprAndFormat
-        if self._isDifficult:
-            self._transitionMatrixCompile = f(self._sp,
-                                              self._transitionMatrix,
-                                              modules='mpmath')
-        else:
-            self._transitionMatrixCompile = f(self._sp,
-                                              self._transitionMatrix)
-
-        self._hasNewTransition.reset('transitionMatrixCompile')
-
-        return None
-
-    def transition_vector(self, state, t):
-        '''
-        Evaluate the transition vector given state and time
-
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-        t: double
-            The current time
-
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            a 1d array of size K where K is the number of between
-            states transitions and the number of birth death
-            processes
-        '''
-        return self.eval_transition_vector(time=t, state=state)
-
-    def eval_transition_vector(self, parameters=None, time=None, state=None):
-        '''
-        Evaluate the transition vector given parameters, state and time. Note
-        that the output is not in sparse format
-
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.setParameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can
-            :class:`numpy.ndarray` or :class:`list`
-
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            vector of dimension [total number of transitions]
-
-        '''
-        if self._transitionVectorCompile is None \
-           or self._hasNewTransition.transitionVector:
-            self._compileTransitionVector()
-
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._transitionVectorCompile(eval_param)
-
-    def _compileTransitionVector(self):
-        '''
-        We would also need to compile the function so that
-        it can be evaluated faster.
-        '''
-        if self._transitionVector is None \
-            or self._hasNewTransition.transitionVector:
-            super(SimulateOde, self)._computeTransitionVector()
-
-        f = self._SC.compileExprAndFormat
-        if self._isDifficult:
-            self._transitionVectorCompile = f(self._sp,
-                                              self._transitionVector,
-                                              modules='mpmath')
-        else:
-            self._transitionVectorCompile = f(self._sp,
-                                              self._transitionVector)
-
-        self._hasNewTransition.reset('transitionVector')
-
-        return
-
-    def get_birth_death_rate(self):
-        '''
-        Find the algebraic equations of birth and death processes
-
-        Returns
-        -------
-        :class:`sympy.matrices.matrices`
-            birth death process in matrix form
-        '''
-        if self._birthDeathRate is None or self._hasNewTransition:
-            self._computeBirthDeathRate()
-
-        return self._birthDeathRate
-
-    def birth_death_rate(self, state, t):
-        '''
-        Evaluate the birth death rates given state and time
-
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`np.ndarray` or :class:`list`
-        t: double
-            The current time
-
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            an array of size (M,M) where M is the number
-            of birth and death actions
-
-        '''
-        return self.eval_birth_death_rate(time=t, state=state)
-
-    def eval_birth_death_rate(self, parameters=None, time=None, state=None):
-        '''
-        Evaluate the birth and death rates given parameters, state and time.
-
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.setParameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            Matrix of dimension [number of birth and death rates x 1]
-
-        '''
-        if self._birthDeathRateCompile is None \
-            or self._hasNewTransition.birthDeathRateCompile:
-            self._computeBirthDeathRate()
-
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._birthDeathRateCompile(eval_param)
-
-    def _computeBirthDeathRate(self):
-        '''
-        Note that this is different to _birthDeathVector because
-        this is of length (number of birth and death process) while
-        _birthDeathVector in baseOdeModel has the same length as
-        the number of states
-        '''
-        if self.num_birth_deaths == 0:
-            A = sympy.zeros(1, 1)
-        else:
-            A = sympy.zeros(self.num_birth_deaths, 1)
-
-            # go through all the transition objects
-            for i, bd in enumerate(self.birth_death_list):
-                A[i] += eval(self._checkEquation(bd.equation()))
-
-        # assign back
-        self._birthDeathRate = A
-        # compilation of the symbolic calculation.  Note here that we are
-        # going to recompile the total transitions because it might
-        # have changed
-        f = self._SC.compileExprAndFormat
-        if self._isDifficult:
-            self._birthDeathRateCompile = f(self._sp,
-                                            self._birthDeathRate,
-                                            modules='mpmath')
-        else:
-            self._birthDeathRateCompile = f(self._sp,
-                                            self._birthDeathRate)
-
-        self._hasNewTransition.reset('birthDeathRateCompile')
-
-        return None
+    ###########################################################################
+    #
+    # Other functions, depending on the compiled sympy objects
+    #
+    ###########################################################################
 
     def total_transition(self, state, t):
         '''
@@ -924,172 +778,16 @@ class SimulateOde(DeterministicOde):
             total rate
 
         '''
-        return sum(self.transition_vector(time=t, state=state))
+        return sum(self.eventRateVector(time=t, state=state))
 
-    def transition_mean(self, state, t):
-        '''
-        Evaluate the mean of the transitions given state and time.  For
-        m transitions and n states, we have
-
-        .. math::
-            f_{j,k} &= \\sum_{i=1}^{n} \\frac{\\partial a_{j}(x)}{\\partial x_{i}} v_{i,k} \\\\
-            \\mu_{j} &= \\sum_{k=1}^{m} f_{j,k}(x)a_{k}(x) \\\\
-            \\sigma^{2}_{j}(x) &= \\sum_{k=1}^{m} f_{j,k}^{2}(x) a_{k}(x)
-
-        where :math:`v_{i,k}` is the state change matrix.
-
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-        t: double
-            The current time
-
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            an array of size m where m is the number of transition
-
-        '''
-        return self.eval_transition_mean(time=t, state=state)
-
-    def eval_transition_mean(self, parameters=None, time=None, state=None):
-        '''
-        Evaluate the transition mean given parameters, state and time.
-
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.setParameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            Matrix of dimension [number of state x number of state]
-
-        '''
-        if self._transitionMeanCompile is None \
-            or self._hasNewTransition.computeTransitionMeanVar:
-            self._computeTransitionMeanVar()
-
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._transitionMeanCompile(eval_param)
-
-    def transition_var(self, state, t):
-        '''
-        Evaluate the variance of the transitions given state and time
-
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-        t: double
-            The current time
-
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            an array of size M where M is the number of transition
-
-        '''
-        return self.eval_transition_var(time=t, state=state)
-
-    def eval_transition_var(self, parameters=None, time=None, state=None):
-        '''
-        Evaluate the transition variance given parameters, state and time.
-
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.setParameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            Matrix of dimension [number of state x number of state]
-
-        '''
-        if self._transitionVarCompile is None \
-            or self._hasNewTransition.computeTransitionMeanVar:
-            self._computeTransitionMeanVar()
-
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._transitionVarCompile(eval_param)
-
-    def _computeTransitionJacobian(self):
-        if self._GMat is None:
-            self._computeDependencyMatrix()
-
-        F = sympy.zeros(self.num_transitions, self.num_transitions)
-        for i in range(self.num_transitions):
-            for j, eqn in enumerate(self._transitionVector):
-                for k, state in enumerate(self._iterStateList()):
-                    diffEqn = sympy.diff(eqn, state, 1)
-                    tempEqn, isDifficult = simplifyEquation(diffEqn)
-                    F[i,j] += tempEqn*self._vMat[k,i]
-                    self._isDifficult = self._isDifficult or isDifficult
-
-        self._transitionJacobian = F
-
-        self._hasNewTransition.reset('transitionJacobian')
-        return F
-
-    def _computeTransitionMeanVar(self):
-        '''
-        This is the mean and variance information that we need
-        for the :math:`\\tau`-Leap
-        '''
-
-        if self._transitionJacobian is None or self._hasNewTransition.transitionJacobian:
-            self._computeTransitionJacobian()
-
-        F = self._transitionJacobian
-        # holders
-        mu = sympy.zeros(self.num_transitions, 1)
-        sigma2 = sympy.zeros(self.num_transitions, 1)
-        # we calculate the mean and variance
-        for i in range(self.num_transitions):
-            for j, eqn in enumerate(self._transitionVector):
-                mu[i] += F[i,j] * eqn
-                sigma2[i] += F[i,j] * F[i,j] * eqn
-
-        self._transitionMean = mu
-        self._transitionVar = sigma2
-
-        # now we are going to compile them
-        f = self._SC.compileExprAndFormat
-        if self._isDifficult:
-            self._transitionMeanCompile = f(self._sp,
-                                            self._transitionMean,
-                                            modules='mpmath')
-            self._transitionVarCompile = f(self._sp,
-                                           self._transitionVar,
-                                           modules='mpmath')
-        else:
-            self._transitionMeanCompile = f(self._sp, self._transitionMean)
-            self._transitionVarCompile = f(self._sp, self._transitionVar)
-
-        self._hasNewTransition.reset('computeTransitionMeanVar')
-
-        return None
-
-    ########################################################################
+    ###########################################################################
     #
     # Unrolling of ode to transitions
     #
-    ########################################################################
+    # TODO: I doubt any of this works with the event based framework
+    #       but it didn't work perfectly anyway. Will be a challenge
+    #       now we are dealing with more general systems.
+    ###########################################################################
 
     def get_unrolled_obj(self):
         '''
@@ -1197,7 +895,7 @@ class SimulateOde(DeterministicOde):
         '''
         Plot the results of a simulation
 
-        Takes the output of a function like `simulate_jump`
+        Takes the output of a function like `solve_stochast`
 
         Parameters
         ----------

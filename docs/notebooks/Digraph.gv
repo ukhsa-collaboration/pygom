@@ -1,0 +1,8 @@
+digraph {
+rankdir=LR	S
+	I
+	R
+	size="5,5"
+	S -> I [label="&beta;SI/N"]
+	I -> R [label="&gamma;I"]
+}

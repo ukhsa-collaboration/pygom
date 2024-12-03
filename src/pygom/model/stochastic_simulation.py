@@ -78,7 +78,7 @@ def exact(x0, t0, t1, state_change_mat, transition_func,
         return x
 
 
-def hybrid(x0, t0, t1, state_change_mat, reactant_mat,
+def hybrid(x0, t0, t1, state_change_mat,
            transition_func, transition_mean_func, transition_var_func,
            output_time=False, seed=None):
     """
@@ -140,7 +140,7 @@ def hybrid(x0, t0, t1, state_change_mat, reactant_mat,
     while t < t1:
         if np.min(x) > 10:
             x_new, t_new, s = tauLeap(x, t,
-                                      state_change_mat, reactant_mat,
+                                      state_change_mat,
                                       transition_func,
                                       transition_mean_func,
                                       transition_var_func,
@@ -380,7 +380,7 @@ def directReaction(x, t, state_change_mat, transition_func, seed=None):
         # we can't jump
         raise SimulationError("Cannot perform any more reactions")
 
-def firstReaction(x, t, state_change_mat, transition_func, seed=None):
+def firstReaction(x, x_lims, t, state_change_mat, transition_func, seed=None):
     """
     The first reaction method
 
@@ -388,6 +388,9 @@ def firstReaction(x, t, state_change_mat, transition_func, seed=None):
     ----------
     x: array like
         state vector
+    x_lims: array like
+        list of length 2 lists giving [max, min] limits for each state
+        can be [None, None] if no limits.
     t: double
         time
     state_change_mat: array like
@@ -409,25 +412,38 @@ def firstReaction(x, t, state_change_mat, transition_func, seed=None):
 
     Returns
     -------
-    x: array like
-        state vector
-    t: double
-        time
+    t_new: double
+        New timepoint
+    jump_times: double
+        timestep
+    x_new: array like
+        new state
+    jumps: array like
+        list giving identity of the transition which fired in the timestep
     success:
-        if the leap was successful.  A change in both x and t if it is
-        successful, no change otherwise
+        if the leap was successful (where success is defined as all x[i] falling within x_lims[i])
+        Results in a change in both x and t if it is successful, no change otherwise.
     """
 
+    changes=state_change_mat(x, t)
     rates = transition_func(x, t)
+    # For now we assume when all transition rates are zero, further simulation is not necessary.
+    if all(rates==0):
+        return 0, 0, 0, 0, False
+
     # find our jump times
     jump_times = _newJumpTimes(rates, seed=seed)
     if np.all(jump_times == np.inf):
         return x, t, False
     # first jump
     min_index = np.argmin(jump_times)
-    new_x = _updateStateWithJump(x, min_index, state_change_mat)
-    return _checkJump(x, new_x, t, jump_times[min_index])
+    new_x = _updateStateWithJump(x, min_index, changes)
 
+    # record which state the jump was in
+    jumps=[0]*len(rates)
+    jumps[min_index]=1
+
+    return _checkJump(x, new_x, x_lims, t, jump_times[min_index], jumps)
 
 def nextReaction(x, t, state_change_mat, dependency_graph,
                  old_rates, jump_times, transition_func, seed=None):
@@ -435,10 +451,11 @@ def nextReaction(x, t, state_change_mat, dependency_graph,
     The next reaction method
     """
 
+    changes=state_change_mat(x, t)
     # smallest time :)
     index = np.argmin(jump_times)
     # moving state and time
-    new_x = _updateStateWithJump(x, index, state_change_mat)
+    new_x = _updateStateWithJump(x, index, changes)
     t = jump_times[index]
     # recalculate the new transition matrix
     if hasattr(transition_func, '__call__'):
@@ -468,11 +485,25 @@ def nextReaction(x, t, state_change_mat, dependency_graph,
         raise SimulationError("Cannot perform any more reactions")
 
 
-def tauLeap(x, t, state_change_mat, reactant_mat,
-            transition_func, transition_mean_func, transition_var_func,
-            epsilon=0.1, seed=None):
+def tauLeap(x,
+            x_lims,
+            t,
+            state_change_mat,
+            reactant_mat,
+            transition_func,
+            transition_mean_func,
+            transition_var_func,
+            pureOde,
+            epsilon=0.03,
+            seed=None,
+            pre_tau=None):
     """
-    The Poisson :math:`\\tau`-Leap
+    The Poisson :math:`\\tau`-Leap. Calculates the appropriate time step
+    and then moves the system forwards by this amount. The time step
+    calculation involves two stages: first, a calculation of the step size
+    according to the timescales of the system and second, a refinement of
+    this if necessary taking into account the risk of states having negative
+    populations.
 
     Parameters
     ----------
@@ -499,7 +530,8 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
         a function that takes the input argument (x,t) and returns the vector
         of transition variance
     epsilon: double, optional
-        tolerance of the size of the jump, defaults to 0.1
+        tolerance of the size of the jump, defaults to 0.03 as recommended by
+        Cao et al. https://doi.org/10.1063/1.2159468
     seed: optional
         represents which type of seed to use.  None will defaults to the
         current global state while False will reinitialize to the initial
@@ -511,77 +543,152 @@ def tauLeap(x, t, state_change_mat, reactant_mat,
 
     Returns
     -------
-    x: array like
-        state vector
-    t: double
-        time
+    t_new: double
+        New timepoint
+    jump_times: double
+        timestep
+    x_new: array like
+        new state
+    jumps: array like
+        transition values
     success:
-        if the leap was successful.  A change in both x and t if it is
-        successful, no change otherwise
+        if the leap was successful (where success is defined as all x[i] falling within x_lims[i])
+        Results in a change in both x and t if it is successful, no change otherwise.
     """
 
-    # go through the list of transitions
+    determ_changes = pureOde(x, t)
+    changes = state_change_mat(x, t)
     rates = transition_func(x, t)
+    # For now we assume when all transition rates are zero, further simulation is not necessary.
+    if all(rates==0):
+        return 0, 0, 0, 0, False
 
-    mu = transition_mean_func(x, t)
-    sigma2 = transition_var_func(x, t)
-    # then we go find out the condition
-    # \min_{j \in \left[1,M\right]} \{ l,r \}
-    # where l = \gamma / \abs(\mu_{j}(x)) ,
-    # and r = \gamma^{2} / \sigma_{j}^{2}(x)
-    top = epsilon*np.sum(rates)
-    try:
-        l = top/abs(mu)
-    except Warning:
-        print("Warning as an exception")
-        print(mu)
-        print(x)
-        print(t)
-        print(rates)
-    r = (top**2)/sigma2
-    tau_scale = min(min(l), min(r))
-    # note that the above calculation is actually very slow, because
-    # we can rewrite the conditions into
-    # \min \{ \min_{j \in \left[1,M\right]} l , \min_{j \in \left[1,M\right]} r \}
-    # which again can be further simplified into
-    # \gamma / \max_{j \in \left[1,\M\right]} \{ \abs(\mu_{j}(x),\sigma_{j}^{2} \}
+    # Step 1: Calculate step size due to timescales of the system
+    # TODO: add in minimum stepsize condition from Cao equations (11)-(13)
 
-    # we put in an additional safety mechanism here where we also evaluate
-    # the probability that a realization exceeds the observations and further
-    # decrease the time step.
+    # If no timestep specified, do adaptive tau leap.
+    if pre_tau==None:
+        tau_scale=_get_adaptive_tau_step(x,
+                                          t,
+                                          rates,
+                                          transition_mean_func,
+                                          transition_var_func,
+                                          epsilon=epsilon)
+    else:
+        tau_scale=pre_tau
+
+    # Step 2: we put in an additional safety mechanism here where we also evaluate
+    #         the probability that a realization exceeds the observations and further
+    #         decrease the time step.
+    # TODO: consider how Cao implemented this
+
+    loss_mat=reactant_mat.copy()
+    loss_mat[loss_mat==1]=0
+    loss_mat[loss_mat==-1]=1
+    
     tau_scale, safe = _cy_test_tau_leap_safety(x.astype(np.float64, copy=False),
-                                               reactant_mat.astype(np.int64, copy=False),
+                                               loss_mat.astype(np.int64, copy=False),
                                                rates.astype(np.float64, copy=False),
                                                float(tau_scale),
                                                float(epsilon))
     if safe is False:
         return x, t, False
 
-    # make the jumps
-    new_x = x.copy()
+    # containers for output
+    new_x = x.copy()                # updated state populations
+    jumps=[0]*len(rates)            # transitions
+
+    # take stochastic step
     for i, r in enumerate(rates):
-        # realization
-        try:
-            jumpQuantity = rpois(1, tau_scale*r, seed=seed)
-        except Exception as e:
-#             print tauScale, r
-#             print "l = %s " % l
-#             print "r = %s " % (top**2 / sigma2)
-#             print "top = %s " % top
-#             print "min (l, r) = (%s, %s)"  % (min(l), min(top**2 / sigma2))
-#             print "tauScale = %s" % tauScale
-#             print "exceed %s " % len(exceedCDFArray)
-#             print "mu = %s " % mu
-#             print "sigma2 = %s " % sigma2
-            raise e
+        n_event_occurances = rpois(1, tau_scale*r, seed=seed)
+        jumps[i]=n_event_occurances
+        new_x = _updateStateWithJump(new_x, i, changes, n_event_occurances)
 
-        # print jumpQuantity
-        # move the particles!
-        new_x = _updateStateWithJump(new_x, i, state_change_mat, jumpQuantity)
-        ## done moving
-    return _checkJump(x, new_x, t, tau_scale)
+    # deterministic changes
+    new_x = new_x + determ_changes*tau_scale
 
 
+    return  _checkJump(x, new_x, x_lims, t, tau_scale, jumps)
+
+# TODO: Check speed performance of this and see if cython version necessary
+def _get_adaptive_tau_step(x,
+                           t,
+                           rates,
+                           transition_mean_func,
+                           transition_var_func,
+                           epsilon):
+    
+    """
+    Adaptive :math:`\\tau`-Leap calculator
+
+    Calculates the time step size such that, given the current state of the
+    system, (x,t), no propensity function, a[i](x,t), (where i denotes the transition)
+    changes appreciably over the course of the time step.
+
+    Parameters
+    ----------
+    x: array like
+        state vector
+    t: double
+        time
+    rates: array like
+        values of rates of each transition, i (i.e. evaluation of the propensity
+        functions a[i](x,t))
+    transition_mean_func: callable
+        a function that takes the input argument (x,t) and returns the vector
+        of the mean expected rates of change of the a[i] with time
+    transition_var_func: callable
+        a function that takes the input argument (x,t) and returns the vector
+        of the variance of the expected rates of change of the a[i] with time
+    epsilon: double, optional
+        tolerance of the size of the jump,  (0.03 is recommended by
+        Cao et al. https://doi.org/10.1063/1.2159468)
+
+    Returns
+    -------
+    tau_scale: double
+        time step which is short enough such that system equations don't change
+        appreciably
+    """
+
+    mu = transition_mean_func(x, t)     # mu[i]*dt = mean of expected change in a[i] in dt
+    sigma2 = transition_var_func(x, t)  # sqrt(sigma2*dt) = standard deviation of expected change in a[i] in dt
+
+    # Some rates could be 0. Remove them to avoid dividing by 0 later on.
+    mu=mu[mu!=0]
+    sigma2=sigma2[sigma2!=0]
+
+    if mu.size==0 and sigma2.size==0:
+        # These values could be 0 if e.g. the epidemic is over and nothing
+        # is happening anymore. The function needs to return something, though might be
+        # better end the simulation (assuming nothing will bring the system
+        # back to life, e.g. external introductions or immune waning).
+        # For now default to step size of 1, just to complete the run.
+        return np.float64(1)
+
+    else:
+        # Equations (7)-(9) from Cao et al. https://doi.org/10.1063/1.2159468
+        # (publicly available copy https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf)
+        bound = epsilon*np.sum(rates)
+        if mu.size==0:
+            tau_scale = min((bound**2)/sigma2)
+        elif sigma2.size==0:
+            tau_scale = min(bound/abs(mu))
+        else:
+            tau_scale_mu=min(bound/abs(mu))
+            tau_scale_sig=min((bound**2)/sigma2)
+            tau_scale=min(tau_scale_mu, tau_scale_sig)
+    
+    return tau_scale
+
+    # TODO: note that the above calculation is actually very slow, because
+    # we can rewrite the conditions into
+    # \min \{ \min_{j \in \left[1,M\right]} l , \min_{j \in \left[1,M\right]} r \}
+    # which again can be further simplified into
+    # \gamma / \max_{j \in \left[1,\M\right]} \{ \abs(\mu_{j}(x),\sigma_{j}^{2} \}
+    # where l= bound/abs(mu) and r=(bound**2)/sigma2
+
+# TODO: Check speed performance of this vs cython version
 def _test_tau_leap_safety(x, reactant_mat, rates, tau_scale, epsilon):
     """
     Additional safety test on :math:`\\tau`-leap, decrease the step size if
@@ -643,12 +750,50 @@ def _updateStateWithJump(x, transition_index, state_change_mat, n=1.0):
     return x + state_change_mat[:, transition_index]*n
 
 
-def _checkJump(x, new_x, t, jump_time):
-    failed_jump = np.any(new_x < 0)
+# def _checkJump(new_x, x_lims):
+#     # Check if new values fall outside of limits
+#     failed_jump=False
+#     for i, x_lim in enumerate(x_lims):
+#         if x_lim != [None, None]:
+#             x_min=x_lim[0]
+#             x_max=x_lim[1]
+#             if x_min is None:
+#                 if new_x[i]>x_max:
+#                     failed_jump=True
+#             elif x_max is None:
+#                 if new_x[i]<x_min:
+#                     failed_jump=True
+#             else:
+#                 if new_x[i]<x_min or new_x[i]>x_max:
+#                     failed_jump=True
+
+#     return failed_jump
+
+def _checkJump(x, x_new, x_lims, t, jump_time, jumps):
+    # Check that new values fall within limits and increment time
+
+    failed_jump=False
+    for i, x_lim in enumerate(x_lims):
+        if x_lim != (None, None):
+            x_min=x_lim[0]
+            x_max=x_lim[1]
+            if x_min is None:
+                if x_new[i]>x_max:
+                    failed_jump=True
+            elif x_max is None:
+                if x_new[i]<x_min:
+                    failed_jump=True
+            else:
+                if x_new[i]<x_min or x_new[i]>x_max:
+                    failed_jump=True
 
     if failed_jump:
-        # print "Illegal jump, x: %s, new x: %s" % (x, new_x)
-        return x, t, False
+        print("Illegal jump, x: %s, new x: %s" % (x, x_new))
+        success=False
+        x_new=x
+        t_new=t
     else:
-        t += jump_time
-        return new_x, t, True
+        success=True
+        t_new = t + jump_time
+    
+    return t_new, jump_time, x_new, jumps, success

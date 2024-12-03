@@ -22,7 +22,7 @@ import pygom
 import pkg_resources
 print('PyGOM version %s' %pkg_resources.get_distribution('pygom').version)
 
-from pygom import Transition, TransitionType, SimulateOde
+from pygom import Transition, TransitionType, Event, SimulateOde
 import numpy as np
 
 # Setup logging
@@ -31,34 +31,39 @@ logging.basicConfig(format="%(asctime)s %(levelname)s: %(message)s",
 
 
 # construct model
-states = ['S', 'I', 'R']
-params = ['beta', 'gamma', 'N']
-transitions = [Transition(origin='S', destination='I', equation='beta*S*I/N',
-                          transition_type=TransitionType.T),
-               Transition(origin='I', destination='R', equation='gamma*I',
-                          transition_type=TransitionType.T)]
+state_list = [('S', (0,None)), ('I', (0, None)), ('R', (0, None))]
+param_list = ['beta', 'gamma', 'N']
+
+trans_inf=Transition(origin='S', destination='I',transition_type=TransitionType.T)
+event_inf=Event(rate='beta*S*I/N', transition_list=[trans_inf])
+
+trans_rec=Transition(origin='I', destination='R',transition_type=TransitionType.T)
+event_rec=Event(rate='gamma*I', transition_list=[trans_rec])
+
+model = SimulateOde(state=state_list,
+                    param=param_list,
+                    event=[event_inf, event_rec])
 
 # initial conditions
-N = 7781984.0
-in_inf = round(0.0000001*N)
-init_state = [N - in_inf, in_inf, 0.0]
-#
-# # time
+N = 7781984.0                               # not sure why this number was chosen initially...
+i0 = 10                                     # try to avoid stochastic extinction
+init_state = [N - i0, i0, 0.0]
+
+# time
 max_t = 9 # 50
 t = np.linspace (0 , max_t , 101)
-#
-# # deterministic parameter values
-param_evals = [('beta', 3.6), ('gamma', 0.2), ('N', N)]
 
-# construct model
-model_j = SimulateOde(states, params, transition=transitions)
-model_j.parameters = param_evals
-model_j.initial_values = (init_state, t[0])
+# deterministic parameter values
+param_evals = [('beta', 3.6), ('gamma', 0.2), ('N', N)]     # R0=18
 
+# add params and ICs to model
+model.parameters = param_evals
+model.initial_values = (init_state, t[0])
 
 # run 10 simulations
+N_ITERATION=10
 start = time.time()
-simX, simT = model_j.simulate_jump(t[1::], iteration=10, full_output=True)
+solution, simJump, simT = model.solve_stochast(t, iteration=N_ITERATION, full_output=True)
 end = time.time()
 
 logging.info('Simulation took {} seconds'.format(end - start))

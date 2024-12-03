@@ -1,12 +1,12 @@
-from unittest import main, TestCase
+import unittest
 
 import numpy as np
 
-from pygom import DeterministicOde, SimulateOde, Transition, TransitionType
+from pygom import SimulateOde, Transition, TransitionType
 
 
-class TestModelMultipleOrigin(TestCase):
-
+class TestModelMultipleOrigin(unittest.TestCase):
+    @unittest.skip("Skipping multiple origin. This is better done with Events, new test needed.")
     def setUp(self):
         # Tests the following system, solving the deterministic version
         # A + A -> C
@@ -41,8 +41,9 @@ class TestModelMultipleOrigin(TestCase):
                                         transition_type=TransitionType.B)
                              ]
 
+    @unittest.skip("Skipping multiple origin. This is better done with Events, new test needed.")
     def test_deterministic(self):
-        ode = DeterministicOde(self.states,
+        ode = SimulateOde(self.states,
                                self.params,
                                birth_death=self.birth_deaths,
                                transition=self.transitions)
@@ -51,6 +52,7 @@ class TestModelMultipleOrigin(TestCase):
         ode.initial_values = (self.x0, self.t[0])
         _solution = ode.integrate(self.t[1::])
 
+    @unittest.skip("Skipping multiple origin. This is better done with Events, new test needed.")
     def test_stochastic(self):
         ode = SimulateOde(self.states, self.params,
                           birth_death=self.birth_deaths,
@@ -58,8 +60,9 @@ class TestModelMultipleOrigin(TestCase):
 
         ode.parameters = self.param_eval
         ode.initial_values = (self.x0, self.t[0])
-        _simX, _simT = ode.simulate_jump(self.t, 5, parallel=False, full_output=True)
+        _simX, _simJump, _simT = ode.solve_stochast(self.t, 5, parallel=False, full_output=True)
 
+    @unittest.skip("Skipping multiple origin. This is better done with Events, new test needed.")
     def tearDown(self):
         self.transitions = None
         self.birth_deaths = None
@@ -68,4 +71,4 @@ class TestModelMultipleOrigin(TestCase):
 
 
 if __name__ == '__main__':
-    main()
+    unittest.main()

@@ -8,6 +8,8 @@
 
 __all__ = ['DeterministicOde']
 
+# TODO: check through these dependencies
+
 import copy
 import io
 from numbers import Number
@@ -19,17 +21,17 @@ import scipy.linalg
 
 from sympy.core.function import diff
 
+from .transition import TransitionType
+
 from .base_ode_model import BaseOdeModel
 from ._model_errors import ArrayError, InputError, \
     IntegrationError, InitializeError
-from ._model_verification import simplifyEquation
+from ._model_verification import simplifyEquation, checkEquation
 
 from . import ode_utils
-# from . import _ode_composition
+
 from . import _transition_graph
 
-class HasNewTransition(ode_utils.CompileCanary):
-    states = ['ode', 'Jacobian', 'diffJacobian', 'grad', 'GradJacobian']
 
 class DeterministicOde(BaseOdeModel):
     '''
@@ -58,82 +60,58 @@ class DeterministicOde(BaseOdeModel):
                  param=None,
                  derived_param=None,
                  transition=None,
+                 event=None,
                  birth_death=None,
                  ode=None):
         '''
         Constructor that is built on top of a BaseOdeModel
         '''
-
         super(DeterministicOde, self).__init__(state,
                                                param,
                                                derived_param,
                                                transition,
+                                               event,
                                                birth_death,
                                                ode)
 
-        self._hasNewTransition = HasNewTransition()
-        self._ode = None
-        self._odeCompile = None
-        # and we assume initially that we don't want the Jacobian
-        self._Jacobian = None
-        self._JacobianCompile = None
-        # wtf... why!
-        self._diffJacobian = None
-        self._diffJacobianCompile = None
+        # # First, set up system of odes upon instance being initialised
+        # self.get_ode_eqn()
 
-        # Information... yea, what else would you expect
-        self._Grad = None
-        self._GradCompile = None
-        # more information....
-        self._GradJacobian = None
-        self._GradJacobianCompile = None
-        # More information!! ROAR! I think this is useless though
-        # because this is the hessian of the ode which most of the
-        # time we don't really care
-        self._Hessian = None
-        self._HessianWithParam = None
+        # Tell pygom what it needs if it wants to compile
+        self.add_func("ode", self.get_ode_eqn, oT="vec", is_master_canary=True)
+        self.add_func("jacobian", self.get_jacobian_eqn)
+        self.add_func("diff_jacobian", self.get_diff_jacobian_eqn)
+        self.add_func("grad", self.get_grad_eqn, oT="mat")
+        self.add_func("grad_jacobian", self.get_grad_jacobian_eqn)
+        # TODO: update _Hessian and _HessianWithParam to this framework.
+        self._Hessian=None
+        self._HessianWithParam=None
 
         # all the symbols that we need in order to compile
         # s = state + t
         # sp = state + t + param
         # the latter is required to compile the symbolic code
         # to the numeric setting
-        self._s = self._stateList + [self._t]
-        self._sp = self._s + self._paramList
+        self.set_sp()
 
-        # Calls to the autowrap method can't take ODEVariable class objects
-        # Better to convert the objects in self._sp back to sympy objects
-        # This code will convert any ODEVariable object in either the stateDict
-        # or paramDict dictonary
-        for i, item in enumerate(self._sp):
-            try:
-                 self._sp[i] = self._stateDict[item.ID]
-            except Exception:
-                 pass
-            try:
-                 self._sp[i] = self._paramDict[item.ID]
-            except Exception:
-                 pass
+        self.verbose=False
 
         # information regarding the integration.  We want an internal
         # storage so we can invoke the plot method within the same class
+        # TODO: unsure if this is necessary
         self._t0 = None
         self._x0 = None
         self._odeOutput = None
         self._odeSolution = None
         self._odeTime = None
-
         self._intName = None
-
         self._paramValue = [0]*len(self._paramList)
+
         # the class for shape re-adjustment. We would always like to
         # operate in the matrix form if possible as it takes up less
         # memory when operating, but the output is required to be of
         # the vector form
         self._SAUtil = ode_utils.shapeAdjust(self.num_state, self.num_param)
-        # compile the code.  Note that we need the class because we
-        # compile both the formatted and unformatted version.
-        self._SC = ode_utils.compileCode()
 
     def __eq__(self, other):
         if isinstance(other, DeterministicOde):
@@ -147,7 +125,7 @@ class DeterministicOde(BaseOdeModel):
     def __repr__(self):
         return "DeterministicOde" + self._get_model_str()
     
-    ## Funcitons  to allow pickling and unpickling
+    ## Funcitons  to allow pickling and unpickling      TODO: are these being utilised?
     def __getstate__(self):
         '''
         Grab the class's dict and remove the compiled objects
@@ -170,9 +148,130 @@ class DeterministicOde(BaseOdeModel):
 
     ########################################################################
     #
-    # Information about the ode
+    # Methods to add compiled functions
     #
     ########################################################################
+
+    def add_func(self, method_name, sympy_obj_generator_func, oT=None, is_master_canary=False):
+        '''
+        Template to add a method, called with method_name, which gives the numerical output of
+        compiled_fn_name, which is the compiled version of the sympy object
+        generated by sympy_obj_generator_func.
+        This carries out the essential check to see if recompilation is necessary
+        and acts accordingly.
+        '''
+        compiled_obj_name=method_name+"Compiled"
+
+        def func(self, state, t):
+            # Check if compiled function is being created for the first time or
+            # corresponding canary is dead (True) indicating underlying ODE's have changed and
+            # we need to update both the sympy and compiled objects.
+            if not hasattr(self, compiled_obj_name) or getattr(self._hasNewTransition, method_name):
+                # Make new sympy object and compiled it
+                self.add_compiled_sympy_object(method_name, compiled_obj_name, sympy_obj_generator_func, oT, is_master_canary)
+            return getattr(self, compiled_obj_name)(time=t, state=state)
+        setattr(self, method_name, func.__get__(self))
+
+    def add_compiled_sympy_object(self, method_name, compiled_obj_name, sympy_obj_generator_func, oT, is_master_canary):
+        '''
+        Take sympy_obj_generator_func
+        '''
+        # Make the sympy object
+        sympy_obj=sympy_obj_generator_func()
+
+        # Compile the sympy object
+        if self.verbose:
+            print("... Compiling sympy object with name:", method_name, "...", end="")
+        f = self._SC.compileExprAndFormat
+        if self._isDifficult:
+            compiled_obj=f(self._sp,
+                        sympy_obj,
+                        modules='mpmath',
+                        outType=oT)
+        else:
+            compiled_obj=f(self._sp,
+                        sympy_obj,
+                        outType=oT)
+        if self.verbose:
+            print("done")
+
+        # Wrap the compiled object
+        def comp_obj(state, time):
+            return compiled_obj(self._getEvalParam(state, time, None))
+
+        # Add this as an attribute in the right place
+        setattr(self, compiled_obj_name, comp_obj)
+
+        # If all other objects depend on this one, kill all their canaries 
+        # (set to True) to indicate something needs to be done.
+        if is_master_canary:
+            self._hasNewTransition.trip()
+
+        # Replace the corresponding dead canary with a live one (True to False)
+        self._hasNewTransition.reset(method_name)
+
+    ########################################################################
+    #
+    # ODE functions (define/visualise etc...)
+    #
+    ########################################################################
+
+    def get_ode_eqn(self):
+        '''
+        Build the algebraic system of ODE's given the transitions and events.
+        '''
+        # Containers for different contributions to ODE
+        between_state_ode = sympy.zeros(self.num_state, 1)
+        birth_death_ode = sympy.zeros(self.num_state, 1)
+        pure_ode = sympy.zeros(self.num_state, 1)
+
+        # Extract all info from events
+        for event in self.event_list:
+            rate=checkEquation(event.rate, *self._getListOfVariablesDict())
+            for transition in event.transition_list:
+                magnitude=checkEquation(transition._magnitude, *self._getListOfVariablesDict())
+                rate_of_change=magnitude*rate
+                if transition.transition_type==TransitionType.B:
+                    destination_index=self.state_list.index(transition.destination)
+                    birth_death_ode[destination_index] += rate_of_change
+                elif transition.transition_type==TransitionType.D:
+                    origin_index=self.state_list.index(transition.origin)
+                    birth_death_ode[origin_index] -= rate_of_change
+                elif transition.transition_type==TransitionType.T:
+                    origin_index=self.state_list.index(transition.origin)
+                    destination_index=self.state_list.index(transition.destination)
+                    between_state_ode[origin_index] -= rate_of_change
+                    between_state_ode[destination_index] += rate_of_change
+
+        # Now extract any ODE contributions from ODE type transitions
+        for ode in self.ode_list:
+            origin_index=self.state_list.index(ode.origin)
+            pure_ode[origin_index] += checkEquation(ode.equation, *self._getListOfVariablesDict())
+
+        # Collect together contributions and make attributes
+        self._ode = between_state_ode + birth_death_ode + pure_ode
+        self._birthDeathVector = birth_death_ode
+
+        # # Set list of states and params
+        # # TODO: should this be handled externally? i.e. how does it know here if params change?
+        # # TODO: why iter lists here?
+        # self._s = [s for s in self._iterStateList()] + [self._t]
+        # self._sp = self._s + [p for p in self._iterParamList()]
+
+        # tests to see whether we have an autonomous system.  Need to
+        # convert a non-autonmous system into an autonomous.  Note that
+        # we will not do the conversion internally and require the
+        # user to do this.  May consider this a feature in the future.
+        # TODO: I think autonomous systems are allowed? Maybe not deterministically?
+        for i, eqn in enumerate(self._ode):
+            if self._t in eqn.atoms():      # TODO: maybe this check doesn't work anyway, for namespace reasons?
+                raise Exception("Input is a non-autonomous system. " +
+                                "We can only deal with an autonomous " +
+                                "system at this moment in time")
+            self._ode[i], isDifficult = simplifyEquation(eqn)
+            self._isDifficult = self._isDifficult or isDifficult
+            
+        return self._ode
 
     # TODO: check and see whether it is linear correctly!
     def linear_ode(self):
@@ -189,12 +288,11 @@ class DeterministicOde(BaseOdeModel):
         # scheme is a waste of time
         is_linear = True
         # if we do not current possess the jacobian, we find it! ROAR!
-        if self._Jacobian is None:
-            self.get_jacobian_eqn()
+        J=self.get_jacobian_eqn()
 
         # a really stupid way to determining whether it is linear.
         # have not figured out a better way yet...
-        a = self._Jacobian.atoms()
+        a = J.atoms()
         for s in self._stateDict.values():
             if s in a:
                 is_linear = False
@@ -214,34 +312,11 @@ class DeterministicOde(BaseOdeModel):
     # jacobian is actually singular, i.e. if it can be a DAE
     # def canDAE(self,x0,t0):
 
-    ########################################################################
-    #
-    # Information about the ode
-    #
-    ########################################################################
-
-    def get_ode_eqn(self, param_sub=False):
+    def ode_T(self, t, state):
         '''
-        Find the algebraic equations of the ode system.
-
-        Returns
-        -------
-        :class:`sympy.matrices.matrices`
-            ode in matrix form
-
+        Same as :meth:`ode` but with t as the first parameter
         '''
-
-        if self._ode is None:
-            self._findOde()
-        elif self._hasNewTransition.ode:
-            self._findOde()
-        else:
-            pass
-
-        if param_sub:
-            return self._ode.subs(self._parameters)
-        else:
-            return self._ode
+        return self.ode(state, t)
 
     def print_ode(self, latex_output=False):
         '''
@@ -266,68 +341,6 @@ class DeterministicOde(BaseOdeModel):
                               inv_trig_style='full'))
         else:
             sympy.pretty_print(B)
-
-    def _findOde(self):
-        # lets see how we have defined our ode
-        # if it is explicit, then we go straight to the easy case
-        if self._explicitOde:
-            # we have explicit ode and we should obtain them directly
-            super(DeterministicOde, self)._computeOdeVector()
-        else:
-            # super(DeterministicOde, self)._computeTransitionMatrix()
-            # super(DeterministicOde, self)._computeTransitionVector()
-            # convert the transition matrix into the set of ode
-            self._ode = sympy.zeros(self.num_state, 1)
-            pureTransitionList = self._getAllTransition(pureTransitions=True)
-            fromList, \
-                to, \
-                eqn = self._unrollTransitionList(pureTransitionList)
-            for i, eqn in enumerate(eqn):
-                for k in fromList[i]:
-                    self._ode[k] -= eqn
-                for k in to[i]:
-                    self._ode[k] += eqn
-
-        # now we just need to add in the birth death processes
-        super(DeterministicOde, self)._computeBirthDeathVector()
-        self._ode += self._birthDeathVector
-
-        self._s = [s for s in self._iterStateList()] + [self._t]
-        self._sp = self._s + [p for p in self._iterParamList()]
-
-        # tests to see whether we have an autonomous system.  Need to
-        # convert a non-autonmous system into an autonomous.  Note that
-        # we will not do the conversion internally and require the
-        # user to do this.  May consider this a feature in the future.
-        for i, eqn in enumerate(self._ode):
-            if self._t in eqn.atoms():
-                raise Exception("Input is a non-autonomous system. " +
-                                "We can only deal with an autonomous " +
-                                "system at this moment in time")
-
-            self. _ode[i], isDifficult = simplifyEquation(eqn)
-            self._isDifficult = self._isDifficult or isDifficult
-
-        if self._isDifficult:
-            self._odeCompile = self._SC.compileExprAndFormat(self._sp,
-                                                             self._ode,
-                                                             modules='mpmath',
-                                                             outType="vec")
-        else:
-            self._odeCompile = self._SC.compileExprAndFormat(self._sp,
-                                                             self._ode,
-                                                             outType="vec")
-        # assign None to all others because we have reset the set of equations.
-        self._hasNewTransition.trip()
-        self._Grad = None
-        self._Hessian = None
-        self._Jacobian = None
-        self._diffJacobian = None
-
-        # happy!
-        self._hasNewTransition.reset('ode')
-
-        return self._ode
 
     def get_transition_graph(self, file_name=None, show=True):
         '''
@@ -356,76 +369,10 @@ class DeterministicOde(BaseOdeModel):
         else:
             return dot
 
-    #
-    # this is the main ode solver
-    #
-    def ode(self, state, t):
-        '''
-        Evaluate the ode given state and time
-
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-        t: double
-            The current time
-
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            output of the same length as the ode
-
-        '''
-        return self.eval_ode(time=t, state=state)
-
-    def ode_T(self, t, state):
-        '''
-        Same as :meth:`ode` but with t as the first parameter
-        '''
-        return self.ode(state, t)
-
-    def eval_ode(self, parameters=None, time=None, state=None):
-        """
-        Evaluate the ode given time, state and parameters.  An extension
-        of :meth:`ode` but now also include the parameters.
-
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.parameters`
-        time: numeric
-            The current time
-        state: array like
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            output of the same length as the ode.
-
-        Notes
-        -----
-        There are differences between the output of this function and
-        :meth:`.ode`.  Name and order of state and time are also
-        different.
-
-        See Also
-        --------
-        :meth:`.ode`
-
-        """
-        if self._ode is None or self._hasNewTransition.ode:
-            self.get_ode_eqn()
-
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._odeCompile(eval_param)
-
 
     ########################################################################
     #
-    # jacobian related operations
+    # Jacobian related operations
     #
     ########################################################################
 
@@ -479,38 +426,6 @@ class DeterministicOde(BaseOdeModel):
 
         return scipy.linalg.eig(J)[0]
 
-    def jacobian(self, state, t):
-        '''
-        Evaluate the jacobian given state and time
-
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-        t: double
-            The current time
-
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            Matrix of dimension [number of state x number of state]
-
-        '''
-        return self.eval_jacobian(time=t, state=state)
-
-    def jacobian_T(self, t, state):
-        '''
-        Same as :meth:`jacobian` but with t as first parameter
-        '''
-        return self.jacobian(state, t)
-
-    def _Jacobian_NoCheck(self, state, t):
-        return self._evalJacobian_NoCheck(time=t, state=state)
-
-    def _JacobianT_NoCheck(self, t, state):
-        return self._Jacobian_NoCheck(state, t)
-
     def get_jacobian_eqn(self):
         '''
         Returns the jacobian in algebraic form
@@ -521,72 +436,20 @@ class DeterministicOde(BaseOdeModel):
             A matrix of dimension [number of state x number of state]
 
         '''
-        if self._Jacobian is None:
-            self.get_ode_eqn()
-            states = [s for s in self._iterStateList()]
-            self._Jacobian = self._ode.jacobian(states)
-            for i in range(self.num_state):
-                for j in range(self.num_state):
-                    eqn = self._Jacobian[i,j]
-                    if  eqn != 0:
-                        self._Jacobian[i,j], isDifficult = simplifyEquation(eqn)
-                        self._isDifficult = self._isDifficult or isDifficult
+        
+        self.get_ode_eqn()
+        states = [s for s in self._iterStateList()]
+        self._Jacobian = self._ode.jacobian(states)
 
-        f = self._SC.compileExprAndFormat
-        if self._isDifficult:
-            self._JacobianCompile = f(self._sp,
-                                      self._Jacobian,
-                                      modules='mpmath')
-        else:
-            self._JacobianCompile = f(self._sp,
-                                      self._Jacobian)
-
-        self._hasNewTransition.reset('Jacobian')
+        # Process output: (1) check if "difficult" and (2) simplify
+        for i in range(self.num_state):
+            for j in range(self.num_state):
+                eqn = self._Jacobian[i,j]
+                if  eqn != 0:
+                    self._Jacobian[i,j], isDifficult = simplifyEquation(eqn)
+                    self._isDifficult = self._isDifficult or isDifficult
 
         return self._Jacobian
-
-    def eval_jacobian(self, parameters=None, time=None, state=None):
-        '''
-        Evaluate the jacobian given parameters, state and time. An extension
-        of :meth:`.jacobian` but now also include the parameters.
-
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.parameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            Matrix of dimension [number of state x number of state]
-
-        Notes
-        -----
-        Name and order of state and time are also different.
-
-        See Also
-        --------
-        :meth:`.jacobian`
-
-        '''
-        if self._Jacobian is None or self._hasNewTransition.Jacobian:
-            #self.get_ode_eqn()
-            self.get_jacobian_eqn()
-
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._JacobianCompile(eval_param)
-
-    def _evalJacobian_NoCheck(self, time, state):
-        '''
-        Same as :meth:`eval_jacobian` but without the checks
-        '''
-        eval_param = list(state) + [time] + self._paramValue
-        return self._JacobianCompile(eval_param)
 
     ######  the sum of jacobian, i.e a_{i} = \sum_{j=1}^{d} J_{i,j}
 
@@ -616,12 +479,6 @@ class DeterministicOde(BaseOdeModel):
         sens = state_param[self.num_state::]
 
         return self.eval_sens_jacobian_state(time=t, state=state, sens=sens)
-
-    def sens_jacobian_state_T(self, t, state):
-        '''
-        Same as :meth:`sens_jacobian_state_T` but with t as first parameter
-        '''
-        return self.sens_jacobian_state(state, t)
 
     def eval_sens_jacobian_state(self, time=None, state=None, sens=None):
         '''
@@ -666,32 +523,6 @@ class DeterministicOde(BaseOdeModel):
 
     ############################## derivative of jacobian
 
-    def diff_jacobian(self, state, t):
-        '''
-        Evaluate the differential of jacobian given state and time
-
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-        t: double
-            The current time
-
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            Matrix of dimension [number of state x number of state]
-
-        '''
-        return self.eval_diff_jacobian(time=t, state=state)
-
-    def diff_jacobian_T(self, t, state):
-        '''
-        Same as :meth:`diff_jacobian` but with t as first parameter
-        '''
-        return self.diff_jacobian(state, t)
-
     def get_diff_jacobian_eqn(self):
         '''
         Returns the jacobian differentiate w.r.t. states in algebraic form
@@ -704,78 +535,57 @@ class DeterministicOde(BaseOdeModel):
             [number of state x number of state]
 
         '''
-        if self._diffJacobian is None:
-            self.get_ode_eqn()
-            diffJac = list()
 
-            for eqn in self._ode:
-                J = sympy.zeros(self.num_state, self.num_state)
-                for i, si in enumerate(self._iterStateList()):
-                    diffEqn, D1 = simplifyEquation(diff(eqn, si, 1))
-                    for j, sj in enumerate(self._iterStateList()):
-                        J[i,j], D2 = simplifyEquation(diff(diffEqn, sj, 1))
-                        self._isDifficult = self._isDifficult or D1 or D2
-                #binding.
-                diffJac.append(J)
+        self.get_ode_eqn()
+        diffJac = list()
 
-            # extract first matrix as base.  we have to get the first element
-            # as base if we want to use the class method of the object
-            diffJacMatrix = diffJac[0]
-            for i in range(1, len(diffJac)):
-                # sympy internal matrix joining
-                diffJacMatrix = diffJacMatrix.col_join(diffJac[i])
+        for eqn in self._ode:
+            J = sympy.zeros(self.num_state, self.num_state)
+            for i, si in enumerate(self._iterStateList()):
+                diffEqn, D1 = simplifyEquation(diff(eqn, si, 1))
+                for j, sj in enumerate(self._iterStateList()):
+                    J[i,j], D2 = simplifyEquation(diff(diffEqn, sj, 1))
+                    self._isDifficult = self._isDifficult or D1 or D2
+            #binding.
+            diffJac.append(J)
 
-            self._diffJacobian = copy.deepcopy(diffJacMatrix)
+        # extract first matrix as base.  we have to get the first element
+        # as base if we want to use the class method of the object
+        diffJacMatrix = diffJac[0]
+        for i in range(1, len(diffJac)):
+            # sympy internal matrix joining
+            diffJacMatrix = diffJacMatrix.col_join(diffJac[i])
 
-        f = self._SC.compileExprAndFormat
-        if self._isDifficult:
-            self._diffJacobianCompile = f(self._sp,
-                                          self._diffJacobian,
-                                          modules='mpmath')
-        else:
-            self._diffJacobianCompile = f(self._sp,
-                                          self._diffJacobian)
-
-        self._hasNewTransition.reset('diffJacobian')
+        self._diffJacobian = copy.deepcopy(diffJacMatrix)
 
         return self._diffJacobian
+    
+    # Some additional maybe not necessary functions....
 
-    def eval_diff_jacobian(self, parameters=None, time=None, state=None):
+    def jacobian_T(self, t, state):
         '''
-        Evaluate the differential of the jacobian given parameters,
-        state and time. An extension of :meth:`.diff_jacobian` but now
-        also include the parameters.
-
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.parameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            Matrix of dimension [number of state x number of state]
-
-        Notes
-        -----
-        Name and order of state and time are also different.
-
-        See Also
-        --------
-        :meth:`.jacobian`
-
+        Same as :meth:`jacobian` but with t as first parameter
         '''
-        if self._diffJacobian is None or self._hasNewTransition.diffJacobian:
-            #self.get_ode_eqn()
-            self.get_diff_jacobian_eqn()
+        return self.jacobian(state, t)
 
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._diffJacobianCompile(eval_param)
+    def _Jacobian_NoCheck(self, state, t):
+        return self._evalJacobian_NoCheck(time=t, state=state)
+
+    def _JacobianT_NoCheck(self, t, state):
+        return self._Jacobian_NoCheck(state, t)
+
+    def sens_jacobian_state_T(self, t, state):
+        '''
+        Same as :meth:`sens_jacobian_state_T` but with t as first parameter
+        '''
+        return self.sens_jacobian_state(state, t)
+
+    def diff_jacobian_T(self, t, state):
+        '''
+        Same as :meth:`diff_jacobian` but with t as first parameter
+        '''
+        return self.diff_jacobian(state, t)
+
 
     ########################################################################
     #
@@ -793,94 +603,25 @@ class DeterministicOde(BaseOdeModel):
             A matrix of dimension [number of state x number of parameters]
 
         '''
-        # finds
 
-        if self._Grad is None:
-            ode = self.get_ode_eqn()
-            self._Grad = sympy.zeros(self.num_state, self.num_param)
+        ode = self.get_ode_eqn()
+        self._Grad = sympy.zeros(self.num_state, self.num_param)
 
-            for i in range(self.num_state):
-                # need to adjust such that the first index is not
-                # included because it correspond to time
-                for j, p in enumerate(self._iterParamList()):
-                    eqn, isDifficult = simplifyEquation(diff(ode[i], p, 1))
-                    self._Grad[i,j] = eqn
-                    self._isDifficult = self._isDifficult or isDifficult
-
-        if self._isDifficult:
-            self._GradCompile = self._SC.compileExprAndFormat(self._sp,
-                                                              self._Grad,
-                                                              modules='mpmath',
-                                                              outType="mat")
-        else:
-            self._GradCompile = self._SC.compileExprAndFormat(self._sp,
-                                                              self._Grad,
-                                                              outType="mat")
-        self._hasNewTransition.reset('grad')
+        for i in range(self.num_state):
+            # need to adjust such that the first index is not
+            # included because it correspond to time
+            for j, p in enumerate(self._iterParamList()):
+                eqn, isDifficult = simplifyEquation(diff(ode[i], p, 1))
+                self._Grad[i,j] = eqn
+                self._isDifficult = self._isDifficult or isDifficult
 
         return self._Grad
-
-    def grad(self, state, time):
-        """
-        Evaluate the gradient given state and time
-
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-        t: numeric
-            The current time
-
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            Matrix of dimension [number of state x number of parameters]
-
-        """
-        return self.eval_grad(state=state, time=time)
 
     def grad_T(self, t, state):
         '''
         Same as :meth:`grad_T` but with t as first parameter
         '''
         return self.grad(state, t)
-
-    def eval_grad(self, parameters=None, time=None, state=None):
-        '''
-        Evaluate the gradient given parameters, state and time. An extension
-        of :meth:`grad` but now also include the parameters.
-
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.parameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            Matrix of dimension [number of state x number of state]
-
-        Notes
-        -----
-        Name and order of state and time are also different.
-
-        See Also
-        --------
-        :meth:`.grad`
-
-        '''
-        if self._Grad is None or self._hasNewTransition.grad:
-            #self.get_ode_eqn()
-            self.get_grad_eqn()
-
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._GradCompile(eval_param)
 
     #
     # jacobian of the Gradiant
@@ -901,98 +642,25 @@ class DeterministicOde(BaseOdeModel):
         :meth:`.get_grad_eqn`
 
         '''
-        if self._GradJacobian is None:
-            self._GradJacobian = sympy.zeros(self.num_state*self.num_param,
-                                             self.num_state)
-            G = self.get_grad_eqn()
-            for k in range(0, self.num_param):
-                for i in range(0, self.num_state):
-                    for j, s in enumerate(self._iterStateList()):
-                        z = k*self.num_state + i
-                        eqn, isDifficult = simplifyEquation(diff(G[i,k], s, 1))
-                        self._GradJacobian[z,j] = eqn
-                        self._isDifficult = self._isDifficult or isDifficult
-            # end of the triple loop.  All elements are now filled
-
-        f = self._SC.compileExprAndFormat
-        if self._isDifficult:
-            self._GradJacobianCompile = f(self._sp,
-                                          self._GradJacobian,
-                                          modules='mpmath')
-        else:
-            self._GradJacobianCompile = f(self._sp,
-                                         self._GradJacobian)
-
-        self._hasNewTransition.reset('GradJacobian')
+        self._GradJacobian = sympy.zeros(self.num_state*self.num_param,
+                                            self.num_state)
+        G = self.get_grad_eqn()
+        for k in range(0, self.num_param):
+            for i in range(0, self.num_state):
+                for j, s in enumerate(self._iterStateList()):
+                    z = k*self.num_state + i
+                    eqn, isDifficult = simplifyEquation(diff(G[i,k], s, 1))
+                    self._GradJacobian[z,j] = eqn
+                    self._isDifficult = self._isDifficult or isDifficult
+        # end of the triple loop.  All elements are now filled
 
         return self._GradJacobian
-
-    def grad_jacobian(self, state, time):
-        """
-        Evaluate the Jacobian of the gradient given state and time
-
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-        t: numeric
-            The current time
-
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            Matrix of dimension [number of state x number of parameters]
-
-        See also
-        --------
-        :meth:`.grad`
-
-        """
-        return self.eval_grad_jacobian(state=state, time=time)
 
     def grad_jacobianT(self, t, state):
         '''
         Same as :meth:`grad_jacobian` but with t as first parameter
         '''
         return self.grad_jacobian(state, t)
-
-    def eval_grad_jacobian(self, parameters=None, time=None, state=None):
-        '''
-        Evaluate the jacobian of the gradient given parameters,
-        state and time. An extension of :meth:`.grad_jacobian`
-        but now also include the parameters.
-
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.parameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            Matrix of dimension [number of state x number of state]
-
-        Notes
-        -----
-        Name and order of state and time are also different.
-
-        See Also
-        --------
-        :meth:`.grad_jacobian`, :meth:`.get_grad_jacobian_eqn`
-
-        '''
-        if self._GradJacobian is None or self._hasNewTransition.GradJacobian:
-            #self.get_ode_eqn()
-            self.get_grad_jacobian_eqn()
-
-        eval_param = self._getEvalParam(state, time, parameters)
-        return self._GradJacobianCompile(eval_param)
 
     ########################################################################
     #
@@ -1120,6 +788,286 @@ class DeterministicOde(BaseOdeModel):
             H = H.subs(self._parameters)
 
         return None
+
+    ########################################################################
+    #
+    # Initial conditions, integrations and result plots
+    #
+    ########################################################################
+
+    @property
+    def initial_state(self):
+        '''
+        Return the initial state values
+        '''
+        return self._x0
+
+    @initial_state.setter
+    def initial_state(self, x0):
+        '''
+        Set the initial state values
+
+        Parameters
+        ----------
+        x0: array like
+             initial condition of x at time 0
+
+        '''
+        err_str = "More than one state in the defined system"
+
+        if isinstance(x0, np.ndarray):
+            self._x0 = x0
+        elif isinstance(x0, (list, tuple)):
+            self._x0 = np.array(x0)
+        elif isinstance(x0, (int, float)):
+            if self.num_state == 1:
+                self._x0 = np.array([x0])
+            else:
+                raise InitializeError(err_str)
+        else:
+            raise InitializeError("err_str")
+
+        if len(self._x0) != self.num_state:
+            raise Exception("Number of state is " +
+                            str(self.num_state)+ " but " +
+                            str(len(self._x0))+ " detected")
+
+    @property
+    def initial_time(self):
+        '''
+        Return the initial time
+        '''
+        return self._t0
+
+    @initial_time.setter
+    def initial_time(self, t0):
+        '''
+        Set the initial time
+
+        Parameters
+        ----------
+        t0: numeric
+            initial time where x0 is observed
+
+        '''
+
+        err_str = "Initial time should be a "
+        if isinstance(t0, Number):
+            self._t0 = t0
+        elif ode_utils.is_list_like(t0):
+            if len(t0) == 1:
+                if isinstance(t0[0], Number):
+                    self._t0 = t0[0]
+                else:
+                    raise InitializeError(err_str + "numeric value")
+            else:
+                raise InitializeError(err_str + "single value")
+        elif isinstance(t0, (list, tuple)):
+            if len(t0) == 1:
+                self._t0 = np.array(t0[0])
+            else:
+                raise InitializeError(err_str + "single value")
+        else:
+            raise InitializeError(err_str + "numeric value")
+
+    @property
+    def initial_values(self):
+        '''
+        Returns the initial values, both time and state as a tuple (x0, t0)
+        '''
+        return (self.initial_state, self.initial_time)
+
+    @initial_values.setter
+    def initial_values(self, x0t0):
+        '''
+        Set the initial values, both time and state
+
+        Parameters
+        ----------
+        x0t0: array like
+            initial condition of x at time t and the initial time t where x
+            is observed
+        '''
+        assert len(x0t0) == 2, "Initial values require (x0, t0)"
+        self.initial_state = x0t0[0]
+        self.initial_time = x0t0[1]
+
+    def integrate(self, t, full_output=False):
+        '''
+        Integrate over a range of t when t is an array and a output at time t
+
+        Parameters
+        ----------
+        t: array like
+            the range of time points which we want to see the result of
+        full_output: bool
+            if we want additional information
+        '''
+        # type checking
+        self._setIntegrateTime(t)
+        # if our parameters are stochastic, then we are going to generate
+        # another set of parameters to run
+        if self._stochasticParam is not None:
+            # this should always be true.  If not, then we have screwed up
+            # somewhere within this class.
+            if isinstance(self._stochasticParam, dict):
+                self.parameters = self._stochasticParam
+
+        return self._integrate(self._odeTime, full_output)
+
+    def integrate2(self, t, full_output=False, method=None):
+        '''
+        Integrate over a range of t when t is an array and a output
+        at time t.  Select a suitable method to integrate when
+        method is None.
+
+        Parameters
+        ----------
+        t: array like
+            the range of time points which we want to see the result of
+        full_output: bool
+            if we want additional information
+        method: str, optional
+            the integration method.  All those available in
+            :class:`ode <scipy.integrate.ode>` are allowed with 'vode'
+            and 'ivode' representing the non-stiff and stiff version
+            respectively.  Defaults to None, which tries to choose the
+            integration method via eigenvalue analysis (only one) using
+            the initial conditions
+        '''
+
+        self._setIntegrateTime(t)
+        # if our parameters are stochastic, then we are going to generate
+        # another set of parameters to run
+        if self._stochasticParam is not None:
+            # this should always be true
+            if isinstance(self._stochasticParam, dict):
+                self.parameters = self._stochasticParam
+
+        return self._integrate2(self._odeTime, full_output, method)
+
+    def _setIntegrateTime(self, t):
+        '''
+        Set the full set of integration time including the origin
+        '''
+
+        assert self._t0 is not None, "Initial time not set"
+
+        if ode_utils.is_list_like(t):
+            if isinstance(t[0], Number):
+                t = np.append(self._t0, t)
+            else:
+                raise ArrayError("Expecting a list of numeric value")
+        elif isinstance(t, Number):
+            t = np.append(self._t0, np.array(t))
+        else:
+            raise ArrayError("Expecting an array like input or a single " +
+                             "numeric value")
+
+        self._odeTime = t
+
+    def _integrate(self, t, full_output=True):
+        '''
+        Integrate using :class:`scipy.integrate.odeint` underneath
+        '''
+        assert self._t0 is not None, "Initial time not set"
+
+        f = ode_utils.integrate
+        self._odeSolution, self._odeOutput = f(self,
+                                               self._x0,
+                                               t,
+                                               full_output=True)
+        if full_output:
+            return self._odeSolution, self._odeOutput
+        else:
+            return self._odeSolution
+
+    def _integrate2(self, t, full_output=True, method=None):
+        '''
+        Integrate using :class:`scipy.integrate.ode` underneath
+        '''
+        assert self._x0 is not None, "Initial state not set"
+
+        f = ode_utils.integrateFuncJac
+        self._odeSolution, self._odeOutput = f(self.ode_T,
+                                               self.jacobian_T,
+                                               self._x0,
+                                               t[0], t[1::],
+                                               includeOrigin=True,
+                                               full_output=True,
+                                               method=method)
+
+        if full_output:
+            return self._odeSolution, self._odeOutput
+        else:
+            return self._odeSolution
+
+    def plot(self):
+        '''
+        Plot the results of the integration
+
+        Notes
+        -----
+        If we have 3 states or more, it will always be arrange such
+        that it has 3 columns.  Uses the operation from
+        :mod:`odeutils`
+        '''
+
+        # just need to make sure that we have
+        # already gotten the solution to the integration
+        if self._odeSolution is None:
+            try:
+                self._integrate(self._odeTime)
+                ode_utils.plot_det(self._odeSolution, self._odeTime, self._stateList)
+            except:
+                raise IntegrationError("Have not performed the integration yet")
+        else:
+            ode_utils.plot_det(self._odeSolution, self._odeTime, self._stateList)
+
+    ########################################################################
+    # Unrolling of the information from vector to sympy
+    # t
+    # state
+    ########################################################################
+
+    def _addTimeEvalParam(self, eval_param, t):
+        eval_param.append((self._t, t))
+        return eval_param
+
+    def _addStateEvalParam(self, eval_param, state):
+        super(DeterministicOde, self).state = state
+        if self._state is not None:
+            eval_param += self._state
+
+        return eval_param
+
+    def _getEvalParam(self, state, time, parameters):
+        if state is None or time is None:
+            raise InputError("Have to input both state and time")
+
+        if parameters is not None:
+            self.parameters = parameters
+        elif not hasattr(self, "_parameters") or self._parameters is None:
+        #elif self._parameters is None:
+            if self.num_param == 0:
+                pass
+            else:
+                raise InputError("Have not set the parameters yet")
+
+        if isinstance(state, list):
+            eval_param = state + [time]
+        elif hasattr(state, '__iter__'):
+            eval_param = list(state) + [time]
+        else:
+            eval_param = [state] + [time]
+
+        return eval_param + self._paramValue
+
+
+
+    # TODO: half of this class is sensitivity related functions
+    #       we are probably better off defininig these elsewhere
+    #       bu that's a task for another day.
 
     ########################################################################
     #
@@ -1946,276 +1894,3 @@ class DeterministicOde(BaseOdeModel):
         with t being the first parameters
         '''
         return self.ode_and_forwardforward_jacobian(state_param, t)
-
-    ########################################################################
-    #
-    # Initial conditions, integrations and result plots
-    #
-    ########################################################################
-
-    @property
-    def initial_state(self):
-        '''
-        Return the initial state values
-        '''
-        return self._x0
-
-    @initial_state.setter
-    def initial_state(self, x0):
-        '''
-        Set the initial state values
-
-        Parameters
-        ----------
-        x0: array like
-             initial condition of x at time 0
-
-        '''
-        err_str = "More than one state in the defined system"
-
-        if isinstance(x0, np.ndarray):
-            self._x0 = x0
-        elif isinstance(x0, (list, tuple)):
-            self._x0 = np.array(x0)
-        elif isinstance(x0, (int, float)):
-            if self.num_state == 1:
-                self._x0 = np.array([x0])
-            else:
-                raise InitializeError(err_str)
-        else:
-            raise InitializeError("err_str")
-
-        if len(self._x0) != self.num_state:
-            raise Exception("Number of state is " +
-                            str(self.num_state)+ " but " +
-                            str(len(self._x0))+ " detected")
-
-    @property
-    def initial_time(self):
-        '''
-        Return the initial time
-        '''
-        return self._t0
-
-    @initial_time.setter
-    def initial_time(self, t0):
-        '''
-        Set the initial time
-
-        Parameters
-        ----------
-        t0: numeric
-            initial time where x0 is observed
-
-        '''
-
-        err_str = "Initial time should be a "
-        if isinstance(t0, Number):
-            self._t0 = t0
-        elif ode_utils.is_list_like(t0):
-            if len(t0) == 1:
-                if isinstance(t0[0], Number):
-                    self._t0 = t0[0]
-                else:
-                    raise InitializeError(err_str + "numeric value")
-            else:
-                raise InitializeError(err_str + "single value")
-        elif isinstance(t0, (list, tuple)):
-            if len(t0) == 1:
-                self._t0 = np.array(t0[0])
-            else:
-                raise InitializeError(err_str + "single value")
-        else:
-            raise InitializeError(err_str + "numeric value")
-
-    @property
-    def initial_values(self):
-        '''
-        Returns the initial values, both time and state as a tuple (x0, t0)
-        '''
-        return (self.initial_state, self.initial_time)
-
-    @initial_values.setter
-    def initial_values(self, x0t0):
-        '''
-        Set the initial values, both time and state
-
-        Parameters
-        ----------
-        x0t0: array like
-            initial condition of x at time t and the initial time t where x
-            is observed
-        '''
-        assert len(x0t0) == 2, "Initial values require (x0, t0)"
-        self.initial_state = x0t0[0]
-        self.initial_time = x0t0[1]
-
-    def integrate(self, t, full_output=False):
-        '''
-        Integrate over a range of t when t is an array and a output at time t
-
-        Parameters
-        ----------
-        t: array like
-            the range of time points which we want to see the result of
-        full_output: bool
-            if we want additional information
-        '''
-        # type checking
-        self._setIntegrateTime(t)
-        # if our parameters are stochastic, then we are going to generate
-        # another set of parameters to run
-        if self._stochasticParam is not None:
-            # this should always be true.  If not, then we have screwed up
-            # somewhere within this class.
-            if isinstance(self._stochasticParam, dict):
-                self.parameters = self._stochasticParam
-
-        return self._integrate(self._odeTime, full_output)
-
-    def integrate2(self, t, full_output=False, method=None):
-        '''
-        Integrate over a range of t when t is an array and a output
-        at time t.  Select a suitable method to integrate when
-        method is None.
-
-        Parameters
-        ----------
-        t: array like
-            the range of time points which we want to see the result of
-        full_output: bool
-            if we want additional information
-        method: str, optional
-            the integration method.  All those available in
-            :class:`ode <scipy.integrate.ode>` are allowed with 'vode'
-            and 'ivode' representing the non-stiff and stiff version
-            respectively.  Defaults to None, which tries to choose the
-            integration method via eigenvalue analysis (only one) using
-            the initial conditions
-        '''
-
-        self._setIntegrateTime(t)
-        # if our parameters are stochastic, then we are going to generate
-        # another set of parameters to run
-        if self._stochasticParam is not None:
-            # this should always be true
-            if isinstance(self._stochasticParam, dict):
-                self.parameters = self._stochasticParam
-
-        return self._integrate2(self._odeTime, full_output, method)
-
-    def _setIntegrateTime(self, t):
-        '''
-        Set the full set of integration time including the origin
-        '''
-
-        assert self._t0 is not None, "Initial time not set"
-
-        if ode_utils.is_list_like(t):
-            if isinstance(t[0], Number):
-                t = np.append(self._t0, t)
-            else:
-                raise ArrayError("Expecting a list of numeric value")
-        elif isinstance(t, Number):
-            t = np.append(self._t0, np.array(t))
-        else:
-            raise ArrayError("Expecting an array like input or a single " +
-                             "numeric value")
-
-        self._odeTime = t
-
-    def _integrate(self, t, full_output=True):
-        '''
-        Integrate using :class:`scipy.integrate.odeint` underneath
-        '''
-        assert self._t0 is not None, "Initial time not set"
-
-        f = ode_utils.integrate
-        self._odeSolution, self._odeOutput = f(self,
-                                               self._x0,
-                                               t,
-                                               full_output=True)
-        if full_output:
-            return self._odeSolution, self._odeOutput
-        else:
-            return self._odeSolution
-
-    def _integrate2(self, t, full_output=True, method=None):
-        '''
-        Integrate using :class:`scipy.integrate.ode` underneath
-        '''
-        assert self._x0 is not None, "Initial state not set"
-
-        f = ode_utils.integrateFuncJac
-        self._odeSolution, self._odeOutput = f(self.ode_T,
-                                               self.jacobian_T,
-                                               self._x0,
-                                               t[0], t[1::],
-                                               includeOrigin=True,
-                                               full_output=True,
-                                               method=method)
-
-        if full_output:
-            return self._odeSolution, self._odeOutput
-        else:
-            return self._odeSolution
-
-    def plot(self):
-        '''
-        Plot the results of the integration
-
-        Notes
-        -----
-        If we have 3 states or more, it will always be arrange such
-        that it has 3 columns.  Uses the operation from
-        :mod:`odeutils`
-        '''
-
-        # just need to make sure that we have
-        # already gotten the solution to the integration
-        if self._odeSolution is None:
-            try:
-                self._integrate(self._odeTime)
-                ode_utils.plot_det(self._odeSolution, self._odeTime, self._stateList)
-            except:
-                raise IntegrationError("Have not performed the integration yet")
-        else:
-            ode_utils.plot_det(self._odeSolution, self._odeTime, self._stateList)
-
-    ########################################################################
-    # Unrolling of the information from vector to sympy
-    # t
-    # state
-    ########################################################################
-
-    def _addTimeEvalParam(self, eval_param, t):
-        eval_param.append((self._t, t))
-        return eval_param
-
-    def _addStateEvalParam(self, eval_param, state):
-        super(DeterministicOde, self).state = state
-        if self._state is not None:
-            eval_param += self._state
-
-        return eval_param
-
-    def _getEvalParam(self, state, time, parameters):
-        if state is None or time is None:
-            raise InputError("Have to input both state and time")
-
-        if parameters is not None:
-            self.parameters = parameters
-        elif self._parameters is None:
-            if self.num_param == 0:
-                pass
-            else:
-                raise InputError("Have not set the parameters yet")
-
-        if isinstance(state, list):
-            eval_param = state + [time]
-        elif hasattr(state, '__iter__'):
-            eval_param = list(state) + [time]
-        else:
-            eval_param = [state] + [time]
-
-        return eval_param + self._paramValue

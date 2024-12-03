@@ -8,9 +8,13 @@ parts:
     chapters:
     - file: md/installation
     - file: md/building_doc
+  - caption: Compartmental models
+    chapters:
+    - file: notebooks/definition
+    - file: notebooks/solution
   - caption: PyGOM workflow
     chapters:
-    - file: notebooks/model_spec
+    - file: notebooks/model_spec_2
     - file: notebooks/insights
       sections:
         - file: notebooks/extract_info

@@ -1,7 +1,7 @@
 from unittest import main, TestCase
 
 from pygom.model.transition import Transition
-from pygom.model.deterministic import DeterministicOde
+from pygom import SimulateOde
 
 class TestInputSymbols(TestCase):
 
@@ -11,11 +11,11 @@ class TestInputSymbols(TestCase):
         """
         state_list = [['S+'], ['S-'], ['S*'], ['S\\'], ['_S']]
         param_list = ['beta']
-        ode = DeterministicOde(['S'], param_list)
+        ode = SimulateOde(state=['S'], param=param_list)
 
         total_fail = 0
         for state in state_list:
-            self.assertRaises(AssertionError, DeterministicOde,
+            self.assertRaises(AssertionError, SimulateOde,
                               state, param_list)
         # Happy! :)
 
@@ -31,7 +31,7 @@ class TestInputSymbols(TestCase):
             Transition(origin='D', equation='(1-f) * alpha * I', transition_type='ODE') 
             ]
 
-        ode = DeterministicOde(state_list, param_list, ode=odeList)
+        ode = SimulateOde(state=state_list, param=param_list, ode=odeList)
         # this should not throw an error if the model is initialized correctly
         A = ode.get_ode_eqn()
 
