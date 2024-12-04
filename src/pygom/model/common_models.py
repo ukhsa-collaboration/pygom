@@ -695,9 +695,8 @@ def Influenza_SLIARD(param=None):
 def Legrand_Ebola_SEIHFR(param=None):
     """
     The Legrand Ebola model [Legrand2007]_ with 6 compartments that includes the
-    H = hospitalization and F = funeral state. Note that because this
-    is an non-autonomous system, there are in fact a total of 7 states
-    after conversion.  The set of equations that describes the model are
+    H = hospitalization and F = funeral state.
+    The set of equations that describes the model are
 
     .. math::
         \\frac{dS}{dt} &= -(\\beta_{I}SI + \\beta_{H}SH + \\beta_{F}SF) \\\\
@@ -711,27 +710,22 @@ def Legrand_Ebola_SEIHFR(param=None):
     --------
     >>> import numpy as np
     >>> from pygom import common_models
-    >>> x0 = [1.0, 3.0/200000.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    >>> x0 = [200000-3, 3, 0.0, 0.0, 0.0, 0.0]
     >>> t = np.linspace(0, 25, 100)
-    >>> ode = common_models.Legrand_Ebola_SEIHFR([('beta_I',0.588),('beta_H',0.794),('beta_F',7.653),('omega_I',10.0/7.0),('omega_D',9.6/7.0),('omega_H',5.0/7.0),('omega_F',2.0/7.0),('alphaInv',7.0/7.0),('delta',0.81),('theta',0.80),('kappa',300.0),('interventionTime',7.0)])
+    >>> ode = common_models.Legrand_Ebola_SEIHFR([('beta_I',0.588),('beta_H',0.794),('beta_F',7.653),('omega_I',10.0/7.0),('omega_D',9.6/7.0),('omega_H',5.0/7.0),('omega_F',2.0/7.0),('alphaInv',7.0/7.0),('delta',0.81),('theta',0.80),('kappa',300.0),('interventionTime',7.0),('N',200000)])
     >>> ode.initial_values = (x0, t[0])
     >>> solution = ode.integrate(t[1::])
     >>> ode.plot()
     """
 
-    # define our states
-    state = ['S', 'E', 'I', 'H', 'F', 'R', 'tau']
-    # and initial parameters
-    params = ['beta_I', 'beta_H', 'beta_F',
-              'omega_I', 'omega_D', 'omega_H', 'omega_F',
-              'alphaInv', 'delta', 'theta',
-              'kappa', 'interventionTime']
+    state_list = ['S', 'E', 'I', 'H', 'F', 'R']
 
-    # we now construct a list of the derived parameters
-    # which has 2 item
-    # name
-    # equation
-    derived_param = [
+    param_list = ['beta_I', 'beta_H', 'beta_F',
+                  'omega_I', 'omega_D', 'omega_H', 'omega_F',
+                  'alphaInv', 'delta', 'theta',
+                  'kappa', 'interventionTime', 'N']
+
+    derived_param_list = [
         ('gamma_I', '1/omega_I'),
         ('gamma_D', '1/omega_D'),
         ('gamma_H', '1/omega_H'),
@@ -743,24 +737,14 @@ def Legrand_Ebola_SEIHFR(param=None):
         ('delta_2', 'delta*gamma_IH / (delta*gamma_IH + (1 - delta)*gamma_DH)'),
         ('theta_A', 'theta*(gamma_I*(1 - delta_1) + gamma_D*delta_1)'),
         ('theta_1', 'theta_A/(theta_A + (1 - theta)*gamma_H)'),
-        ('beta_H_Time', 'beta_H*(1 - (1/ (1 + exp(-kappa*(tau - interventionTime)))))'),
-        ('beta_F_Time', 'beta_F*(1 - (1/ (1 + exp(-kappa*(tau - interventionTime)))))')
+        ('t_trans', '(t - interventionTime)/kappa'),
+        ('beta_H_Time', 'beta_H*(1 - (0.5*(tanh(t_trans/2)+1)) )'),
+        ('beta_F_Time', 'beta_F*(1 - (0.5*(tanh(t_trans/2)+1)) )')
         ]
 
-    # alternatively, we can do it on the operate ode model
-    ode_obj = SimulateOde(state, params)
-    # add the derived parameter
-    ode_obj.derived_param_list = derived_param
-
-    # define the set of transitions
-    # name of origin state
-    # name of target state
-    # equation
-    # type of equation, which is a transition between two state in this case
-
-    transition = [
+    transition_list = [
         Transition(origin='S', destination='E',
-                   equation='(beta_I*S*I + beta_H_Time*S*H + beta_F_Time*S*F)',
+                   equation='(beta_I*S*I + beta_H_Time*S*H + beta_F_Time*S*F)/N',
                    transition_type=TransitionType.T),
         Transition(origin='E', destination='I',
                    equation='alpha*E',
@@ -768,36 +752,34 @@ def Legrand_Ebola_SEIHFR(param=None):
         Transition(origin='I', destination='H',
                    equation='gamma_H*theta_1*I',
                    transition_type=TransitionType.T),
-        Transition(origin='I', destination='F',
-                   equation='gamma_D*(1 - theta_1) * delta_1*I',
+        Transition(origin='H', destination='F',
+                   equation='gamma_DH*delta_2*H',
+                   transition_type=TransitionType.T),
+        Transition(origin='F', destination='R',
+                   equation='gamma_F*F',
                    transition_type=TransitionType.T),
         Transition(origin='I', destination='R',
                    equation='gamma_I*(1 - theta_1)*(1 - delta_1)*I',
                    transition_type=TransitionType.T),
-        Transition(origin='H', destination='F',
-                   equation='gamma_DH*delta_2*H',
+        Transition(origin='I', destination='F',
+                   equation='gamma_D*(1 - theta_1) * delta_1*I',
                    transition_type=TransitionType.T),
         Transition(origin='H', destination='R',
                    equation='gamma_IH*(1 - delta_2)*H',
-                   transition_type=TransitionType.T),
-        Transition(origin='F', destination='R',
-                   equation='gamma_F*F',
                    transition_type=TransitionType.T)
         ]
 
-    bd_list = [Transition(origin='tau', equation='1',
-                          transition_type=TransitionType.B)]
+    model = SimulateOde(state=state_list,
+                        param=param_list,
+                        derived_param=derived_param_list,
+                        transition=transition_list)
 
-    # see how we can insert the transitions later, after initializing the ode object
-    # this is not the preferred choice though
-    ode_obj.transition_list = transition
-    ode_obj.birth_death_list = bd_list
     # set return, depending on whether we have input the parameters
     if param is None:
-        return ode_obj
+        return model
     else:
-        ode_obj.parameters = param
-        return ode_obj
+        model.parameters = param
+        return model
 
 def Lotka_Volterra(param=None):
     """
