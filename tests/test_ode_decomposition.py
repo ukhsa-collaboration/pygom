@@ -73,13 +73,12 @@ class TestOdeDecomposition(TestCase):
         ode = common_models.Legrand_Ebola_SEIHFR()
 
         ode_list = [
-            Transition(origin='S', equation='-(beta_I*S*I + beta_H_Time*S*H + beta_F_Time*S*F)'),
-            Transition(origin='E', equation= '(beta_I*S*I + beta_H_Time*S*H + beta_F_Time*S*F) - alpha*E'),
+            Transition(origin='S', equation='-(beta_I*S*I + beta_H_Time*S*H + beta_F_Time*S*F)/N'),
+            Transition(origin='E', equation= '(beta_I*S*I + beta_H_Time*S*H + beta_F_Time*S*F)/N - alpha*E'),
             Transition(origin='I', equation= '-gamma_I*(1 - theta_1)*(1 - delta_1)*I - gamma_D*(1 - theta_1)*delta_1*I - gamma_H*theta_1*I + alpha*E'),
             Transition(origin='H', equation= 'gamma_H*theta_1*I - gamma_DH*delta_2*H - gamma_IH*(1 - delta_2)*H'),
             Transition(origin='F', equation= '- gamma_F*F + gamma_DH*delta_2*H + gamma_D*(1 - theta_1)*delta_1*I'),
-            Transition(origin='R', equation= 'gamma_I*(1 - theta_1)*(1 - delta_1)*I + gamma_F*F + gamma_IH*(1 - delta_2)*H'),
-            Transition(origin='tau', equation= '1')
+            Transition(origin='R', equation= 'gamma_I*(1 - theta_1)*(1 - delta_1)*I + gamma_F*F + gamma_IH*(1 - delta_2)*H')
         ]
 
         ode1 = SimulateOde(ode.state_list, ode.param_list, ode._derivedParamEqn, ode=ode_list)
