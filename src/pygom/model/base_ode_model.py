@@ -165,10 +165,6 @@ class BaseOdeModel(object):
         """
         if not hasattr(self, "_parameters"):
             return None
-<<<<<<< HEAD
-
-=======
->>>>>>> 8392bdc583652db66b54b5e7b7ccd4868a6607c4
         return self._parameters
 
     @parameters.setter
