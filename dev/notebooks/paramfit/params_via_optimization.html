@@ -1,0 +1,813 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Parameter Estimation: Maximum likelihood &#8212; PyGOM documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/paramfit/params_via_optimization';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Solving Boundary Value Problems" href="bvpSimple.html" />
+    <link rel="prev" title="Parameter Estimation: Approximate Bayesian Computation" href="params_via_abc.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../md/intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_pygom.jpg" class="logo__image only-light" alt="PyGOM documentation - Home"/>
+    <script>document.write(`<img src="../../_static/logo_pygom.jpg" class="logo__image only-dark" alt="PyGOM documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../md/intro.html">
+                    Welcome to the documentation for PyGOM
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../md/installation.html">Installation</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../md/building_doc.html">Building the documentation locally</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../solution.html">Mathematical description</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../model_spec_2.html">Defining a system of differential equations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../extract_info.html">Extracting model information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unroll/unrollSimple.html">Deducing transitions from equations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../md/solving.html">Producing forecasts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../model_params.html">Parameterisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_solver.html">Finding ODE solutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../time_dependent_params.html">Time dependent parameters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../md/parameter_fitting.html">Parameter fitting</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="params_via_abc.html">Parameter Estimation: Approximate Bayesian Computation</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Parameter Estimation: Maximum likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bvpSimple.html">Solving Boundary Value Problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../epijson.html">Reading and using EpiJSON data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Common biological compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../md/common_models.html">Pre-defined examples - common epi models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SIS.html">SIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SIR.html">SIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SEIR.html">SEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SIS_Periodic.html">SIS, periodic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SIR_Birth_Death.html">SIR, birth and death</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SEIR_Multiple.html">SEIR, multiple</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SEIR_Birth_Death_Periodic_Waning_Intro.html">SEIR, birth, death, periodic, waning and introductions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/Legrand_Ebola_SEIHFR.html">Legrand Ebola SEIHFR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/Lotka_Volterra.html">Lotka Volterra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/FitzHugh.html">FitzHugh</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Frequently asked questions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../md/faq.html">Frequently asked questions</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Code documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../rst/autodoc-model.html">model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rst/autodoc-loss.html">loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rst/autodoc-abc.html">approximate_bayesian_computation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rst/autodoc-utilR.html">utilR</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../md/bib.html">Bibliography</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom/issues/new?title=Issue%20on%20page%20%2Fnotebooks/paramfit/params_via_optimization.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/notebooks/paramfit/params_via_optimization.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Parameter Estimation: Maximum likelihood</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-seir-model-with-i-and-r-known">Example: SEIR model (with I and R known)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-calculations">Gradient calculations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimised-result">Optimised result</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#confidence-intervals-of-estimated-parameters">Confidence intervals of estimated parameters</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="parameter-estimation-maximum-likelihood">
+<h1>Parameter Estimation: Maximum likelihood<a class="headerlink" href="#parameter-estimation-maximum-likelihood" title="Permalink to this heading">#</a></h1>
+<p>In the previous section, we outlined how to use Markov Chain Monte Carlo methods to estimate the posterior probability distribution of parameters.
+These methods have generally replaced techniques which infer the maximum likelihood estimates (MLE) of parameter values, with confidence levels provided after making assumptions about the local likelihood landscape.
+PyGOM has the capability to estimate parameters in this way and although perhaps outdated, including these methods could still be practical if trying to reproduce work from older publications, for example.</p>
+<section id="example-seir-model-with-i-and-r-known">
+<h2>Example: SEIR model (with I and R known)<a class="headerlink" href="#example-seir-model-with-i-and-r-known" title="Permalink to this heading">#</a></h2>
+<p>We now solve the same problem as in the previous section, this time via minimisation of the cost function.
+As a reminder: We have data from an SEIR system where the time series of <span class="math notranslate nohighlight">\(I\)</span> and <span class="math notranslate nohighlight">\(R\)</span> are known and we wish to estimate parameters <span class="math notranslate nohighlight">\(\beta\)</span>, <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> with true values 0.35, 0.5 and 0.25 respectively.
+We assume that the total population, <span class="math notranslate nohighlight">\(N=10,000\)</span> and the initial number infecteds, <span class="math notranslate nohighlight">\(i_0=5\)</span>, are both known.</p>
+<p>We start by loading the data again:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import data</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;seir_epi_data.txt&#39;</span><span class="p">)</span>
+<span class="n">t</span><span class="o">=</span><span class="n">out</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">sol_i_r</span><span class="o">=</span><span class="n">out</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The syntax for setting up the solver is similar to the approach via ABC.
+We first form our candidate SEIR model.
+Currently, PyGOM requires us to provide numerical values for all model parameters, including the unknown ones we are trying to estimate.
+These values are used to perform an additional check before performing the MLE to verify that the function provided is integrable.
+This step will be likely removed for later versions, but for now it’s probably best to input initial guesses as parameter values.
+For the current example, this means specifying <span class="math notranslate nohighlight">\(\beta\)</span>, <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> from our initial guess <code class="docutils literal notranslate"><span class="pre">theta</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pygom</span><span class="w"> </span><span class="kn">import</span> <span class="n">common_models</span>
+
+<span class="n">n_pop</span><span class="o">=</span><span class="mf">1e4</span>                <span class="c1"># known population size</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]</span>  <span class="c1"># initial guess for [beta, alpha, gamma]</span>
+
+<span class="n">paramEval</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">n_pop</span><span class="p">)]</span>
+<span class="n">ode_SEIR</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SEIR</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="n">paramEval</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We pass all other required information, including initial conditions, <code class="docutils literal notranslate"><span class="pre">x0</span></code>, to build an object of class <a class="reference internal" href="../../rst/autodoc-loss.html#pygom.loss.PoissonLoss" title="pygom.loss.PoissonLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">PoissonLoss</span></code></a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i0</span><span class="o">=</span><span class="mi">5</span>
+<span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="n">n_pop</span><span class="o">-</span><span class="n">i0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># initial conditions</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom</span><span class="w"> </span><span class="kn">import</span> <span class="n">PoissonLoss</span>
+
+<span class="n">objSEIR</span> <span class="o">=</span> <span class="n">PoissonLoss</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">ode_SEIR</span><span class="p">,</span>
+                      <span class="n">t0</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x0</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span>
+                      <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">y</span><span class="o">=</span><span class="n">sol_i_r</span><span class="p">[</span><span class="mi">1</span><span class="p">:,:],</span>
+                      <span class="n">target_param</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">],</span>
+                      <span class="n">state_name</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is a good idea to check that value of <span class="math notranslate nohighlight">\(R_0\)</span> corresponding to the initial guess is greater than 1.
+For instance, here <span class="math notranslate nohighlight">\(\frac{\beta}{\gamma}=\frac{0.4}{0.3}=1.33\)</span>.
+This is important because if <span class="math notranslate nohighlight">\(R_0&lt;1\)</span> then the resulting model output will be an exponential decay - essentially, a failed epidemic which will differ substantially from the data.
+If the optimization algorithm proceeds by attempting new sets of parameters in the neighbourhood of the initial ones, these are also likely to result in similarly bad model fits and the algorithm may not find a way out.</p>
+</div>
+</section>
+<section id="gradient-calculations">
+<h2>Gradient calculations<a class="headerlink" href="#gradient-calculations" title="Permalink to this heading">#</a></h2>
+<p>How the parameter optimizer will navigate parameter space will depend on the gradient of the cost function with respect to the parameters.
+PyGOM can calculate the gradient in two different ways.
+First, let’s compare the outputs of the two methods when evaluated at the initial condition, <code class="docutils literal notranslate"><span class="pre">theta</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">objSEIR</span><span class="o">.</span><span class="n">sensitivity</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">objSEIR</span><span class="o">.</span><span class="n">adjoint</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-3473286.37537513  -648419.19492932  3962185.9873881 ]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-3439949.96665267  -651037.89808304  3920356.14337022]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Also, let’s compare the times each method takes:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">timeit</span> objSEIR.sensitivity()
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>34.1 ms ± 206 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">timeit</span> objSEIR.adjoint()
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>278 ms ± 2.08 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note how we ran the two gradient functions once before timing it, that is because we only find the properties (Jacobian, gradient) of the ODEs during runtime.</p>
+<p>The amount of time taken for both methods is dependent on the number of observations as well as the number of states.
+The effect on the adjoint method as the number of observations differs can be quite evident.
+This is because the adjoint method is under a discretization which loops in Python where as the forward sensitivity equations are solved via an integration.
+As the number of observation gets larger, the affect of the Python loop becomes more obvious.</p>
+<p>The difference in gradient is larger when there are less observations.
+This is because the adjoint method use interpolations on the output of the ode between each consecutive time points.
+Given solutions over the same length of time, fewer discretizations leads to a less accurate interpolation.
+Note that the interpolation is currently performed using a univariate spline, due to the limitation of Python packages.
+Ideally, one would prefer to use an (adaptive) Hermite or Chebyshev interpolation.</p>
+</div>
+</section>
+<section id="optimised-result">
+<h2>Optimised result<a class="headerlink" href="#optimised-result" title="Permalink to this heading">#</a></h2>
+<p>We now employ optimisation procedures which should progress from the initial guess (if the initial guess is sensible enough) to the parameter set which minimises our cost function.
+It is particularly important to set the boundaries for the parameters here, since we know that they are required to be positive.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">boxBounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we use the <em>SLSQP</em> optimization routine of <code class="docutils literal notranslate"><span class="pre">scipy.optimize</span></code> with gradient obtained by forward sensitivity.</p>
+<p>We could, of course, use other methods available in <code class="docutils literal notranslate"><span class="pre">scipy.optimize.minimize</span></code>, such as <em>L-BFGS-B</em> and <em>TNC</em>.
+We can also use methods that accepts the exact Hessian such as <em>trust-ncg</em> but that should not be necessary most of the time.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize</span>
+
+<span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="n">objSEIR</span><span class="o">.</span><span class="n">cost</span><span class="p">,</span>
+               <span class="n">jac</span><span class="o">=</span><span class="n">objSEIR</span><span class="o">.</span><span class="n">sensitivity</span><span class="p">,</span>
+               <span class="n">x0</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> 
+               <span class="n">bounds</span><span class="o">=</span><span class="n">boxBounds</span><span class="p">,</span>
+               <span class="n">method</span><span class="o">=</span><span class="s1">&#39;SLSQP&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> message: Optimization terminated successfully
+ success: True
+  status: 0
+     fun: 1651.1282171916191
+       x: [ 3.537e-01  5.384e-01  2.559e-01]
+     nit: 17
+     jac: [-4.683e+00 -3.730e-01  4.709e+00]
+    nfev: 29
+    njev: 17
+</pre></div>
+</div>
+</div>
+</div>
+<p>We see that parameter values are in agreement with the underlying model and there is visual agreement with data when plotted below</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pars</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="n">x</span>
+
+<span class="n">ode_est</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SEIR</span><span class="p">([(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="n">pars</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="n">pars</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="n">pars</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">n_pop</span><span class="p">)])</span>
+<span class="n">ode_est</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">solution</span> <span class="o">=</span> <span class="n">ode_est</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::])</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;constrained&#39;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">))</span>
+
+<span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">sol_i_r</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
+<span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;MLE fit&quot;</span><span class="p">)</span>
+<span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">sol_i_r</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
+<span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="mi">3</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;MLE fit&quot;</span><span class="p">)</span>
+<span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower right&quot;</span><span class="p">)</span>
+<span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time&#39;</span><span class="p">)</span>
+<span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time&#39;</span><span class="p">)</span>
+<span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../../_images/d53de0c77fdc7095d5d7612bbe0ccc03c0700747f9b86ac300342decd07ea337.png" src="../../_images/d53de0c77fdc7095d5d7612bbe0ccc03c0700747f9b86ac300342decd07ea337.png" />
+</div>
+</div>
+</section>
+<section id="confidence-intervals-of-estimated-parameters">
+<h2>Confidence intervals of estimated parameters<a class="headerlink" href="#confidence-intervals-of-estimated-parameters" title="Permalink to this heading">#</a></h2>
+<p>Point estimates of parameters found via MLE provide the <em>best</em> fit, but are incomplete without some measure of their uncertainty.
+With the ABC method of the previous section, credible intervals fall out as part of the fitting process, since the output is parameter probability distributions.
+For parameter estimates found via optimisation, we need to make some assumptions about the shape of the likelihood function in the neighbourhood of the MLE to obtain confidence levels.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>PyGOM has built in functions using different methods to solve this problem; these are, however, under development.
+The location and names of the relevant code can be found below and they should be carefully inspected before being employed.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#from pygom import confidence_interval as ci</span>
+
+<span class="c1">## Different methods for CIs:</span>
+<span class="c1"># ci.asymptotic</span>
+<span class="c1"># ci.profile</span>
+<span class="c1"># ci.bootstrap</span>
+<span class="c1"># ci.geometric</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks/paramfit"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="params_via_abc.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Parameter Estimation: Approximate Bayesian Computation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="bvpSimple.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Solving Boundary Value Problems</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-seir-model-with-i-and-r-known">Example: SEIR model (with I and R known)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-calculations">Gradient calculations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimised-result">Optimised result</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#confidence-intervals-of-estimated-parameters">Confidence intervals of estimated parameters</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By UK Health Security Agency (previously Public Health England)
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

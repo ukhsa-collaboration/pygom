@@ -1,0 +1,1104 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pygom.loss.loss_type &#8212; PyGOM documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pygom/loss/loss_type';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../md/intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo_pygom.jpg" class="logo__image only-light" alt="PyGOM documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/logo_pygom.jpg" class="logo__image only-dark" alt="PyGOM documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../md/intro.html">
+                    Welcome to the documentation for PyGOM
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../md/installation.html">Installation</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../md/building_doc.html">Building the documentation locally</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/solution.html">Mathematical description</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/model_spec_2.html">Defining a system of differential equations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../notebooks/insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/extract_info.html">Extracting model information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollSimple.html">Deducing transitions from equations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/solving.html">Producing forecasts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/model_params.html">Parameterisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/model_solver.html">Finding ODE solutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/time_dependent_params.html">Time dependent parameters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/parameter_fitting.html">Parameter fitting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/params_via_abc.html">Parameter Estimation: Approximate Bayesian Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/params_via_optimization.html">Parameter Estimation: Maximum likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/bvpSimple.html">Solving Boundary Value Problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/epijson.html">Reading and using EpiJSON data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Common biological compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/common_models.html">Pre-defined examples - common epi models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIS.html">SIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIR.html">SIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR.html">SEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIS_Periodic.html">SIS, periodic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIR_Birth_Death.html">SIR, birth and death</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Multiple.html">SEIR, multiple</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Birth_Death_Periodic_Waning_Intro.html">SEIR, birth, death, periodic, waning and introductions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Legrand_Ebola_SEIHFR.html">Legrand Ebola SEIHFR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Lotka_Volterra.html">Lotka Volterra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/FitzHugh.html">FitzHugh</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Frequently asked questions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../md/faq.html">Frequently asked questions</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Code documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-model.html">model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-loss.html">loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-abc.html">approximate_bayesian_computation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-utilR.html">utilR</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../md/bib.html">Bibliography</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom/issues/new?title=Issue%20on%20page%20%2F_modules/pygom/loss/loss_type.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for pygom.loss.loss_type</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. moduleauthor:: Edwin Tye &lt;Edwin.Tye@phe.gov.uk&gt;</span>
+
+<span class="sd">    The different loss types.  Such as thought based on</span>
+<span class="sd">    parametric distributions.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Square&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Normal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Poisson&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Gamma&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;NegBinom&#39;</span>
+    <span class="p">]</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom.model.ode_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_array_type</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom.utilR.distn</span><span class="w"> </span><span class="kn">import</span> <span class="n">dpois</span><span class="p">,</span> <span class="n">gamma_mu_shape</span><span class="p">,</span> <span class="n">dnbinom</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Baseloss_Type</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This Baseloss_Type class provides common feature to be inherited by the</span>
+<span class="sd">    loss type objects, such as Square, Normal , etc.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y: array like</span>
+<span class="sd">        observations</span>
+<span class="sd">    state_weight: array like</span>
+<span class="sd">        weight for the observations</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># There may be some some overlapp with these checks on weights and y within</span>
+        <span class="c1"># the base loss class object in base_loss.py, thus these checks maybe redundent (unless this</span>
+        <span class="c1"># module is being used without base_loss.py.</span>
+        <span class="c1">#Checks o n y:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">check_array_type</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="c1">#Checks on weights.</span>
+        <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_numVar</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">check_array_type</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">accept_booleans</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No elements in numpy array of weights should be negative&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;All elements in numpy array of weights should not be 0.0&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;Input weight not of the same size as y&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Raw residuals returned if apply_weighting = False, else</span>
+<span class="sd">        the weighted residuals.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            observation</span>
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            If True multiplies array of residuals by weightings, else raw</span>
+<span class="sd">            residuals returned.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :math:`y_{i} - \\hat{y}_{i}`</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">apply_weighting</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;apply_weighting should be boolean&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">resid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">-</span> <span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">resid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">-</span> <span class="n">yhat</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">resid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">-</span> <span class="n">yhat</span>
+        <span class="k">if</span> <span class="n">apply_weighting</span><span class="p">:</span>
+            <span class="c1">#resid *= self._w</span>
+            <span class="n">resid</span> <span class="o">=</span> <span class="n">resid</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span>  <span class="c1"># above multiplication caused error</span>
+
+        <span class="k">return</span> <span class="n">resid</span>
+
+<div class="viewcode-block" id="Square"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Square">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Square</span><span class="p">(</span><span class="n">Baseloss_Type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Square loss object</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y: array like</span>
+<span class="sd">        observations</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Square.loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Square.loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Loss under square loss.  Not really saying much here</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            observation</span>
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            If True multiplies array of residuals by weightings, else raw</span>
+<span class="sd">            residuals are used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :math:`\\sum_{i=1}^{n} (y-\\hat{y})^{2}`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Square.diff_loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Square.diff_loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Derivative under square loss.  Assuming that we are solving</span>
+<span class="sd">        the minimization problem i.e. our objective function is the</span>
+<span class="sd">        negative of the log-likelihood</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            observation</span>
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            If True multiplies array of residuals by weightings, else raw</span>
+<span class="sd">            residuals are used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :math:`-2(y_{i} - \\hat{y}_{i})`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Square.diff2Loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Square.diff2Loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff2Loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Twice derivative of the square loss.  Which is simply 2.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            observations</span>
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            Residuals are not used in calculation, as such True or False</span>
+<span class="sd">            argument makes no difference. Argument has been kept as the equivalent</span>
+<span class="sd">            calculation is made with residuals for other loss functions, so</span>
+<span class="sd">            without it missing arguments errors could occur.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array with values of 2:</span>
+<span class="sd">            either a scalar, vector or matrix depending on the shape of</span>
+<span class="sd">            of the input yhat</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="Normal"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Normal">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Normal</span><span class="p">(</span><span class="n">Baseloss_Type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Normal distribution loss object</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y: array like</span>
+<span class="sd">        observation</span>
+<span class="sd">    sigma: float</span>
+<span class="sd">        standard deviation</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+        <span class="n">err_str</span> <span class="o">=</span> <span class="s2">&quot;Standard deviation not of the correct &quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">sigma</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No elements in numpy array of sigma values should be negative&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sigma</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">sigma</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                    <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">sigma</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span> <span class="o">=</span> <span class="n">sigma</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;size&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">sigma</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span> <span class="o">=</span> <span class="n">sigma</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;size&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">sigma</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">sigma</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Sigma should not be negative&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;type&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sigma2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span><span class="o">**</span><span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Normal.loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Normal.loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        The loss under a normal distribution.  Defined as the</span>
+<span class="sd">        negative log-likelihood here.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            observation</span>
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            If True multiplies array of residuals by weightings, else raw</span>
+<span class="sd">            residuals are used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        negative log-likelihood, :math:</span>
+<span class="sd">            `\\mathcal\\frac{1}{\\sqrt{2\\pi}\\sigma}e^{-\\frac{(y-\\hat{y})^{2}}{2\\sigma^{2}}`</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+        <span class="n">residual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span>
+
+        <span class="c1"># Calculate negative likelihood (depending on weighting of residuals).</span>
+        <span class="n">logpdf_p1</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">logpdf_p2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">logpdf_p3</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">logpdf_p4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">logpdf_p5_alt</span> <span class="o">=</span> <span class="o">-</span><span class="n">residual</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">logpdf_p1</span><span class="o">+</span><span class="n">logpdf_p2</span><span class="o">+</span><span class="n">logpdf_p3</span><span class="o">+</span><span class="n">logpdf_p4</span><span class="o">+</span><span class="n">logpdf_p5_alt</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Normal.diff_loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Normal.diff_loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Derivative of the loss function which is</span>
+<span class="sd">        :math:`\\sigma^{-1}(y - \\hat{y})`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            observation</span>
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            If True multiplies array of residuals by weightings, else raw</span>
+<span class="sd">            residuals are used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        r: array like</span>
+<span class="sd">            :math:`\\nabla \\mathcal{L}(\\hat{y}, y)`</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">residual</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_sigma2</span></div>
+
+<div class="viewcode-block" id="Normal.diff2Loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Normal.diff2Loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff2Loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Twice derivative of the normal loss.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            observations</span>
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            Residuals are not used in calculation, as such True or False</span>
+<span class="sd">            argument makes no difference. Argument has been kept as the equivalent</span>
+<span class="sd">            calculation is made with residuals for other loss functions, so</span>
+<span class="sd">            without it missing arguments errors could occur.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        s: array like</span>
+<span class="sd">            inverse of the variance with shape = yhat.shape</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_sigma2</span></div></div>
+
+<div class="viewcode-block" id="Gamma"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Gamma">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Gamma</span><span class="p">(</span><span class="n">Baseloss_Type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Gamma distribution loss object</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y: array like</span>
+<span class="sd">        observation</span>
+<span class="sd">    Shape: float</span>
+<span class="sd">        shape (a in latex equations)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mf">2.0</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+        <span class="n">err_str</span> <span class="o">=</span> <span class="s2">&quot;Shape is not of the correct &quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">shape</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No elements in numpy array of shape values should be negative&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">shape</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                    <span class="n">shape</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">shape</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="n">shape</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;size&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">shape</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="n">shape</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;size&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">shape</span> <span class="o">==</span> <span class="mf">2.0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">shape</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Shape should not be negative&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="n">shape</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;type&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Gamma.loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Gamma.loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        The loss under a gamma distribution.  Defined as the negative</span>
+<span class="sd">        log-likelihood of the gamma distirbution in terms of mean and shape.</span>
+<span class="sd">        See: Bolker, B. M. (2008). Gamma. In Ecological Models in R (pp. 131–133).</span>
+<span class="sd">             Princeton University Press.</span>
+<span class="sd">             File &quot;Loss function Calculations.ipnyb&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            prediction</span>
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            Residuals are not used in calculation, as such True or False</span>
+<span class="sd">            argument makes no difference. Argument has been kept as the equivalent</span>
+<span class="sd">            calculation is made with residuals for other loss functions, so</span>
+<span class="sd">            without it missing arguments errors could occur.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        negative log-likelihood, :math:`\\mathcal{L}(\\hat{y}; y,a)`</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="o">-</span><span class="n">gamma_mu_shape</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">yhat</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Gamma.diff_loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Gamma.diff_loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Derivative of the loss function with respect to yhat which is</span>
+<span class="sd">        See:</span>
+<span class="sd">            File &quot;Loss function Calculations.ipnyb&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            prediction</span>
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            If True multiplies array of residuals by weightings, else raw</span>
+<span class="sd">            residuals are used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        first_deriv_yhat: array like</span>
+<span class="sd">            :math:`\\frac{a \\left(\\hat{y} - y\\right)}{\\hat{y}^{2}}`</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">shape</span><span class="o">*-</span><span class="n">residual</span><span class="o">/</span><span class="n">yhat</span><span class="o">**</span><span class="mi">2</span></div>
+
+<div class="viewcode-block" id="Gamma.diff2Loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Gamma.diff2Loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff2Loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Twice derivative of the loss function with respect to yhat.</span>
+<span class="sd">        See:</span>
+<span class="sd">            Jupiter notebook &quot;Loss function Calculations.ipnyb&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            observation</span>
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            If True multiplies array of residuals by weightings, else raw</span>
+<span class="sd">            residuals are used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        scnd_deriv_yhat: array like</span>
+<span class="sd">            :math:`\\frac{a \\left(- \\hat{y} + 2 y\\right)}{\\hat{y}^{3}}`</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">shape</span><span class="o">*</span><span class="p">(</span><span class="n">residual</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span><span class="o">/</span><span class="n">yhat</span><span class="o">**</span><span class="mi">3</span></div></div>
+
+<div class="viewcode-block" id="Poisson"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Poisson">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Poisson</span><span class="p">(</span><span class="n">Baseloss_Type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Poisson distribution loss object</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y: array like</span>
+<span class="sd">        observation</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Poisson.loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Poisson.loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        The loss under a Poisson distribution.  Defined as the</span>
+<span class="sd">        negative log-likelihood here.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            observation</span>
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            Residuals are not used in calculation, as such True or False</span>
+<span class="sd">            argument makes no difference. Argument has been kept as the equivalent</span>
+<span class="sd">            calculation is made with residuals for other loss functions, so</span>
+<span class="sd">            without it missing arguments errors could occur.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        negative log-likelihood, :math:`\\mathcal{L}(\\hat{y}, y)`</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="c1"># note that we input the standard deviation here</span>
+        <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="n">dpois</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Poisson.diff_loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Poisson.diff_loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Derivative of the loss function, :math:`1 - y\\hat{y}^{-1}`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            observation</span>
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            If True multiplies array of residuals by weightings, else raw</span>
+<span class="sd">            residuals are used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :math:`\\nabla \\mathcal{L}(\\hat{y},y)`</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+        <span class="n">residual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">residual</span><span class="o">/</span><span class="n">yhat</span></div>
+
+<div class="viewcode-block" id="Poisson.diff2Loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Poisson.diff2Loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff2Loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Twice derivative of the Poisson loss.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            observations</span>
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            Residuals are not used in calculation, as such True or False</span>
+<span class="sd">            argument makes no difference. Argument has been kept as the equivalent</span>
+<span class="sd">            calculation is made with residuals for other loss functions, so</span>
+<span class="sd">            without it missing arguments errors could occur.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        s: array like</span>
+<span class="sd">            :math:`\\frac{y}{\\hat{y}^{2}}` with shape = yhat.shape</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">/</span><span class="p">(</span><span class="n">yhat</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="NegBinom"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.NegBinom">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">NegBinom</span><span class="p">(</span><span class="n">Baseloss_Type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Negative Binomial distribution loss object</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y: array like</span>
+<span class="sd">        observation</span>
+<span class="sd">    k: float</span>
+<span class="sd">        Overdispersion parameter (k=mean+mean(mean/variance))</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+        <span class="n">err_str</span> <span class="o">=</span> <span class="s2">&quot;k (the overdispersion parameter) is not of the correct &quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">k</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No elements in numpy array of k values should be negative&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">k</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                    <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">k</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">k</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;size&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">k</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">k</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;size&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">k</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;k should not be negative&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">k</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;type&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span>
+
+<div class="viewcode-block" id="NegBinom.loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.NegBinom.loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        The loss under a Negative Binomial distribution.  Defined as the</span>
+<span class="sd">        negative log-likelihood of the Negative Binomial 2 distribution.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            observation</span>
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            Residuals are not used in calculation, as such True or False</span>
+<span class="sd">            argument makes no difference. Argument has been kept as the equivalent</span>
+<span class="sd">            calculation is made with residuals for other loss functions, so</span>
+<span class="sd">            without it missing arguments errors could occur.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        negative log-likelihood, :math:`\\mathcal{L}(\\hat{y}; y,k)`</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="n">dnbinom</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">yhat</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="NegBinom.diff_loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.NegBinom.diff_loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Derivative of the loss function with respect to yhat which is</span>
+<span class="sd">        See:</span>
+<span class="sd">            Jupiter notebook &quot;Loss function Calculations.ipnyb&quot;</span>
+<span class="sd">            Bolker, B. M. (2008). Negative Binomial. In Ecological Models in R (pp. 124–126).</span>
+<span class="sd">            Princeton University Press</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            observation</span>
+<span class="sd">            apply_weighting: boolean</span>
+<span class="sd">            Residuals are not used in calculation, as such True or False</span>
+<span class="sd">            argument makes no difference. Argument has been kept as the equivalent</span>
+<span class="sd">            calculation is made with residuals for other loss functions, so</span>
+<span class="sd">            without it missing arguments errors could occur</span>
+
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            If True multiplies array of residuals by weightings, else raw</span>
+<span class="sd">            residuals are used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        first_deriv_yhat: array like</span>
+<span class="sd">            :math:`\\frac{k(\\hat{y}-y)}{\\hat{y}(k + \\hat{y})}`</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_k</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span>
+        <span class="n">first_derivs_yhat</span> <span class="o">=</span> <span class="n">k</span><span class="o">*-</span><span class="n">residual</span><span class="o">/</span><span class="p">(</span><span class="n">yhat</span><span class="o">*</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="n">yhat</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">first_derivs_yhat</span></div>
+
+<div class="viewcode-block" id="NegBinom.diff2Loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.NegBinom.diff2Loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff2Loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Twice derivative of the loss function with respect to yhat.</span>
+<span class="sd">        See:</span>
+<span class="sd">            Jupiter notebook &quot;Loss function Calculations.ipnyb&quot;</span>
+<span class="sd">            Bolker, B. M. (2008). Negative Binomial. In Ecological Models in R (pp. 124–126).</span>
+<span class="sd">            Princeton University Press</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yhat: array like</span>
+<span class="sd">            observation</span>
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            Residuals are not used in calculation, as such True or False</span>
+<span class="sd">            argument makes no difference. Argument has been kept as the equivalent</span>
+<span class="sd">            calculation is made with residuals for other loss functions, so</span>
+<span class="sd">            without it missing arguments errors could occur.</span>
+
+<span class="sd">        apply_weighting: boolean</span>
+<span class="sd">            If True multiplies array of residuals by weightings, else raw</span>
+<span class="sd">            residuals are used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        scnd_deriv_yhat: array like</span>
+<span class="sd">            :math:</span>
+<span class="sd">                `\\frac{k(\\hat{y}(k + \\hat{y}) + \\hat{y}(y -\\hat{y}) + (k + </span>
+<span class="sd">                        \\hat{y})(y - \\hat{y})}{\\hat{y}^{2}(k + \\hat{y})^{2}}`</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_k</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span>
+        <span class="n">scnd_derivs_yhat_p1</span> <span class="o">=</span> <span class="n">k</span>
+        <span class="n">scnd_derivs_yhat_p2</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">scnd_derivs_yhat_p3</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="n">yhat</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">scnd_derivs_yhat_p4</span> <span class="o">=</span> <span class="n">residual</span><span class="o">*</span><span class="n">yhat</span> <span class="o">+</span> <span class="n">residual</span><span class="o">*</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="n">yhat</span><span class="p">)</span> <span class="o">+</span> <span class="n">yhat</span><span class="o">*</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="n">yhat</span><span class="p">)</span>
+        <span class="n">scnd_derivs_yhat</span> <span class="o">=</span> <span class="n">scnd_derivs_yhat_p1</span><span class="o">*</span><span class="n">scnd_derivs_yhat_p2</span><span class="o">*</span><span class="n">scnd_derivs_yhat_p3</span><span class="o">*</span><span class="n">scnd_derivs_yhat_p4</span>
+        <span class="k">return</span> <span class="n">scnd_derivs_yhat</span></div></div>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By UK Health Security Agency (previously Public Health England)
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

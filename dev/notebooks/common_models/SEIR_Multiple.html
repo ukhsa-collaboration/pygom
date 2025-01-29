@@ -1,0 +1,603 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>SEIR, multiple &#8212; PyGOM documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/common_models/SEIR_Multiple';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="SEIR, birth, death, periodic, waning and introductions" href="SEIR_Birth_Death_Periodic_Waning_Intro.html" />
+    <link rel="prev" title="SIR, birth and death" href="SIR_Birth_Death.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../md/intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_pygom.jpg" class="logo__image only-light" alt="PyGOM documentation - Home"/>
+    <script>document.write(`<img src="../../_static/logo_pygom.jpg" class="logo__image only-dark" alt="PyGOM documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../md/intro.html">
+                    Welcome to the documentation for PyGOM
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../md/installation.html">Installation</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../md/building_doc.html">Building the documentation locally</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../solution.html">Mathematical description</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../model_spec_2.html">Defining a system of differential equations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../extract_info.html">Extracting model information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unroll/unrollSimple.html">Deducing transitions from equations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../md/solving.html">Producing forecasts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../model_params.html">Parameterisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_solver.html">Finding ODE solutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../time_dependent_params.html">Time dependent parameters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../md/parameter_fitting.html">Parameter fitting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../paramfit/params_via_abc.html">Parameter Estimation: Approximate Bayesian Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../paramfit/params_via_optimization.html">Parameter Estimation: Maximum likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../paramfit/bvpSimple.html">Solving Boundary Value Problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../epijson.html">Reading and using EpiJSON data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Common biological compartmental models</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../md/common_models.html">Pre-defined examples - common epi models</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="SIS.html">SIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SIR.html">SIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SEIR.html">SEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SIS_Periodic.html">SIS, periodic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SIR_Birth_Death.html">SIR, birth and death</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">SEIR, multiple</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SEIR_Birth_Death_Periodic_Waning_Intro.html">SEIR, birth, death, periodic, waning and introductions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Legrand_Ebola_SEIHFR.html">Legrand Ebola SEIHFR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Lotka_Volterra.html">Lotka Volterra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="FitzHugh.html">FitzHugh</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Frequently asked questions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../md/faq.html">Frequently asked questions</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Code documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../rst/autodoc-model.html">model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rst/autodoc-loss.html">loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rst/autodoc-abc.html">approximate_bayesian_computation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rst/autodoc-utilR.html">utilR</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../md/bib.html">Bibliography</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom/issues/new?title=Issue%20on%20page%20%2Fnotebooks/common_models/SEIR_Multiple.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/notebooks/common_models/SEIR_Multiple.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>SEIR, multiple</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="seir-multiple">
+<h1>SEIR, multiple<a class="headerlink" href="#seir-multiple" title="Permalink to this heading">#</a></h1>
+<p><a class="reference internal" href="../../rst/autodoc-model.html#pygom.model.SEIR_Multiple" title="pygom.model.SEIR_Multiple"><code class="xref py py-func docutils literal notranslate"><span class="pre">SEIR_Multiple()</span></code></a></p>
+<p>Multiple SEIR coupled together, without any birth death process.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+\frac{\mathrm{d} S_{i}}{\mathrm{d} t} &amp;= dN_{i} - dS_{i} - \lambda_{i}S_{i} \\
+\frac{\mathrm{d} E_{i}}{\mathrm{d} t} &amp;= \lambda_{i}S_{i} - (d+\epsilon)E_{i} \\
+\frac{\mathrm{d} I_{i}}{\mathrm{d} t} &amp;= \epsilon E_{i} - (d+\gamma) I_{i} \\
+\frac{\mathrm{d} R_{i}}{\mathrm{d}t} &amp;= \gamma I_{i} - dR_{i}
+\end{aligned}\end{split}\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[\lambda_{i} = \sum_{j=1}^{n} \beta_{i,j} I_{j} (1\{i\neq j\} p)\]</div>
+<p>with <span class="math notranslate nohighlight">\(n\)</span> being the number of patch and <span class="math notranslate nohighlight">\(p\)</span> the coupled factor.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pygom</span><span class="w"> </span><span class="kn">import</span> <span class="n">common_models</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+
+<span class="n">paramEval</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;beta_00&#39;</span><span class="p">:</span><span class="mf">0.0010107</span><span class="p">,</span> <span class="s1">&#39;beta_01&#39;</span><span class="p">:</span><span class="mf">0.0010107</span><span class="p">,</span> <span class="s1">&#39;beta_10&#39;</span><span class="p">:</span><span class="mf">0.0010107</span><span class="p">,</span> <span class="s1">&#39;beta_11&#39;</span><span class="p">:</span><span class="mf">0.0010107</span><span class="p">,</span>
+             <span class="s1">&#39;d&#39;</span><span class="p">:</span><span class="mf">0.02</span><span class="p">,</span> <span class="s1">&#39;epsilon&#39;</span><span class="p">:</span><span class="mf">45.6</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span><span class="mf">73.0</span><span class="p">,</span> <span class="s1">&#39;N_0&#39;</span><span class="p">:</span><span class="mi">10</span><span class="o">**</span><span class="mi">6</span><span class="p">,</span><span class="s1">&#39;N_1&#39;</span><span class="p">:</span><span class="mi">10</span><span class="o">**</span><span class="mi">6</span><span class="p">,</span><span class="s1">&#39;p&#39;</span><span class="p">:</span><span class="mf">0.01</span><span class="p">}</span>
+
+<span class="n">x0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">36139.3224081278</span><span class="p">,</span> <span class="mf">422.560577637822</span><span class="p">,</span> <span class="mf">263.883351688369</span><span class="p">,</span> <span class="mf">963174.233662546</span><span class="p">]</span>
+
+<span class="n">ode</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SEIR_Multiple</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="n">paramEval</span><span class="p">)</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="n">x01</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">x0</span><span class="p">:</span>  
+    <span class="n">x01</span> <span class="o">+=</span> <span class="mi">2</span><span class="o">*</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+
+<span class="n">ode</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x01</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">solution</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::],</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">ode</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/465950bb9acf1a81aa99cc6698c673f32e4c57e7a65faa9975e7924d582fb4fe.png" src="../../_images/465950bb9acf1a81aa99cc6698c673f32e4c57e7a65faa9975e7924d582fb4fe.png" />
+</div>
+</div>
+<p>The initial conditions are those derived by using the stability
+condition as stated in <span id="id1">Lloyd and May<sup><a class="reference internal" href="../../md/bib.html#id11" title="Alun L. Lloyd and Robert M. May. Spatial heterogeneity in epidemic models. Journal of Theoretical Biology, 1996. doi:10.1006/jtbi.1996.0042.">8</a></sup></span> while the notations is taken
+from <span id="id2">Brauer<sup><a class="reference internal" href="../../md/bib.html#id3" title="Fred Brauer. Mathematical Epidemiology. Volume 1945. Springer Berlin Heidelberg, 2008. ISBN 978-3-540-78910-9. URL: http://link.springer.com/10.1007/978-3-540-78911-6, doi:10.1007/978-3-540-78911-6.">1</a></sup></span>.</p>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks/common_models"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="SIR_Birth_Death.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">SIR, birth and death</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="SEIR_Birth_Death_Periodic_Waning_Intro.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">SEIR, birth, death, periodic, waning and introductions</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By UK Health Security Agency (previously Public Health England)
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

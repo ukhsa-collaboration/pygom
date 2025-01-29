@@ -1,0 +1,1025 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>utilR &#8212; PyGOM documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'rst/autodoc-utilR';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Bibliography" href="../md/bib.html" />
+    <link rel="prev" title="approximate_bayesian_computation" href="autodoc-abc.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../md/intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo_pygom.jpg" class="logo__image only-light" alt="PyGOM documentation - Home"/>
+    <script>document.write(`<img src="../_static/logo_pygom.jpg" class="logo__image only-dark" alt="PyGOM documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../md/intro.html">
+                    Welcome to the documentation for PyGOM
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../md/installation.html">Installation</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../md/building_doc.html">Building the documentation locally</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/solution.html">Mathematical description</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/model_spec_2.html">Defining a system of differential equations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../notebooks/insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/extract_info.html">Extracting model information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/unroll/unrollSimple.html">Deducing transitions from equations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../md/solving.html">Producing forecasts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/model_params.html">Parameterisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/model_solver.html">Finding ODE solutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/time_dependent_params.html">Time dependent parameters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../md/parameter_fitting.html">Parameter fitting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/paramfit/params_via_abc.html">Parameter Estimation: Approximate Bayesian Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/paramfit/params_via_optimization.html">Parameter Estimation: Maximum likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/paramfit/bvpSimple.html">Solving Boundary Value Problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/epijson.html">Reading and using EpiJSON data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Common biological compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../md/common_models.html">Pre-defined examples - common epi models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SIS.html">SIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SIR.html">SIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SEIR.html">SEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SIS_Periodic.html">SIS, periodic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SIR_Birth_Death.html">SIR, birth and death</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SEIR_Multiple.html">SEIR, multiple</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/SEIR_Birth_Death_Periodic_Waning_Intro.html">SEIR, birth, death, periodic, waning and introductions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/Legrand_Ebola_SEIHFR.html">Legrand Ebola SEIHFR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/Lotka_Volterra.html">Lotka Volterra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/common_models/FitzHugh.html">FitzHugh</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Frequently asked questions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../md/faq.html">Frequently asked questions</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Code documentation</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="autodoc-model.html">model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc-loss.html">loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc-abc.html">approximate_bayesian_computation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">utilR</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../md/bib.html">Bibliography</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom/issues/new?title=Issue%20on%20page%20%2Frst/autodoc-utilR.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/rst/autodoc-utilR.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>utilR</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dbeta"><code class="docutils literal notranslate"><span class="pre">dbeta()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dbinom"><code class="docutils literal notranslate"><span class="pre">dbinom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dchisq"><code class="docutils literal notranslate"><span class="pre">dchisq()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dexp"><code class="docutils literal notranslate"><span class="pre">dexp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dgamma"><code class="docutils literal notranslate"><span class="pre">dgamma()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dmvnorm"><code class="docutils literal notranslate"><span class="pre">dmvnorm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dnbinom"><code class="docutils literal notranslate"><span class="pre">dnbinom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dnorm"><code class="docutils literal notranslate"><span class="pre">dnorm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dpois"><code class="docutils literal notranslate"><span class="pre">dpois()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dunif"><code class="docutils literal notranslate"><span class="pre">dunif()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.gamma_mu_shape"><code class="docutils literal notranslate"><span class="pre">gamma_mu_shape()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.nb2pmf"><code class="docutils literal notranslate"><span class="pre">nb2pmf()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.pbinom"><code class="docutils literal notranslate"><span class="pre">pbinom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.pchisq"><code class="docutils literal notranslate"><span class="pre">pchisq()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.pexp"><code class="docutils literal notranslate"><span class="pre">pexp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.pgamma"><code class="docutils literal notranslate"><span class="pre">pgamma()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.pnbinom"><code class="docutils literal notranslate"><span class="pre">pnbinom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.pnorm"><code class="docutils literal notranslate"><span class="pre">pnorm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.ppois"><code class="docutils literal notranslate"><span class="pre">ppois()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.punif"><code class="docutils literal notranslate"><span class="pre">punif()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qbeta"><code class="docutils literal notranslate"><span class="pre">qbeta()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qbinom"><code class="docutils literal notranslate"><span class="pre">qbinom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qchisq"><code class="docutils literal notranslate"><span class="pre">qchisq()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qexp"><code class="docutils literal notranslate"><span class="pre">qexp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qgamma"><code class="docutils literal notranslate"><span class="pre">qgamma()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qnbinom"><code class="docutils literal notranslate"><span class="pre">qnbinom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qnorm"><code class="docutils literal notranslate"><span class="pre">qnorm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qpois"><code class="docutils literal notranslate"><span class="pre">qpois()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qunif"><code class="docutils literal notranslate"><span class="pre">qunif()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rbeta"><code class="docutils literal notranslate"><span class="pre">rbeta()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rbinom"><code class="docutils literal notranslate"><span class="pre">rbinom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rchisq"><code class="docutils literal notranslate"><span class="pre">rchisq()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rexp"><code class="docutils literal notranslate"><span class="pre">rexp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rgamma"><code class="docutils literal notranslate"><span class="pre">rgamma()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rmvnorm"><code class="docutils literal notranslate"><span class="pre">rmvnorm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rnorm"><code class="docutils literal notranslate"><span class="pre">rnorm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rpois"><code class="docutils literal notranslate"><span class="pre">rpois()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.runif"><code class="docutils literal notranslate"><span class="pre">runif()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.test_seed"><code class="docutils literal notranslate"><span class="pre">test_seed()</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-pygom.utilR">
+<span id="utilr"></span><h1>utilR<a class="headerlink" href="#module-pygom.utilR" title="Permalink to this heading">#</a></h1>
+<p>utilR</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.dbeta">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">dbeta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#dbeta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.dbeta" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Beta.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Beta.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.dbinom">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">dbinom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#dbinom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.dbinom" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.dchisq">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">dchisq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#dchisq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.dchisq" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.dexp">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">dexp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#dexp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.dexp" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.dgamma">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">dgamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#dgamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.dgamma" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.dmvnorm">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">dmvnorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#dmvnorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.dmvnorm" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://www.rdocumentation.org/packages/mvtnorm/versions/1.0-12/topics/mvnorm">https://www.rdocumentation.org/packages/mvtnorm/versions/1.0-12/topics/mvnorm</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.dnbinom">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">dnbinom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#dnbinom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.dnbinom" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html">https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.dnorm">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">dnorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#dnorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.dnorm" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.dpois">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">dpois</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#dpois"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.dpois" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Poisson.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Poisson.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.dunif">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">dunif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#dunif"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.dunif" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.gamma_mu_shape">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">gamma_mu_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#gamma_mu_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.gamma_mu_shape" title="Permalink to this definition">#</a></dt>
+<dd><blockquote>
+<div><p>The probability density function (pdf) of gamma distrbution in terms of mean and shape.</p>
+<p>x: array like observation.
+mu: mean or prediction.
+shape: shape (a in latex equation below).
+log: if True the natural log of the pmf is given.
+See: Bolker, B. M. (2008). Gamma. In Ecological Models in R (pp. 131–133). Princeton University Press.</p>
+<blockquote>
+<div><p>Jupyter notebook titled “Loss function Calculations.ipnyb”</p>
+</div></blockquote>
+<p>pdf, <span class="math notranslate nohighlight">\(\mathcal{p}(x; \mu,a) = \exp(- a \ln{\left(\frac{\mu}{a} \right)} - \frac{a x}{\mu} + \left(a - 1\right) \ln{\left(x \right)} - \ln{\left(\Gamma\left(a\right) \right)})\)</span></p>
+</div></blockquote>
+<p><a href="#id1"><span class="problematic" id="id2">`</span></a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.nb2pmf">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">nb2pmf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#nb2pmf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.nb2pmf" title="Permalink to this definition">#</a></dt>
+<dd><p>The probability mass function (pmf) of Negative Binomial 2 distribution.
+This definition of the negative binomial distribution is often refered to as
+negative binomial 2, or the ecological parameterisation. This parameterisation
+takes the mean and k (an overdispersion parameter). The variance = mean(1+mean/k),
+some notation uses alpha (k=1/alpha).
+See: Bolker, B. M. (2008). Negative Binomial. In Ecological Models in R (pp. 124–126). Princeton University Press.</p>
+<blockquote>
+<div><p>Jupyter notebook titled “Loss function Calculations.ipnyb”</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array like observation.</em>) – </p></li>
+<li><p><strong>mu</strong> (<em>mean</em><em> or </em><em>prediction.</em>) – </p></li>
+<li><p><strong>k</strong> (<em>overdispersion parameter</em><em> (</em><em>variance = mean</em><em>(</em><em>1+mean/k</em><em>)</em><em>)</em><em>. Note some notation uses $lpha$</em><em>, </em><em>(</em><em>$k=lpha^{-1}$</em><em>)</em><em>.</em>) – </p></li>
+<li><p><strong>log</strong> (<em>if True the natural log</em><em> of </em><em>the pmf is given.</em>) – </p></li>
+<li><p><strong>See</strong> – Bolker, B. M. (2008). Negative Binomial. In Ecological Models in R (pp. 124–126). Princeton University Press.
+File “Loss function Calculations.ipnyb”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>log pmf</em></p></li>
+<li><p><strong>math</strong> (<cite>mathcalp(x; mu,k)) = exp(ln(frac{Gamma left(k+xright)}{Gamma left(kright)x!}(frac{k}{k+mu})^{k}(frac{mu}{k+mu})^{x}))</cite>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.pbinom">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">pbinom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#pbinom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.pbinom" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.pchisq">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">pchisq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#pchisq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.pchisq" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.pexp">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">pexp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#pexp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.pexp" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.pgamma">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">pgamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#pgamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.pgamma" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.pnbinom">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">pnbinom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_tail</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#pnbinom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.pnbinom" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html">https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.pnorm">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">pnorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#pnorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.pnorm" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.ppois">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">ppois</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#ppois"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.ppois" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Poisson.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Poisson.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.punif">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">punif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#punif"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.punif" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.qbeta">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">qbeta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#qbeta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.qbeta" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Beta.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Beta.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.qbinom">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">qbinom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#qbinom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.qbinom" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.qchisq">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">qchisq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#qchisq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.qchisq" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.qexp">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">qexp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#qexp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.qexp" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.qgamma">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">qgamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#qgamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.qgamma" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.qnbinom">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">qnbinom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_tail</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#qnbinom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.qnbinom" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html">https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.qnorm">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">qnorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#qnorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.qnorm" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.qpois">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">qpois</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#qpois"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.qpois" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Poisson.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Poisson.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.qunif">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">qunif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#qunif"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.qunif" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.rbeta">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">rbeta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#rbeta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.rbeta" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Beta.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Beta.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.rbinom">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">rbinom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#rbinom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.rbinom" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html</a></p>
+<p>&#64;param seed represent which type of seed to use.  None or False uses the
+default seed.  When seed is an integer number, it will reset the seed
+via numpy.random.seed.  When seed=True, then a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> object will be used. If seed is an
+object of <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> then it will be used directly</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.rchisq">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">rchisq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#rchisq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.rchisq" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html</a></p>
+<p>&#64;param seed represent which type of seed to use.  None or False uses the
+default seed.  When seed is an integer number, it will reset the seed
+via numpy.random.seed.  When seed=True, then a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> object will be used. If seed is an
+object of <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> then it will be used directly</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.rexp">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">rexp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#rexp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.rexp" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html</a></p>
+<p>&#64;param seed represent which type of seed to use.  None or False uses the
+default seed.  When seed is an integer number, it will reset the seed
+via numpy.random.seed.  When seed=True, then a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> object will be used. If seed is an
+object of <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> then it will be used directly</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.rgamma">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">rgamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#rgamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.rgamma" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html</a></p>
+<p>&#64;param seed represent which type of seed to use.  None or False uses the
+default seed.  When seed is an integer number, it will reset the seed
+via numpy.random.seed.  When seed=True, then a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> object will be used. If seed is an
+object of <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> then it will be used directly</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.rmvnorm">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">rmvnorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#rmvnorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.rmvnorm" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://www.rdocumentation.org/packages/mvtnorm/versions/1.0-12/topics/mvnorm">https://www.rdocumentation.org/packages/mvtnorm/versions/1.0-12/topics/mvnorm</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.rnorm">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">rnorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#rnorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.rnorm" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html</a></p>
+<p>&#64;param seed represent which type of seed to use.  None or False uses the
+default seed.  When seed is an integer number, it will reset the seed
+via numpy.random.seed.  When seed=True, then a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> object will be used.  If seed is an
+object of <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> then it will be used directly</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.rpois">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">rpois</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#rpois"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.rpois" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Poisson.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Poisson.html</a></p>
+<p>&#64;param seed represent which type of seed to use.  None or False uses the
+default seed.  When seed is an integer number, it will reset the seed
+via numpy.random.seed.  When seed=True, then a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> object will be used. If seed is an
+object of <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> then it will be used directly</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.runif">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">runif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#runif"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.runif" title="Permalink to this definition">#</a></dt>
+<dd><p>See
+<a class="reference external" href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html">https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html</a></p>
+<p>&#64;param seed represent which type of seed to use.  None or False uses the
+default seed.  When seed is an integer number, it will reset the seed
+via numpy.random.seed.  When seed=True, then a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> object will be used. If seed is an
+object of <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> then it will be used directly</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygom.utilR.test_seed">
+<span class="sig-prename descclassname"><span class="pre">pygom.utilR.</span></span><span class="sig-name descname"><span class="pre">test_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pygom/utilR/distn.html#test_seed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygom.utilR.test_seed" title="Permalink to this definition">#</a></dt>
+<dd><p>Test the input type of <cite>seed</cite> and return a new random generator if
+appropriate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>seed</strong> – If True, then a new <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> will be created.
+If False, then a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> with the current
+global state of the random number generator is returned.
+If it is an int, then the input seed is used to create a new
+random state.
+If it is already a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> object then
+the same object is returned.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+</tbody>
+</table>
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./rst"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="autodoc-abc.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">approximate_bayesian_computation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../md/bib.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Bibliography</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dbeta"><code class="docutils literal notranslate"><span class="pre">dbeta()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dbinom"><code class="docutils literal notranslate"><span class="pre">dbinom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dchisq"><code class="docutils literal notranslate"><span class="pre">dchisq()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dexp"><code class="docutils literal notranslate"><span class="pre">dexp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dgamma"><code class="docutils literal notranslate"><span class="pre">dgamma()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dmvnorm"><code class="docutils literal notranslate"><span class="pre">dmvnorm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dnbinom"><code class="docutils literal notranslate"><span class="pre">dnbinom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dnorm"><code class="docutils literal notranslate"><span class="pre">dnorm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dpois"><code class="docutils literal notranslate"><span class="pre">dpois()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.dunif"><code class="docutils literal notranslate"><span class="pre">dunif()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.gamma_mu_shape"><code class="docutils literal notranslate"><span class="pre">gamma_mu_shape()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.nb2pmf"><code class="docutils literal notranslate"><span class="pre">nb2pmf()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.pbinom"><code class="docutils literal notranslate"><span class="pre">pbinom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.pchisq"><code class="docutils literal notranslate"><span class="pre">pchisq()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.pexp"><code class="docutils literal notranslate"><span class="pre">pexp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.pgamma"><code class="docutils literal notranslate"><span class="pre">pgamma()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.pnbinom"><code class="docutils literal notranslate"><span class="pre">pnbinom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.pnorm"><code class="docutils literal notranslate"><span class="pre">pnorm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.ppois"><code class="docutils literal notranslate"><span class="pre">ppois()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.punif"><code class="docutils literal notranslate"><span class="pre">punif()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qbeta"><code class="docutils literal notranslate"><span class="pre">qbeta()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qbinom"><code class="docutils literal notranslate"><span class="pre">qbinom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qchisq"><code class="docutils literal notranslate"><span class="pre">qchisq()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qexp"><code class="docutils literal notranslate"><span class="pre">qexp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qgamma"><code class="docutils literal notranslate"><span class="pre">qgamma()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qnbinom"><code class="docutils literal notranslate"><span class="pre">qnbinom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qnorm"><code class="docutils literal notranslate"><span class="pre">qnorm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qpois"><code class="docutils literal notranslate"><span class="pre">qpois()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.qunif"><code class="docutils literal notranslate"><span class="pre">qunif()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rbeta"><code class="docutils literal notranslate"><span class="pre">rbeta()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rbinom"><code class="docutils literal notranslate"><span class="pre">rbinom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rchisq"><code class="docutils literal notranslate"><span class="pre">rchisq()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rexp"><code class="docutils literal notranslate"><span class="pre">rexp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rgamma"><code class="docutils literal notranslate"><span class="pre">rgamma()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rmvnorm"><code class="docutils literal notranslate"><span class="pre">rmvnorm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rnorm"><code class="docutils literal notranslate"><span class="pre">rnorm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.rpois"><code class="docutils literal notranslate"><span class="pre">rpois()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.runif"><code class="docutils literal notranslate"><span class="pre">runif()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pygom.utilR.test_seed"><code class="docutils literal notranslate"><span class="pre">test_seed()</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By UK Health Security Agency (previously Public Health England)
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

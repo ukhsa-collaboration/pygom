@@ -1,0 +1,1079 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Parameter Estimation: Approximate Bayesian Computation &#8212; PyGOM documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/paramfit/params_via_abc';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Parameter Estimation: Maximum likelihood" href="params_via_optimization.html" />
+    <link rel="prev" title="Parameter fitting" href="../../md/parameter_fitting.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../md/intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_pygom.jpg" class="logo__image only-light" alt="PyGOM documentation - Home"/>
+    <script>document.write(`<img src="../../_static/logo_pygom.jpg" class="logo__image only-dark" alt="PyGOM documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../md/intro.html">
+                    Welcome to the documentation for PyGOM
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../md/installation.html">Installation</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../md/building_doc.html">Building the documentation locally</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../solution.html">Mathematical description</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../model_spec_2.html">Defining a system of differential equations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../extract_info.html">Extracting model information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unroll/unrollSimple.html">Deducing transitions from equations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../md/solving.html">Producing forecasts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../model_params.html">Parameterisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_solver.html">Finding ODE solutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../time_dependent_params.html">Time dependent parameters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../md/parameter_fitting.html">Parameter fitting</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Parameter Estimation: Approximate Bayesian Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="params_via_optimization.html">Parameter Estimation: Maximum likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bvpSimple.html">Solving Boundary Value Problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../epijson.html">Reading and using EpiJSON data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Common biological compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../md/common_models.html">Pre-defined examples - common epi models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SIS.html">SIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SIR.html">SIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SEIR.html">SEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SIS_Periodic.html">SIS, periodic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SIR_Birth_Death.html">SIR, birth and death</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SEIR_Multiple.html">SEIR, multiple</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/SEIR_Birth_Death_Periodic_Waning_Intro.html">SEIR, birth, death, periodic, waning and introductions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/Legrand_Ebola_SEIHFR.html">Legrand Ebola SEIHFR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/Lotka_Volterra.html">Lotka Volterra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common_models/FitzHugh.html">FitzHugh</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Frequently asked questions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../md/faq.html">Frequently asked questions</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Code documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../rst/autodoc-model.html">model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rst/autodoc-loss.html">loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rst/autodoc-abc.html">approximate_bayesian_computation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rst/autodoc-utilR.html">utilR</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../md/bib.html">Bibliography</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom/issues/new?title=Issue%20on%20page%20%2Fnotebooks/paramfit/params_via_abc.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/notebooks/paramfit/params_via_abc.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Parameter Estimation: Approximate Bayesian Computation</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitting-an-seir-model-with-infected-and-removed-known">Fitting an SEIR model (with Infected and Removed known)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitting-an-seir-model-with-only-infected-known">Fitting an SEIR model (with only Infected known)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitting-an-sir-model-with-only-infected-known">Fitting an SIR model (with only Infected known)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initial-conditions">Initial conditions</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="parameter-estimation-approximate-bayesian-computation">
+<h1>Parameter Estimation: Approximate Bayesian Computation<a class="headerlink" href="#parameter-estimation-approximate-bayesian-computation" title="Permalink to this heading">#</a></h1>
+<p>Here we demonstrate how PyGOM uses Approximate Bayesian Computation (ABC) to estimate posterior distributions for parameters given a candidate model and some data.
+As an example, we use synthetic data produced by PyGOM’s <a class="reference internal" href="../model_solver.html"><span class="doc">solve_stochast</span></a> function, the result of a stochastic epidemic simulation of an SEIR model with parameters:</p>
+<p><span class="math notranslate nohighlight">\(\beta=0.35,\quad \alpha=0.5,\quad \gamma=0.25,\quad n_{\text{pop}}=10^4,\quad I(t=0)=5\)</span></p>
+<p>Loading in the data file:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;seir_epi_data.txt&#39;</span><span class="p">)</span>
+<span class="n">t</span><span class="o">=</span><span class="n">out</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">sol_i_r</span><span class="o">=</span><span class="n">out</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We inspect the time series of the daily infected and removed populations:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;constrained&#39;</span><span class="p">)</span>
+<span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">sol_i_r</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">sol_i_r</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">)</span>
+<span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">)</span>
+<span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time&#39;</span><span class="p">)</span>
+<span class="n">axarr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/753b9ca03cd6ab8283edfe1f0a66f457c56243b81a262c80b81602330f7bafd7.png" src="../../_images/753b9ca03cd6ab8283edfe1f0a66f457c56243b81a262c80b81602330f7bafd7.png" />
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We typically do not have access to information regarding the total infected population. More commonly reported is the number of new cases in a given time period (or infection times).
+Furthermore, we are unlikely to know the removed population, unless, for example, the disease results in death with high probability.
+Nevertheless, the purpose of this chapter is to demonstrate model fitting given a data set and so these departures from reality do not undermine the key messages.</p>
+</div>
+<p>In the next sections, we are going to use PyGOM to obtain estimates for unknown values <span class="math notranslate nohighlight">\(\beta\)</span>, <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> (assuming that the total population, <span class="math notranslate nohighlight">\(N\)</span>, and initial number of infecteds, <span class="math notranslate nohighlight">\(I(t=0)\)</span>, are known).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Again, it is rather unrealistic to know <span class="math notranslate nohighlight">\(I(t=0)\)</span> or indeed <span class="math notranslate nohighlight">\(N\)</span>, but we proceed in this way for the sake of simplicity in our example.</p>
+</div>
+<section id="fitting-an-seir-model-with-infected-and-removed-known">
+<h2>Fitting an SEIR model (with Infected and Removed known)<a class="headerlink" href="#fitting-an-seir-model-with-infected-and-removed-known" title="Permalink to this heading">#</a></h2>
+<p>To obtain parameter estimates from data, we must provide a candidate model and specify the unknown parameters which we are interested in. Information regarding the candidate model is contained in <code class="xref py py-func docutils literal notranslate"><span class="pre">abc.create_loss()</span></code>, which requires:</p>
+<ol class="arabic simple">
+<li><p>A <a class="reference internal" href="../../rst/autodoc-model.html#pygom.model.SimulateOde" title="pygom.model.SimulateOde"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulateOde</span></code></a> object which describes the system of ODEs.</p></li>
+<li><p>The loss function, which describes how we assume observations are distributed about the mean value predicted by the <code class="xref py py-class docutils literal notranslate"><span class="pre">SimulateOde</span></code> object.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">abc.Parameter</span></code> which indicates which parameters we are interested in and their prior distributions.</p></li>
+<li><p>The data to which we are fitting the parameters.</p></li>
+</ol>
+<p>We start by specifying the ODE system. In this first example, we are going to assume (correctly) that the underlying process is an SEIR model.
+We need to let the model know the value of <span class="math notranslate nohighlight">\(N\)</span>, however, a feature of PyGOM is that we must pass values for all parameters.
+This usually acts to ensure that we do not under-specify the set of parameters when running simulations, however, in this case it requires us to overspecify what we actually know.
+Thus, even though the other parameters (<span class="math notranslate nohighlight">\(\beta\)</span>, <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span>) are unknown, the model expects some values and so for now we can just pass some initial guess (in this case the half way points of our prior distributions defined below), which will be overrode later when we specify ABC parameters.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set up pygom object from common models</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom</span><span class="w"> </span><span class="kn">import</span> <span class="n">common_models</span>
+
+<span class="n">n_pop</span><span class="o">=</span><span class="mf">1e4</span>
+<span class="n">paramEval</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">n_pop</span><span class="p">)]</span>
+
+<span class="n">ode_SEIR</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SEIR</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="n">paramEval</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code> class is used to specify the parameters we wish to infer and their prior probability distributions.
+We can choose from any of the distributions included in PyGOM, here taking uniform distributions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pygom</span><span class="w"> </span><span class="kn">import</span> <span class="n">approximate_bayesian_computation</span> <span class="k">as</span> <span class="n">abc</span>
+
+<span class="n">parameters</span> <span class="o">=</span> <span class="p">[</span><span class="n">abc</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;unif&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">logscale</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+              <span class="n">abc</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;unif&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">logscale</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+              <span class="n">abc</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;unif&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">logscale</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Finally, we must specify how observations are produced from the underlying model.
+If we assume that each data point is the result of a random draw from a Poisson distribution with mean equal to the SEIR model output at that timepoint, we can use the option <code class="docutils literal notranslate"><span class="pre">PoissonLoss</span></code> as our loss function when calling <code class="docutils literal notranslate"><span class="pre">create_loss</span></code> below.
+Now we combine everything together, including the initial conditions which we are assuming to be known.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i0</span><span class="o">=</span><span class="mi">5</span>
+<span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="n">n_pop</span><span class="o">-</span><span class="n">i0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom</span><span class="w"> </span><span class="kn">import</span> <span class="n">PoissonLoss</span>
+
+<span class="n">objSEIR</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">create_loss</span><span class="p">(</span><span class="s2">&quot;PoissonLoss&quot;</span><span class="p">,</span>         <span class="c1"># Loss function</span>
+                          <span class="n">parameters</span><span class="p">,</span>            <span class="c1"># Unknown parameters and prior distributions</span>
+                          <span class="n">ode_SEIR</span><span class="p">,</span>              <span class="c1"># Model</span>
+                          <span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>              <span class="c1"># Initial conditions and timepoints</span>
+                          <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">sol_i_r</span><span class="p">[</span><span class="mi">1</span><span class="p">:,:],</span>  <span class="c1"># Data timepoints and I, R values</span>
+                          <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">])</span>            <span class="c1"># Names of compartments in data</span>
+
+<span class="n">abcSEIR</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">(</span><span class="n">objSEIR</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>A sequential Monte Carlo method (ABC-SMC) is used for parameter inference. This approach considers a series of generations, with each generation using a smaller threshold than the previous. The first generation is equivalent to the standard ABC algorithm, in the sense that parameters are sampled from prior distributions. In subsequent generations, candidate parameters are proposed by perturbing weighted samples from the previous generation. Here, we use a multivariate normal distribution with optimal local covariance matrix to perform the perturbation.</p>
+<p>The ABC-SMC method requires a couple of additional arguments to <code class="docutils literal notranslate"><span class="pre">get_posterior_sample</span></code>:</p>
+<ul class="simple">
+<li><p>G - the number of generations.</p></li>
+<li><p>q - a quantile (0 &lt; q &lt; 1). Whilst it is possible to specify a list of tolerances to use in each generation, it is difficult to know what these should be. When specifying q, the tolerance for the current generation is set to the q-th quantile of the distances from the previous generation. Larger values of q will result in smaller reductions in thresholds but a higher acceptance rate.</p></li>
+</ul>
+<p>We run for 6 generations on our data</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">abcSEIR</span><span class="o">.</span><span class="n">get_posterior_sample</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 1 
+ tolerance = inf 
+ acceptance rate = 74.40%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 2 
+ tolerance = 364073.42362 
+ acceptance rate = 17.62%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 3 
+ tolerance = 72191.64935 
+ acceptance rate = 18.74%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 4 
+ tolerance = 21204.77097 
+ acceptance rate = 11.53%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 5 
+ tolerance = 7452.74757 
+ acceptance rate = 8.10%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 6 
+ tolerance = 3250.22571 
+ acceptance rate = 7.74%
+</pre></div>
+</div>
+</div>
+</div>
+<p>If we want to run the method for a few more generations, there is no need to start from the beginning.
+Instead, we can use <code class="xref py py-func docutils literal notranslate"><span class="pre">continue_posterior_sample()</span></code> along with the <code class="docutils literal notranslate"><span class="pre">next_tol</span></code> attribute to set the tolerance.
+Let’s perform 2 additional iterations:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">continue_posterior_sample</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">next_tol</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 1 
+ tolerance = 2232.01873 
+ acceptance rate = 13.35%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 2 
+ tolerance = 1833.77615 
+ acceptance rate = 21.76%
+</pre></div>
+</div>
+</div>
+</div>
+<p>There are built in methods to plot the posterior distribution and the corresponding fit to the data:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">plot_posterior_histograms</span><span class="p">();</span>
+<span class="n">abcSEIR</span><span class="o">.</span><span class="n">plot_pointwise_predictions</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/59c30ddec9e6dbb9955a1cefbe1f6575902c4f5b08842a413eaf43ff014efd1d.png" src="../../_images/59c30ddec9e6dbb9955a1cefbe1f6575902c4f5b08842a413eaf43ff014efd1d.png" />
+<img alt="../../_images/671b2e959c19ef92ac7e2a16e67573f3ad4bb4ff87f0d38442bf753f2b12ab80.png" src="../../_images/671b2e959c19ef92ac7e2a16e67573f3ad4bb4ff87f0d38442bf753f2b12ab80.png" />
+</div>
+</div>
+<p>The posterior draws are contained within <code class="docutils literal notranslate"><span class="pre">abcSIR.res</span></code>.
+This can be useful if output needs to be saved, or for calculation credible intervals.
+We see here that the 95% credible intervals are consistent with the true parameter values.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;beta=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="mf">0.025</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="mf">0.975</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;alpha=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="mf">0.025</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="mf">0.975</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;gamma=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="mf">0.025</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="mf">0.975</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>beta=0.350 (0.318, 0.388)
+alpha=0.566 (0.437, 0.712)
+gamma=0.254 (0.231, 0.281)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="fitting-an-seir-model-with-only-infected-known">
+<h2>Fitting an SEIR model (with only Infected known)<a class="headerlink" href="#fitting-an-seir-model-with-only-infected-known" title="Permalink to this heading">#</a></h2>
+<p>We now fit the same model, but assume we only have access to data concerning the infected component.
+All that changes code-wise is that we omit the recovered time series when inputting the data and specify that we only have information for the infected population in the last argument of <code class="docutils literal notranslate"><span class="pre">create_loss</span></code>.
+We do this and run the ABC algorithm for 8 generations.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">objSEIR2</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">create_loss</span><span class="p">(</span><span class="s2">&quot;PoissonLoss&quot;</span><span class="p">,</span>
+                          <span class="n">parameters</span><span class="p">,</span>
+                          <span class="n">ode_SEIR</span><span class="p">,</span>
+                          <span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                          <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">sol_i_r</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">0</span><span class="p">],</span>  <span class="c1"># now we only pass one column of epi data</span>
+                          <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">])</span>                 <span class="c1"># now we only have information regarding the infected compartment</span>
+
+<span class="n">abcSEIR2</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">(</span><span class="n">objSEIR2</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+
+<span class="n">abcSEIR2</span><span class="o">.</span><span class="n">get_posterior_sample</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">abcSEIR2</span><span class="o">.</span><span class="n">plot_posterior_histograms</span><span class="p">();</span>
+<span class="n">abcSEIR2</span><span class="o">.</span><span class="n">plot_pointwise_predictions</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 1 
+ tolerance = inf 
+ acceptance rate = 73.75%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 2 
+ tolerance = 57967.89694 
+ acceptance rate = 23.21%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 3 
+ tolerance = 14573.65549 
+ acceptance rate = 15.63%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 4 
+ tolerance = 4955.22257 
+ acceptance rate = 7.07%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 5 
+ tolerance = 1747.46397 
+ acceptance rate = 4.04%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 6 
+ tolerance = 1008.39222 
+ acceptance rate = 4.40%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 7 
+ tolerance = 795.51825 
+ acceptance rate = 4.46%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 8 
+ tolerance = 750.03026 
+ acceptance rate = 7.85%
+</pre></div>
+</div>
+<img alt="../../_images/b3a144ad2e36addb660a1fd2e314e2f72c4972b73f514cc2af06d287889510dd.png" src="../../_images/b3a144ad2e36addb660a1fd2e314e2f72c4972b73f514cc2af06d287889510dd.png" />
+<img alt="../../_images/93bc2f8f76d85e32f166fc4af0dbb2c2c25f0ee950c28e3712416779bbf3c2d8.png" src="../../_images/93bc2f8f76d85e32f166fc4af0dbb2c2c25f0ee950c28e3712416779bbf3c2d8.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;beta=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">abcSEIR2</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR2</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="mf">0.025</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR2</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="mf">0.975</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;alpha=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">abcSEIR2</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR2</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="mf">0.025</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR2</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="mf">0.975</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;gamma=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">abcSEIR2</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR2</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="mf">0.025</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR2</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="mf">0.975</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>beta=0.362 (0.326, 0.413)
+alpha=0.516 (0.345, 0.785)
+gamma=0.260 (0.240, 0.284)
+</pre></div>
+</div>
+</div>
+</div>
+<p>We still see estimates in agreement with the true parameter values, even though we have reduced the amount of data made available to the ABC algorithm.</p>
+</section>
+<section id="fitting-an-sir-model-with-only-infected-known">
+<h2>Fitting an SIR model (with only Infected known)<a class="headerlink" href="#fitting-an-sir-model-with-only-infected-known" title="Permalink to this heading">#</a></h2>
+<p>Of course, we may not know the underlying mechanisms and might instead attempt to fit an SIR model to the infected data.
+We follow similar steps as before, but now specifying an SIR model:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parameters</span> <span class="o">=</span> <span class="p">[</span><span class="n">abc</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;unif&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">logscale</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+              <span class="n">abc</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;unif&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">logscale</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>
+
+<span class="c1"># Params</span>
+<span class="n">paramEval</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">n_pop</span><span class="p">)]</span>
+
+<span class="c1"># Initial conditions now doen&#39;t require E0</span>
+<span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="n">n_pop</span><span class="o">-</span><span class="n">i0</span><span class="p">,</span> <span class="n">i0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Set up pygom object</span>
+<span class="n">ode_SIR</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SIR</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="n">paramEval</span><span class="p">)</span>
+
+<span class="n">objSIR</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">create_loss</span><span class="p">(</span><span class="s2">&quot;PoissonLoss&quot;</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">ode_SIR</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">sol_i_r</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">])</span>
+<span class="n">abcSIR</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">(</span><span class="n">objSIR</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+
+<span class="n">abcSIR</span><span class="o">.</span><span class="n">get_posterior_sample</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">abcSIR</span><span class="o">.</span><span class="n">plot_posterior_histograms</span><span class="p">();</span>
+<span class="n">abcSIR</span><span class="o">.</span><span class="n">plot_pointwise_predictions</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 1 
+ tolerance = inf 
+ acceptance rate = 50.40%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 2 
+ tolerance = 97090.54633 
+ acceptance rate = 28.57%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 3 
+ tolerance = 26871.99949 
+ acceptance rate = 27.06%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 4 
+ tolerance = 7946.79001 
+ acceptance rate = 30.05%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 5 
+ tolerance = 2164.64690 
+ acceptance rate = 30.86%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 6 
+ tolerance = 1108.75380 
+ acceptance rate = 33.83%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 7 
+ tolerance = 936.24091 
+ acceptance rate = 32.51%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 8 
+ tolerance = 900.98276 
+ acceptance rate = 31.69%
+</pre></div>
+</div>
+<img alt="../../_images/6abf2547213b9200631995b54e9c39eb1b03cce1eda18396f269bcf316fc2373.png" src="../../_images/6abf2547213b9200631995b54e9c39eb1b03cce1eda18396f269bcf316fc2373.png" />
+<img alt="../../_images/3c0779338104ecb20f4b882cc787f3aceb3301be29ba609d452cfd2885e7b3a7.png" src="../../_images/3c0779338104ecb20f4b882cc787f3aceb3301be29ba609d452cfd2885e7b3a7.png" />
+</div>
+</div>
+<p>Although we see smaller credible intervals, this actually reflects the restriction in model fitting, rather than increased precision.
+We see that our inappropriate model choice here results in poorer parameter estimates:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;beta=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="mf">0.025</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="mf">0.975</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;gamma=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="mf">0.025</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="mf">0.975</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>beta=0.350 (0.318, 0.388)
+gamma=0.566 (0.437, 0.712)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="initial-conditions">
+<h2>Initial conditions<a class="headerlink" href="#initial-conditions" title="Permalink to this heading">#</a></h2>
+<p>In addition to inferring model parameters, the ABC methods can be used to estimate initial conditions, after all, it is unlikely that <span class="math notranslate nohighlight">\(I(t=0)\)</span> is known with certainty.
+To do this, the state that we wish to estimate the initial condition for should be included in the <code class="docutils literal notranslate"><span class="pre">parameters</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parameters</span> <span class="o">=</span> <span class="p">[</span><span class="n">abc</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;unif&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">logscale</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+              <span class="n">abc</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;unif&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">logscale</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+              <span class="n">abc</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;unif&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">logscale</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+              <span class="n">abc</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;unif&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">logscale</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The remaining code is the same as before.
+Again, we still need to pass variables even if they are unknown - in this case the initial number of infected individuals.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i0</span><span class="o">=</span><span class="mi">5</span>
+<span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="n">n_pop</span><span class="o">-</span><span class="n">i0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="n">objSEIR3</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">create_loss</span><span class="p">(</span><span class="s2">&quot;PoissonLoss&quot;</span><span class="p">,</span>
+                          <span class="n">parameters</span><span class="p">,</span>
+                          <span class="n">ode_SEIR</span><span class="p">,</span>
+                          <span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                          <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">sol_i_r</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">0</span><span class="p">],</span>  <span class="c1"># now we only pass one column of epi data</span>
+                          <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">])</span>                 <span class="c1"># now we only have information regarding the infected compartment</span>
+
+<span class="n">abcSEIR3</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">(</span><span class="n">objSEIR3</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We run the algorithm for 8 generations:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">abcSEIR3</span><span class="o">.</span><span class="n">get_posterior_sample</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">abcSEIR3</span><span class="o">.</span><span class="n">plot_posterior_histograms</span><span class="p">();</span>
+<span class="n">abcSEIR3</span><span class="o">.</span><span class="n">plot_pointwise_predictions</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 1 
+ tolerance = inf 
+ acceptance rate = 72.89%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 2 
+ tolerance = 58067.08238 
+ acceptance rate = 15.76%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 3 
+ tolerance = 15858.17892 
+ acceptance rate = 13.94%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 4 
+ tolerance = 5420.38644 
+ acceptance rate = 7.54%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 5 
+ tolerance = 2185.32098 
+ acceptance rate = 5.41%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 6 
+ tolerance = 1182.18264 
+ acceptance rate = 2.42%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 7 
+ tolerance = 878.11360 
+ acceptance rate = 1.57%
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generation 8 
+ tolerance = 777.43372 
+ acceptance rate = 0.64%
+</pre></div>
+</div>
+<img alt="../../_images/a097e8434b63f51ce306ad08e78d90d3063252084b76de7fc49ab657eba55848.png" src="../../_images/a097e8434b63f51ce306ad08e78d90d3063252084b76de7fc49ab657eba55848.png" />
+<img alt="../../_images/bf8098660ff64d845006bc41666d35a38c6efc64c75e55331558ba72006a92f5.png" src="../../_images/bf8098660ff64d845006bc41666d35a38c6efc64c75e55331558ba72006a92f5.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;beta=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">abcSEIR3</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR3</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="mf">0.025</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR3</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="mf">0.975</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;alpha=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">abcSEIR3</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR3</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="mf">0.025</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR3</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="mf">0.975</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;gamma=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">abcSEIR3</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR3</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="mf">0.025</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR3</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="mf">0.975</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;I0=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">abcSEIR3</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR3</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">3</span><span class="p">],</span><span class="w"> </span><span class="mf">0.025</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">abcSEIR3</span><span class="o">.</span><span class="n">res</span><span class="p">[:,</span><span class="mi">3</span><span class="p">],</span><span class="w"> </span><span class="mf">0.975</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>beta=0.400 (0.307, 0.623)
+alpha=0.366 (0.141, 1.408)
+gamma=0.278 (0.230, 0.368)
+I0=5.701 (3.106, 9.250)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Whilst credible intervals are consistent with our parameters, they are wider than before.
+This is because with increased numbers of parameters there are more ways for our model to fit the data.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks/paramfit"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../../md/parameter_fitting.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Parameter fitting</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="params_via_optimization.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Parameter Estimation: Maximum likelihood</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitting-an-seir-model-with-infected-and-removed-known">Fitting an SEIR model (with Infected and Removed known)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitting-an-seir-model-with-only-infected-known">Fitting an SEIR model (with only Infected known)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitting-an-sir-model-with-only-infected-known">Fitting an SIR model (with only Infected known)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initial-conditions">Initial conditions</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By UK Health Security Agency (previously Public Health England)
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1217 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pygom.loss.confidence_interval &#8212; PyGOM documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pygom/loss/confidence_interval';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../md/intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo_pygom.jpg" class="logo__image only-light" alt="PyGOM documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/logo_pygom.jpg" class="logo__image only-dark" alt="PyGOM documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../md/intro.html">
+                    Welcome to the documentation for PyGOM
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../md/installation.html">Installation</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../md/building_doc.html">Building the documentation locally</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/solution.html">Mathematical description</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/model_spec_2.html">Defining a system of differential equations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../notebooks/insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/extract_info.html">Extracting model information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollSimple.html">Deducing transitions from equations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/solving.html">Producing forecasts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/model_params.html">Parameterisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/model_solver.html">Finding ODE solutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/time_dependent_params.html">Time dependent parameters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/parameter_fitting.html">Parameter fitting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/params_via_abc.html">Parameter Estimation: Approximate Bayesian Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/params_via_optimization.html">Parameter Estimation: Maximum likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/bvpSimple.html">Solving Boundary Value Problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/epijson.html">Reading and using EpiJSON data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Common biological compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/common_models.html">Pre-defined examples - common epi models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIS.html">SIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIR.html">SIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR.html">SEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIS_Periodic.html">SIS, periodic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIR_Birth_Death.html">SIR, birth and death</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Multiple.html">SEIR, multiple</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Birth_Death_Periodic_Waning_Intro.html">SEIR, birth, death, periodic, waning and introductions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Legrand_Ebola_SEIHFR.html">Legrand Ebola SEIHFR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Lotka_Volterra.html">Lotka Volterra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/FitzHugh.html">FitzHugh</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Frequently asked questions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../md/faq.html">Frequently asked questions</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Code documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-model.html">model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-loss.html">loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-abc.html">approximate_bayesian_computation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-utilR.html">utilR</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../md/bib.html">Bibliography</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom/issues/new?title=Issue%20on%20page%20%2F_modules/pygom/loss/confidence_interval.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for pygom.loss.confidence_interval</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. moduleauthor:: Edwin Tye &lt;Edwin.Tye@phe.gov.uk&gt;</span>
+
+<span class="sd">    Module that is used to calculate the confidence interval</span>
+<span class="sd">    given the estimated parameters</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;asymptotic&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;profile&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;bootstrap&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;geometric&#39;</span>
+<span class="p">]</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">sympy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">odeint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">leastsq</span><span class="p">,</span> <span class="n">minimize</span><span class="p">,</span> <span class="n">root</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom.model._model_errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">EstimateError</span><span class="p">,</span> <span class="n">InputError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom.utilR.distn</span><span class="w"> </span><span class="kn">import</span> <span class="n">qchisq</span><span class="p">,</span> <span class="n">qnorm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.ode_loss</span><span class="w"> </span><span class="kn">import</span> <span class="n">NormalLoss</span><span class="p">,</span> <span class="n">SquareLoss</span><span class="p">,</span> <span class="n">PoissonLoss</span>
+
+<div class="viewcode-block" id="asymptotic"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.asymptotic">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">asymptotic</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Finds the confidence interval at the :math:`\\alpha` level</span>
+<span class="sd">    under the :math:`\\mathcal{X}^{2}` assumption for the</span>
+<span class="sd">    likelihood</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj: ode object</span>
+<span class="sd">        an object initialized from :class:`BaseLoss`</span>
+<span class="sd">    alpha: numeric, optional</span>
+<span class="sd">        confidence level, :math:`0 &lt; \\alpha &lt; 1`.  Defaults to 0.05.</span>
+<span class="sd">    theta: array like, optional</span>
+<span class="sd">        the MLE parameters.  Defaults to None which then theta will be</span>
+<span class="sd">        inferred from the input obj</span>
+<span class="sd">    lb: array like, optional</span>
+<span class="sd">        expected lower bound</span>
+<span class="sd">    ub: array like, optional</span>
+<span class="sd">        expected upper bound</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    l: array like</span>
+<span class="sd">        lower confidence interval</span>
+<span class="sd">    u: array like</span>
+<span class="sd">        upper confidence interval</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span> <span class="o">=</span> <span class="n">_checkInput</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">)</span>
+
+    <span class="n">H</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">H</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">):</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">jtj</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="c1">## H = obj.fisher_information(theta)</span>
+
+    <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+
+    <span class="n">q</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">qchisq</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">xU</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">I</span><span class="p">))</span>
+    <span class="n">xL</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">I</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">xL</span><span class="p">,</span> <span class="n">xU</span></div>
+
+<div class="viewcode-block" id="bootstrap"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.bootstrap">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">bootstrap</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">iteration</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Finds the confidence interval at the :math:`\\alpha` level</span>
+<span class="sd">    via bootstrap</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj: ode object</span>
+<span class="sd">        an object initialized from :class:`BaseLoss`</span>
+<span class="sd">    alpha: numeric, optional</span>
+<span class="sd">        confidence level, :math:`0 &lt; \\alpha &lt; 1`. Defaults to 0.05.</span>
+<span class="sd">    theta: array like, optional</span>
+<span class="sd">        the MLE parameters</span>
+<span class="sd">    lb: array like, optional</span>
+<span class="sd">        upper bound for the parameters</span>
+<span class="sd">    ub: array like, optional</span>
+<span class="sd">        lower bound for the parameters</span>
+<span class="sd">    iteration: int, optional</span>
+<span class="sd">        number of bootstrap samples, defaults to 0 which is interpreted as</span>
+<span class="sd">        :math:`min(2n, 100)` where :math:`n` is the number of data points.</span>
+<span class="sd">    full_output: bool</span>
+<span class="sd">        if the full set of estimates is required.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    l: array like</span>
+<span class="sd">        lower confidence interval</span>
+<span class="sd">    u: array like</span>
+<span class="sd">        upper confidence interval</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span> <span class="o">=</span> <span class="n">_checkInput</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">)</span>
+
+    <span class="n">yhat</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_getSolution</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">residual</span><span class="p">()</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">==</span> <span class="n">r</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">iteration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">iteration</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Number of iterations (</span><span class="si">{}</span><span class="s1">) is low. Consider using more.&#39;</span>
+                        <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iteration</span><span class="p">))</span>
+
+    <span class="n">setTheta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">iteration</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">):</span>
+        <span class="c1">## TODO: parallel</span>
+        <span class="n">obj2</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="n">obj2</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+                <span class="n">obj2</span><span class="o">.</span><span class="n">_y</span><span class="p">[:,</span> <span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">r</span><span class="p">[:,</span> <span class="n">j</span><span class="p">],</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">obj2</span><span class="o">.</span><span class="n">_y</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+        <span class="n">obj2</span><span class="o">.</span><span class="n">_lossObj</span> <span class="o">=</span> <span class="n">obj2</span><span class="o">.</span><span class="n">_setLossType</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">xhatT</span> <span class="o">=</span> <span class="n">obj2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">obj2</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+            <span class="n">obj2</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;WTF&quot;</span><span class="p">)</span>
+
+        <span class="n">setTheta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">xhatT</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># calculate the upper and lower bounds </span>
+    <span class="n">xLB</span><span class="p">,</span> <span class="n">xUB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">setTheta</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="p">(</span><span class="n">alpha</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xLB</span><span class="p">,</span> <span class="n">xUB</span><span class="p">,</span> <span class="n">setTheta</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xLB</span><span class="p">,</span> <span class="n">xUB</span></div>
+
+<div class="viewcode-block" id="geometric"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.geometric">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">geometric</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">method</span><span class="o">=</span><span class="s1">&#39;jtj&#39;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span>
+              <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Finds the geometric confidence interval under profiling</span>
+<span class="sd">    at the :math:`\\alpha` level the normal approximation</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj: ode object</span>
+<span class="sd">        an object initialized from :class:`BaseLoss`</span>
+<span class="sd">    alpha: numeric</span>
+<span class="sd">        confidence level, :math:`0 &lt; \\alpha &lt; 1`</span>
+<span class="sd">    theta: array like, optional</span>
+<span class="sd">        the MLE parameters.  When None given, it tries to estimate the</span>
+<span class="sd">        optimal using methods provided by obj</span>
+<span class="sd">    method: string</span>
+<span class="sd">        construction of the covariance matrix.  jtj is the :math:`J^{\\top}`</span>
+<span class="sd">        where :math:`J` is the Jacobian of the ode.  &#39;hessian&#39; is the hessian</span>
+<span class="sd">        of the ode while &#39;fisher&#39; is the fisher information found by</span>
+<span class="sd">        :math:`cov(\\nabla_{\\theta}\\mathcal{L})`.</span>
+<span class="sd">    geometry: string</span>
+<span class="sd">        the two types of geometry defined in [Moolgavkar1987]_. c geometry uses</span>
+<span class="sd">        the covariance at the maximum likelihood estimate</span>
+<span class="sd">        :math:`\\hat{\\theta}`, while the &#39;o&#39; geometry is the covariance</span>
+<span class="sd">        defined at point :math:`\\theta`.</span>
+<span class="sd">    full_output: bool, optional</span>
+<span class="sd">        If True then both the l_path and u_path will be outputted, else only</span>
+<span class="sd">        the point estimates of l and u</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    l: array like</span>
+<span class="sd">        lower confidence interval</span>
+<span class="sd">    u: array like</span>
+<span class="sd">        upper confidence interval</span>
+<span class="sd">    l_path: list</span>
+<span class="sd">        path from :math:`\\hat{\\theta}` to the lower :math:`1 - \\alpha/2`</span>
+<span class="sd">        point for all parameters</span>
+<span class="sd">    u_path: list</span>
+<span class="sd">        same as l_path but for the upper confidence interval</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span> <span class="o">=</span> <span class="n">_checkInput</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">xU</span><span class="p">,</span> <span class="n">xL</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">xLList</span><span class="p">,</span> <span class="n">xUList</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="n">dfFunc</span> <span class="o">=</span> <span class="n">_geometricOde</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">geometry</span><span class="p">)</span>
+        <span class="n">solutionU</span> <span class="o">=</span> <span class="n">odeint</span><span class="p">(</span><span class="n">dfFunc</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">))</span>
+        <span class="n">solutionL</span> <span class="o">=</span> <span class="n">odeint</span><span class="p">(</span><span class="n">dfFunc</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+            <span class="n">xUList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solutionU</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+            <span class="n">xLList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solutionL</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+
+        <span class="n">xU</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">solutionU</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">xL</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">solutionL</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xL</span><span class="p">,</span> <span class="n">xU</span><span class="p">,</span> <span class="n">xLList</span><span class="p">,</span> <span class="n">xUList</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xL</span><span class="p">,</span> <span class="n">xU</span></div>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_geometricOde</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;jtj&#39;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;jtj&#39;</span><span class="p">:</span>
+        <span class="n">cov</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">jtj</span>
+    <span class="k">elif</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;hessian&#39;</span><span class="p">:</span>
+        <span class="n">cov</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">hessian</span>
+    <span class="k">elif</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;fisher&#39;</span><span class="p">:</span>
+        <span class="n">cov</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">fisher_information</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Input method not recognized&quot;</span><span class="p">)</span>
+
+    <span class="n">H0</span> <span class="o">=</span> <span class="n">cov</span><span class="p">(</span><span class="n">xhat</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xhat</span><span class="p">)</span>
+    <span class="n">setIndex</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="n">activeIndex</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">setIndex</span> <span class="o">-</span> <span class="nb">set</span><span class="p">([</span><span class="n">i</span><span class="p">]))</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">qnorm</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">F1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">cov</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">tau</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">dwdb</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">][:,</span><span class="n">activeIndex</span><span class="p">],</span>
+                                <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">activeIndex</span><span class="p">],</span>
+                                <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1">#To silence the FutureWarning</span>
+        <span class="n">tau</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">]</span> <span class="o">=</span> <span class="n">dwdb</span>
+        <span class="k">if</span> <span class="n">geometry</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">tau</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">H0</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">geometry</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;o&#39;</span><span class="p">:</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">tau</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Input geometry not recognized&quot;</span><span class="p">)</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">]</span> <span class="o">=</span> <span class="n">dwdb</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">df</span>
+
+    <span class="k">return</span> <span class="n">F1</span>
+
+<div class="viewcode-block" id="profile"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.profile">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">profile</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Finds the profile confidence interval at the</span>
+<span class="sd">    :math:`\\alpha` level under the :math:`\\mathcal{X}^{2}`</span>
+<span class="sd">    assumption for the likelihood</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj: ode object</span>
+<span class="sd">        an object initialized from :class:`BaseLoss`</span>
+<span class="sd">    alpha: numeric</span>
+<span class="sd">        confidence level, :math:`0 &lt; \\alpha &lt; 1`</span>
+<span class="sd">    theta: array like, optional</span>
+<span class="sd">        the MLE parameters.  When None given, it tries to estimate the</span>
+<span class="sd">        optimal using methods provided by obj</span>
+<span class="sd">    lb: array like, optional</span>
+<span class="sd">        expected lower bound</span>
+<span class="sd">    ub: array like, optional</span>
+<span class="sd">        expected upper bound</span>
+<span class="sd">    full_output: bool, optional</span>
+<span class="sd">        if more output is desired</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    l: array like</span>
+<span class="sd">        lower confidence interval</span>
+<span class="sd">    u: array like</span>
+<span class="sd">        upper confidence interval</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span> <span class="o">=</span> <span class="n">_checkInput</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">)</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">xU</span><span class="p">,</span> <span class="n">xL</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">xLList</span><span class="p">,</span> <span class="n">xUList</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="n">xhatL</span><span class="p">,</span> <span class="n">xhatU</span> <span class="o">=</span> <span class="n">_profileGetInitialValues</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span>
+                                                <span class="n">lb</span><span class="o">=</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">ub</span><span class="p">)</span>
+
+        <span class="c1"># define our functions: objective, gradient, hessian, and the</span>
+        <span class="c1"># approximation to the hessian via Jacobian</span>
+        <span class="n">funcF</span> <span class="o">=</span> <span class="n">_profileF</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+        <span class="n">funcFgradient</span> <span class="o">=</span> <span class="n">_profileFgradient</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+        <span class="n">funcFhessian</span> <span class="o">=</span> <span class="n">_profileFhessian</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+        <span class="n">lbT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">*-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">if</span> <span class="n">lb</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">lb</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ubT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">if</span> <span class="n">ub</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">ub</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">ubT</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">xTempL</span><span class="p">,</span> <span class="n">outL</span> <span class="o">=</span> <span class="n">_profileObtainViaNuisance</span><span class="p">(</span><span class="n">xhatL</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span>
+                                                     <span class="n">obj</span><span class="p">,</span> <span class="n">lbT</span><span class="p">,</span> <span class="n">ubT</span><span class="p">,</span>
+                                                     <span class="n">obtainLB</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                     <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">EstimateError</span><span class="p">:</span>
+            <span class="n">xTempL</span><span class="p">,</span> <span class="n">outL</span> <span class="o">=</span> <span class="n">_profileObtainAndVerifyBounds</span><span class="p">(</span><span class="n">funcF</span><span class="p">,</span>
+                                                         <span class="n">funcFgradient</span><span class="p">,</span>
+                                                         <span class="n">funcFhessian</span><span class="p">,</span>
+                                                         <span class="n">xhatL</span><span class="p">,</span> <span class="n">lbT</span><span class="p">,</span> <span class="n">ubT</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1">## re-adjust the bounds for the other side</span>
+        <span class="n">lbT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">*-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">if</span> <span class="n">lb</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">lb</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ubT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">if</span> <span class="n">ub</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">ub</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">lbT</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">xTempU</span><span class="p">,</span> <span class="n">outU</span> <span class="o">=</span> <span class="n">_profileObtainViaNuisance</span><span class="p">(</span><span class="n">xhatU</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span>
+                                                     <span class="n">obj</span><span class="p">,</span> <span class="n">lbT</span><span class="p">,</span> <span class="n">ubT</span><span class="p">,</span>
+                                                     <span class="n">obtainLB</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                     <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">EstimateError</span><span class="p">:</span>
+            <span class="n">xTempU</span><span class="p">,</span> <span class="n">outU</span> <span class="o">=</span> <span class="n">_profileObtainAndVerifyBounds</span><span class="p">(</span><span class="n">funcF</span><span class="p">,</span>
+                                                         <span class="n">funcFgradient</span><span class="p">,</span>
+                                                         <span class="n">funcFhessian</span><span class="p">,</span>
+                                                         <span class="n">xhatU</span><span class="p">,</span> <span class="n">lbT</span><span class="p">,</span> <span class="n">ubT</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="c1">## now we have to store the values in one go.</span>
+        <span class="c1">## So we go L -&gt; U -&gt; U -&gt; L and below is not a typo</span>
+        <span class="n">xLList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outL</span><span class="p">)</span>
+        <span class="n">xUList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outU</span><span class="p">)</span>
+
+        <span class="n">xU</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">xTempU</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">xL</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">xTempL</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xL</span><span class="p">,</span> <span class="n">xU</span><span class="p">,</span> <span class="n">xLList</span><span class="p">,</span> <span class="n">xUList</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xL</span><span class="p">,</span> <span class="n">xU</span></div>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileGetInitialValues</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                             <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    We would not use an approximation in general because if the input theta</span>
+<span class="sd">    is an optimal value, then we would expect the Hessian to be a PSD matrix.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">setIndex</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+
+    <span class="n">H</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">jtj</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="k">if</span> <span class="n">approx</span> <span class="o">==</span> <span class="kc">True</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="c1"># if approx:</span>
+    <span class="c1">#     H = obj.jtj(theta)</span>
+    <span class="c1"># else:</span>
+    <span class="c1">#     H = obj.hessian(theta)</span>
+
+    <span class="n">activeIndex</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">setIndex</span> <span class="o">-</span> <span class="nb">set</span><span class="p">([</span><span class="n">i</span><span class="p">]))</span>
+    <span class="n">tau</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">dwdb</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">][:,</span> <span class="n">activeIndex</span><span class="p">],</span>
+                            <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">activeIndex</span><span class="p">],</span>
+                            <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1">#To silence the FutureWarning)[0]</span>
+    <span class="n">tau</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">]</span> <span class="o">=</span> <span class="n">dwdb</span>
+
+    <span class="n">q</span> <span class="o">=</span> <span class="n">qchisq</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q</span><span class="o">/</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">activeIndex</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">dwdb</span><span class="p">)))</span>
+
+    <span class="c1"># we only move a half step and not a full step as a more</span>
+    <span class="c1"># conservative approach is less likely to have shoot out of bounds</span>
+    <span class="n">xhatU</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">h</span><span class="o">*</span><span class="n">tau</span>
+    <span class="n">xhatL</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">h</span><span class="o">*</span><span class="n">tau</span>
+
+    <span class="k">if</span> <span class="n">lb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">lb_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lb</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">xhatL</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">lb_i</span><span class="p">:</span> <span class="n">xhatL</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lb_i</span>
+
+    <span class="k">if</span> <span class="n">ub</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ub_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ub</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">xhatU</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">ub_i</span><span class="p">:</span> <span class="n">xhatU</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ub_i</span>
+
+    <span class="k">return</span> <span class="n">xhatL</span><span class="p">,</span> <span class="n">xhatU</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileOptimizeNuisance</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Find the minimized nuisance parameters given the parameter of interest.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    theta: array like, optional</span>
+<span class="sd">        current parameters values</span>
+<span class="sd">    i: int</span>
+<span class="sd">        index of the parameter of interest</span>
+<span class="sd">    obj: ode object</span>
+<span class="sd">        an object initialized from :class:`BaseLoss`</span>
+<span class="sd">    lb: array like, optional</span>
+<span class="sd">        expected lower bound</span>
+<span class="sd">    ub: array like, optional</span>
+<span class="sd">        expected upper bound</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    s: array like</span>
+<span class="sd">        optimal value</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">setIndex</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="n">activeIndex</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">setIndex</span> <span class="o">-</span> <span class="nb">set</span><span class="p">([</span><span class="n">i</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">NormalLoss</span><span class="p">):</span>
+        <span class="n">lossF</span> <span class="o">=</span> <span class="n">NormalLoss</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">SquareLoss</span><span class="p">):</span>
+        <span class="n">lossF</span> <span class="o">=</span> <span class="n">SquareLoss</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">PoissonLoss</span><span class="p">):</span>
+        <span class="n">lossF</span> <span class="o">=</span> <span class="n">PoissonLoss</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Loss type not supported&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">_targetParam</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">targetParam2</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_ode</span><span class="o">.</span><span class="n">param_list</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">targetParam2</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_targetParam</span>
+
+    <span class="c1"># targetParam3 = list()</span>
+    <span class="c1"># for i in activeIndex:</span>
+    <span class="c1">#     targetParam3.append(targetParam2[i])</span>
+    <span class="n">targetParam3</span> <span class="o">=</span> <span class="p">[</span><span class="n">targetParam2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">activeIndex</span><span class="p">]</span>
+
+    <span class="n">ode2</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">_ode</span><span class="p">)</span>
+    <span class="n">ode2</span><span class="o">.</span><span class="n">setParameters</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">objSIR2</span> <span class="o">=</span> <span class="n">lossF</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">]),</span>
+                    <span class="n">ode2</span><span class="p">,</span>
+                    <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">_x0</span><span class="p">),</span>
+                    <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                    <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">_t</span><span class="p">[</span><span class="mi">1</span><span class="p">::]),</span>
+                    <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">_y</span><span class="p">),</span>
+                    <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">_stateName</span><span class="p">),</span>
+                    <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">_stateWeight</span><span class="p">),</span>
+                    <span class="n">targetParam3</span><span class="p">,</span>
+                    <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">_targetState</span><span class="p">))</span>
+
+    <span class="n">boundsT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">),</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lb</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span> <span class="s1">&#39;F&#39;</span><span class="p">)</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="n">objSIR2</span><span class="o">.</span><span class="n">cost</span><span class="p">,</span> <span class="n">jac</span><span class="o">=</span><span class="n">objSIR2</span><span class="o">.</span><span class="n">gradient</span><span class="p">,</span>
+                   <span class="n">x0</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">],</span>
+                   <span class="n">bounds</span><span class="o">=</span><span class="n">boundsT</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">,:],</span>
+                   <span class="n">method</span><span class="o">=</span><span class="s1">&#39;L-BFGS-B&#39;</span><span class="p">)</span> <span class="c1"># , callback=objSIR2.thetaCallBack)</span>
+
+    <span class="k">return</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileObtainViaNuisance</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span>
+                              <span class="n">obtainLB</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Find the profile likelihood confidence interval by iteratively minimizing</span>
+<span class="sd">    over the nuisance parameters first then minimizing the parameter of</span>
+<span class="sd">    interest, rather than tackling them all at the same time.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">xhatT</span> <span class="o">=</span> <span class="n">theta</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">funcF</span> <span class="o">=</span> <span class="n">_profileF</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+    <span class="n">funcG</span> <span class="o">=</span> <span class="n">_profileG</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+    <span class="n">lbT</span><span class="p">,</span> <span class="n">ubT</span> <span class="o">=</span> <span class="n">lb</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">ub</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="c1"># ubT = ub.copy()</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">setIndex</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="n">activeIndex</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">setIndex</span> <span class="o">-</span> <span class="nb">set</span><span class="p">([</span><span class="n">i</span><span class="p">]))</span>
+
+    <span class="c1"># note that the bounds here needs to be reversed.</span>
+    <span class="k">if</span> <span class="n">obtainLB</span><span class="p">:</span>
+        <span class="n">ubT</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">]</span> <span class="o">=</span> <span class="n">xhat</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lbT</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">]</span> <span class="o">=</span> <span class="n">xhat</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">]</span>
+
+    <span class="c1"># define the corresponding objective function that minimizes the nuisance</span>
+    <span class="c1"># parameters internally.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ABC1</span><span class="p">(</span><span class="n">beta</span><span class="p">):</span>
+        <span class="n">xhatT</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">beta</span>
+        <span class="n">xhatT</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">]</span> <span class="o">=</span> <span class="n">_profileOptimizeNuisance</span><span class="p">(</span><span class="n">xhatT</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">lbT</span><span class="p">,</span> <span class="n">ubT</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">funcG</span><span class="p">(</span><span class="n">xhatT</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ABCJac</span><span class="p">(</span><span class="n">beta</span><span class="p">):</span>
+        <span class="n">xhatT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">beta</span>
+        <span class="n">xhatT</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">]</span> <span class="o">=</span> <span class="n">_profileOptimizeNuisance</span><span class="p">(</span><span class="n">xhatT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">funcG</span><span class="p">(</span><span class="n">xhatT</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="o">*</span><span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">obj</span><span class="o">.</span><span class="n">gradient</span><span class="p">()[</span><span class="mi">0</span><span class="p">]])</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="n">ABC1</span><span class="p">,</span> <span class="n">xhatT</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">EstimateError</span><span class="p">(</span><span class="s2">&quot;Error in using the direct root finder&quot;</span><span class="p">)</span>
+
+    <span class="c1">## res1 = root(ABC1,xhatL[0],jac=ABCJac)</span>
+    <span class="c1">## res = scipy.optimize.minimize_scalar(ABC,bounds=(?,?))</span>
+
+    <span class="k">if</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">obtainLB</span><span class="p">:</span>
+            <span class="c1"># if we want the lower bound, then the estimate should not</span>
+            <span class="c1"># be higher than the MLE</span>
+            <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">xhat</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="n">EstimateError</span><span class="p">(</span><span class="s2">&quot;Estimate higher than MLE&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">xhat</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="n">EstimateError</span><span class="p">(</span><span class="s2">&quot;Estimate lower than MLE&quot;</span><span class="p">)</span>
+
+        <span class="n">res</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Nested Minimization&#39;</span>
+        <span class="k">if</span> <span class="n">full_output</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_theta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">res</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_theta</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">EstimateError</span><span class="p">(</span><span class="s2">&quot;Failure in estimation of the profile likelihood: &quot;</span>
+                            <span class="o">+</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">])</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileObtainAndVerify</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Find the solution of the profile likelihood and check</span>
+<span class="sd">    that the algorithm has converged.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="n">infodict</span><span class="p">,</span> <span class="n">mesg</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">leastsq</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span> <span class="n">Dfun</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+                                          <span class="n">maxfev</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ier</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">EstimateError</span><span class="p">(</span><span class="s2">&quot;Failure in estimation of the profile likelihood: &quot;</span>
+                            <span class="o">+</span> <span class="n">mesg</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">output</span><span class="p">[</span><span class="s1">&#39;cov&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cov</span>
+        <span class="n">output</span><span class="p">[</span><span class="s1">&#39;infodict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">infodict</span>
+        <span class="n">output</span><span class="p">[</span><span class="s1">&#39;mesg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mesg</span>
+        <span class="n">output</span><span class="p">[</span><span class="s1">&#39;ier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ier</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">output</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileObtainAndVerifyBounds</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">ddf</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">jac</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="c1"># hess=ddf,</span>
+                   <span class="n">x0</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span>
+                   <span class="n">bounds</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">),</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lb</span><span class="p">),</span><span class="mi">2</span><span class="p">),</span> <span class="s1">&#39;F&#39;</span><span class="p">),</span>
+                   <span class="n">method</span><span class="o">=</span><span class="s1">&#39;l-bfgs-b&#39;</span><span class="p">,</span>
+                   <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;maxiter&#39;</span><span class="p">:</span><span class="mi">1000</span><span class="p">})</span>
+
+    <span class="k">if</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">EstimateError</span><span class="p">(</span><span class="s2">&quot;Failure in estimation of the profile &quot;</span> <span class="o">+</span>
+                            <span class="s2">&quot;likelihood: &quot;</span> <span class="o">+</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">res</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Direct Minimization&quot;</span>
+
+    <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">res</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_checkInput</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span>
+    <span class="k">elif</span> <span class="n">alpha</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Cannot have a confidence level higher than 1&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">alpha</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Cannot have a confidence level lower than 0&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">lb</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">ub</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ub</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">lb</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ub</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Number of lower and upper bound must be equal&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Number of box constraints must equal to the&quot;</span> <span class="o">+</span>
+                             <span class="s2">&quot; number of variables&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ub</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">lb</span> <span class="o">+</span> <span class="p">(</span><span class="n">ub</span> <span class="o">-</span> <span class="n">lb</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">ub</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Expecting the estimated parameter when box&quot;</span> <span class="o">+</span>
+                             <span class="s2">&quot;constraints are not supplied&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileF</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">xhat</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">qchisq</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">func</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileG</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">xhat</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">qchisq</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span>
+        <span class="k">return</span> <span class="n">r</span>
+
+    <span class="k">return</span> <span class="n">func</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileGSecondOrderCorrection</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Finds the correction term when approximating the gradient to</span>
+<span class="sd">    second order [Venzon1988]_, i.e. :math:`\\delta^{\\top} D(\\theta) \\delta`</span>
+<span class="sd">    in [Venzon1988]_.  If the system</span>
+<span class="sd">    of non-linear equations is a, then we return :math:`a + s`</span>
+<span class="sd">    instead of :math:`G^{-1}a`, i.e. we have incorporated the correction</span>
+<span class="sd">    into the gradient</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x: array like</span>
+<span class="sd">        current value of the parameters</span>
+<span class="sd">    xhat: array like</span>
+<span class="sd">        parameters at MLE</span>
+<span class="sd">    i: int</span>
+<span class="sd">        our target variable</span>
+<span class="sd">    alpha: numeric</span>
+<span class="sd">        confidence level, between :math:`(0,1)`</span>
+<span class="sd">    obj:</span>
+<span class="sd">        ode object</span>
+<span class="sd">    approx: bool, optional</span>
+<span class="sd">        default is True.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    g: array like</span>
+<span class="sd">        corrected set of non-linear equations</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">xhat</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">qchisq</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">D0</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">xhat</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="c1"># first, we obtain all the necessary information.</span>
+        <span class="c1"># We use the notation in the original paper.</span>
+        <span class="c1"># so that G is the derivative of the systems of</span>
+        <span class="c1"># equations and JTJ is D(\theta)</span>
+        <span class="k">if</span> <span class="n">approx</span><span class="p">:</span>
+            <span class="n">H</span><span class="p">,</span><span class="n">output</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">jtj</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">H</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">g</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;grad&#39;</span><span class="p">]</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">G</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span>
+        <span class="n">lvector</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">lvector</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span>
+
+        <span class="c1"># computing the inverse, even though it is less</span>
+        <span class="c1"># accurate then doing a least squares, we are saving</span>
+        <span class="c1"># a lot of computation time here</span>
+        <span class="n">invG</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">invG</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">lvector</span><span class="p">)</span>
+
+        <span class="n">sTemp</span> <span class="o">=</span> <span class="n">v</span> <span class="o">+</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">invG</span><span class="p">[:,</span><span class="n">i</span><span class="p">])</span><span class="o">*</span><span class="n">s</span>
+        <span class="n">RHS</span> <span class="o">=</span> <span class="p">(</span><span class="n">sTemp</span><span class="o">.</span><span class="n">T</span><span class="o">*</span><span class="n">sympy</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="o">*</span><span class="n">sTemp</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">sRoots</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">Eq</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">RHS</span><span class="p">),</span> <span class="n">s</span><span class="p">)</span>
+        <span class="n">abc</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">lambdify</span><span class="p">((),</span><span class="n">sympy</span><span class="o">.</span><span class="n">Matrix</span><span class="p">(</span><span class="n">sRoots</span><span class="p">),</span> <span class="s1">&#39;np&#39;</span><span class="p">)</span>
+        <span class="n">sRootsReal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">abc</span><span class="p">())</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">rootsSize</span> <span class="o">=</span> <span class="n">sRootsReal</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="k">if</span> <span class="n">rootsSize</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">distL</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sRootsReal</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rootsSize</span><span class="p">):</span>
+                <span class="n">vTemp</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="o">+</span> <span class="n">sRootsReal</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">invG</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">distL</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">vTemp</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">D0</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vTemp</span><span class="p">))</span>
+                <span class="c1"># finish finding the distance</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">distL</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>
+            <span class="n">lvector</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">sRootsReal</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">lvector</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">lvector</span>
+
+    <span class="k">return</span> <span class="n">func</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileH</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">approx</span><span class="p">:</span>
+            <span class="n">H</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">jtj</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">H</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;grad&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">H</span>
+
+    <span class="k">return</span> <span class="n">func</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileFgradient</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">xhat</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">qchisq</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">approx</span><span class="p">:</span>
+            <span class="n">H</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">jtj</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">H</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">g</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;grad&#39;</span><span class="p">]</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">G</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">lvector</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">lvector</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span>
+        <span class="c1"># note that now G is the Jacobian of the objective function</span>
+        <span class="c1"># so we need a transpose</span>
+        <span class="k">return</span> <span class="n">G</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">lvector</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">func</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileFhessian</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">xhat</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">qchisq</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">approx</span><span class="p">:</span>
+            <span class="n">H</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">jtj</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">H</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">g</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;grad&#39;</span><span class="p">]</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">G</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">lvector</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">lvector</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">G</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">approx</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">lvector</span><span class="p">:</span>
+                <span class="n">A</span> <span class="o">+=</span> <span class="n">s</span><span class="o">*</span><span class="n">H</span>
+        <span class="k">return</span> <span class="n">A</span>
+
+<span class="c1">#         if approx:</span>
+<span class="c1">#             return 2*G.T.dot(G)</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             A = 2*G.T.dot(G)</span>
+<span class="c1">#             ## here we assume that only the second derivative is</span>
+<span class="c1">#             ## significant.</span>
+<span class="c1">#             for s in lvector:</span>
+<span class="c1">#                 A += s*H</span>
+<span class="c1">#             ## return np.diag(lvector).dot(H) + 2 * G.T.dot(G)</span>
+<span class="c1">#             ## return 2 * G.T.dot(G)</span>
+<span class="c1">#             return A</span>
+
+    <span class="k">return</span> <span class="n">func</span>
+
+
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By UK Health Security Agency (previously Public Health England)
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

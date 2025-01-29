@@ -1,0 +1,898 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pygom.loss.get_init &#8212; PyGOM documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pygom/loss/get_init';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../md/intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo_pygom.jpg" class="logo__image only-light" alt="PyGOM documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/logo_pygom.jpg" class="logo__image only-dark" alt="PyGOM documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../md/intro.html">
+                    Welcome to the documentation for PyGOM
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../md/installation.html">Installation</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../md/building_doc.html">Building the documentation locally</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/definition.html">Introduction</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/solution.html">Mathematical description</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">PyGOM workflow</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/model_spec_2.html">Defining a system of differential equations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../notebooks/insights.html">ODE Insights</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/extract_info.html">Extracting model information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/unroll/unrollSimple.html">Deducing transitions from equations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/solving.html">Producing forecasts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/model_params.html">Parameterisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/model_solver.html">Finding ODE solutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/time_dependent_params.html">Time dependent parameters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/parameter_fitting.html">Parameter fitting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/params_via_abc.html">Parameter Estimation: Approximate Bayesian Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/params_via_optimization.html">Parameter Estimation: Maximum likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/paramfit/bvpSimple.html">Solving Boundary Value Problems</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/epijson.html">Reading and using EpiJSON data</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Common biological compartmental models</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../md/common_models.html">Pre-defined examples - common epi models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIS.html">SIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIR.html">SIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR.html">SEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIS_Periodic.html">SIS, periodic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SIR_Birth_Death.html">SIR, birth and death</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Multiple.html">SEIR, multiple</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/SEIR_Birth_Death_Periodic_Waning_Intro.html">SEIR, birth, death, periodic, waning and introductions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Legrand_Ebola_SEIHFR.html">Legrand Ebola SEIHFR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/Lotka_Volterra.html">Lotka Volterra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/common_models/FitzHugh.html">FitzHugh</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Frequently asked questions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../md/faq.html">Frequently asked questions</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Code documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-model.html">model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-loss.html">loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-abc.html">approximate_bayesian_computation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst/autodoc-utilR.html">utilR</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../md/bib.html">Bibliography</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ukhsa-collaboration/pygom/issues/new?title=Issue%20on%20page%20%2F_modules/pygom/loss/get_init.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for pygom.loss.get_init</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnivariateSpline</span>
+<span class="c1"># TODO: For newer &lt;1.14.0 versions of scipy. Once established remove and leave only except part</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">simps</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">simpson</span> <span class="k">as</span> <span class="n">simps</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">leastsq</span><span class="p">,</span> <span class="n">minimize_scalar</span>
+
+<div class="viewcode-block" id="get_init"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.get_init">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_init</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">ode</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Get an initial guess of theta given the observations y and the</span>
+<span class="sd">    corresponding time points t.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y: :array like</span>
+<span class="sd">        observed values</span>
+<span class="sd">    t: array like</span>
+<span class="sd">        time</span>
+<span class="sd">    ode: :class:`.DeterministicOde`</span>
+<span class="sd">        an ode object</span>
+<span class="sd">    theta: array like</span>
+<span class="sd">        parameter value</span>
+<span class="sd">    full_output: bool, optional</span>
+<span class="sd">        True if the optimization result should be returned. Defaults to False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    theta: array like</span>
+<span class="sd">        a guess of the parameters</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">num_param</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_fitGivenSmoothness</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">ode</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">minimize_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;bounded&#39;</span><span class="p">)</span>
+    <span class="n">thetaNew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ode</span><span class="o">.</span><span class="n">_paramValue</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">thetaNew</span><span class="p">,</span> <span class="n">output</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">thetaNew</span></div>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_fitGivenSmoothness</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">ode</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="c1"># p = ode.getNumParam()</span>
+    <span class="c1"># d = ode.getNumState()</span>
+
+    <span class="n">splineList</span> <span class="o">=</span> <span class="n">interpolate</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1000</span><span class="p">)</span>
+    <span class="c1"># xApprox, fxApprox, t = _getApprox(splineList, interval)</span>
+
+    <span class="c1"># g2 = partial(residual_sample, ode, fxApprox, xApprox, interval)</span>
+    <span class="c1"># g2J = partial(jac_sample, ode, fxApprox, xApprox, interval)</span>
+    <span class="n">g2</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">residual_interpolant</span><span class="p">,</span> <span class="n">ode</span><span class="p">,</span> <span class="n">splineList</span><span class="p">,</span> <span class="n">interval</span><span class="p">)</span>
+    <span class="n">g2J</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">jac_interpolant</span><span class="p">,</span> <span class="n">ode</span><span class="p">,</span> <span class="n">splineList</span><span class="p">,</span> <span class="n">interval</span><span class="p">)</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">leastsq</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">g2</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">Dfun</span><span class="o">=</span><span class="n">g2J</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">loss</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">spline</span> <span class="ow">in</span> <span class="n">splineList</span><span class="p">:</span>
+        <span class="n">loss</span> <span class="o">+=</span> <span class="n">spline</span><span class="o">.</span><span class="n">get_residual</span><span class="p">()</span>
+    <span class="c1"># approximate the integral using fixed points</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="s1">&#39;fvec&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">interval</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">splineList</span><span class="p">)),</span> <span class="s1">&#39;F&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span><span class="o">*</span><span class="p">(</span><span class="n">interval</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">interval</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">loss</span>
+
+<div class="viewcode-block" id="interpolate"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.interpolate">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">interpolate</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Interpolate the solution of the ode given the time points</span>
+<span class="sd">    and a suitable smoothing vector using univariate spline</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    solution: :class:`numpy.ndarray`</span>
+<span class="sd">        f(t) of the ode with the rows correspond to time</span>
+<span class="sd">    t: array like</span>
+<span class="sd">        time</span>
+<span class="sd">    s: smoothing scalar, optional</span>
+<span class="sd">        greater or equal to zero</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    splineList: list</span>
+<span class="sd">        of :class:`scipy.interpolate.UnivariateSpline`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">==</span> <span class="n">n</span><span class="p">,</span> <span class="s2">&quot;Number of observations and time point not equal&quot;</span>
+    <span class="c1"># if isinstance(s, (np.ndarray, list, tuple)):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">s</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Smoothing factor must be non-negative&quot;</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="n">s</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="n">p</span><span class="p">,</span> <span class="s2">&quot;Number of smoothing factor must be &quot;</span> <span class="o">+</span> \
+                <span class="s2">&quot;equal to input solution columns&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">s</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Smoothing factor must be non-negative&quot;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="n">s</span>
+
+    <span class="n">splineList</span> <span class="o">=</span> <span class="p">[</span><span class="n">UnivariateSpline</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">solution</span><span class="p">[:,</span><span class="n">j</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="n">splineList</span></div>
+
+<div class="viewcode-block" id="cost_grad_interpolant"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.cost_grad_interpolant">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">cost_grad_interpolant</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns the cost (sum of squared residuals) and the gradient between the</span>
+<span class="sd">    first derivative of the interpolant and the function of the ode</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ode: :class:`.DeterministicOde`</span>
+<span class="sd">        an ode object</span>
+<span class="sd">    spline_list: list</span>
+<span class="sd">        list of :class:`scipy.interpolate.UnivariateSpline`</span>
+<span class="sd">    t: array like</span>
+<span class="sd">        time</span>
+<span class="sd">    theta: array list</span>
+<span class="sd">        parameter value</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cost: double</span>
+<span class="sd">        sum of squared residuals</span>
+<span class="sd">    g:</span>
+<span class="sd">        gradient of the squared residuals</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">xApprox</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">_getApprox</span><span class="p">(</span><span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="n">g</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">grad_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">output_residual</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="n">g</span></div>
+
+<div class="viewcode-block" id="cost_interpolant"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.cost_interpolant">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">cost_interpolant</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">aggregate</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns the cost (sum of squared residuals) between the first</span>
+<span class="sd">    derivative of the interpolant and the function of the ode</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ode: :class:`.DeterministicOde`</span>
+<span class="sd">        an ode object</span>
+<span class="sd">    spline_list: list</span>
+<span class="sd">        list of :class:`scipy.interpolate.UnivariateSpline`</span>
+<span class="sd">    t: array like</span>
+<span class="sd">        time</span>
+<span class="sd">    theta: array list</span>
+<span class="sd">        paramter value</span>
+<span class="sd">    vec: bool, optional</span>
+<span class="sd">        if the matrix should be flattened to be a vector</span>
+<span class="sd">    aggregate: bool, optional</span>
+<span class="sd">        sum the vector/matrix</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cost: double</span>
+<span class="sd">        sum of squared residuals</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">xApprox</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">_getApprox</span><span class="p">(</span><span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cost_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="p">,</span> <span class="n">aggregate</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="residual_interpolant"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.residual_interpolant">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">residual_interpolant</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns the residuals between the first derivative of the</span>
+<span class="sd">    interpolant and the function of the ode</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ode: :class:`.DeterministicOde`</span>
+<span class="sd">        an ode object</span>
+<span class="sd">    spline_list: list</span>
+<span class="sd">        list of :class:`scipy.interpolate.UnivariateSpline`</span>
+<span class="sd">    t: array like</span>
+<span class="sd">        time</span>
+<span class="sd">    theta: array list</span>
+<span class="sd">        parameter value</span>
+<span class="sd">    vec: bool, optional</span>
+<span class="sd">        if the matrix should be flattened to be a vector</span>
+<span class="sd">    aggregate: bool, optional</span>
+<span class="sd">        sum the vector/matrix</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    r: array list</span>
+<span class="sd">        the residuals</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">xApprox</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">_getApprox</span><span class="p">(</span><span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">residual_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="p">)</span></div>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">jac_interpolant</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span> 
+    <span class="n">xApprox</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">_getApprox</span><span class="p">(</span><span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jac_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">grad_interpolant</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">outputResidual</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">xApprox</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">_getApprox</span><span class="p">(</span><span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">grad_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">outputResidual</span><span class="p">)</span>
+
+<div class="viewcode-block" id="cost_sample"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.cost_sample">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">cost_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">aggregate</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns the cost (sum of squared residuals) between the first</span>
+<span class="sd">    derivative of the interpolant and the function of the ode using</span>
+<span class="sd">    samples at time points t.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ode: :class:`.DeterministicOde`</span>
+<span class="sd">        an ode object</span>
+<span class="sd">    fxApprox: list</span>
+<span class="sd">        list of approximated values for the first derivative</span>
+<span class="sd">    xApprox: list</span>
+<span class="sd">        list of approximated values for the states</span>
+<span class="sd">    t: array like</span>
+<span class="sd">        time</span>
+<span class="sd">    theta: array list</span>
+<span class="sd">        parameter value</span>
+<span class="sd">    vec: bool, optional</span>
+<span class="sd">        if the matrix should be flattened to be a vector.</span>
+<span class="sd">    aggregate: bool/str, optional</span>
+<span class="sd">        sum the vector/matrix.  If this is equals to &#39;int&#39; then the Simpsons</span>
+<span class="sd">        rule is applied to the samples.  Also changes the behaviour of vec,</span>
+<span class="sd">        where True outputs a vector where the elements contain the values of</span>
+<span class="sd">        the integrand on each of the dimensions of the ode.  False returns</span>
+<span class="sd">        the sum of this vector, a scalar.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    r: array list</span>
+<span class="sd">        the cost or the residuals if vec is True</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`residual_sample`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">aggregate</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">residual_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">if</span> <span class="n">aggregate</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">:</span>
+            <span class="n">integrand</span> <span class="o">=</span> <span class="n">simps</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">vec</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">integrand</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">integrand</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Aggregation method not recognized&quot;</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">aggregate</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">residual_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">if</span> <span class="n">aggregate</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">c</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Aggregation method not recognized&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="residual_sample"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.residual_sample">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">residual_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns the residuals between the first derivative of the</span>
+<span class="sd">    interpolant and the function of the ode using samples at</span>
+<span class="sd">    time points t.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ode: :class:`.DeterministicOde`</span>
+<span class="sd">        an ode object</span>
+<span class="sd">    fxApprox: list</span>
+<span class="sd">        list of approximated values for the first derivative</span>
+<span class="sd">    xApprox: list</span>
+<span class="sd">        list of approximated values for the states</span>
+<span class="sd">    t: array like</span>
+<span class="sd">        time</span>
+<span class="sd">    theta: array list</span>
+<span class="sd">        parameter value</span>
+<span class="sd">    vec: bool, optional</span>
+<span class="sd">        if the matrix should be flattened to be a vector</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    r: array list</span>
+<span class="sd">        the residuals</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`cost_sample`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">ode</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">theta</span>
+    <span class="n">fx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">fxApprox</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">xApprox</span><span class="p">):</span>
+        <span class="n">fx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">ode</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">vec</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">fxApprox</span> <span class="o">-</span> <span class="n">fx</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fxApprox</span> <span class="o">-</span> <span class="n">fx</span></div>
+
+<div class="viewcode-block" id="jac_sample"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.jac_sample">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">jac_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns the Jacobian of the objective value using the state</span>
+<span class="sd">    values of the interpolant given samples at time points t. Note</span>
+<span class="sd">    that the parameters taken here is chosen to be same as</span>
+<span class="sd">    :func:`cost_sample` for convenience.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ode: :class:`.DeterministicOde`</span>
+<span class="sd">        an ode object</span>
+<span class="sd">    fxApprox: list</span>
+<span class="sd">        list of approximated values for the first derivative</span>
+<span class="sd">    xApprox: list</span>
+<span class="sd">        list of approximated values for the states</span>
+<span class="sd">    t: array like</span>
+<span class="sd">        time</span>
+<span class="sd">    theta: array list</span>
+<span class="sd">        parameter value</span>
+<span class="sd">    vec: bool, optional</span>
+<span class="sd">        if the matrix should be flattened to be a vector</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    r: array list</span>
+<span class="sd">        the residuals</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`cost_sample`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">ode</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">theta</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fxApprox</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">num_state</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">ode</span><span class="o">.</span><span class="n">num_param</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">xApprox</span><span class="p">):</span>
+        <span class="n">g</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">ode</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">vec</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="n">d</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">g</span></div>
+
+<div class="viewcode-block" id="grad_sample"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.grad_sample">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">grad_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span>
+                <span class="n">vec</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">output_residual</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns the gradient of the objective value using the state</span>
+<span class="sd">    values of the interpolant given samples at time points t. Note</span>
+<span class="sd">    that the parameters taken here is chosen to be same as</span>
+<span class="sd">    :func:`cost_sample` for convenience.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ode: :class:`.DeterministicOde`</span>
+<span class="sd">        an ode object</span>
+<span class="sd">    fxApprox: list</span>
+<span class="sd">        list of approximated values for the first derivative</span>
+<span class="sd">    xApprox: list</span>
+<span class="sd">        list of approximated values for the states</span>
+<span class="sd">    t: array like</span>
+<span class="sd">        time</span>
+<span class="sd">    theta: array list</span>
+<span class="sd">        parameter value</span>
+<span class="sd">    vec: bool, optional</span>
+<span class="sd">        if the matrix should be flattened to be a vector</span>
+<span class="sd">    output_residual: bool, optional</span>
+<span class="sd">        if True, then the residuals will be returned as an</span>
+<span class="sd">        additional argument</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    g: :class:`numpy.ndarray`</span>
+<span class="sd">        gradient of the objective function</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`jac_sample`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">ode</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">theta</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">residual_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">fxApprox</span><span class="p">),</span> <span class="n">ode</span><span class="o">.</span><span class="n">num_param</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">xApprox</span><span class="p">):</span>
+        <span class="n">g</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">ode</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">output_residual</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">r</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_getApprox</span><span class="p">(</span><span class="n">splineList</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns the approximated values of the states and the function</span>
+<span class="sd">    value of the ode given the interpolants and a series of time</span>
+<span class="sd">    points.  The interpolants are expected to have been interpolated</span>
+<span class="sd">    against observations of the states.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    splinelist: list of :class:`scipy.interpolate.UnivariateSpline`</span>
+<span class="sd">        the interpolating function of the state values</span>
+<span class="sd">    t: array like</span>
+<span class="sd">        time</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    x: :class:`numpy.ndarray`</span>
+<span class="sd">        extrapolation of the function at t</span>
+<span class="sd">    fx: :class:`numpy.ndarray`</span>
+<span class="sd">        extrapolation of the first derivative at t</span>
+<span class="sd">    t: :class:`numpy.ndarray`</span>
+<span class="sd">        the inputted time</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`cost_sample`, :func:`jac_sample`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">t</span><span class="p">])</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">splineList</span><span class="p">)</span>
+    <span class="n">xApprox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">))</span>
+    <span class="n">fxApprox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">spline</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">splineList</span><span class="p">):</span>
+        <span class="n">xApprox</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">spline</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">fxApprox</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">spline</span><span class="o">.</span><span class="n">derivative</span><span class="p">()(</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">t</span>
+
+<span class="c1"># def integrateFunc(ode, splineList, t, theta):</span>
+<span class="c1">#     return (residual_interpolant(ode, splineList, t, theta, vec=False)**2).sum(1)</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By UK Health Security Agency (previously Public Health England)
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
