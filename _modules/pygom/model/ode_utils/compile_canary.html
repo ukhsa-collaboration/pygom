@@ -399,7 +399,7 @@ document.write(`
 
 <span class="sd">@author: thomas.finnie</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<div class="viewcode-block" id="CompileCanary"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.CompileCanary">[docs]</a><span class="k">class</span> <span class="nc">CompileCanary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="CompileCanary"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.CompileCanary">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">CompileCanary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Hold the need for (re-)compilation for various functions</span>
 
@@ -412,14 +412,14 @@ document.write(`
     <span class="n">states</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">_states</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Inits the class. Sets up the canaries</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="c1">#set up the states</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trip</span><span class="p">()</span>
 
-<div class="viewcode-block" id="CompileCanary.trip"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.CompileCanary.trip">[docs]</a>    <span class="k">def</span> <span class="nf">trip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CompileCanary.trip"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.CompileCanary.trip">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">trip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Trip all the canaries</span>
 <span class="sd">        Returns</span>
@@ -428,7 +428,7 @@ document.write(`
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_states</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">state</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="CompileCanary.reset"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.CompileCanary.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="CompileCanary.reset"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.CompileCanary.reset">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Reset a canary</span>
 
@@ -443,13 +443,13 @@ document.write(`
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="p">):</span>
         <span class="n">copied</span> <span class="o">=</span> <span class="n">CompileCanary</span><span class="p">()</span>
         <span class="n">copied</span><span class="o">.</span><span class="n">states</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_states</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="n">copied</span><span class="o">.</span><span class="n">trip</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">copied</span>
 
-    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Implement a method to get the values of attributes</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -461,7 +461,7 @@ document.write(`
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&#39;</span><span class="si">{0}</span><span class="s2">&#39; object has no attribute &#39;</span><span class="si">{1}</span><span class="s2">&#39;&quot;</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Check attribute assignment</span>
 <span class="sd">        &#39;&#39;&#39;</span>

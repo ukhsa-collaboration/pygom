@@ -398,27 +398,27 @@ document.write(`
 <span class="sd">Utilities used throughout the package.</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Number</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.integrate</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse</span>
-<span class="kn">import</span> <span class="nn">sympy</span>
-<span class="kn">from</span> <span class="nn">sympy.utilities.lambdify</span> <span class="kn">import</span> <span class="n">lambdify</span>
-<span class="kn">from</span> <span class="nn">sympy.utilities.autowrap</span> <span class="kn">import</span> <span class="n">autowrap</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.integrate</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sympy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sympy.utilities.lambdify</span><span class="w"> </span><span class="kn">import</span> <span class="n">lambdify</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sympy.utilities.autowrap</span><span class="w"> </span><span class="kn">import</span> <span class="n">autowrap</span>
 
-<span class="kn">from</span> <span class="nn">pygom.model._model_errors</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ArrayError</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom.model._model_errors</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">ArrayError</span><span class="p">,</span>
                                        <span class="n">ExpressionErrror</span><span class="p">,</span>
                                        <span class="n">InputError</span><span class="p">,</span>
                                        <span class="n">IntegrationError</span>
                                        <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">.compile_canary</span> <span class="kn">import</span> <span class="n">CompileCanary</span>
-<span class="kn">from</span> <span class="nn">.plot_det</span> <span class="kn">import</span> <span class="n">plot_det</span>
-<span class="kn">from</span> <span class="nn">.plot_stoc</span> <span class="kn">import</span> <span class="n">plot_stoc</span>
-<span class="kn">from</span> <span class="nn">.checks_and_conversions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">check_array_type</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.compile_canary</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompileCanary</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.plot_det</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_det</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.plot_stoc</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_stoc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.checks_and_conversions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">check_array_type</span><span class="p">,</span>
                                      <span class="n">check_dimension</span><span class="p">,</span>
                                      <span class="n">is_list_like</span><span class="p">,</span>
                                      <span class="n">str_or_list</span><span class="p">,</span>
@@ -445,7 +445,7 @@ document.write(`
 <span class="n">atol</span> <span class="o">=</span> <span class="mf">1e-10</span>
 <span class="n">rtol</span> <span class="o">=</span> <span class="mf">1e-10</span>
 
-<div class="viewcode-block" id="shapeAdjust"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.shapeAdjust">[docs]</a><span class="k">class</span> <span class="nc">shapeAdjust</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="shapeAdjust"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.shapeAdjust">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">shapeAdjust</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    A class that change vector into matrix and vice versa for</span>
 <span class="sd">    vectors used in :class:`DeterministicOde`</span>
@@ -461,7 +461,7 @@ document.write(`
 <span class="sd">        same as numState</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numState</span><span class="p">,</span> <span class="n">numParam</span><span class="p">,</span> <span class="n">numTarget</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numState</span><span class="p">,</span> <span class="n">numParam</span><span class="p">,</span> <span class="n">numTarget</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="o">=</span> <span class="n">numState</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_p</span> <span class="o">=</span> <span class="n">numParam</span>
 
@@ -470,31 +470,31 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_m</span> <span class="o">=</span> <span class="n">numTarget</span>
 
-<div class="viewcode-block" id="shapeAdjust.vecToMatSens"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.shapeAdjust.vecToMatSens">[docs]</a>    <span class="k">def</span> <span class="nf">vecToMatSens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="shapeAdjust.vecToMatSens"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.shapeAdjust.vecToMatSens">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">vecToMatSens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Transforms the sensitivity vector to a matrix</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="n">vecToMatSens</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="shapeAdjust.vecToMatFF"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.shapeAdjust.vecToMatFF">[docs]</a>    <span class="k">def</span> <span class="nf">vecToMatFF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ff</span><span class="p">):</span>
+<div class="viewcode-block" id="shapeAdjust.vecToMatFF"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.shapeAdjust.vecToMatFF">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">vecToMatFF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ff</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Transforms the forward forward sensitivity vector to a matrix</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="n">vecToMatFF</span><span class="p">(</span><span class="n">ff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="shapeAdjust.matToVecSens"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.shapeAdjust.matToVecSens">[docs]</a>    <span class="k">def</span> <span class="nf">matToVecSens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">S</span><span class="p">):</span>
+<div class="viewcode-block" id="shapeAdjust.matToVecSens"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.shapeAdjust.matToVecSens">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">matToVecSens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">S</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Transforms the sensitivity matrix to a vector</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="n">matToVecSens</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="shapeAdjust.matToVecFF"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.shapeAdjust.matToVecFF">[docs]</a>    <span class="k">def</span> <span class="nf">matToVecFF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">FF</span><span class="p">):</span>
+<div class="viewcode-block" id="shapeAdjust.matToVecFF"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.shapeAdjust.matToVecFF">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">matToVecFF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">FF</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Transforms the forward forward sensitivity matrix to a vector</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="n">matToVecFF</span><span class="p">(</span><span class="n">FF</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="shapeAdjust.kronState"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.shapeAdjust.kronState">[docs]</a>    <span class="k">def</span> <span class="nf">kronState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="shapeAdjust.kronState"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.shapeAdjust.kronState">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">kronState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        A sparse multiplication with an identity matrix of size</span>
 <span class="sd">        equal to the number of state as initialized</span>
@@ -514,7 +514,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="shapeAdjust.kronParam"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.shapeAdjust.kronParam">[docs]</a>    <span class="k">def</span> <span class="nf">kronParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="shapeAdjust.kronParam"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.shapeAdjust.kronParam">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">kronParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        A sparse multiplication with an identity matrix of size</span>
 <span class="sd">        equal to the number of parameters as initialized</span>
@@ -534,7 +534,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">))</span></div></div>
 
-<div class="viewcode-block" id="integrate"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.integrate">[docs]</a><span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="integrate"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.integrate">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">integrate</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    A wrapper on top of :mod:`odeint &lt;scipy.integrate.odeint&gt;` using</span>
 <span class="sd">    :class:`DeterministicOde &lt;pygom.model.DeterministicOde&gt;`.</span>
@@ -566,7 +566,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">solution</span></div>
 
-<div class="viewcode-block" id="integrateFuncJac"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.integrateFuncJac">[docs]</a><span class="k">def</span> <span class="nf">integrateFuncJac</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">jac</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">includeOrigin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="integrateFuncJac"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.integrateFuncJac">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">integrateFuncJac</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">jac</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">includeOrigin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                      <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nsteps</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    A replacement for :mod:`scipy.integrate.odeint` which performs integration</span>
@@ -681,7 +681,7 @@ document.write(`
         <span class="c1"># only the integration</span>
         <span class="k">return</span> <span class="n">solution</span></div>
 
-<span class="k">def</span> <span class="nf">_integrateOneStep</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">jac</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_integrateOneStep</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">jac</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Perform integration with just one step</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -705,7 +705,7 @@ document.write(`
                                    <span class="s2">&quot; and max/min eigenvalues of the jacobian is &quot;</span>
                                    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">a</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; and &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
 
-<span class="k">def</span> <span class="nf">_setupIntegrator</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">jac</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nsteps</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_setupIntegrator</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">jac</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nsteps</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;dopri5&#39;</span><span class="p">:</span>
         <span class="c1"># if we are going to use rk5, then one thing for sure is that we</span>
         <span class="c1"># know for sure that the set of equations are not stiff.</span>
@@ -745,7 +745,7 @@ document.write(`
     <span class="n">r</span><span class="o">.</span><span class="n">set_initial_value</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">r</span>
 
-<span class="k">def</span> <span class="nf">_determineIntegratorGivenEigenValue</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_determineIntegratorGivenEigenValue</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
     <span class="c1"># the min and max of them</span>
     <span class="n">maxE</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
     <span class="n">minE</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -760,7 +760,7 @@ document.write(`
     <span class="k">return</span> <span class="n">intName</span>
 
 
-<span class="k">def</span> <span class="nf">vecToMatSens</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">numState</span><span class="p">,</span> <span class="n">numParam</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">vecToMatSens</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">numState</span><span class="p">,</span> <span class="n">numParam</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert the vector of :class:`numpy.ndarray` of forward</span>
 <span class="sd">    sensitivities into a matrix.</span>
@@ -785,7 +785,7 @@ document.write(`
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="p">(</span><span class="n">numState</span><span class="p">,</span> <span class="n">numParam</span><span class="p">),</span> <span class="s1">&#39;F&#39;</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">vecToMatFF</span><span class="p">(</span><span class="n">ff</span><span class="p">,</span> <span class="n">numState</span><span class="p">,</span> <span class="n">numParam</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">vecToMatFF</span><span class="p">(</span><span class="n">ff</span><span class="p">,</span> <span class="n">numState</span><span class="p">,</span> <span class="n">numParam</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert the vector of :class:`numpy.ndarray` of forward</span>
 <span class="sd">    forward sensitivities into a matrix.</span>
@@ -810,7 +810,7 @@ document.write(`
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ff</span><span class="p">,</span> <span class="p">(</span><span class="n">numState</span><span class="o">*</span><span class="n">numParam</span><span class="p">,</span> <span class="n">numParam</span><span class="p">))</span>
 
-<span class="k">def</span> <span class="nf">matToVecSens</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">numState</span><span class="p">,</span> <span class="n">numParam</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">matToVecSens</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">numState</span><span class="p">,</span> <span class="n">numParam</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert the matrix of :class:`numpy.ndarray` of forward</span>
 <span class="sd">    sensitivities into a vector.</span>
@@ -838,7 +838,7 @@ document.write(`
     <span class="c1"># not sure which one is better</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">numState</span> <span class="o">*</span> <span class="n">numParam</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">matToVecFF</span><span class="p">(</span><span class="n">FF</span><span class="p">,</span> <span class="n">numState</span><span class="p">,</span> <span class="n">numParam</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">matToVecFF</span><span class="p">(</span><span class="n">FF</span><span class="p">,</span> <span class="n">numState</span><span class="p">,</span> <span class="n">numParam</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Convert the matrix of :class:`numpy.ndarray` of forward</span>
 <span class="sd">    forward sensitivities into a vector.</span>
@@ -863,13 +863,13 @@ document.write(`
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">FF</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 
-<div class="viewcode-block" id="compileCode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.compileCode">[docs]</a><span class="k">class</span> <span class="nc">compileCode</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="compileCode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.compileCode">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">compileCode</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    A class that compiles an algebraic expression in sympy to a faster</span>
 <span class="sd">    numerical file using the appropriate backend.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Initializing the class.  Automatically checks which backend is</span>
 <span class="sd">        available.  Currently only those linked to np are used where</span>
@@ -894,7 +894,7 @@ document.write(`
                 <span class="bp">self</span><span class="o">.</span><span class="n">_backend</span> <span class="o">=</span> <span class="s1">&#39;f2py&#39;</span>
             <span class="k">except</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="kn">import</span> <span class="nn">cython</span>
+                    <span class="kn">import</span><span class="w"> </span><span class="nn">cython</span>
                     <span class="n">a</span> <span class="o">=</span> <span class="n">autowrap</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">backend</span><span class="o">=</span><span class="s1">&#39;Cython&#39;</span><span class="p">)</span>
                     <span class="n">a</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                     <span class="c1"># also need to test the matrix version because</span>
@@ -918,7 +918,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_backend</span> <span class="o">=</span> <span class="n">backend</span>
 
-<div class="viewcode-block" id="compileCode.compileExpr"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.compileCode.compileExpr">[docs]</a>    <span class="k">def</span> <span class="nf">compileExpr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputSymb</span><span class="p">,</span> <span class="n">inputExpr</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compileType</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="compileCode.compileExpr"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.compileCode.compileExpr">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">compileExpr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputSymb</span><span class="p">,</span> <span class="n">inputExpr</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compileType</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Compiles the expression given the symbols.  Determines the backend</span>
 <span class="sd">        if required.</span>
@@ -999,7 +999,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">compiledFunc</span></div>
 
-<div class="viewcode-block" id="compileCode.compileExprAndFormat"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.compileCode.compileExprAndFormat">[docs]</a>    <span class="k">def</span> <span class="nf">compileExprAndFormat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputSymb</span><span class="p">,</span> <span class="n">inputExpr</span><span class="p">,</span>
+<div class="viewcode-block" id="compileCode.compileExprAndFormat"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.compileCode.compileExprAndFormat">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">compileExprAndFormat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputSymb</span><span class="p">,</span> <span class="n">inputExpr</span><span class="p">,</span>
                              <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">modules</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outType</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Compiles the expression given the symbols and determine which</span>

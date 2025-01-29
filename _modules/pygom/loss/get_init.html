@@ -394,18 +394,18 @@ document.write(`
                 <article class="bd-article">
                   
   <h1>Source code for pygom.loss.get_init</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">UnivariateSpline</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnivariateSpline</span>
 <span class="c1"># TODO: For newer &lt;1.14.0 versions of scipy. Once established remove and leave only except part</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">simps</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">simps</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">simpson</span> <span class="k">as</span> <span class="n">simps</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">leastsq</span><span class="p">,</span> <span class="n">minimize_scalar</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">simpson</span> <span class="k">as</span> <span class="n">simps</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">leastsq</span><span class="p">,</span> <span class="n">minimize_scalar</span>
 
-<div class="viewcode-block" id="get_init"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.get_init">[docs]</a><span class="k">def</span> <span class="nf">get_init</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">ode</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="get_init"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.get_init">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_init</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">ode</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Get an initial guess of theta given the observations y and the</span>
 <span class="sd">    corresponding time points t.</span>
@@ -442,7 +442,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">thetaNew</span></div>
 
-<span class="k">def</span> <span class="nf">_fitGivenSmoothness</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">ode</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_fitGivenSmoothness</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">ode</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
     <span class="c1"># p = ode.getNumParam()</span>
     <span class="c1"># d = ode.getNumState()</span>
 
@@ -465,7 +465,7 @@ document.write(`
 
     <span class="k">return</span> <span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span><span class="o">*</span><span class="p">(</span><span class="n">interval</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">interval</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">loss</span>
 
-<div class="viewcode-block" id="interpolate"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.interpolate">[docs]</a><span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="interpolate"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.interpolate">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">interpolate</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Interpolate the solution of the ode given the time points</span>
 <span class="sd">    and a suitable smoothing vector using univariate spline</span>
@@ -503,7 +503,7 @@ document.write(`
 
     <span class="k">return</span> <span class="n">splineList</span></div>
 
-<div class="viewcode-block" id="cost_grad_interpolant"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.cost_grad_interpolant">[docs]</a><span class="k">def</span> <span class="nf">cost_grad_interpolant</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+<div class="viewcode-block" id="cost_grad_interpolant"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.cost_grad_interpolant">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">cost_grad_interpolant</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns the cost (sum of squared residuals) and the gradient between the</span>
 <span class="sd">    first derivative of the interpolant and the function of the ode</span>
@@ -531,7 +531,7 @@ document.write(`
     <span class="n">g</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">grad_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">output_residual</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="n">g</span></div>
 
-<div class="viewcode-block" id="cost_interpolant"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.cost_interpolant">[docs]</a><span class="k">def</span> <span class="nf">cost_interpolant</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">aggregate</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="cost_interpolant"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.cost_interpolant">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">cost_interpolant</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">aggregate</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns the cost (sum of squared residuals) between the first</span>
 <span class="sd">    derivative of the interpolant and the function of the ode</span>
@@ -560,7 +560,7 @@ document.write(`
     <span class="n">xApprox</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">_getApprox</span><span class="p">(</span><span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cost_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="p">,</span> <span class="n">aggregate</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="residual_interpolant"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.residual_interpolant">[docs]</a><span class="k">def</span> <span class="nf">residual_interpolant</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="residual_interpolant"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.residual_interpolant">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">residual_interpolant</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns the residuals between the first derivative of the</span>
 <span class="sd">    interpolant and the function of the ode</span>
@@ -589,15 +589,15 @@ document.write(`
     <span class="n">xApprox</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">_getApprox</span><span class="p">(</span><span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">residual_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="p">)</span></div>
 
-<span class="k">def</span> <span class="nf">jac_interpolant</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span> 
+<span class="k">def</span><span class="w"> </span><span class="nf">jac_interpolant</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span> 
     <span class="n">xApprox</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">_getApprox</span><span class="p">(</span><span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">jac_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">grad_interpolant</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">outputResidual</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">grad_interpolant</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">outputResidual</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="n">xApprox</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">_getApprox</span><span class="p">(</span><span class="n">spline_list</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">grad_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">outputResidual</span><span class="p">)</span>
 
-<div class="viewcode-block" id="cost_sample"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.cost_sample">[docs]</a><span class="k">def</span> <span class="nf">cost_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">aggregate</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="cost_sample"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.cost_sample">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">cost_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">aggregate</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns the cost (sum of squared residuals) between the first</span>
 <span class="sd">    derivative of the interpolant and the function of the ode using</span>
@@ -654,7 +654,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Aggregation method not recognized&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="residual_sample"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.residual_sample">[docs]</a><span class="k">def</span> <span class="nf">residual_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="residual_sample"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.residual_sample">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">residual_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns the residuals between the first derivative of the</span>
 <span class="sd">    interpolant and the function of the ode using samples at</span>
@@ -694,7 +694,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">fxApprox</span> <span class="o">-</span> <span class="n">fx</span></div>
 
-<div class="viewcode-block" id="jac_sample"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.jac_sample">[docs]</a><span class="k">def</span> <span class="nf">jac_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="jac_sample"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.jac_sample">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">jac_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns the Jacobian of the objective value using the state</span>
 <span class="sd">    values of the interpolant given samples at time points t. Note</span>
@@ -738,7 +738,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">g</span></div>
 
-<div class="viewcode-block" id="grad_sample"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.grad_sample">[docs]</a><span class="k">def</span> <span class="nf">grad_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span>
+<div class="viewcode-block" id="grad_sample"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.grad_sample">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">grad_sample</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">fxApprox</span><span class="p">,</span> <span class="n">xApprox</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span>
                 <span class="n">vec</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">output_residual</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns the gradient of the objective value using the state</span>
@@ -785,7 +785,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 
-<span class="k">def</span> <span class="nf">_getApprox</span><span class="p">(</span><span class="n">splineList</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_getApprox</span><span class="p">(</span><span class="n">splineList</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns the approximated values of the states and the function</span>
 <span class="sd">    value of the ode given the interpolants and a series of time</span>

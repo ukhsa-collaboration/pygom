@@ -452,8 +452,8 @@ The input can be in a string format, a file or already a <code class="docutils l
 The output is in the cumulative form as default, shown below, in a <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html"><code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> format.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom.loss.read_epijson</span> <span class="kn">import</span> <span class="n">epijson_to_data_frame</span>
-<span class="kn">import</span> <span class="nn">pkgutil</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pygom.loss.read_epijson</span><span class="w"> </span><span class="kn">import</span> <span class="n">epijson_to_data_frame</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pkgutil</span>
 
 <span class="n">data</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s1">&#39;pygom&#39;</span><span class="p">,</span> <span class="s1">&#39;data/eg1.json&#39;</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">epijson_to_data_frame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -478,9 +478,9 @@ allow EpiJSON as an input directly to the loss class
 <code class="xref py py-class docutils literal notranslate"><span class="pre">EpijsonLoss</span></code> which uses the Poisson loss under the hood.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom.model</span> <span class="kn">import</span> <span class="n">common_models</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pygom.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">common_models</span>
 
-<span class="kn">from</span> <span class="nn">pygom.loss.epijson_loss</span> <span class="kn">import</span> <span class="n">EpijsonLoss</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom.loss.epijson_loss</span><span class="w"> </span><span class="kn">import</span> <span class="n">EpijsonLoss</span>
 
 <span class="n">ode</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SIR_norm</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
 

@@ -399,11 +399,11 @@ document.write(`
 
 <span class="sd">@author: edwin.tye</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 
 
-<div class="viewcode-block" id="check_array_type"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.check_array_type">[docs]</a><span class="k">def</span> <span class="nf">check_array_type</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">accept_booleans</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="check_array_type"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.check_array_type">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">check_array_type</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">accept_booleans</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Check to see if the type of input is suitable.  Only operate on one</span>
 <span class="sd">    or two dimension arrays</span>
@@ -461,7 +461,7 @@ document.write(`
     <span class="k">return</span> <span class="n">x</span></div>
 
 
-<div class="viewcode-block" id="check_dimension"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.check_dimension">[docs]</a><span class="k">def</span> <span class="nf">check_dimension</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="check_dimension"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.check_dimension">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">check_dimension</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Compare the length of two array like objects.  Converting both to a numpy</span>
 <span class="sd">    array in the process if they are not already one.</span>
@@ -490,7 +490,7 @@ document.write(`
 
     <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="is_list_like"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.is_list_like">[docs]</a><span class="k">def</span> <span class="nf">is_list_like</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="is_list_like"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.is_list_like">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_list_like</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Test whether the input is a type that behaves like a list, such</span>
 <span class="sd">    as (list,tuple,np.ndarray)</span>
@@ -508,7 +508,7 @@ document.write(`
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="str_or_list"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.str_or_list">[docs]</a><span class="k">def</span> <span class="nf">str_or_list</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="str_or_list"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.str_or_list">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">str_or_list</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Test to see whether input is a string or a list.  If it</span>
 <span class="sd">    is a string, then we convert it to a list.</span>
@@ -534,7 +534,7 @@ document.write(`
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Expecting a string or list&quot;</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">none_or_empty_list</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">none_or_empty_list</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="n">y</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>

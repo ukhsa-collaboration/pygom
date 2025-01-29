@@ -403,26 +403,26 @@ document.write(`
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SimulateOde&#39;</span><span class="p">]</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Number</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">sympy</span>
-<span class="kn">import</span> <span class="nn">sympy.matrices.matrices</span>
-<span class="kn">import</span> <span class="nn">scipy.stats</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sympy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sympy.matrices.matrices</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span>
 
-<span class="kn">from</span> <span class="nn">.deterministic</span> <span class="kn">import</span> <span class="n">DeterministicOde</span>
-<span class="kn">from</span> <span class="nn">.stochastic_simulation</span> <span class="kn">import</span> <span class="n">cle</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">firstReaction</span><span class="p">,</span> <span class="n">tauLeap</span><span class="p">,</span> <span class="n">hybrid</span>
-<span class="kn">from</span> <span class="nn">.transition</span> <span class="kn">import</span> <span class="n">TransitionType</span><span class="p">,</span> <span class="n">Transition</span>
-<span class="kn">from</span> <span class="nn">._model_errors</span> <span class="kn">import</span> <span class="n">InputError</span><span class="p">,</span> <span class="n">SimulationError</span>
-<span class="kn">from</span> <span class="nn">._model_verification</span> <span class="kn">import</span> <span class="n">checkEquation</span><span class="p">,</span> <span class="n">simplifyEquation</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_ode_composition</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ode_utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.deterministic</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeterministicOde</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.stochastic_simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">cle</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">firstReaction</span><span class="p">,</span> <span class="n">tauLeap</span><span class="p">,</span> <span class="n">hybrid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.transition</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransitionType</span><span class="p">,</span> <span class="n">Transition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._model_errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">InputError</span><span class="p">,</span> <span class="n">SimulationError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._model_verification</span><span class="w"> </span><span class="kn">import</span> <span class="n">checkEquation</span><span class="p">,</span> <span class="n">simplifyEquation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">_ode_composition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">ode_utils</span>
 
 
-<span class="k">class</span> <span class="nc">HasNewTransition</span><span class="p">(</span><span class="n">ode_utils</span><span class="o">.</span><span class="n">CompileCanary</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">HasNewTransition</span><span class="p">(</span><span class="n">ode_utils</span><span class="o">.</span><span class="n">CompileCanary</span><span class="p">):</span>
     <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ode&#39;</span><span class="p">,</span>
               <span class="s1">&#39;jacobian&#39;</span><span class="p">,</span>
               <span class="s1">&#39;diff_jacobian&#39;</span><span class="p">,</span>
@@ -435,7 +435,7 @@ document.write(`
               <span class="s2">&quot;transitionMean&quot;</span><span class="p">,</span>
               <span class="s2">&quot;transitionVar&quot;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="SimulateOde"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde">[docs]</a><span class="k">class</span> <span class="nc">SimulateOde</span><span class="p">(</span><span class="n">DeterministicOde</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulateOde"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">SimulateOde</span><span class="p">(</span><span class="n">DeterministicOde</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This builds on top of :class:`DeterministicOde` which we</span>
 <span class="sd">    simulate the outcome instead of solving it deterministically</span>
@@ -459,7 +459,7 @@ document.write(`
 
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">derived_param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -511,10 +511,10 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">add_func</span><span class="p">(</span><span class="s2">&quot;pureOdeVector&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pureOdeVector</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_func</span><span class="p">(</span><span class="s2">&quot;transitionJacobian&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_TransitionJacobian</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;SimulateOde&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_model_str</span><span class="p">()</span>
 
-<div class="viewcode-block" id="SimulateOde.exact"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.exact">[docs]</a>    <span class="k">def</span> <span class="nf">exact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">output_time</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulateOde.exact"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.exact">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">exact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">output_time</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Stochastic simulation using an exact method starting from time</span>
 <span class="sd">        t0 to t1 with the starting state values of x0</span>
@@ -537,7 +537,7 @@ document.write(`
     <span class="c1">#</span>
     <span class="c1">###########################################################################</span>
 
-<div class="viewcode-block" id="SimulateOde.cle"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.cle">[docs]</a>    <span class="k">def</span> <span class="nf">cle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">output_time</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulateOde.cle"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.cle">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">cle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">output_time</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Stochastic simulation using the CLE approximation starting from time</span>
 <span class="sd">        t0 to t1 with the starting state values of x0.  The CLE approximation</span>
@@ -559,7 +559,7 @@ document.write(`
         <span class="k">return</span><span class="p">(</span><span class="n">cle</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vMat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eventRateVector</span><span class="p">,</span>
                    <span class="n">output_time</span><span class="o">=</span><span class="n">output_time</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="SimulateOde.hybrid"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.hybrid">[docs]</a>    <span class="k">def</span> <span class="nf">hybrid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">output_time</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulateOde.hybrid"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.hybrid">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">hybrid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">output_time</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Stochastic simulation using an hybrid method that uses either the</span>
 <span class="sd">        first reaction method or the :math:`\\tau`-leap depending on the</span>
@@ -581,7 +581,7 @@ document.write(`
                       <span class="bp">self</span><span class="o">.</span><span class="n">transitionVar</span><span class="p">,</span>
                       <span class="n">output_time</span><span class="o">=</span><span class="n">output_time</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="SimulateOde.simulate_param"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.simulate_param">[docs]</a>    <span class="k">def</span> <span class="nf">simulate_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulateOde.simulate_param"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.simulate_param">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">simulate_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Simulate the ode by generating new realization of the stochastic</span>
 <span class="sd">        parameters and integrate the system deterministically.</span>
@@ -627,7 +627,7 @@ document.write(`
                         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Cannot perform parallel simulation &quot;</span>
                                         <span class="o">+</span><span class="s2">&quot;using a serialized object as distribution&quot;</span><span class="p">)</span>
                 <span class="c1"># check the type of parameter we have as input</span>
-                <span class="kn">import</span> <span class="nn">dask.bag</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">dask.bag</span>
                 <span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">):</span>
                     <span class="n">y_i</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -636,7 +636,7 @@ document.write(`
                     <span class="n">y</span> <span class="o">+=</span> <span class="p">[</span><span class="n">y_i</span><span class="p">]</span>
                 <span class="c1"># y = [rv.rvs(iteration) for rv in self._stochasticParam.values()]</span>
                 <span class="c1"># y = np.array(list(zip(*y)))</span>
-                <span class="k">def</span> <span class="nf">sim</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">sim</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">x</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
@@ -661,7 +661,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Y</span></div>
         
-<div class="viewcode-block" id="SimulateOde.solve_determ"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.solve_determ">[docs]</a>    <span class="k">def</span> <span class="nf">solve_determ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">iteration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulateOde.solve_determ"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.solve_determ">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">solve_determ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">iteration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">            Simulate the ode by generating new realization of the stochastic</span>
 <span class="sd">            parameters and integrate the system deterministically.</span>
@@ -707,7 +707,7 @@ document.write(`
                             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Cannot perform parallel simulation &quot;</span>
                                             <span class="o">+</span><span class="s2">&quot;using a serialized object as distribution&quot;</span><span class="p">)</span>
                     <span class="c1"># check the type of parameter we have as input</span>
-                    <span class="kn">import</span> <span class="nn">dask.bag</span>
+                    <span class="kn">import</span><span class="w"> </span><span class="nn">dask.bag</span>
                     <span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
                     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">):</span>
                         <span class="n">y_i</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -716,7 +716,7 @@ document.write(`
                         <span class="n">y</span> <span class="o">+=</span> <span class="p">[</span><span class="n">y_i</span><span class="p">]</span>
                     <span class="c1"># y = [rv.rvs(iteration) for rv in self._stochasticParam.values()]</span>
                     <span class="c1"># y = np.array(list(zip(*y)))</span>
-                    <span class="k">def</span> <span class="nf">sim</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                    <span class="k">def</span><span class="w"> </span><span class="nf">sim</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">x</span>
                         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
@@ -742,7 +742,7 @@ document.write(`
                 <span class="k">return</span> <span class="n">Y</span></div>
 
     <span class="c1"># Same as function below, just trying out new naming convention</span>
-<div class="viewcode-block" id="SimulateOde.solve_stochast"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.solve_stochast">[docs]</a>    <span class="k">def</span> <span class="nf">solve_stochast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="SimulateOde.solve_stochast"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.solve_stochast">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">solve_stochast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                        <span class="n">exact</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Simulate the ode using stochastic simulation.  It switches</span>
@@ -804,9 +804,9 @@ document.write(`
 
         <span class="k">if</span> <span class="n">parallel</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="kn">import</span> <span class="nn">dask.bag</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">dask.bag</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using Dask for parallel simulation&quot;</span><span class="p">)</span>
-                <span class="k">def</span> <span class="nf">jump_partial</span><span class="p">(</span><span class="n">final_t</span><span class="p">):</span> <span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump</span><span class="p">(</span><span class="n">final_t</span><span class="p">,</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">jump_partial</span><span class="p">(</span><span class="n">final_t</span><span class="p">):</span> <span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump</span><span class="p">(</span><span class="n">final_t</span><span class="p">,</span>
                                                              <span class="n">exact</span><span class="o">=</span><span class="n">exact</span><span class="p">,</span>
                                                              <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                                              <span class="n">seed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
@@ -870,7 +870,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">simXList</span></div>
 
-    <span class="k">def</span> <span class="nf">_jump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">finalT</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_jump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">finalT</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Jumps from the initial time self._t0 to the input time finalT</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -962,7 +962,7 @@ document.write(`
     <span class="c1">#</span>
     <span class="c1">###########################################################################</span>
 
-    <span class="k">def</span> <span class="nf">_extractObservationAtTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">targetTime</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extractObservationAtTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">targetTime</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Given simulation and a set of time points which we would like to</span>
 <span class="sd">        observe, we extract the observations :math:`x_{t}` with</span>
@@ -989,7 +989,7 @@ document.write(`
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X_out</span><span class="p">)</span>
     
-    <span class="k">def</span> <span class="nf">_interpolateObservationAtTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">targetTime</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_interpolateObservationAtTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">targetTime</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Given simulation and a set of time points which we would like to</span>
 <span class="sd">        observe, we interpolate the observations onto the desired grid.</span>
@@ -1019,7 +1019,7 @@ document.write(`
 
         <span class="k">return</span> <span class="n">X_out</span>
 
-    <span class="k">def</span> <span class="nf">_addJumpsBetweenTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dX</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">targetTime</span><span class="p">,</span> <span class="n">exact</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_addJumpsBetweenTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dX</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">targetTime</span><span class="p">,</span> <span class="n">exact</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Given number of events occuring at certain times find total</span>
 <span class="sd">        number of occurrances between the desired timepoints.</span>
@@ -1063,7 +1063,7 @@ document.write(`
     <span class="c1">#</span>
     <span class="c1">###########################################################################</span>
 
-<div class="viewcode-block" id="SimulateOde.get_TransitionJacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_TransitionJacobian">[docs]</a>    <span class="k">def</span> <span class="nf">get_TransitionJacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulateOde.get_TransitionJacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_TransitionJacobian">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_TransitionJacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Evaluate equation (7) from https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf</span>
 <span class="sd">        where F_[i,j] is the change in transition rate a[i], if a transition of type j occurs:</span>
@@ -1090,7 +1090,7 @@ document.write(`
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transitionJacobian</span>    </div>
 
-<div class="viewcode-block" id="SimulateOde.get_TransitionMean"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_TransitionMean">[docs]</a>    <span class="k">def</span> <span class="nf">get_TransitionMean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulateOde.get_TransitionMean"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_TransitionMean">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_TransitionMean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        This is the mean and variance of the changes in the transition rates</span>
 <span class="sd">        (aka propensity funtions) after a potential timestep:</span>
@@ -1125,7 +1125,7 @@ document.write(`
         <span class="k">return</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_transitionMean</span></div>
 
 
-<div class="viewcode-block" id="SimulateOde.get_TransitionVar"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_TransitionVar">[docs]</a>    <span class="k">def</span> <span class="nf">get_TransitionVar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulateOde.get_TransitionVar"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_TransitionVar">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_TransitionVar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        This is the mean and variance of the changes in the transition rates</span>
 <span class="sd">        (aka propensity funtions) after a potential timestep:</span>
@@ -1156,7 +1156,7 @@ document.write(`
     <span class="c1">#</span>
     <span class="c1">###########################################################################</span>
 
-<div class="viewcode-block" id="SimulateOde.total_transition"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.total_transition">[docs]</a>    <span class="k">def</span> <span class="nf">total_transition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulateOde.total_transition"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.total_transition">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">total_transition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Evaluate the total transition rate given state and time</span>
 
@@ -1185,7 +1185,7 @@ document.write(`
     <span class="c1">#       now we are dealing with more general systems.</span>
     <span class="c1">###########################################################################</span>
 
-<div class="viewcode-block" id="SimulateOde.get_unrolled_obj"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_unrolled_obj">[docs]</a>    <span class="k">def</span> <span class="nf">get_unrolled_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulateOde.get_unrolled_obj"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_unrolled_obj">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_unrolled_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns a :class:`SimulateOde` with the same state and parameters</span>
 <span class="sd">        as the current object but with the equations defined by a set of</span>
@@ -1202,7 +1202,7 @@ document.write(`
                            <span class="n">birth_death</span><span class="o">=</span><span class="n">bdList</span>
                            <span class="p">)</span></div>
 
-<div class="viewcode-block" id="SimulateOde.get_transitions_from_ode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_transitions_from_ode">[docs]</a>    <span class="k">def</span> <span class="nf">get_transitions_from_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulateOde.get_transitions_from_ode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_transitions_from_ode">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_transitions_from_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns a list of :class:`Transition` from this object by unrolling</span>
 <span class="sd">        the odes.  All the elements are of TransitionType.T</span>
@@ -1221,7 +1221,7 @@ document.write(`
 
         <span class="k">return</span> <span class="n">transition</span></div>
 
-    <span class="k">def</span> <span class="nf">_get_A</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_A</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">A</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">none_or_empty_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">):</span>
                 <span class="n">eqn_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">equation</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeList</span><span class="p">]</span>
@@ -1234,7 +1234,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">A</span>
 
-<div class="viewcode-block" id="SimulateOde.get_bd_from_ode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_bd_from_ode">[docs]</a>    <span class="k">def</span> <span class="nf">get_bd_from_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulateOde.get_bd_from_ode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.get_bd_from_ode">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_bd_from_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns a list of:class:`Transition` from this object by unrolling</span>
 <span class="sd">        the odes.  All the elements are of TransitionType.B or</span>
@@ -1271,7 +1271,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span></div>
 
-    <span class="k">def</span> <span class="nf">_generateTransitionMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span><span class="c1">#, transitionExpressionList=None):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generateTransitionMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span><span class="c1">#, transitionExpressionList=None):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Finds the transition matrix from the set of ode.  It is</span>
 <span class="sd">        important to note that although some of the functions used</span>
@@ -1287,7 +1287,7 @@ document.write(`
         <span class="n">M</span><span class="p">,</span> <span class="n">_remain</span> <span class="o">=</span> <span class="n">_ode_composition</span><span class="o">.</span><span class="n">odeToPureTransition</span><span class="p">(</span><span class="n">fx</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">M</span>
 
-<div class="viewcode-block" id="SimulateOde.plot"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sim_X</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sim_T</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulateOde.plot"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SimulateOde.plot">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sim_X</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sim_T</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Plot the results of a simulation</span>
 

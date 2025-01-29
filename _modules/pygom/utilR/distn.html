@@ -405,9 +405,9 @@ document.write(`
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">st</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">gammaln</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">gammaln</span>
 
 <span class="c1">###############################################################</span>
 <span class="c1">#</span>
@@ -417,7 +417,7 @@ document.write(`
 
 <span class="c1">##### exponential distribution</span>
 
-<div class="viewcode-block" id="dexp"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dexp">[docs]</a><span class="k">def</span> <span class="nf">dexp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="dexp"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dexp">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">dexp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html</span>
@@ -427,7 +427,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">expon</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="n">rate</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="pexp"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.pexp">[docs]</a><span class="k">def</span> <span class="nf">pexp</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="pexp"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.pexp">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">pexp</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html</span>
@@ -437,14 +437,14 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">expon</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="n">rate</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="qexp"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qexp">[docs]</a><span class="k">def</span> <span class="nf">qexp</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<div class="viewcode-block" id="qexp"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qexp">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">qexp</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">expon</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="n">rate</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="rexp"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rexp">[docs]</a><span class="k">def</span> <span class="nf">rexp</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="rexp"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rexp">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">rexp</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Exponential.html</span>
@@ -468,7 +468,7 @@ document.write(`
 
 <span class="c1">##### gamma distribution</span>
 
-<div class="viewcode-block" id="dgamma"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dgamma">[docs]</a><span class="k">def</span> <span class="nf">dgamma</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="dgamma"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dgamma">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">dgamma</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html</span>
@@ -478,7 +478,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">gamma</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="n">rate</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="gamma_mu_shape"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.gamma_mu_shape">[docs]</a><span class="k">def</span> <span class="nf">gamma_mu_shape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span><span class="n">shape</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="gamma_mu_shape"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.gamma_mu_shape">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">gamma_mu_shape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span><span class="n">shape</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    The probability density function (pdf) of gamma distrbution in terms of mean and shape. </span>
 
@@ -510,7 +510,7 @@ document.write(`
         <span class="n">ans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logpdf</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ans</span></div>
 
-<div class="viewcode-block" id="pgamma"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.pgamma">[docs]</a><span class="k">def</span> <span class="nf">pgamma</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="pgamma"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.pgamma">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">pgamma</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html</span>
@@ -520,14 +520,14 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">gamma</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="n">rate</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="qgamma"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qgamma">[docs]</a><span class="k">def</span> <span class="nf">qgamma</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<div class="viewcode-block" id="qgamma"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qgamma">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">qgamma</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">gamma</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="n">rate</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="rgamma"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rgamma">[docs]</a><span class="k">def</span> <span class="nf">rgamma</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="rgamma"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rgamma">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">rgamma</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html</span>
@@ -550,7 +550,7 @@ document.write(`
 
 <span class="c1">##### normal distribution</span>
 
-<div class="viewcode-block" id="dnorm"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dnorm">[docs]</a><span class="k">def</span> <span class="nf">dnorm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="dnorm"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dnorm">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">dnorm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html</span>
@@ -560,7 +560,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="pnorm"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.pnorm">[docs]</a><span class="k">def</span> <span class="nf">pnorm</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="pnorm"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.pnorm">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">pnorm</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html</span>
@@ -570,14 +570,14 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="qnorm"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qnorm">[docs]</a><span class="k">def</span> <span class="nf">qnorm</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="qnorm"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qnorm">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">qnorm</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="rnorm"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rnorm">[docs]</a><span class="k">def</span> <span class="nf">rnorm</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="rnorm"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rnorm">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">rnorm</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html</span>
@@ -600,7 +600,7 @@ document.write(`
 
 <span class="c1">##### Chi-squared distribution</span>
 
-<div class="viewcode-block" id="dchisq"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dchisq">[docs]</a><span class="k">def</span> <span class="nf">dchisq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="dchisq"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dchisq">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">dchisq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html</span>
@@ -610,7 +610,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="pchisq"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.pchisq">[docs]</a><span class="k">def</span> <span class="nf">pchisq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="pchisq"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.pchisq">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">pchisq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html</span>
@@ -620,14 +620,14 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">chi2</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="qchisq"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qchisq">[docs]</a><span class="k">def</span> <span class="nf">qchisq</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+<div class="viewcode-block" id="qchisq"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qchisq">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">qchisq</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">chi2</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="rchisq"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rchisq">[docs]</a><span class="k">def</span> <span class="nf">rchisq</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="rchisq"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rchisq">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">rchisq</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Chisquare.html</span>
@@ -650,7 +650,7 @@ document.write(`
 
 <span class="c1">##### Uniform distribution</span>
 
-<div class="viewcode-block" id="dunif"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dunif">[docs]</a><span class="k">def</span> <span class="nf">dunif</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="dunif"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dunif">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">dunif</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html</span>
@@ -660,7 +660,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">uniform</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="nb">max</span><span class="o">-</span><span class="nb">min</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="punif"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.punif">[docs]</a><span class="k">def</span> <span class="nf">punif</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="punif"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.punif">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">punif</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html</span>
@@ -670,14 +670,14 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">uniform</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="nb">max</span><span class="o">-</span><span class="nb">min</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="qunif"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qunif">[docs]</a><span class="k">def</span> <span class="nf">qunif</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<div class="viewcode-block" id="qunif"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qunif">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">qunif</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">uniform</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="nb">max</span><span class="o">-</span><span class="nb">min</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="runif"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.runif">[docs]</a><span class="k">def</span> <span class="nf">runif</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="runif"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.runif">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">runif</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Uniform.html</span>
@@ -706,21 +706,21 @@ document.write(`
         
 <span class="c1">##### beta distribution</span>
 <span class="c1"># To do: write these in the same format as above with seeds</span>
-<div class="viewcode-block" id="dbeta"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dbeta">[docs]</a><span class="k">def</span> <span class="nf">dbeta</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape1</span><span class="p">,</span> <span class="n">shape2</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="dbeta"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dbeta">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">dbeta</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape1</span><span class="p">,</span> <span class="n">shape2</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Beta.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">beta</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape1</span><span class="p">,</span> <span class="n">shape2</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="rbeta"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rbeta">[docs]</a><span class="k">def</span> <span class="nf">rbeta</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">shape1</span><span class="p">,</span> <span class="n">shape2</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="rbeta"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rbeta">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">rbeta</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">shape1</span><span class="p">,</span> <span class="n">shape2</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Beta.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">beta</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">shape1</span><span class="p">,</span> <span class="n">shape2</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="qbeta"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qbeta">[docs]</a><span class="k">def</span> <span class="nf">qbeta</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">shape1</span><span class="p">,</span> <span class="n">shape2</span><span class="p">):</span>
+<div class="viewcode-block" id="qbeta"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qbeta">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">qbeta</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">shape1</span><span class="p">,</span> <span class="n">shape2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Beta.html</span>
@@ -728,7 +728,7 @@ document.write(`
     <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">beta</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">shape1</span><span class="p">,</span> <span class="n">shape2</span><span class="p">)</span></div>
 
 <span class="c1">##### multivariate normal distribution</span>
-<div class="viewcode-block" id="dmvnorm"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dmvnorm">[docs]</a><span class="k">def</span> <span class="nf">dmvnorm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="dmvnorm"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dmvnorm">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">dmvnorm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://www.rdocumentation.org/packages/mvtnorm/versions/1.0-12/topics/mvnorm</span>
@@ -739,7 +739,7 @@ document.write(`
         <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="n">sigma</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="rmvnorm"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rmvnorm">[docs]</a><span class="k">def</span> <span class="nf">rmvnorm</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="rmvnorm"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rmvnorm">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">rmvnorm</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://www.rdocumentation.org/packages/mvtnorm/versions/1.0-12/topics/mvnorm</span>
@@ -754,7 +754,7 @@ document.write(`
 
 <span class="c1">##### Poisson distribution</span>
 
-<div class="viewcode-block" id="dpois"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dpois">[docs]</a><span class="k">def</span> <span class="nf">dpois</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="dpois"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dpois">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">dpois</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Poisson.html</span>
@@ -764,7 +764,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">poisson</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ppois"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.ppois">[docs]</a><span class="k">def</span> <span class="nf">ppois</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ppois"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.ppois">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">ppois</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Poisson.html</span>
@@ -774,14 +774,14 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">poisson</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="qpois"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qpois">[docs]</a><span class="k">def</span> <span class="nf">qpois</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="qpois"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qpois">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">qpois</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Poisson.html</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">poisson</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="rpois"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rpois">[docs]</a><span class="k">def</span> <span class="nf">rpois</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="rpois"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rpois">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">rpois</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Poisson.html</span>
@@ -804,7 +804,7 @@ document.write(`
 
 <span class="c1">##### Binomial distribution</span>
 
-<div class="viewcode-block" id="dbinom"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dbinom">[docs]</a><span class="k">def</span> <span class="nf">dbinom</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="dbinom"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dbinom">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">dbinom</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html</span>
@@ -814,7 +814,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">binom</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">prob</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="pbinom"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.pbinom">[docs]</a><span class="k">def</span> <span class="nf">pbinom</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="pbinom"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.pbinom">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">pbinom</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html</span>
@@ -824,14 +824,14 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">binom</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">prob</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="qbinom"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qbinom">[docs]</a><span class="k">def</span> <span class="nf">qbinom</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">):</span>
+<div class="viewcode-block" id="qbinom"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qbinom">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">qbinom</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">binom</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">prob</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="rbinom"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rbinom">[docs]</a><span class="k">def</span> <span class="nf">rbinom</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="rbinom"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.rbinom">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">rbinom</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Binomial.html</span>
@@ -853,30 +853,30 @@ document.write(`
         <span class="k">return</span> <span class="n">rvs</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">prob</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
     
 <span class="c1">##### Negitive binomial</span>
-<span class="k">def</span> <span class="nf">dnbinom</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dnbinom</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     
-<div class="viewcode-block" id="pnbinom"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.pnbinom">[docs]</a><span class="k">def</span> <span class="nf">pnbinom</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">lower_tail</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="pnbinom"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.pnbinom">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">pnbinom</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">lower_tail</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html</span>
 <span class="sd">    &#39;&#39;&#39;</span></div>
     
-<div class="viewcode-block" id="qnbinom"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qnbinom">[docs]</a><span class="k">def</span> <span class="nf">qnbinom</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">lower_tail</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="qnbinom"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.qnbinom">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">qnbinom</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">lower_tail</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html</span>
 <span class="sd">    &#39;&#39;&#39;</span></div>
     
-<span class="k">def</span> <span class="nf">rnbinom</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">rnbinom</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">pass</span>
 
 
 <span class="c1">##### Negative Binomial distribution</span>
-<div class="viewcode-block" id="nb2pmf"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.nb2pmf">[docs]</a><span class="k">def</span> <span class="nf">nb2pmf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="nb2pmf"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.nb2pmf">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">nb2pmf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    The probability mass function (pmf) of Negative Binomial 2 distribution.</span>
 <span class="sd">    This definition of the negative binomial distribution is often refered to as </span>
@@ -917,7 +917,7 @@ document.write(`
         <span class="n">ans</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logpmf</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ans</span></div>
 
-<div class="viewcode-block" id="dnbinom"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dnbinom">[docs]</a><span class="k">def</span> <span class="nf">dnbinom</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="dnbinom"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.dnbinom">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">dnbinom</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">prob</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    See</span>
 <span class="sd">    https://stat.ethz.ch/R-manual/R-devel/library/stats/html/NegBinomial.html</span>
@@ -942,7 +942,7 @@ document.write(`
     
     <span class="k">return</span> <span class="n">ans</span></div>
 
-<div class="viewcode-block" id="test_seed"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.test_seed">[docs]</a><span class="k">def</span> <span class="nf">test_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">):</span>
+<div class="viewcode-block" id="test_seed"><a class="viewcode-back" href="../../../rst/autodoc-utilR.html#pygom.utilR.test_seed">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">test_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Test the input type of `seed` and return a new random generator if</span>
 <span class="sd">    appropriate.</span>

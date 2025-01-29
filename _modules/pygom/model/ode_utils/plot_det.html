@@ -400,13 +400,13 @@ document.write(`
 <span class="sd">@author: thomas.finnie</span>
 <span class="sd">@author: edwin.tye</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">sympy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sympy</span>
 
-<span class="kn">from</span> <span class="nn">pygom.model._model_errors</span> <span class="kn">import</span> <span class="n">InputError</span>
-<span class="kn">from</span> <span class="nn">.checks_and_conversions</span> <span class="kn">import</span> <span class="n">check_array_type</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom.model._model_errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">InputError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.checks_and_conversions</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_array_type</span>
 
-<div class="viewcode-block" id="plot_det"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.plot_det">[docs]</a><span class="k">def</span> <span class="nf">plot_det</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">stateList</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">yStateList</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_det"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.plot_det">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">plot_det</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">stateList</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">yStateList</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Plot the results of the integration</span>
 
@@ -425,7 +425,7 @@ document.write(`
 <span class="sd">    that it has 3 columns.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span>
 
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">),</span> <span class="s2">&quot;Expecting an np.ndarray&quot;</span>
     <span class="c1"># if not isinstance(solution, np.ndarray):</span>

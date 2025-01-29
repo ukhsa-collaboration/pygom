@@ -481,7 +481,7 @@ The implication for the current example is that we eliminate the final equation 
 <p>Let’s set up the <a class="reference internal" href="../../rst/autodoc-model.html#pygom.model.SimulateOde" title="pygom.model.SimulateOde"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulateOde</span></code></a> object as usual:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">SimulateOde</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">TransitionType</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pygom</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulateOde</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">TransitionType</span>
 
 <span class="n">odeList</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">Transition</span><span class="p">(</span><span class="n">transition_type</span><span class="o">=</span><span class="n">TransitionType</span><span class="o">.</span><span class="n">ODE</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">equation</span><span class="o">=</span><span class="s1">&#39;-beta*S*I/(S+I+R) + B*(S+I+R) - mu*S&#39;</span><span class="p">),</span>
@@ -528,7 +528,7 @@ We can populate the transition matrix by calling an algorithm to extract the flo
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\begin{split}\displaystyle \left[\begin{matrix}-1 &amp; 0 &amp; 1 &amp; 1 &amp; 1 &amp; -1 &amp; 0 &amp; 0\\1 &amp; -1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; -1 &amp; 0\\0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; -1\end{matrix}\right]\end{split}\]</div>
+\[\begin{split}\displaystyle \left[\begin{matrix}-1 &amp; 0 &amp; 1 &amp; 1 &amp; -1 &amp; 1 &amp; 0 &amp; 0\\1 &amp; -1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; -1 &amp; 0\\0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; -1\end{matrix}\right]\end{split}\]</div>
 </div>
 </div>
 <div class="cell docutils container">
@@ -539,7 +539,7 @@ We can populate the transition matrix by calling an algorithm to extract the flo
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\begin{split}\displaystyle \left[\begin{matrix}\frac{I S \beta}{I + R + S}\\I \gamma\\B S\\B R\\B I\\S \mu\\I \mu\\R \mu\end{matrix}\right]\end{split}\]</div>
+\[\begin{split}\displaystyle \left[\begin{matrix}\frac{I S \beta}{I + R + S}\\I \gamma\\B I\\B R\\S \mu\\B S\\I \mu\\R \mu\end{matrix}\right]\end{split}\]</div>
 </div>
 </div>
 <p>Birth and death processes are not between states, rather into and out of the system and so do not appear in the transition matrix.
@@ -553,7 +553,7 @@ Alternatively, we can view the birth and death processes by inspecting a graph o
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/cfd861ac113d91913ec62cb0ddb5c0487524862e13ee7501f2d12b39b1de3fed.svg" src="../../_images/cfd861ac113d91913ec62cb0ddb5c0487524862e13ee7501f2d12b39b1de3fed.svg" /></div>
+<img alt="../../_images/8633a3d3f02419d4217194e4049e95697eb39c090483b7d63415732afb657684.svg" src="../../_images/8633a3d3f02419d4217194e4049e95697eb39c090483b7d63415732afb657684.svg" /></div>
 </div>
 </section>
 <section id="sliar-epidemic-model">
@@ -578,7 +578,7 @@ Similarly for <strong>I</strong>, the outflow, <span class="math notranslate noh
 <p>We set up the <a class="reference internal" href="../../rst/autodoc-model.html#pygom.model.SimulateOde" title="pygom.model.SimulateOde"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulateOde</span></code></a> object for this case:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">SimulateOde</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">TransitionType</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pygom</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulateOde</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">TransitionType</span>
 
 <span class="n">stateList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">]</span>
 <span class="n">paramList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;kappa&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="s1">&#39;eta&#39;</span><span class="p">]</span>

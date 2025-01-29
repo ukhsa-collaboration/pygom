@@ -410,12 +410,12 @@ document.write(`
     <span class="s1">&#39;NegBinom&#39;</span>
     <span class="p">]</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">pygom.model.ode_utils</span> <span class="kn">import</span> <span class="n">check_array_type</span>
-<span class="kn">from</span> <span class="nn">pygom.utilR.distn</span> <span class="kn">import</span> <span class="n">dpois</span><span class="p">,</span> <span class="n">gamma_mu_shape</span><span class="p">,</span> <span class="n">dnbinom</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom.model.ode_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_array_type</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom.utilR.distn</span><span class="w"> </span><span class="kn">import</span> <span class="n">dpois</span><span class="p">,</span> <span class="n">gamma_mu_shape</span><span class="p">,</span> <span class="n">dnbinom</span>
 
-<span class="k">class</span> <span class="nc">Baseloss_Type</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Baseloss_Type</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This Baseloss_Type class provides common feature to be inherited by the</span>
 <span class="sd">    loss type objects, such as Square, Normal , etc.</span>
@@ -427,7 +427,7 @@ document.write(`
 <span class="sd">    state_weight: array like</span>
 <span class="sd">        weight for the observations</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># There may be some some overlapp with these checks on weights and y within</span>
         <span class="c1"># the base loss class object in base_loss.py, thus these checks maybe redundent (unless this</span>
         <span class="c1"># module is being used without base_loss.py.</span>
@@ -448,7 +448,7 @@ document.write(`
                 <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;Input weight not of the same size as y&quot;</span>
 
-    <span class="k">def</span> <span class="nf">residual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Raw residuals returned if apply_weighting = False, else</span>
 <span class="sd">        the weighted residuals.</span>
@@ -482,7 +482,7 @@ document.write(`
 
         <span class="k">return</span> <span class="n">resid</span>
 
-<div class="viewcode-block" id="Square"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Square">[docs]</a><span class="k">class</span> <span class="nc">Square</span><span class="p">(</span><span class="n">Baseloss_Type</span><span class="p">):</span>
+<div class="viewcode-block" id="Square"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Square">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Square</span><span class="p">(</span><span class="n">Baseloss_Type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Square loss object</span>
 
@@ -492,11 +492,11 @@ document.write(`
 <span class="sd">        observations</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Square.loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Square.loss">[docs]</a>    <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Square.loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Square.loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Loss under square loss.  Not really saying much here</span>
 
@@ -514,7 +514,7 @@ document.write(`
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Square.diff_loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Square.diff_loss">[docs]</a>    <span class="k">def</span> <span class="nf">diff_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Square.diff_loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Square.diff_loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Derivative under square loss.  Assuming that we are solving</span>
 <span class="sd">        the minimization problem i.e. our objective function is the</span>
@@ -534,7 +534,7 @@ document.write(`
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Square.diff2Loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Square.diff2Loss">[docs]</a>    <span class="k">def</span> <span class="nf">diff2Loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Square.diff2Loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Square.diff2Loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff2Loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Twice derivative of the square loss.  Which is simply 2.</span>
 
@@ -559,7 +559,7 @@ document.write(`
                 <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="Normal"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Normal">[docs]</a><span class="k">class</span> <span class="nc">Normal</span><span class="p">(</span><span class="n">Baseloss_Type</span><span class="p">):</span>
+<div class="viewcode-block" id="Normal"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Normal">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Normal</span><span class="p">(</span><span class="n">Baseloss_Type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Normal distribution loss object</span>
 
@@ -570,7 +570,7 @@ document.write(`
 <span class="sd">    sigma: float</span>
 <span class="sd">        standard deviation</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
         <span class="n">err_str</span> <span class="o">=</span> <span class="s2">&quot;Standard deviation not of the correct &quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
@@ -600,7 +600,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_sigma2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span><span class="o">**</span><span class="mi">2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Normal.loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Normal.loss">[docs]</a>    <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Normal.loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Normal.loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        The loss under a normal distribution.  Defined as the</span>
 <span class="sd">        negative log-likelihood here.</span>
@@ -634,7 +634,7 @@ document.write(`
         <span class="n">logpdf_p5_alt</span> <span class="o">=</span> <span class="o">-</span><span class="n">residual</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">logpdf_p1</span><span class="o">+</span><span class="n">logpdf_p2</span><span class="o">+</span><span class="n">logpdf_p3</span><span class="o">+</span><span class="n">logpdf_p4</span><span class="o">+</span><span class="n">logpdf_p5_alt</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Normal.diff_loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Normal.diff_loss">[docs]</a>    <span class="k">def</span> <span class="nf">diff_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Normal.diff_loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Normal.diff_loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Derivative of the loss function which is</span>
 <span class="sd">        :math:`\\sigma^{-1}(y - \\hat{y})`</span>
@@ -656,7 +656,7 @@ document.write(`
         <span class="n">residual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span>
         <span class="k">return</span> <span class="o">-</span><span class="n">residual</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_sigma2</span></div>
 
-<div class="viewcode-block" id="Normal.diff2Loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Normal.diff2Loss">[docs]</a>    <span class="k">def</span> <span class="nf">diff2Loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Normal.diff2Loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Normal.diff2Loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff2Loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Twice derivative of the normal loss.</span>
 
@@ -680,7 +680,7 @@ document.write(`
                 <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_sigma2</span></div></div>
 
-<div class="viewcode-block" id="Gamma"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Gamma">[docs]</a><span class="k">class</span> <span class="nc">Gamma</span><span class="p">(</span><span class="n">Baseloss_Type</span><span class="p">):</span>
+<div class="viewcode-block" id="Gamma"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Gamma">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Gamma</span><span class="p">(</span><span class="n">Baseloss_Type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Gamma distribution loss object</span>
 
@@ -692,7 +692,7 @@ document.write(`
 <span class="sd">        shape (a in latex equations)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mf">2.0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mf">2.0</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
         <span class="n">err_str</span> <span class="o">=</span> <span class="s2">&quot;Shape is not of the correct &quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
@@ -720,7 +720,7 @@ document.write(`
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;type&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Gamma.loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Gamma.loss">[docs]</a>    <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Gamma.loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Gamma.loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        The loss under a gamma distribution.  Defined as the negative</span>
 <span class="sd">        log-likelihood of the gamma distirbution in terms of mean and shape.</span>
@@ -749,7 +749,7 @@ document.write(`
 
         <span class="k">return</span> <span class="o">-</span><span class="n">gamma_mu_shape</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">yhat</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Gamma.diff_loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Gamma.diff_loss">[docs]</a>    <span class="k">def</span> <span class="nf">diff_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Gamma.diff_loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Gamma.diff_loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Derivative of the loss function with respect to yhat which is</span>
 <span class="sd">        See:</span>
@@ -773,7 +773,7 @@ document.write(`
         <span class="n">residual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">shape</span><span class="o">*-</span><span class="n">residual</span><span class="o">/</span><span class="n">yhat</span><span class="o">**</span><span class="mi">2</span></div>
 
-<div class="viewcode-block" id="Gamma.diff2Loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Gamma.diff2Loss">[docs]</a>    <span class="k">def</span> <span class="nf">diff2Loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Gamma.diff2Loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Gamma.diff2Loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff2Loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Twice derivative of the loss function with respect to yhat.</span>
 <span class="sd">        See:</span>
@@ -800,7 +800,7 @@ document.write(`
         <span class="n">residual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">shape</span><span class="o">*</span><span class="p">(</span><span class="n">residual</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span><span class="o">/</span><span class="n">yhat</span><span class="o">**</span><span class="mi">3</span></div></div>
 
-<div class="viewcode-block" id="Poisson"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Poisson">[docs]</a><span class="k">class</span> <span class="nc">Poisson</span><span class="p">(</span><span class="n">Baseloss_Type</span><span class="p">):</span>
+<div class="viewcode-block" id="Poisson"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Poisson">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Poisson</span><span class="p">(</span><span class="n">Baseloss_Type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Poisson distribution loss object</span>
 
@@ -810,11 +810,11 @@ document.write(`
 <span class="sd">        observation</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Poisson.loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Poisson.loss">[docs]</a>    <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Poisson.loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Poisson.loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        The loss under a Poisson distribution.  Defined as the</span>
 <span class="sd">        negative log-likelihood here.</span>
@@ -840,7 +840,7 @@ document.write(`
         <span class="c1"># note that we input the standard deviation here</span>
         <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="n">dpois</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Poisson.diff_loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Poisson.diff_loss">[docs]</a>    <span class="k">def</span> <span class="nf">diff_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Poisson.diff_loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Poisson.diff_loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Derivative of the loss function, :math:`1 - y\\hat{y}^{-1}`</span>
 
@@ -864,7 +864,7 @@ document.write(`
         <span class="n">residual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="p">)</span>
         <span class="k">return</span> <span class="o">-</span><span class="n">residual</span><span class="o">/</span><span class="n">yhat</span></div>
 
-<div class="viewcode-block" id="Poisson.diff2Loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Poisson.diff2Loss">[docs]</a>    <span class="k">def</span> <span class="nf">diff2Loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Poisson.diff2Loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.Poisson.diff2Loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff2Loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Twice derivative of the Poisson loss.</span>
 
@@ -888,7 +888,7 @@ document.write(`
                 <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">/</span><span class="p">(</span><span class="n">yhat</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="NegBinom"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.NegBinom">[docs]</a><span class="k">class</span> <span class="nc">NegBinom</span><span class="p">(</span><span class="n">Baseloss_Type</span><span class="p">):</span>
+<div class="viewcode-block" id="NegBinom"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.NegBinom">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">NegBinom</span><span class="p">(</span><span class="n">Baseloss_Type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Negative Binomial distribution loss object</span>
 
@@ -899,7 +899,7 @@ document.write(`
 <span class="sd">    k: float</span>
 <span class="sd">        Overdispersion parameter (k=mean+mean(mean/variance))</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
         <span class="n">err_str</span> <span class="o">=</span> <span class="s2">&quot;k (the overdispersion parameter) is not of the correct &quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
@@ -928,7 +928,7 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span>
 
-<div class="viewcode-block" id="NegBinom.loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.NegBinom.loss">[docs]</a>    <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="NegBinom.loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.NegBinom.loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        The loss under a Negative Binomial distribution.  Defined as the</span>
 <span class="sd">        negative log-likelihood of the Negative Binomial 2 distribution.</span>
@@ -954,7 +954,7 @@ document.write(`
 
         <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="n">dnbinom</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">yhat</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="NegBinom.diff_loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.NegBinom.diff_loss">[docs]</a>    <span class="k">def</span> <span class="nf">diff_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="NegBinom.diff_loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.NegBinom.diff_loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Derivative of the loss function with respect to yhat which is</span>
 <span class="sd">        See:</span>
@@ -991,7 +991,7 @@ document.write(`
         <span class="n">first_derivs_yhat</span> <span class="o">=</span> <span class="n">k</span><span class="o">*-</span><span class="n">residual</span><span class="o">/</span><span class="p">(</span><span class="n">yhat</span><span class="o">*</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="n">yhat</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">first_derivs_yhat</span></div>
 
-<div class="viewcode-block" id="NegBinom.diff2Loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.NegBinom.diff2Loss">[docs]</a>    <span class="k">def</span> <span class="nf">diff2Loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="NegBinom.diff2Loss"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.NegBinom.diff2Loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff2Loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">apply_weighting</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Twice derivative of the loss function with respect to yhat.</span>
 <span class="sd">        See:</span>

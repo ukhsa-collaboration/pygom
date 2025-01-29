@@ -406,30 +406,30 @@ document.write(`
 
 <span class="c1"># TODO: check through these dependencies</span>
 
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">io</span>
-<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Number</span>
 
 <span class="c1"># import sympy.core.numbers</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">sympy</span>
-<span class="kn">import</span> <span class="nn">scipy.linalg</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sympy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.linalg</span>
 
-<span class="kn">from</span> <span class="nn">sympy.core.function</span> <span class="kn">import</span> <span class="n">diff</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sympy.core.function</span><span class="w"> </span><span class="kn">import</span> <span class="n">diff</span>
 
-<span class="kn">from</span> <span class="nn">.transition</span> <span class="kn">import</span> <span class="n">TransitionType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.transition</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransitionType</span>
 
-<span class="kn">from</span> <span class="nn">.base_ode_model</span> <span class="kn">import</span> <span class="n">BaseOdeModel</span>
-<span class="kn">from</span> <span class="nn">._model_errors</span> <span class="kn">import</span> <span class="n">ArrayError</span><span class="p">,</span> <span class="n">InputError</span><span class="p">,</span> \
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base_ode_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseOdeModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._model_errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayError</span><span class="p">,</span> <span class="n">InputError</span><span class="p">,</span> \
     <span class="n">IntegrationError</span><span class="p">,</span> <span class="n">InitializeError</span>
-<span class="kn">from</span> <span class="nn">._model_verification</span> <span class="kn">import</span> <span class="n">simplifyEquation</span><span class="p">,</span> <span class="n">checkEquation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._model_verification</span><span class="w"> </span><span class="kn">import</span> <span class="n">simplifyEquation</span><span class="p">,</span> <span class="n">checkEquation</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ode_utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">ode_utils</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_transition_graph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">_transition_graph</span>
 
 
-<div class="viewcode-block" id="DeterministicOde"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde">[docs]</a><span class="k">class</span> <span class="nc">DeterministicOde</span><span class="p">(</span><span class="n">BaseOdeModel</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">DeterministicOde</span><span class="p">(</span><span class="n">BaseOdeModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This contains the interface and operation</span>
 <span class="sd">    built above the already defined set of ode</span>
@@ -451,7 +451,7 @@ document.write(`
 
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">derived_param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -509,7 +509,7 @@ document.write(`
         <span class="c1"># the vector form</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_SAUtil</span> <span class="o">=</span> <span class="n">ode_utils</span><span class="o">.</span><span class="n">shapeAdjust</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_param</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">DeterministicOde</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">get_ode_eqn</span><span class="p">():</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -518,11 +518,11 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;DeterministicOde&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_model_str</span><span class="p">()</span>
     
     <span class="c1">## Funcitons  to allow pickling and unpickling      TODO: are these being utilised?</span>
-    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Grab the class&#39;s dict and remove the compiled objects</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -534,7 +534,7 @@ document.write(`
         
         <span class="k">return</span> <span class="n">state</span>
     
-    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Restore the classes state with reset of compile status</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -548,7 +548,7 @@ document.write(`
     <span class="c1">#</span>
     <span class="c1">########################################################################</span>
 
-<div class="viewcode-block" id="DeterministicOde.add_func"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.add_func">[docs]</a>    <span class="k">def</span> <span class="nf">add_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">sympy_obj_generator_func</span><span class="p">,</span> <span class="n">oT</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_master_canary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.add_func"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.add_func">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">sympy_obj_generator_func</span><span class="p">,</span> <span class="n">oT</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_master_canary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Template to add a method, called with method_name, which gives the numerical output of</span>
 <span class="sd">        compiled_fn_name, which is the compiled version of the sympy object</span>
@@ -558,7 +558,7 @@ document.write(`
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">compiled_obj_name</span><span class="o">=</span><span class="n">method_name</span><span class="o">+</span><span class="s2">&quot;Compiled&quot;</span>
 
-        <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
             <span class="c1"># Check if compiled function is being created for the first time or</span>
             <span class="c1"># corresponding canary is dead (True) indicating underlying ODE&#39;s have changed and</span>
             <span class="c1"># we need to update both the sympy and compiled objects.</span>
@@ -568,7 +568,7 @@ document.write(`
             <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compiled_obj_name</span><span class="p">)(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.add_compiled_sympy_object"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.add_compiled_sympy_object">[docs]</a>    <span class="k">def</span> <span class="nf">add_compiled_sympy_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">compiled_obj_name</span><span class="p">,</span> <span class="n">sympy_obj_generator_func</span><span class="p">,</span> <span class="n">oT</span><span class="p">,</span> <span class="n">is_master_canary</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.add_compiled_sympy_object"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.add_compiled_sympy_object">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_compiled_sympy_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">compiled_obj_name</span><span class="p">,</span> <span class="n">sympy_obj_generator_func</span><span class="p">,</span> <span class="n">oT</span><span class="p">,</span> <span class="n">is_master_canary</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Take sympy_obj_generator_func</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -592,7 +592,7 @@ document.write(`
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
 
         <span class="c1"># Wrap the compiled object</span>
-        <span class="k">def</span> <span class="nf">comp_obj</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">comp_obj</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">compiled_obj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getEvalParam</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
         <span class="c1"># Add this as an attribute in the right place</span>
@@ -612,7 +612,7 @@ document.write(`
     <span class="c1">#</span>
     <span class="c1">########################################################################</span>
 
-<div class="viewcode-block" id="DeterministicOde.get_ode_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_ode_eqn">[docs]</a>    <span class="k">def</span> <span class="nf">get_ode_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.get_ode_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_ode_eqn">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_ode_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Build the algebraic system of ODE&#39;s given the transitions and events.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -670,7 +670,7 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ode</span></div>
 
     <span class="c1"># TODO: check and see whether it is linear correctly!</span>
-<div class="viewcode-block" id="DeterministicOde.linear_ode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.linear_ode">[docs]</a>    <span class="k">def</span> <span class="nf">linear_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.linear_ode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.linear_ode">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">linear_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        To check whether the input ode is linear</span>
 
@@ -708,13 +708,13 @@ document.write(`
     <span class="c1"># jacobian is actually singular, i.e. if it can be a DAE</span>
     <span class="c1"># def canDAE(self,x0,t0):</span>
 
-<div class="viewcode-block" id="DeterministicOde.ode_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_T">[docs]</a>    <span class="k">def</span> <span class="nf">ode_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.ode_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">ode_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`ode` but with t as the first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.print_ode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.print_ode">[docs]</a>    <span class="k">def</span> <span class="nf">print_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latex_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.print_ode"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.print_ode">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">print_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latex_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Prints the ode in symbolic form onto the screen/console in actual</span>
 <span class="sd">        symbols rather than the word of the symbol.</span>
@@ -738,7 +738,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sympy</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">(</span><span class="n">B</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.get_transition_graph"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_transition_graph">[docs]</a>    <span class="k">def</span> <span class="nf">get_transition_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.get_transition_graph"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_transition_graph">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_transition_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns the transition graph using graphviz</span>
 
@@ -756,8 +756,8 @@ document.write(`
         <span class="c1"># dot = _ode_composition.generateTransitionGraph(self, file_name)</span>
         <span class="n">dot</span> <span class="o">=</span> <span class="n">_transition_graph</span><span class="o">.</span><span class="n">generateTransitionGraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">matplotlib.image</span> <span class="k">as</span> <span class="nn">mpimg</span>
-            <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.image</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpimg</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
             <span class="n">img</span> <span class="o">=</span> <span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">dot</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="s2">&quot;png&quot;</span><span class="p">)))</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -772,7 +772,7 @@ document.write(`
     <span class="c1">#</span>
     <span class="c1">########################################################################</span>
 
-<div class="viewcode-block" id="DeterministicOde.is_stiff"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.is_stiff">[docs]</a>    <span class="k">def</span> <span class="nf">is_stiff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.is_stiff"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.is_stiff">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_stiff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Test on the eigenvalues of the jacobian.  We classify the</span>
 <span class="sd">        problem as stiff if any of the eigenvalues are positive</span>
@@ -794,7 +794,7 @@ document.write(`
         <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jacobian_eigenvalue</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">e</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.jacobian_eigenvalue"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.jacobian_eigenvalue">[docs]</a>    <span class="k">def</span> <span class="nf">jacobian_eigenvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.jacobian_eigenvalue"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.jacobian_eigenvalue">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian_eigenvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Find out the eigenvalues of the jacobian given state and time. If</span>
 <span class="sd">        None is given, the initial values are used.</span>
@@ -822,7 +822,7 @@ document.write(`
 
         <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">J</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.get_jacobian_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_jacobian_eqn">[docs]</a>    <span class="k">def</span> <span class="nf">get_jacobian_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.get_jacobian_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_jacobian_eqn">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_jacobian_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns the jacobian in algebraic form</span>
 
@@ -849,7 +849,7 @@ document.write(`
 
     <span class="c1">######  the sum of jacobian, i.e a_{i} = \sum_{j=1}^{d} J_{i,j}</span>
 
-<div class="viewcode-block" id="DeterministicOde.sens_jacobian_state"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.sens_jacobian_state">[docs]</a>    <span class="k">def</span> <span class="nf">sens_jacobian_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.sens_jacobian_state"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.sens_jacobian_state">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sens_jacobian_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Evaluate the jacobian of the sensitivity w.r.t. the</span>
 <span class="sd">        state given state and time</span>
@@ -876,7 +876,7 @@ document.write(`
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_sens_jacobian_state</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span> <span class="n">sens</span><span class="o">=</span><span class="n">sens</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.eval_sens_jacobian_state"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_sens_jacobian_state">[docs]</a>    <span class="k">def</span> <span class="nf">eval_sens_jacobian_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sens</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.eval_sens_jacobian_state"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_sens_jacobian_state">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">eval_sens_jacobian_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sens</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Evaluate the jacobian of the sensitivities w.r.t the states given</span>
 <span class="sd">        parameters, state and time. An extension of :meth:`.sens_jacobian_state`</span>
@@ -919,7 +919,7 @@ document.write(`
 
     <span class="c1">############################## derivative of jacobian</span>
 
-<div class="viewcode-block" id="DeterministicOde.get_diff_jacobian_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_diff_jacobian_eqn">[docs]</a>    <span class="k">def</span> <span class="nf">get_diff_jacobian_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.get_diff_jacobian_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_diff_jacobian_eqn">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_diff_jacobian_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns the jacobian differentiate w.r.t. states in algebraic form</span>
 
@@ -958,25 +958,25 @@ document.write(`
     
     <span class="c1"># Some additional maybe not necessary functions....</span>
 
-<div class="viewcode-block" id="DeterministicOde.jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.jacobian_T">[docs]</a>    <span class="k">def</span> <span class="nf">jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.jacobian_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`jacobian` but with t as first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">jacobian</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_Jacobian_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_Jacobian_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evalJacobian_NoCheck</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_JacobianT_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_JacobianT_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian_NoCheck</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
 
-<div class="viewcode-block" id="DeterministicOde.sens_jacobian_state_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.sens_jacobian_state_T">[docs]</a>    <span class="k">def</span> <span class="nf">sens_jacobian_state_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.sens_jacobian_state_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.sens_jacobian_state_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sens_jacobian_state_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`sens_jacobian_state_T` but with t as first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sens_jacobian_state</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.diff_jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.diff_jacobian_T">[docs]</a>    <span class="k">def</span> <span class="nf">diff_jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.diff_jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.diff_jacobian_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diff_jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`diff_jacobian` but with t as first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -989,7 +989,7 @@ document.write(`
     <span class="c1">#</span>
     <span class="c1">########################################################################</span>
 
-<div class="viewcode-block" id="DeterministicOde.get_grad_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_grad_eqn">[docs]</a>    <span class="k">def</span> <span class="nf">get_grad_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.get_grad_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_grad_eqn">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_grad_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Return the gradient of the ode in algebraic form</span>
 
@@ -1013,7 +1013,7 @@ document.write(`
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Grad</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.grad_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.grad_T">[docs]</a>    <span class="k">def</span> <span class="nf">grad_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.grad_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.grad_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">grad_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`grad_T` but with t as first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -1023,7 +1023,7 @@ document.write(`
     <span class="c1"># jacobian of the Gradiant</span>
     <span class="c1">#</span>
 
-<div class="viewcode-block" id="DeterministicOde.get_grad_jacobian_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_grad_jacobian_eqn">[docs]</a>    <span class="k">def</span> <span class="nf">get_grad_jacobian_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.get_grad_jacobian_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_grad_jacobian_eqn">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_grad_jacobian_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Return the jacobian of the gradient in algebraic form</span>
 
@@ -1052,7 +1052,7 @@ document.write(`
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GradJacobian</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.grad_jacobianT"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.grad_jacobianT">[docs]</a>    <span class="k">def</span> <span class="nf">grad_jacobianT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.grad_jacobianT"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.grad_jacobianT">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">grad_jacobianT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`grad_jacobian` but with t as first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -1064,7 +1064,7 @@ document.write(`
     <span class="c1">#</span>
     <span class="c1">########################################################################</span>
 
-<div class="viewcode-block" id="DeterministicOde.get_hessian_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_hessian_eqn">[docs]</a>    <span class="k">def</span> <span class="nf">get_hessian_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.get_hessian_eqn"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.get_hessian_eqn">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_hessian_eqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Return the Hessian of the ode in algebraic form</span>
 
@@ -1102,7 +1102,7 @@ document.write(`
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Hessian</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.hessian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.hessian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.hessian">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the hessian given state and time</span>
 
@@ -1125,7 +1125,7 @@ document.write(`
         <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_hessian</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">for</span> <span class="n">H</span> <span class="ow">in</span> <span class="n">A</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.eval_hessian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_hessian">[docs]</a>    <span class="k">def</span> <span class="nf">eval_hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.eval_hessian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_hessian">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">eval_hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Evaluate the hessian given parameters, state and time. An extension</span>
 <span class="sd">        of :meth:`hessian` but now also include the parameters.</span>
@@ -1176,7 +1176,7 @@ document.write(`
                 <span class="n">H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_HessianWithParam</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">eval_param</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">H</span></div>
 
-    <span class="k">def</span> <span class="nf">_computeHessianParam</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_computeHessianParam</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_Hessian</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_hessian_eqn</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_HessianWithParam</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Hessian</span><span class="p">)</span>
@@ -1192,14 +1192,14 @@ document.write(`
     <span class="c1">########################################################################</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Return the initial state values</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x0</span>
 
     <span class="nd">@initial_state</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Set the initial state values</span>
 
@@ -1229,14 +1229,14 @@ document.write(`
                             <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x0</span><span class="p">))</span><span class="o">+</span> <span class="s2">&quot; detected&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">initial_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initial_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Return the initial time</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t0</span>
 
     <span class="nd">@initial_time</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">initial_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initial_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Set the initial time</span>
 
@@ -1267,14 +1267,14 @@ document.write(`
             <span class="k">raise</span> <span class="n">InitializeError</span><span class="p">(</span><span class="n">err_str</span> <span class="o">+</span> <span class="s2">&quot;numeric value&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">initial_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initial_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns the initial values, both time and state as a tuple (x0, t0)</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_time</span><span class="p">)</span>
 
     <span class="nd">@initial_values</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">initial_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0t0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initial_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0t0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Set the initial values, both time and state</span>
 
@@ -1288,7 +1288,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_state</span> <span class="o">=</span> <span class="n">x0t0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_time</span> <span class="o">=</span> <span class="n">x0t0</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-<div class="viewcode-block" id="DeterministicOde.integrate"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.integrate">[docs]</a>    <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.integrate"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.integrate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Integrate over a range of t when t is an array and a output at time t</span>
 
@@ -1311,7 +1311,7 @@ document.write(`
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span><span class="p">,</span> <span class="n">full_output</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.integrate2"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.integrate2">[docs]</a>    <span class="k">def</span> <span class="nf">integrate2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.integrate2"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.integrate2">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">integrate2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Integrate over a range of t when t is an array and a output</span>
 <span class="sd">        at time t.  Select a suitable method to integrate when</span>
@@ -1342,7 +1342,7 @@ document.write(`
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrate2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span><span class="p">,</span> <span class="n">full_output</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_setIntegrateTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setIntegrateTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Set the full set of integration time including the origin</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -1362,7 +1362,7 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_odeTime</span> <span class="o">=</span> <span class="n">t</span>
 
-    <span class="k">def</span> <span class="nf">_integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Integrate using :class:`scipy.integrate.odeint` underneath</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -1378,7 +1378,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span>
 
-    <span class="k">def</span> <span class="nf">_integrate2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_integrate2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Integrate using :class:`scipy.integrate.ode` underneath</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -1398,7 +1398,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_odeSolution</span>
 
-<div class="viewcode-block" id="DeterministicOde.plot"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.plot"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.plot">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Plot the results of the integration</span>
 
@@ -1426,18 +1426,18 @@ document.write(`
     <span class="c1"># state</span>
     <span class="c1">########################################################################</span>
 
-    <span class="k">def</span> <span class="nf">_addTimeEvalParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_param</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_addTimeEvalParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_param</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
         <span class="n">eval_param</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">eval_param</span>
 
-    <span class="k">def</span> <span class="nf">_addStateEvalParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_param</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_addStateEvalParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_param</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DeterministicOde</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">state</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">eval_param</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span>
 
         <span class="k">return</span> <span class="n">eval_param</span>
 
-    <span class="k">def</span> <span class="nf">_getEvalParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_getEvalParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InputError</span><span class="p">(</span><span class="s2">&quot;Have to input both state and time&quot;</span><span class="p">)</span>
 
@@ -1471,7 +1471,7 @@ document.write(`
     <span class="c1">#</span>
     <span class="c1">########################################################################</span>
 
-<div class="viewcode-block" id="DeterministicOde.sensitivity"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.sensitivity">[docs]</a>    <span class="k">def</span> <span class="nf">sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sens</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">by_state</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.sensitivity"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.sensitivity">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sens</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">by_state</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the sensitivity given state and time.  The default is to</span>
 <span class="sd">        output the values by parameters, i.e. :math:`s_{i},\\ldots,s_{i+n}` are</span>
@@ -1510,13 +1510,13 @@ document.write(`
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_sensitivity</span><span class="p">(</span><span class="n">S</span><span class="o">=</span><span class="n">S</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span> <span class="n">by_state</span><span class="o">=</span><span class="n">by_state</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.sensitivity_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.sensitivity_T">[docs]</a>    <span class="k">def</span> <span class="nf">sensitivity_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">sens</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">by_state</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.sensitivity_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.sensitivity_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivity_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">sens</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">by_state</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`sensitivity` but with t as first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensitivity</span><span class="p">(</span><span class="n">sens</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">by_state</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.eval_sensitivity"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_sensitivity">[docs]</a>    <span class="k">def</span> <span class="nf">eval_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">by_state</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.eval_sensitivity"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_sensitivity">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">eval_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">by_state</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the sensitivity given state and time</span>
 
@@ -1562,7 +1562,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SAUtil</span><span class="o">.</span><span class="n">matToVecSens</span><span class="p">(</span><span class="n">A</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivity"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivity">[docs]</a>    <span class="k">def</span> <span class="nf">ode_and_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">by_state</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivity"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivity">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">ode_and_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">by_state</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Evaluate the sensitivity given state and time</span>
 
@@ -1608,13 +1608,13 @@ document.write(`
         <span class="n">out2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensitivity</span><span class="p">(</span><span class="n">sens</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">by_state</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out1</span><span class="p">,</span> <span class="n">out2</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivity_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivity_T">[docs]</a>    <span class="k">def</span> <span class="nf">ode_and_sensitivity_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">by_state</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivity_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivity_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">ode_and_sensitivity_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">by_state</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`ode_and_sensitivity` but with t as first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode_and_sensitivity</span><span class="p">(</span><span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">by_state</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivity_jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivity_jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">ode_and_sensitivity_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">by_state</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivity_jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivity_jacobian">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">ode_and_sensitivity_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">by_state</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Evaluate the sensitivity given state and time.  Output a block</span>
 <span class="sd">        diagonal sparse matrix as default.</span>
@@ -1685,7 +1685,7 @@ document.write(`
             <span class="p">[</span><span class="n">sensJacobianOfState</span><span class="p">,</span> <span class="n">outJ</span><span class="p">]</span>
         <span class="p">]))</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivity_jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivity_jacobian_T">[docs]</a>    <span class="k">def</span> <span class="nf">ode_and_sensitivity_jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">by_state</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivity_jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivity_jacobian_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">ode_and_sensitivity_jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">by_state</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`ode_and_sensitivity_jacobian` but with t as</span>
 <span class="sd">        first parameter</span>
@@ -1699,7 +1699,7 @@ document.write(`
     <span class="c1">#</span>
     <span class="c1">########################################################################</span>
 
-<div class="viewcode-block" id="DeterministicOde.sensitivityIV"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.sensitivityIV">[docs]</a>    <span class="k">def</span> <span class="nf">sensitivityIV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensIV</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.sensitivityIV"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.sensitivityIV">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivityIV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensIV</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the sensitivity which include the initial values as</span>
 <span class="sd">        our parameters given state and time.  The default is to</span>
@@ -1739,13 +1739,13 @@ document.write(`
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_sensitivityIV</span><span class="p">(</span><span class="n">S</span><span class="o">=</span><span class="n">S</span><span class="p">,</span> <span class="n">IV</span><span class="o">=</span><span class="n">IV</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.sensitivityIV_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.sensitivityIV_T">[docs]</a>    <span class="k">def</span> <span class="nf">sensitivityIV_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">sensIV</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.sensitivityIV_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.sensitivityIV_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sensitivityIV_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">sensIV</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`sensitivityIV` but with t as first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensitivityIV</span><span class="p">(</span><span class="n">sensIV</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.eval_sensitivityIV"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_sensitivityIV">[docs]</a>    <span class="k">def</span> <span class="nf">eval_sensitivityIV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">IV</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.eval_sensitivityIV"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_sensitivityIV">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">eval_sensitivityIV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">IV</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the sensitivity with initial values given</span>
 <span class="sd">        state and time</span>
@@ -1797,7 +1797,7 @@ document.write(`
         <span class="c1"># we want to output by parameters</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SAUtil</span><span class="o">.</span><span class="n">matToVecSens</span><span class="p">(</span><span class="n">A</span><span class="p">),</span> <span class="n">B</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivityIV"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivityIV">[docs]</a>    <span class="k">def</span> <span class="nf">ode_and_sensitivityIV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivityIV"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivityIV">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">ode_and_sensitivityIV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Evaluate the sensitivity given state and time</span>
 
@@ -1837,13 +1837,13 @@ document.write(`
         <span class="n">out2</span><span class="p">,</span><span class="n">out3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensitivityIV</span><span class="p">(</span><span class="n">sens_iv</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out1</span><span class="p">,</span> <span class="n">out2</span><span class="p">),</span> <span class="n">out3</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivityIV_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivityIV_T">[docs]</a>    <span class="k">def</span> <span class="nf">ode_and_sensitivityIV_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivityIV_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivityIV_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">ode_and_sensitivityIV_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`ode_and_sensitivityIV` but with t as first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode_and_sensitivityIV</span><span class="p">(</span><span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivityIV_jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivityIV_jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">ode_and_sensitivityIV_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivityIV_jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivityIV_jacobian">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">ode_and_sensitivityIV_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Evaluate the sensitivity given state and time.  Output a block</span>
 <span class="sd">        diagonal sparse matrix as default.</span>
@@ -1911,7 +1911,7 @@ document.write(`
                 <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nS</span><span class="o">*</span><span class="n">nS</span><span class="p">,</span> <span class="n">nS</span><span class="o">*</span><span class="n">nP</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">nS</span><span class="p">),</span> <span class="n">J</span><span class="p">)]</span>
             <span class="p">]))</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivityIV_jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivityIV_jacobian_T">[docs]</a>    <span class="k">def</span> <span class="nf">ode_and_sensitivityIV_jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.ode_and_sensitivityIV_jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_sensitivityIV_jacobian_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">ode_and_sensitivityIV_jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`ode_and_sensitivityIV_jacobian` but with t as</span>
 <span class="sd">        first parameter</span>
@@ -1924,7 +1924,7 @@ document.write(`
     <span class="c1">#</span>
     <span class="c1">############################################################################</span>
 
-<div class="viewcode-block" id="DeterministicOde.adjoint_interpolate"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint_interpolate">[docs]</a>    <span class="k">def</span> <span class="nf">adjoint_interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">interpolant</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.adjoint_interpolate"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint_interpolate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">adjoint_interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">interpolant</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Compute the adjoint given the adjoint vector, time, the functions</span>
 <span class="sd">        which was used to interpolate the state variable</span>
@@ -1952,22 +1952,22 @@ document.write(`
         <span class="n">state_param</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">interpolant</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjoint</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.adjoint_interpolate_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint_interpolate_T">[docs]</a>    <span class="k">def</span> <span class="nf">adjoint_interpolate_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">interpolant</span><span class="p">,</span> <span class="n">objInput</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.adjoint_interpolate_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint_interpolate_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">adjoint_interpolate_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">interpolant</span><span class="p">,</span> <span class="n">objInput</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`adjoint_interpolate` but with t as first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjoint_interpolate</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">interpolant</span><span class="p">,</span> <span class="n">objInput</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_adjointInterpolate_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_adjointInterpolate_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span>
                                     <span class="n">interpolant</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">state_param</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">interpolant</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_adjoint_NoCheck</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_adjointInterpolateT_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_adjointInterpolateT_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span>
                                      <span class="n">interpolant</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_adjoint_NoCheck</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">interpolant</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
 
-<div class="viewcode-block" id="DeterministicOde.adjoint"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint">[docs]</a>    <span class="k">def</span> <span class="nf">adjoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.adjoint"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">adjoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Compute the adjoint given the adjoint vector, time, state variable</span>
 <span class="sd">        and the objective function.  Note that this function is very</span>
@@ -2010,23 +2010,23 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="n">J</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_adjoint_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_adjoint_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Jacobian_NoCheck</span><span class="p">(</span><span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="o">-</span><span class="n">J</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="n">J</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_adjoinT_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_adjoinT_NoCheck</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_adjoint_NoCheck</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
 
-<div class="viewcode-block" id="DeterministicOde.adjoint_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint_T">[docs]</a>    <span class="k">def</span> <span class="nf">adjoint_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.adjoint_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">adjoint_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`adjoint` but with t as first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjoint</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.adjoint_jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint_jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">adjoint_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.adjoint_jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint_jacobian">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">adjoint_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Compute the jacobian of the adjoint given the adjoint vector, time,</span>
 <span class="sd">        state variable and the objective function.  This is simply the same</span>
@@ -2066,14 +2066,14 @@ document.write(`
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">jacobian</span><span class="p">(</span><span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.adjoint_jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint_jacobian_T">[docs]</a>    <span class="k">def</span> <span class="nf">adjoint_jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.adjoint_jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint_jacobian_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">adjoint_jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`adjoint_jacobian_T` but with t being the</span>
 <span class="sd">        first parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjoint_jacobian</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.adjoint_interpolate_jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint_interpolate_jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">adjoint_interpolate_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span>
+<div class="viewcode-block" id="DeterministicOde.adjoint_interpolate_jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint_interpolate_jacobian">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">adjoint_interpolate_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span>
                                      <span class="n">interpolant</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Compute the Jacobian of the adjoint given the adjoint vector, time,</span>
@@ -2114,7 +2114,7 @@ document.write(`
         <span class="n">state_param</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">interpolant</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjoint_jacobian</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.adjoint_interpolate_jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint_interpolate_jacobian_T">[docs]</a>    <span class="k">def</span> <span class="nf">adjoint_interpolate_jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">interpolant</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.adjoint_interpolate_jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.adjoint_interpolate_jacobian_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">adjoint_interpolate_jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">interpolant</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`adjoint_interpolate_jacobian` but with t as</span>
 <span class="sd">        first parameter</span>
@@ -2128,7 +2128,7 @@ document.write(`
     <span class="c1">#</span>
     <span class="c1">########################################################################</span>
 
-<div class="viewcode-block" id="DeterministicOde.forwardforward"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.forwardforward">[docs]</a>    <span class="k">def</span> <span class="nf">forwardforward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ff</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.forwardforward"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.forwardforward">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">forwardforward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ff</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Evaluate a single :math:`f(x)` of the forward-forward sensitivities</span>
 
@@ -2157,14 +2157,14 @@ document.write(`
         <span class="n">FF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SAUtil</span><span class="o">.</span><span class="n">vecToMatFF</span><span class="p">(</span><span class="n">ff</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_forwardforward</span><span class="p">(</span><span class="n">FF</span><span class="o">=</span><span class="n">FF</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="n">S</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.forwardforward_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.forwardforward_T">[docs]</a>    <span class="k">def</span> <span class="nf">forwardforward_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">ff</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.forwardforward_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.forwardforward_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">forwardforward_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">ff</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`forwardforward` but with t as the first</span>
 <span class="sd">        parameter</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">forwardforward</span><span class="p">(</span><span class="n">ff</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.eval_forwardforward"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_forwardforward">[docs]</a>    <span class="k">def</span> <span class="nf">eval_forwardforward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">FF</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.eval_forwardforward"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.eval_forwardforward">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">eval_forwardforward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">FF</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Evaluate a single f(x) of the forward-forward sensitivities</span>
 
@@ -2200,7 +2200,7 @@ document.write(`
         <span class="c1"># each of the vectorized matrix one after another</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SAUtil</span><span class="o">.</span><span class="n">matToVecFF</span><span class="p">(</span><span class="n">outFF</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.ode_and_forwardforward"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_forwardforward">[docs]</a>    <span class="k">def</span> <span class="nf">ode_and_forwardforward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.ode_and_forwardforward"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_forwardforward">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">ode_and_forwardforward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Evaluate a single f(x) of the ode and the</span>
 <span class="sd">        forward-forward sensitivities</span>
@@ -2241,7 +2241,7 @@ document.write(`
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out1</span><span class="p">,</span> <span class="n">out2</span><span class="p">),</span> <span class="n">out3</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.ode_and_forwardforward_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_forwardforward_T">[docs]</a>    <span class="k">def</span> <span class="nf">ode_and_forwardforward_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.ode_and_forwardforward_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_forwardforward_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">ode_and_forwardforward_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`odeAndForwardForward` but with time</span>
 <span class="sd">        as the first input</span>
@@ -2249,7 +2249,7 @@ document.write(`
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode_and_forwardforward</span><span class="p">(</span><span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.ode_and_forwardforward_jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_forwardforward_jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">ode_and_forwardforward_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.ode_and_forwardforward_jacobian"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_forwardforward_jacobian">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">ode_and_forwardforward_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_param</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Return the jacobian after evaluation given the input</span>
 <span class="sd">        of the state and the forward forward sensitivities</span>
@@ -2284,7 +2284,7 @@ document.write(`
         <span class="c1"># forward forward sensitivities</span>
         <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">block_diag</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">outJS</span><span class="p">,</span> <span class="n">outJFF</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeterministicOde.ode_and_forwardforward_jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_forwardforward_jacobian_T">[docs]</a>    <span class="k">def</span> <span class="nf">ode_and_forwardforward_jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">):</span>
+<div class="viewcode-block" id="DeterministicOde.ode_and_forwardforward_jacobian_T"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DeterministicOde.ode_and_forwardforward_jacobian_T">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">ode_and_forwardforward_jacobian_T</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_param</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Same as :meth:`ode_and_forwardforward_jacobian` but</span>
 <span class="sd">        with t being the first parameters</span>

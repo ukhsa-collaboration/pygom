@@ -399,11 +399,11 @@ document.write(`
 
 <span class="sd">@author: thomas.finnie</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span>
 
-<span class="k">def</span> <span class="nf">get_rows_cols</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_rows_cols</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Calculates a pleasing layout for subplots</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -414,7 +414,7 @@ document.write(`
                     <span class="p">}</span>
     <span class="k">return</span> <span class="n">rows_and_cols</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">n</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)),</span> <span class="mi">3</span><span class="p">))</span>
 
-<span class="k">def</span> <span class="nf">get_subplot_num</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_subplot_num</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Given a particular number of columns work out where a plot will go</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -423,7 +423,7 @@ document.write(`
     <span class="k">return</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">n</span> <span class="o">/</span> <span class="n">cols</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">#get the row</span>
             <span class="p">(((</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">cols</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="c1">#get the col</span>
 
-<span class="k">def</span> <span class="nf">plot_state</span><span class="p">(</span><span class="n">sim_x</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_state</span><span class="p">(</span><span class="n">sim_x</span><span class="p">,</span>
                <span class="n">sim_t</span><span class="p">,</span>
                <span class="n">sub_plot</span><span class="p">,</span>
                <span class="n">i</span><span class="p">,</span>
@@ -440,7 +440,7 @@ document.write(`
                                <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
         <span class="n">sub_plot</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">state_name</span><span class="p">)</span>
 
-<div class="viewcode-block" id="plot_stoc"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.plot_stoc">[docs]</a><span class="k">def</span> <span class="nf">plot_stoc</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_stoc"><a class="viewcode-back" href="../../../../rst/autodoc-model.html#pygom.model.plot_stoc">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">plot_stoc</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">stochastic_model</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Plot the results of a stocastic simulation</span>
 

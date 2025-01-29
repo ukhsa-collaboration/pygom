@@ -400,16 +400,16 @@ document.write(`
 
 <span class="sd">@author: Jonathan.Carruthers</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">st</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span>
-<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">signature</span>
 
-<span class="kn">from</span> <span class="nn">pygom.utilR</span> <span class="kn">import</span> <span class="n">dmvnorm</span><span class="p">,</span> <span class="n">rmvnorm</span>
-<span class="kn">from</span> <span class="nn">pygom.loss.ode_loss</span> <span class="kn">import</span> <span class="n">SquareLoss</span><span class="p">,</span> <span class="n">NormalLoss</span><span class="p">,</span> <span class="n">PoissonLoss</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom.utilR</span><span class="w"> </span><span class="kn">import</span> <span class="n">dmvnorm</span><span class="p">,</span> <span class="n">rmvnorm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom.loss.ode_loss</span><span class="w"> </span><span class="kn">import</span> <span class="n">SquareLoss</span><span class="p">,</span> <span class="n">NormalLoss</span><span class="p">,</span> <span class="n">PoissonLoss</span>
 
 <span class="sd">&quot;&quot;&quot; v7: - allowing us to specify a constraint on initial conditions when inferring initial conditions &quot;&quot;&quot;</span>
 <span class="sd">&quot;&quot;&quot; v8: 15-04-2020</span>
@@ -425,20 +425,20 @@ document.write(`
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1">#%%</span>
-<span class="k">def</span> <span class="nf">_log_limits</span><span class="p">(</span><span class="n">par</span><span class="p">,</span> <span class="n">logscale</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_log_limits</span><span class="p">(</span><span class="n">par</span><span class="p">,</span> <span class="n">logscale</span><span class="p">):</span>
     <span class="c1"># used in plot_scatter to convert axis limits from a log-scale if necessary</span>
     <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">logscale</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">par</span><span class="o">.</span><span class="n">logscale</span><span class="p">):</span>
        <span class="k">return</span> <span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="n">par</span><span class="o">.</span><span class="n">prior_low</span><span class="p">,</span> <span class="mi">10</span><span class="o">**</span><span class="n">par</span><span class="o">.</span><span class="n">prior_high</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
        <span class="k">return</span> <span class="n">par</span><span class="o">.</span><span class="n">prior_low</span><span class="p">,</span> <span class="n">par</span><span class="o">.</span><span class="n">prior_high</span>
 
-<span class="k">def</span> <span class="nf">get_length</span><span class="p">(</span><span class="n">attr</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_length</span><span class="p">(</span><span class="n">attr</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span><span class="s2">&quot;__len__&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">0</span>
     
-<span class="k">def</span> <span class="nf">_get_target_parameters</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span><span class="n">target</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_target_parameters</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span><span class="n">target</span><span class="p">):</span>
     <span class="c1"># used to separate target_param from a single list of parameters  </span>
     <span class="n">target_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">parameters</span> <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">target</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -446,7 +446,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">target_list</span>
     
-<span class="k">def</span> <span class="nf">_get_target_states</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span><span class="n">target</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_target_states</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span><span class="n">target</span><span class="p">):</span>
     <span class="c1"># used to separate and re-order target_state from a single list of parameters</span>
     <span class="n">parameter_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">parameter</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">]</span>
     <span class="n">target_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">tar</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">tar</span> <span class="ow">in</span> <span class="n">target</span> <span class="k">if</span> <span class="n">tar</span> <span class="ow">in</span> <span class="n">parameter_names</span><span class="p">]</span>
@@ -455,7 +455,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">target_list</span>
     
-<div class="viewcode-block" id="get_function"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.get_function">[docs]</a><span class="k">def</span> <span class="nf">get_function</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span> 
+<div class="viewcode-block" id="get_function"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.get_function">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_function</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span> 
     <span class="c1"># gets a function from a string for a distribution - is there a better way to write this?</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
@@ -471,13 +471,13 @@ document.write(`
     <span class="k">except</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;The chosen distribution is not available, please choose a different one&quot;</span><span class="p">)</span></div>
 
-<span class="k">def</span> <span class="nf">_get_sigma</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">res</span><span class="p">,</span><span class="n">weights</span><span class="p">,</span><span class="n">indices</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_sigma</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">res</span><span class="p">,</span><span class="n">weights</span><span class="p">,</span><span class="n">indices</span><span class="p">):</span>
         <span class="n">diff</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">-</span> <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,ik,i-&gt;jk&#39;</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
 
 <span class="c1">#%%</span>
 <span class="sd">&quot;&quot;&quot; Parameter class&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Parameter"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.Parameter">[docs]</a><span class="k">class</span> <span class="nc">Parameter</span><span class="p">():</span>
+<div class="viewcode-block" id="Parameter"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.Parameter">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Parameter</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -486,7 +486,7 @@ document.write(`
 <span class="sd">    distpars: parameters of the chosen prior distribution</span>
 <span class="sd">    logscale: bool specifying whether parameter should be sampled on a log scale</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">distname</span><span class="p">,</span> <span class="o">*</span><span class="n">distpars</span><span class="p">,</span> <span class="n">logscale</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">distname</span><span class="p">,</span> <span class="o">*</span><span class="n">distpars</span><span class="p">,</span> <span class="n">logscale</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prior_distribution</span> <span class="o">=</span> <span class="n">distname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prior_rvs</span> <span class="o">=</span> <span class="n">get_function</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="o">+</span><span class="n">distname</span><span class="p">)</span>
@@ -508,13 +508,13 @@ document.write(`
         <span class="k">assert</span> <span class="nb">len</span><span class="p">([</span><span class="n">param</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span> <span class="k">if</span> <span class="n">param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;seed&quot;</span><span class="p">]])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">distpars</span><span class="p">),</span> <span class="s2">&quot;Check that the correct &quot;</span> \
                 <span class="o">+</span> <span class="s2">&quot;number of parameters has been specified for the chosen prior distribution.&quot;</span>
                 
-    <span class="k">def</span> <span class="nf">random_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">random_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_rvs</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prior_pars</span><span class="p">),</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
         
-    <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_density</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prior_pars</span><span class="p">),</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     
-    <span class="k">def</span> <span class="nf">plot_prior</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_prior</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">xvalues</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prior_low</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_high</span><span class="p">,</span> <span class="mi">1</span><span class="o">+</span><span class="nb">int</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">prior_high</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">prior_low</span><span class="p">)</span><span class="o">/</span><span class="mf">0.001</span><span class="p">))</span>
         <span class="n">fig</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
         <span class="n">axarr</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xvalues</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">xvalues</span><span class="p">))</span>
@@ -529,7 +529,7 @@ document.write(`
 <span class="sd">      theta, since the first generation will repeatedly sample from the prior</span>
 <span class="sd">      distributions instead. This therefor avoids the need to specify theta. &quot;&quot;&quot;</span>
       
-<div class="viewcode-block" id="create_loss"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.create_loss">[docs]</a><span class="k">def</span> <span class="nf">create_loss</span><span class="p">(</span><span class="n">loss_type</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">ode</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">state_name</span><span class="p">,</span>
+<div class="viewcode-block" id="create_loss"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.create_loss">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">create_loss</span><span class="p">(</span><span class="n">loss_type</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">ode</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">state_name</span><span class="p">,</span>
                 <span class="n">state_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters (see also class `BaseLoss`)</span>
@@ -583,7 +583,7 @@ document.write(`
 
 <span class="c1">#%% </span>
 <span class="sd">&quot;&quot;&quot; ABC class and methods for obtaining an approximate posterior sample/plotting the results &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="ABC"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC">[docs]</a><span class="k">class</span> <span class="nc">ABC</span><span class="p">():</span>
+<div class="viewcode-block" id="ABC"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">ABC</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -594,7 +594,7 @@ document.write(`
 <span class="sd">            specifies the total population size and which state&#39;s initial </span>
 <span class="sd">            condition should be changed to conserve the population size.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loss_object</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">constraint</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loss_object</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">constraint</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">loss_object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
         
@@ -621,7 +621,7 @@ document.write(`
         <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span><span class="n">Parameter</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">),</span> <span class="s2">&quot;Use the Parameter class to define all parameters&quot;</span>
         
 
-<div class="viewcode-block" id="ABC.get_posterior_sample_original"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.get_posterior_sample_original">[docs]</a>    <span class="k">def</span> <span class="nf">get_posterior_sample_original</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rerun</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ABC.get_posterior_sample_original"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.get_posterior_sample_original">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_posterior_sample_original</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rerun</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -725,7 +725,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">next_tol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">)</span>        </div>
         
 
-<div class="viewcode-block" id="ABC.get_posterior_sample"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.get_posterior_sample">[docs]</a>    <span class="k">def</span> <span class="nf">get_posterior_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rerun</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ABC.get_posterior_sample"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.get_posterior_sample">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_posterior_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rerun</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -818,7 +818,7 @@ document.write(`
         <span class="k">if</span> <span class="n">q</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">next_tol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">)</span>        </div>
 
-    <span class="k">def</span> <span class="nf">_perform_generation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_perform_generation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
                             <span class="n">generation</span><span class="p">,</span> 
                             <span class="n">sigma_list</span><span class="p">,</span>
                             <span class="n">tolerance</span><span class="p">,</span> 
@@ -868,7 +868,7 @@ document.write(`
         <span class="k">return</span> <span class="p">(</span><span class="n">w1</span><span class="o">/</span><span class="n">w2</span><span class="p">,</span> <span class="n">rejections</span><span class="p">,</span> <span class="n">trial_params</span><span class="p">,</span> <span class="n">cost</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="ABC.continue_posterior_sample"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.continue_posterior_sample">[docs]</a>    <span class="k">def</span> <span class="nf">continue_posterior_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ABC.continue_posterior_sample"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.continue_posterior_sample">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">continue_posterior_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters (same as get_posterior_sample)</span>
 <span class="sd">        -----------------------------------------</span>
@@ -897,7 +897,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">get_posterior_sample</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">progress</span><span class="p">,</span> <span class="n">rerun</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
         
                  
-<div class="viewcode-block" id="ABC.plot_posterior_histograms"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.plot_posterior_histograms">[docs]</a>    <span class="k">def</span> <span class="nf">plot_posterior_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">plot_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">max_ncol</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<div class="viewcode-block" id="ABC.plot_posterior_histograms"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.plot_posterior_histograms">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_posterior_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">plot_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">max_ncol</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -954,7 +954,7 @@ document.write(`
         <span class="k">return</span> <span class="n">f</span></div>
                 
                 
-<div class="viewcode-block" id="ABC.plot_pointwise_predictions"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.plot_pointwise_predictions">[docs]</a>    <span class="k">def</span> <span class="nf">plot_pointwise_predictions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">plot_states</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">new_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">max_ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+<div class="viewcode-block" id="ABC.plot_pointwise_predictions"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.plot_pointwise_predictions">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_pointwise_predictions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">plot_states</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">new_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">max_ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1032,7 +1032,7 @@ document.write(`
         <span class="k">return</span> <span class="n">f</span></div>
 
 
-<div class="viewcode-block" id="ABC.plot_scatter"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.plot_scatter">[docs]</a>    <span class="k">def</span> <span class="nf">plot_scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">plot_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">logscale</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ABC.plot_scatter"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.plot_scatter">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot_scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">plot_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">logscale</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1069,7 +1069,7 @@ document.write(`
         <span class="n">f</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
      
         
-<div class="viewcode-block" id="ABC.get_tolerance"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.get_tolerance">[docs]</a>    <span class="k">def</span> <span class="nf">get_tolerance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">g</span><span class="p">):</span>
+<div class="viewcode-block" id="ABC.get_tolerance"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.get_tolerance">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_tolerance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">g</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1089,7 +1089,7 @@ document.write(`
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">[</span><span class="n">g</span><span class="p">]</span></div>
         
         
-<div class="viewcode-block" id="ABC.sigma_nearest_neighbours"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.sigma_nearest_neighbours">[docs]</a>    <span class="k">def</span> <span class="nf">sigma_nearest_neighbours</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">xx</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
+<div class="viewcode-block" id="ABC.sigma_nearest_neighbours"><a class="viewcode-back" href="../../../rst/autodoc-abc.html#pygom.approximate_bayesian_computation.ABC.sigma_nearest_neighbours">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sigma_nearest_neighbours</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">xx</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1108,14 +1108,14 @@ document.write(`
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">xx</span><span class="p">[</span><span class="n">nn</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span></div>
                 
         
-    <span class="k">def</span> <span class="nf">_get_update_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_update_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">_targetState</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">_setParam</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">_setParamStateInput</span>
         
         
-    <span class="k">def</span> <span class="nf">_log_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_log_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1130,7 +1130,7 @@ document.write(`
         <span class="k">return</span> <span class="n">params</span>
     
     
-    <span class="k">def</span> <span class="nf">_vprod</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">a1</span><span class="p">,</span><span class="n">a2</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_vprod</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">a1</span><span class="p">,</span><span class="n">a2</span><span class="p">):</span>
         <span class="n">diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">a1</span><span class="o">-</span><span class="n">a2</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numParam</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span><span class="n">diff</span><span class="o">.</span><span class="n">T</span><span class="p">)</span></div>
     

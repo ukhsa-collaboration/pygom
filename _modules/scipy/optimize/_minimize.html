@@ -406,33 +406,33 @@ document.write(`
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;minimize&#39;</span><span class="p">,</span> <span class="s1">&#39;minimize_scalar&#39;</span><span class="p">]</span>
 
 
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># unconstrained minimization</span>
-<span class="kn">from</span> <span class="nn">._optimize</span> <span class="kn">import</span> <span class="p">(</span><span class="n">_minimize_neldermead</span><span class="p">,</span> <span class="n">_minimize_powell</span><span class="p">,</span> <span class="n">_minimize_cg</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._optimize</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">_minimize_neldermead</span><span class="p">,</span> <span class="n">_minimize_powell</span><span class="p">,</span> <span class="n">_minimize_cg</span><span class="p">,</span>
                         <span class="n">_minimize_bfgs</span><span class="p">,</span> <span class="n">_minimize_newtoncg</span><span class="p">,</span>
                         <span class="n">_minimize_scalar_brent</span><span class="p">,</span> <span class="n">_minimize_scalar_bounded</span><span class="p">,</span>
                         <span class="n">_minimize_scalar_golden</span><span class="p">,</span> <span class="n">MemoizeJac</span><span class="p">,</span> <span class="n">OptimizeResult</span><span class="p">,</span>
                         <span class="n">_wrap_callback</span><span class="p">,</span> <span class="n">_recover_from_bracket_error</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">._trustregion_dogleg</span> <span class="kn">import</span> <span class="n">_minimize_dogleg</span>
-<span class="kn">from</span> <span class="nn">._trustregion_ncg</span> <span class="kn">import</span> <span class="n">_minimize_trust_ncg</span>
-<span class="kn">from</span> <span class="nn">._trustregion_krylov</span> <span class="kn">import</span> <span class="n">_minimize_trust_krylov</span>
-<span class="kn">from</span> <span class="nn">._trustregion_exact</span> <span class="kn">import</span> <span class="n">_minimize_trustregion_exact</span>
-<span class="kn">from</span> <span class="nn">._trustregion_constr</span> <span class="kn">import</span> <span class="n">_minimize_trustregion_constr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._trustregion_dogleg</span><span class="w"> </span><span class="kn">import</span> <span class="n">_minimize_dogleg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._trustregion_ncg</span><span class="w"> </span><span class="kn">import</span> <span class="n">_minimize_trust_ncg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._trustregion_krylov</span><span class="w"> </span><span class="kn">import</span> <span class="n">_minimize_trust_krylov</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._trustregion_exact</span><span class="w"> </span><span class="kn">import</span> <span class="n">_minimize_trustregion_exact</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._trustregion_constr</span><span class="w"> </span><span class="kn">import</span> <span class="n">_minimize_trustregion_constr</span>
 
 <span class="c1"># constrained minimization</span>
-<span class="kn">from</span> <span class="nn">._lbfgsb_py</span> <span class="kn">import</span> <span class="n">_minimize_lbfgsb</span>
-<span class="kn">from</span> <span class="nn">._tnc</span> <span class="kn">import</span> <span class="n">_minimize_tnc</span>
-<span class="kn">from</span> <span class="nn">._cobyla_py</span> <span class="kn">import</span> <span class="n">_minimize_cobyla</span>
-<span class="kn">from</span> <span class="nn">._cobyqa_py</span> <span class="kn">import</span> <span class="n">_minimize_cobyqa</span>
-<span class="kn">from</span> <span class="nn">._slsqp_py</span> <span class="kn">import</span> <span class="n">_minimize_slsqp</span>
-<span class="kn">from</span> <span class="nn">._constraints</span> <span class="kn">import</span> <span class="p">(</span><span class="n">old_bound_to_new</span><span class="p">,</span> <span class="n">new_bounds_to_old</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._lbfgsb_py</span><span class="w"> </span><span class="kn">import</span> <span class="n">_minimize_lbfgsb</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._tnc</span><span class="w"> </span><span class="kn">import</span> <span class="n">_minimize_tnc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._cobyla_py</span><span class="w"> </span><span class="kn">import</span> <span class="n">_minimize_cobyla</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._cobyqa_py</span><span class="w"> </span><span class="kn">import</span> <span class="n">_minimize_cobyqa</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._slsqp_py</span><span class="w"> </span><span class="kn">import</span> <span class="n">_minimize_slsqp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._constraints</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">old_bound_to_new</span><span class="p">,</span> <span class="n">new_bounds_to_old</span><span class="p">,</span>
                            <span class="n">old_constraint_to_new</span><span class="p">,</span> <span class="n">new_constraint_to_old</span><span class="p">,</span>
                            <span class="n">NonlinearConstraint</span><span class="p">,</span> <span class="n">LinearConstraint</span><span class="p">,</span> <span class="n">Bounds</span><span class="p">,</span>
                            <span class="n">PreparedConstraint</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">._differentiable_functions</span> <span class="kn">import</span> <span class="n">FD_METHODS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._differentiable_functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">FD_METHODS</span>
 
 <span class="n">MINIMIZE_METHODS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;nelder-mead&#39;</span><span class="p">,</span> <span class="s1">&#39;powell&#39;</span><span class="p">,</span> <span class="s1">&#39;cg&#39;</span><span class="p">,</span> <span class="s1">&#39;bfgs&#39;</span><span class="p">,</span> <span class="s1">&#39;newton-cg&#39;</span><span class="p">,</span>
                     <span class="s1">&#39;l-bfgs-b&#39;</span><span class="p">,</span> <span class="s1">&#39;tnc&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">,</span> <span class="s1">&#39;slsqp&#39;</span><span class="p">,</span>
@@ -446,7 +446,7 @@ document.write(`
 
 <span class="n">MINIMIZE_SCALAR_METHODS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;brent&#39;</span><span class="p">,</span> <span class="s1">&#39;bounded&#39;</span><span class="p">,</span> <span class="s1">&#39;golden&#39;</span><span class="p">]</span>
 
-<span class="k">def</span> <span class="nf">minimize</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">jac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">minimize</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">jac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">hessp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">constraints</span><span class="o">=</span><span class="p">(),</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Minimization of scalar function of one or more variables.</span>
@@ -454,13 +454,20 @@ document.write(`
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    fun : callable</span>
-<span class="sd">        The objective function to be minimized.</span>
+<span class="sd">        The objective function to be minimized::</span>
 
-<span class="sd">            ``fun(x, *args) -&gt; float``</span>
+<span class="sd">            fun(x, *args) -&gt; float</span>
 
 <span class="sd">        where ``x`` is a 1-D array with shape (n,) and ``args``</span>
 <span class="sd">        is a tuple of the fixed parameters needed to completely</span>
 <span class="sd">        specify the function.</span>
+
+<span class="sd">        Suppose the callable has signature ``f0(x, *my_args, **my_kwargs)``, where</span>
+<span class="sd">        ``my_args`` and ``my_kwargs`` are required positional and keyword arguments.</span>
+<span class="sd">        Rather than passing ``f0`` as the callable, wrap it to accept</span>
+<span class="sd">        only ``x``; e.g., pass ``fun=lambda x: f0(x, *my_args, **my_kwargs)`` as the</span>
+<span class="sd">        callable, where ``my_args`` (tuple) and ``my_kwargs`` (dict) have been</span>
+<span class="sd">        gathered before invoking this function.</span>
 <span class="sd">    x0 : ndarray, shape (n,)</span>
 <span class="sd">        Initial guess. Array of real elements of size (n,),</span>
 <span class="sd">        where ``n`` is the number of independent variables.</span>
@@ -470,22 +477,22 @@ document.write(`
 <span class="sd">    method : str or callable, optional</span>
 <span class="sd">        Type of solver.  Should be one of</span>
 
-<span class="sd">            - &#39;Nelder-Mead&#39; :ref:`(see here) &lt;optimize.minimize-neldermead&gt;`</span>
-<span class="sd">            - &#39;Powell&#39;      :ref:`(see here) &lt;optimize.minimize-powell&gt;`</span>
-<span class="sd">            - &#39;CG&#39;          :ref:`(see here) &lt;optimize.minimize-cg&gt;`</span>
-<span class="sd">            - &#39;BFGS&#39;        :ref:`(see here) &lt;optimize.minimize-bfgs&gt;`</span>
-<span class="sd">            - &#39;Newton-CG&#39;   :ref:`(see here) &lt;optimize.minimize-newtoncg&gt;`</span>
-<span class="sd">            - &#39;L-BFGS-B&#39;    :ref:`(see here) &lt;optimize.minimize-lbfgsb&gt;`</span>
-<span class="sd">            - &#39;TNC&#39;         :ref:`(see here) &lt;optimize.minimize-tnc&gt;`</span>
-<span class="sd">            - &#39;COBYLA&#39;      :ref:`(see here) &lt;optimize.minimize-cobyla&gt;`</span>
-<span class="sd">            - &#39;COBYQA&#39;      :ref:`(see here) &lt;optimize.minimize-cobyqa&gt;`</span>
-<span class="sd">            - &#39;SLSQP&#39;       :ref:`(see here) &lt;optimize.minimize-slsqp&gt;`</span>
-<span class="sd">            - &#39;trust-constr&#39;:ref:`(see here) &lt;optimize.minimize-trustconstr&gt;`</span>
-<span class="sd">            - &#39;dogleg&#39;      :ref:`(see here) &lt;optimize.minimize-dogleg&gt;`</span>
-<span class="sd">            - &#39;trust-ncg&#39;   :ref:`(see here) &lt;optimize.minimize-trustncg&gt;`</span>
-<span class="sd">            - &#39;trust-exact&#39; :ref:`(see here) &lt;optimize.minimize-trustexact&gt;`</span>
-<span class="sd">            - &#39;trust-krylov&#39; :ref:`(see here) &lt;optimize.minimize-trustkrylov&gt;`</span>
-<span class="sd">            - custom - a callable object, see below for description.</span>
+<span class="sd">        - &#39;Nelder-Mead&#39; :ref:`(see here) &lt;optimize.minimize-neldermead&gt;`</span>
+<span class="sd">        - &#39;Powell&#39;      :ref:`(see here) &lt;optimize.minimize-powell&gt;`</span>
+<span class="sd">        - &#39;CG&#39;          :ref:`(see here) &lt;optimize.minimize-cg&gt;`</span>
+<span class="sd">        - &#39;BFGS&#39;        :ref:`(see here) &lt;optimize.minimize-bfgs&gt;`</span>
+<span class="sd">        - &#39;Newton-CG&#39;   :ref:`(see here) &lt;optimize.minimize-newtoncg&gt;`</span>
+<span class="sd">        - &#39;L-BFGS-B&#39;    :ref:`(see here) &lt;optimize.minimize-lbfgsb&gt;`</span>
+<span class="sd">        - &#39;TNC&#39;         :ref:`(see here) &lt;optimize.minimize-tnc&gt;`</span>
+<span class="sd">        - &#39;COBYLA&#39;      :ref:`(see here) &lt;optimize.minimize-cobyla&gt;`</span>
+<span class="sd">        - &#39;COBYQA&#39;      :ref:`(see here) &lt;optimize.minimize-cobyqa&gt;`</span>
+<span class="sd">        - &#39;SLSQP&#39;       :ref:`(see here) &lt;optimize.minimize-slsqp&gt;`</span>
+<span class="sd">        - &#39;trust-constr&#39;:ref:`(see here) &lt;optimize.minimize-trustconstr&gt;`</span>
+<span class="sd">        - &#39;dogleg&#39;      :ref:`(see here) &lt;optimize.minimize-dogleg&gt;`</span>
+<span class="sd">        - &#39;trust-ncg&#39;   :ref:`(see here) &lt;optimize.minimize-trustncg&gt;`</span>
+<span class="sd">        - &#39;trust-exact&#39; :ref:`(see here) &lt;optimize.minimize-trustexact&gt;`</span>
+<span class="sd">        - &#39;trust-krylov&#39; :ref:`(see here) &lt;optimize.minimize-trustkrylov&gt;`</span>
+<span class="sd">        - custom - a callable object, see below for description.</span>
 
 <span class="sd">        If not given, chosen to be one of ``BFGS``, ``L-BFGS-B``, ``SLSQP``,</span>
 <span class="sd">        depending on whether or not the problem has constraints or bounds.</span>
@@ -494,9 +501,9 @@ document.write(`
 <span class="sd">        Newton-CG, L-BFGS-B, TNC, SLSQP, dogleg, trust-ncg, trust-krylov,</span>
 <span class="sd">        trust-exact and trust-constr.</span>
 <span class="sd">        If it is a callable, it should be a function that returns the gradient</span>
-<span class="sd">        vector:</span>
+<span class="sd">        vector::</span>
 
-<span class="sd">            ``jac(x, *args) -&gt; array_like, shape (n,)``</span>
+<span class="sd">            jac(x, *args) -&gt; array_like, shape (n,)</span>
 
 <span class="sd">        where ``x`` is an array with shape (n,) and ``args`` is a tuple with</span>
 <span class="sd">        the fixed parameters. If `jac` is a Boolean and is True, `fun` is</span>
@@ -514,9 +521,9 @@ document.write(`
 <span class="sd">    hess : {callable, &#39;2-point&#39;, &#39;3-point&#39;, &#39;cs&#39;, HessianUpdateStrategy}, optional</span>
 <span class="sd">        Method for computing the Hessian matrix. Only for Newton-CG, dogleg,</span>
 <span class="sd">        trust-ncg, trust-krylov, trust-exact and trust-constr.</span>
-<span class="sd">        If it is callable, it should return the Hessian matrix:</span>
+<span class="sd">        If it is callable, it should return the Hessian matrix::</span>
 
-<span class="sd">            ``hess(x, *args) -&gt; {LinearOperator, spmatrix, array}, (n, n)``</span>
+<span class="sd">            hess(x, *args) -&gt; {LinearOperator, spmatrix, array}, (n, n)</span>
 
 <span class="sd">        where ``x`` is a (n,) ndarray and ``args`` is a tuple with the fixed</span>
 <span class="sd">        parameters.</span>
@@ -526,8 +533,8 @@ document.write(`
 <span class="sd">        interface can be used to approximate the Hessian. Available</span>
 <span class="sd">        quasi-Newton methods implementing this interface are:</span>
 
-<span class="sd">            - `BFGS`;</span>
-<span class="sd">            - `SR1`.</span>
+<span class="sd">        - `BFGS`</span>
+<span class="sd">        - `SR1`</span>
 
 <span class="sd">        Not all of the options are available for each of the methods; for</span>
 <span class="sd">        availability refer to the notes.</span>
@@ -536,9 +543,9 @@ document.write(`
 <span class="sd">        Newton-CG, trust-ncg, trust-krylov, trust-constr.</span>
 <span class="sd">        Only one of `hessp` or `hess` needs to be given. If `hess` is</span>
 <span class="sd">        provided, then `hessp` will be ignored. `hessp` must compute the</span>
-<span class="sd">        Hessian times an arbitrary vector:</span>
+<span class="sd">        Hessian times an arbitrary vector::</span>
 
-<span class="sd">            ``hessp(x, p, *args) -&gt;  ndarray shape (n,)``</span>
+<span class="sd">            hessp(x, p, *args) -&gt;  ndarray shape (n,)</span>
 
 <span class="sd">        where ``x`` is a (n,) ndarray, ``p`` is an arbitrary vector with</span>
 <span class="sd">        dimension (n,) and ``args`` is a tuple with the fixed</span>
@@ -548,9 +555,9 @@ document.write(`
 <span class="sd">        trust-constr, COBYLA, and COBYQA methods. There are two ways to specify</span>
 <span class="sd">        the bounds:</span>
 
-<span class="sd">            1. Instance of `Bounds` class.</span>
-<span class="sd">            2. Sequence of ``(min, max)`` pairs for each element in `x`. None</span>
-<span class="sd">               is used to specify no bound.</span>
+<span class="sd">        1. Instance of `Bounds` class.</span>
+<span class="sd">        2. Sequence of ``(min, max)`` pairs for each element in `x`. None</span>
+<span class="sd">           is used to specify no bound.</span>
 
 <span class="sd">    constraints : {Constraint, dict} or List of {Constraint, dict}, optional</span>
 <span class="sd">        Constraints definition. Only for COBYLA, COBYQA, SLSQP and trust-constr.</span>
@@ -559,20 +566,20 @@ document.write(`
 <span class="sd">        or a list of objects specifying constraints to the optimization problem.</span>
 <span class="sd">        Available constraints are:</span>
 
-<span class="sd">            - `LinearConstraint`</span>
-<span class="sd">            - `NonlinearConstraint`</span>
+<span class="sd">        - `LinearConstraint`</span>
+<span class="sd">        - `NonlinearConstraint`</span>
 
 <span class="sd">        Constraints for COBYLA, SLSQP are defined as a list of dictionaries.</span>
 <span class="sd">        Each dictionary with fields:</span>
 
-<span class="sd">            type : str</span>
-<span class="sd">                Constraint type: &#39;eq&#39; for equality, &#39;ineq&#39; for inequality.</span>
-<span class="sd">            fun : callable</span>
-<span class="sd">                The function defining the constraint.</span>
-<span class="sd">            jac : callable, optional</span>
-<span class="sd">                The Jacobian of `fun` (only for SLSQP).</span>
-<span class="sd">            args : sequence, optional</span>
-<span class="sd">                Extra arguments to be passed to the function and Jacobian.</span>
+<span class="sd">        type : str</span>
+<span class="sd">            Constraint type: &#39;eq&#39; for equality, &#39;ineq&#39; for inequality.</span>
+<span class="sd">        fun : callable</span>
+<span class="sd">            The function defining the constraint.</span>
+<span class="sd">        jac : callable, optional</span>
+<span class="sd">            The Jacobian of `fun` (only for SLSQP).</span>
+<span class="sd">        args : sequence, optional</span>
+<span class="sd">            Extra arguments to be passed to the function and Jacobian.</span>
 
 <span class="sd">        Equality constraint means that the constraint function result is to</span>
 <span class="sd">        be zero whereas inequality means that it is to be non-negative.</span>
@@ -587,22 +594,22 @@ document.write(`
 <span class="sd">        A dictionary of solver options. All methods except `TNC` accept the</span>
 <span class="sd">        following generic options:</span>
 
-<span class="sd">            maxiter : int</span>
-<span class="sd">                Maximum number of iterations to perform. Depending on the</span>
-<span class="sd">                method each iteration may use several function evaluations.</span>
+<span class="sd">        maxiter : int</span>
+<span class="sd">            Maximum number of iterations to perform. Depending on the</span>
+<span class="sd">            method each iteration may use several function evaluations.</span>
 
-<span class="sd">                For `TNC` use `maxfun` instead of `maxiter`.</span>
-<span class="sd">            disp : bool</span>
-<span class="sd">                Set to True to print convergence messages.</span>
+<span class="sd">            For `TNC` use `maxfun` instead of `maxiter`.</span>
+<span class="sd">        disp : bool</span>
+<span class="sd">            Set to True to print convergence messages.</span>
 
 <span class="sd">        For method-specific options, see :func:`show_options()`.</span>
 <span class="sd">    callback : callable, optional</span>
 <span class="sd">        A callable called after each iteration.</span>
 
 <span class="sd">        All methods except TNC, SLSQP, and COBYLA support a callable with</span>
-<span class="sd">        the signature:</span>
+<span class="sd">        the signature::</span>
 
-<span class="sd">            ``callback(intermediate_result: OptimizeResult)``</span>
+<span class="sd">            callback(intermediate_result: OptimizeResult)</span>
 
 <span class="sd">        where ``intermediate_result`` is a keyword parameter containing an</span>
 <span class="sd">        `OptimizeResult` with attributes ``x`` and ``fun``, the present values</span>
@@ -611,9 +618,9 @@ document.write(`
 <span class="sd">        to be passed an `OptimizeResult`. These methods will also terminate if</span>
 <span class="sd">        the callback raises ``StopIteration``.</span>
 
-<span class="sd">        All methods except trust-constr (also) support a signature like:</span>
+<span class="sd">        All methods except trust-constr (also) support a signature like::</span>
 
-<span class="sd">            ``callback(xk)``</span>
+<span class="sd">            callback(xk)</span>
 
 <span class="sd">        where ``xk`` is the current parameter vector.</span>
 
@@ -870,7 +877,7 @@ document.write(`
 <span class="sd">    .. [16] Byrd, Richard H., Mary E. Hribar, and Jorge Nocedal. 1999.</span>
 <span class="sd">        An interior point algorithm for large-scale nonlinear  programming.</span>
 <span class="sd">        SIAM Journal on Optimization 9.4: 877-900.</span>
-<span class="sd">    .. [17] Lalee, Marucha, Jorge Nocedal, and Todd Plantega. 1998. On the</span>
+<span class="sd">    .. [17] Lalee, Marucha, Jorge Nocedal, and Todd Plantenga. 1998. On the</span>
 <span class="sd">        implementation of an algorithm for large-scale equality constrained</span>
 <span class="sd">        optimization. SIAM Journal on Optimization 8.3: 682-706.</span>
 <span class="sd">    .. [18] Ragonneau, T. M. *Model-Based Derivative-Free Optimization Methods</span>
@@ -970,34 +977,34 @@ document.write(`
     <span class="c1"># check if optional parameters are supported by the selected method</span>
     <span class="c1"># - jac</span>
     <span class="k">if</span> <span class="n">meth</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;nelder-mead&#39;</span><span class="p">,</span> <span class="s1">&#39;powell&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="n">jac</span><span class="p">):</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Method </span><span class="si">%s</span><span class="s1"> does not use gradient information (jac).&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">,</span>
+        <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Method </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1"> does not use gradient information (jac).&#39;</span><span class="p">,</span>
              <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="c1"># - hess</span>
     <span class="k">if</span> <span class="n">meth</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;newton-cg&#39;</span><span class="p">,</span> <span class="s1">&#39;dogleg&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-ncg&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span>
                     <span class="s1">&#39;trust-krylov&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-exact&#39;</span><span class="p">,</span> <span class="s1">&#39;_custom&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">hess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Method </span><span class="si">%s</span><span class="s1"> does not use Hessian information (hess).&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">,</span>
+        <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Method </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1"> does not use Hessian information (hess).&#39;</span><span class="p">,</span>
              <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="c1"># - hessp</span>
     <span class="k">if</span> <span class="n">meth</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;newton-cg&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-ncg&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span>
                     <span class="s1">&#39;trust-krylov&#39;</span><span class="p">,</span> <span class="s1">&#39;_custom&#39;</span><span class="p">)</span> \
        <span class="ow">and</span> <span class="n">hessp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Method </span><span class="si">%s</span><span class="s1"> does not use Hessian-vector product &#39;</span>
-             <span class="s1">&#39;information (hessp).&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">,</span>
+        <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Method </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1"> does not use Hessian-vector product&#39;</span>
+             <span class="s1">&#39; information (hessp).&#39;</span><span class="p">,</span>
              <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="c1"># - constraints or bounds</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">meth</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">,</span> <span class="s1">&#39;slsqp&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span> <span class="s1">&#39;_custom&#39;</span><span class="p">)</span> <span class="ow">and</span>
             <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">constraints</span><span class="p">)):</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Method </span><span class="si">%s</span><span class="s1"> cannot handle constraints.&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">,</span>
+        <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Method </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1"> cannot handle constraints.&#39;</span><span class="p">,</span>
              <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">meth</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
             <span class="s1">&#39;nelder-mead&#39;</span><span class="p">,</span> <span class="s1">&#39;powell&#39;</span><span class="p">,</span> <span class="s1">&#39;l-bfgs-b&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">,</span> <span class="s1">&#39;slsqp&#39;</span><span class="p">,</span>
             <span class="s1">&#39;tnc&#39;</span><span class="p">,</span> <span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span> <span class="s1">&#39;_custom&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Method </span><span class="si">%s</span><span class="s1"> cannot handle bounds.&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">,</span>
+        <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Method </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1"> cannot handle bounds.&#39;</span><span class="p">,</span>
              <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="c1"># - return_all</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">meth</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;l-bfgs-b&#39;</span><span class="p">,</span> <span class="s1">&#39;tnc&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">,</span> <span class="s1">&#39;slsqp&#39;</span><span class="p">)</span> <span class="ow">and</span>
             <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;return_all&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)):</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Method </span><span class="si">%s</span><span class="s1"> does not support the return_all option.&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">,</span>
+        <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Method </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1"> does not support the return_all option.&#39;</span><span class="p">,</span>
              <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># check gradient vector</span>
@@ -1155,7 +1162,7 @@ document.write(`
         <span class="n">res</span> <span class="o">=</span> <span class="n">_minimize_trustregion_exact</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">jac</span><span class="p">,</span> <span class="n">hess</span><span class="p">,</span>
                                           <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown solver </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown solver </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">remove_vars</span><span class="p">:</span>
         <span class="n">res</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">_add_to_array</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">i_fixed</span><span class="p">,</span> <span class="n">x_fixed</span><span class="p">)</span>
@@ -1171,7 +1178,7 @@ document.write(`
     <span class="k">return</span> <span class="n">res</span>
 
 
-<div class="viewcode-block" id="minimize_scalar"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.minimize_scalar">[docs]</a><span class="k">def</span> <span class="nf">minimize_scalar</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">bracket</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span>
+<div class="viewcode-block" id="minimize_scalar"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.minimize_scalar">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">minimize_scalar</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">bracket</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span>
                     <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Local minimization of scalar function of one variable.</span>
 
@@ -1180,6 +1187,14 @@ document.write(`
 <span class="sd">    fun : callable</span>
 <span class="sd">        Objective function.</span>
 <span class="sd">        Scalar function, must return a scalar.</span>
+
+<span class="sd">        Suppose the callable has signature ``f0(x, *my_args, **my_kwargs)``, where</span>
+<span class="sd">        ``my_args`` and ``my_kwargs`` are required positional and keyword arguments.</span>
+<span class="sd">        Rather than passing ``f0`` as the callable, wrap it to accept</span>
+<span class="sd">        only ``x``; e.g., pass ``fun=lambda x: f0(x, *my_args, **my_kwargs)`` as the</span>
+<span class="sd">        callable, where ``my_args`` (tuple) and ``my_kwargs`` (dict) have been</span>
+<span class="sd">        gathered before invoking this function.</span>
+
 <span class="sd">    bracket : sequence, optional</span>
 <span class="sd">        For methods &#39;brent&#39; and &#39;golden&#39;, `bracket` defines the bracketing</span>
 <span class="sd">        interval and is required.</span>
@@ -1197,10 +1212,10 @@ document.write(`
 <span class="sd">    method : str or callable, optional</span>
 <span class="sd">        Type of solver.  Should be one of:</span>
 
-<span class="sd">            - :ref:`Brent &lt;optimize.minimize_scalar-brent&gt;`</span>
-<span class="sd">            - :ref:`Bounded &lt;optimize.minimize_scalar-bounded&gt;`</span>
-<span class="sd">            - :ref:`Golden &lt;optimize.minimize_scalar-golden&gt;`</span>
-<span class="sd">            - custom - a callable object (added in version 0.14.0), see below</span>
+<span class="sd">        - :ref:`Brent &lt;optimize.minimize_scalar-brent&gt;`</span>
+<span class="sd">        - :ref:`Bounded &lt;optimize.minimize_scalar-bounded&gt;`</span>
+<span class="sd">        - :ref:`Golden &lt;optimize.minimize_scalar-golden&gt;`</span>
+<span class="sd">        - custom - a callable object (added in version 0.14.0), see below</span>
 
 <span class="sd">        Default is &quot;Bounded&quot; if bounds are provided and &quot;Brent&quot; otherwise.</span>
 <span class="sd">        See the &#39;Notes&#39; section for details of each solver.</span>
@@ -1211,10 +1226,10 @@ document.write(`
 <span class="sd">    options : dict, optional</span>
 <span class="sd">        A dictionary of solver options.</span>
 
-<span class="sd">            maxiter : int</span>
-<span class="sd">                Maximum number of iterations to perform.</span>
-<span class="sd">            disp : bool</span>
-<span class="sd">                Set to True to print convergence messages.</span>
+<span class="sd">        maxiter : int</span>
+<span class="sd">            Maximum number of iterations to perform.</span>
+<span class="sd">        disp : bool</span>
+<span class="sd">            Set to True to print convergence messages.</span>
 
 <span class="sd">        See :func:`show_options()` for solver-specific options.</span>
 
@@ -1364,7 +1379,7 @@ document.write(`
         <span class="n">res</span> <span class="o">=</span> <span class="n">_recover_from_bracket_error</span><span class="p">(</span><span class="n">_minimize_scalar_golden</span><span class="p">,</span>
                                           <span class="n">fun</span><span class="p">,</span> <span class="n">bracket</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown solver </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown solver </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="c1"># gh-16196 reported inconsistencies in the output shape of `res.x`. While</span>
     <span class="c1"># fixing this, future-proof it for when the function is vectorized:</span>
@@ -1374,16 +1389,16 @@ document.write(`
     <span class="k">return</span> <span class="n">res</span></div>
 
 
-<span class="k">def</span> <span class="nf">_remove_from_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">i_fixed</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_remove_from_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">i_fixed</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes fixed variables from a `Bounds` instance&quot;&quot;&quot;</span>
     <span class="n">lb</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">lb</span><span class="p">[</span><span class="o">~</span><span class="n">i_fixed</span><span class="p">]</span>
     <span class="n">ub</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">ub</span><span class="p">[</span><span class="o">~</span><span class="n">i_fixed</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">Bounds</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">)</span>  <span class="c1"># don&#39;t mutate original Bounds object</span>
 
 
-<span class="k">def</span> <span class="nf">_remove_from_func</span><span class="p">(</span><span class="n">fun_in</span><span class="p">,</span> <span class="n">i_fixed</span><span class="p">,</span> <span class="n">x_fixed</span><span class="p">,</span> <span class="n">min_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_remove_from_func</span><span class="p">(</span><span class="n">fun_in</span><span class="p">,</span> <span class="n">i_fixed</span><span class="p">,</span> <span class="n">x_fixed</span><span class="p">,</span> <span class="n">min_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wraps a function such that fixed variables need not be passed in&quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">fun_out</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fun_out</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">x_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">i_fixed</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x_in</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">x_out</span><span class="p">[</span><span class="n">i_fixed</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_fixed</span>
         <span class="n">x_out</span><span class="p">[</span><span class="o">~</span><span class="n">i_fixed</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_in</span>
@@ -1404,7 +1419,7 @@ document.write(`
     <span class="k">return</span> <span class="n">fun_out</span>
 
 
-<span class="k">def</span> <span class="nf">_add_to_array</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">i_fixed</span><span class="p">,</span> <span class="n">x_fixed</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_add_to_array</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">i_fixed</span><span class="p">,</span> <span class="n">x_fixed</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds fixed variables back to an array&quot;&quot;&quot;</span>
     <span class="n">i_free</span> <span class="o">=</span> <span class="o">~</span><span class="n">i_fixed</span>
     <span class="k">if</span> <span class="n">x_in</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -1415,7 +1430,7 @@ document.write(`
     <span class="k">return</span> <span class="n">x_out</span>
 
 
-<span class="k">def</span> <span class="nf">_validate_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">meth</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">meth</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check that bounds are valid.&quot;&quot;&quot;</span>
 
     <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;An upper bound is less than the corresponding lower bound.&quot;</span>
@@ -1427,11 +1442,11 @@ document.write(`
         <span class="n">bounds</span><span class="o">.</span><span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">bounds</span><span class="o">.</span><span class="n">lb</span><span class="p">,</span> <span class="n">x0</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="n">bounds</span><span class="o">.</span><span class="n">ub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">bounds</span><span class="o">.</span><span class="n">ub</span><span class="p">,</span> <span class="n">x0</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
     <span class="k">return</span> <span class="n">bounds</span>
 
-<span class="k">def</span> <span class="nf">standardize_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">meth</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">standardize_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">meth</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts bounds to the form required by the solver.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">meth</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;trust-constr&#39;</span><span class="p">,</span> <span class="s1">&#39;powell&#39;</span><span class="p">,</span> <span class="s1">&#39;nelder-mead&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyla&#39;</span><span class="p">,</span> <span class="s1">&#39;cobyqa&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;new&#39;</span><span class="p">}:</span>
@@ -1444,7 +1459,7 @@ document.write(`
     <span class="k">return</span> <span class="n">bounds</span>
 
 
-<span class="k">def</span> <span class="nf">standardize_constraints</span><span class="p">(</span><span class="n">constraints</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">meth</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">standardize_constraints</span><span class="p">(</span><span class="n">constraints</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">meth</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts constraints to the form required by the solver.&quot;&quot;&quot;</span>
     <span class="n">all_constraint_types</span> <span class="o">=</span> <span class="p">(</span><span class="n">NonlinearConstraint</span><span class="p">,</span> <span class="n">LinearConstraint</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
     <span class="n">new_constraint_types</span> <span class="o">=</span> <span class="n">all_constraint_types</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -1470,7 +1485,7 @@ document.write(`
     <span class="k">return</span> <span class="n">constraints</span>
 
 
-<span class="k">def</span> <span class="nf">_optimize_result_for_equal_bounds</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_optimize_result_for_equal_bounds</span><span class="p">(</span>
         <span class="n">fun</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">constraints</span><span class="o">=</span><span class="p">()</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>

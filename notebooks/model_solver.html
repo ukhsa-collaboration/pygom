@@ -472,10 +472,10 @@ These methods work with both fixed and random parameters as introduced in the <a
 This we do from scratch rather than loading in a previously defined model in order to present a more comprehensive example of the workflow.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">SimulateOde</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">TransitionType</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">random</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pygom</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulateOde</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">TransitionType</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 
 <span class="c1">###################</span>
 <span class="c1"># ODE specification</span>
@@ -515,7 +515,7 @@ This we do from scratch rather than loading in a previously defined model in ord
 <span class="n">beta_shape</span><span class="o">=</span><span class="p">(</span><span class="n">beta_mn</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">beta_var</span>
 <span class="n">beta_rate</span><span class="o">=</span><span class="n">beta_mn</span><span class="o">/</span><span class="n">beta_var</span>
 
-<span class="kn">from</span> <span class="nn">pygom.utilR</span> <span class="kn">import</span> <span class="n">rgamma</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom.utilR</span><span class="w"> </span><span class="kn">import</span> <span class="n">rgamma</span>
 <span class="n">random_param_set</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># container for random param set</span>
 <span class="n">random_param_set</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rgamma</span><span class="p">,{</span><span class="s1">&#39;shape&#39;</span><span class="p">:</span><span class="n">gamma_shape</span><span class="p">,</span> <span class="s1">&#39;rate&#39;</span><span class="p">:</span><span class="n">gamma_rate</span><span class="p">})</span>
 <span class="n">random_param_set</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rgamma</span><span class="p">,{</span><span class="s1">&#39;shape&#39;</span><span class="p">:</span><span class="n">beta_shape</span><span class="p">,</span> <span class="s1">&#39;rate&#39;</span><span class="p">:</span><span class="n">beta_rate</span><span class="p">})</span>
@@ -536,7 +536,7 @@ This we do from scratch rather than loading in a previously defined model in ord
 Timesteps should be sufficiently short to reduce numerical integration errors, but not too short such that the computational time costs become too large.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
 <span class="c1"># Initial conditions</span>
 <span class="n">i0</span><span class="o">=</span><span class="mi">10</span>
@@ -604,7 +604,7 @@ We begin with the simple (and likely familiar) case of fixed parameters.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/20651971a63218f4a4629a2298392395949795bd190a5230a8db39cde8861f35.png" src="../_images/20651971a63218f4a4629a2298392395949795bd190a5230a8db39cde8861f35.png" />
+<img alt="../_images/00c46ab2830b10180e9d261072fdf576ce9729a160a06520f45813448dec77de.png" src="../_images/00c46ab2830b10180e9d261072fdf576ce9729a160a06520f45813448dec77de.png" />
 </div>
 </div>
 </section>
@@ -698,7 +698,7 @@ using the IPython.</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/e43a1ec82151103fea32d391be1707da4b7dadb9cc7cb6f64f3b37053c9aaf21.png" src="../_images/e43a1ec82151103fea32d391be1707da4b7dadb9cc7cb6f64f3b37053c9aaf21.png" />
+<img alt="../_images/1f897273a74810b1911e7a6a5eff5b914690626dd1a785bb0b4c8dcc61abf27c.png" src="../_images/1f897273a74810b1911e7a6a5eff5b914690626dd1a785bb0b4c8dcc61abf27c.png" />
 </div>
 </div>
 <!-- ```{tip}
@@ -767,7 +767,7 @@ However, this time we employ the function <code class="docutils literal notransl
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/24a05ac25cf90efe5431cd477d62b4bc6c9a30d578aae47e5bd7c680b2163bf0.png" src="../_images/24a05ac25cf90efe5431cd477d62b4bc6c9a30d578aae47e5bd7c680b2163bf0.png" />
+<img alt="../_images/2a3a06043a37cce1023acbde4ac475a1b2cea0c440f7c837d33a86dc8f67b30a.png" src="../_images/2a3a06043a37cce1023acbde4ac475a1b2cea0c440f7c837d33a86dc8f67b30a.png" />
 </div>
 </div>
 <p>We see that 28 of the 1000 simulations (2.8%) have final sizes very close to zero.
@@ -794,7 +794,7 @@ In these cases, the chain of infections reaches stochastic extinction before an 
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/e9c93f6f74c6182c31b348b5014bedc2278ef3d9e7ce18887962b92de8ea31f2.png" src="../_images/e9c93f6f74c6182c31b348b5014bedc2278ef3d9e7ce18887962b92de8ea31f2.png" />
+<img alt="../_images/3ab873e59da4579d18d73e5ee674421f00cdb916582603532f4e3f8602d93d57.png" src="../_images/3ab873e59da4579d18d73e5ee674421f00cdb916582603532f4e3f8602d93d57.png" />
 </div>
 </div>
 <p>We proceed to eliminate these when plotting our simulation outputs, since we’d like to compare the output here with our deterministic results (which, by definition, do not exhibit stochastic extinction):</p>
@@ -859,7 +859,7 @@ In these cases, the chain of infections reaches stochastic extinction before an 
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/e74e17af4037026c88f454564c3377c46da8ea78d1c7312b1b669eebbd58e97c.png" src="../_images/e74e17af4037026c88f454564c3377c46da8ea78d1c7312b1b669eebbd58e97c.png" />
+<img alt="../_images/6b7f4efd6a0a11f55c7e2de016bd097f88a1056cc0a947c8de5e0a00c50a15e7.png" src="../_images/6b7f4efd6a0a11f55c7e2de016bd097f88a1056cc0a947c8de5e0a00c50a15e7.png" />
 </div>
 </div>
 </section>
@@ -902,7 +902,7 @@ Using the random parameter set, <code class="docutils literal notranslate"><span
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/66ea05a7466e1d6f31f16b586b2383f339e4f68001ae5dcbd55641618f74ffa7.png" src="../_images/66ea05a7466e1d6f31f16b586b2383f339e4f68001ae5dcbd55641618f74ffa7.png" />
+<img alt="../_images/18e35efafc47712a765168c6a80e322f19387ae25ffccc9ec8e2b3ea071aecd0.png" src="../_images/18e35efafc47712a765168c6a80e322f19387ae25ffccc9ec8e2b3ea071aecd0.png" />
 </div>
 </div>
 <p>We see that the final size distribution is much more spread out, owing to increased variation in the parameters.
@@ -968,7 +968,7 @@ Again, eliminating the failed epidemics we plot the model output</p>
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/309943f637a127892088ab370f40822458f2983dc980db7d0ec60dd4fb6c0447.png" src="../_images/309943f637a127892088ab370f40822458f2983dc980db7d0ec60dd4fb6c0447.png" />
+<img alt="../_images/b25b8eb823967b777eed5bcb6fb77ac5835c2b24fde5f2906fff246761e8dded.png" src="../_images/b25b8eb823967b777eed5bcb6fb77ac5835c2b24fde5f2906fff246761e8dded.png" />
 </div>
 </div>
 </section>
@@ -1017,7 +1017,7 @@ We plot these results side by side for the infected compartment to provide an il
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../_images/e2e9a216941e08302da1f19acc3729108edcc05d5eb7f8b7071820d5cb7fa1fe.png" src="../_images/e2e9a216941e08302da1f19acc3729108edcc05d5eb7f8b7071820d5cb7fa1fe.png" />
+<img alt="../_images/9f7dbc84a905ad41b1c4805e40c7f92191f08521b206774a2725ac41c4428a70.png" src="../_images/9f7dbc84a905ad41b1c4805e40c7f92191f08521b206774a2725ac41c4428a70.png" />
 </div>
 </div>
 <!-- ## Repeatable Simulation

@@ -465,7 +465,7 @@ As an example, we use synthetic data produced by PyGOM’s <a class="reference i
 <p>Loading in the data file:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;seir_epi_data.txt&#39;</span><span class="p">)</span>
 <span class="n">t</span><span class="o">=</span><span class="n">out</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
@@ -477,7 +477,7 @@ As an example, we use synthetic data produced by PyGOM’s <a class="reference i
 <p>We inspect the time series of the daily infected and removed populations:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
 <span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;constrained&#39;</span><span class="p">)</span>
 <span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">sol_i_r</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
@@ -490,7 +490,7 @@ As an example, we use synthetic data produced by PyGOM’s <a class="reference i
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/e5347a01a872567241392422c81777107474b2c0c8f5d114d77963ae0ee2dbef.png" src="../../_images/e5347a01a872567241392422c81777107474b2c0c8f5d114d77963ae0ee2dbef.png" />
+<img alt="../../_images/753b9ca03cd6ab8283edfe1f0a66f457c56243b81a262c80b81602330f7bafd7.png" src="../../_images/753b9ca03cd6ab8283edfe1f0a66f457c56243b81a262c80b81602330f7bafd7.png" />
 </div>
 </div>
 <div class="admonition note">
@@ -520,7 +520,7 @@ Thus, even though the other parameters (<span class="math notranslate nohighligh
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set up pygom object from common models</span>
-<span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">common_models</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom</span><span class="w"> </span><span class="kn">import</span> <span class="n">common_models</span>
 
 <span class="n">n_pop</span><span class="o">=</span><span class="mf">1e4</span>
 <span class="n">paramEval</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">n_pop</span><span class="p">)]</span>
@@ -534,7 +534,7 @@ Thus, even though the other parameters (<span class="math notranslate nohighligh
 We can choose from any of the distributions included in PyGOM, here taking uniform distributions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">approximate_bayesian_computation</span> <span class="k">as</span> <span class="n">abc</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pygom</span><span class="w"> </span><span class="kn">import</span> <span class="n">approximate_bayesian_computation</span> <span class="k">as</span> <span class="n">abc</span>
 
 <span class="n">parameters</span> <span class="o">=</span> <span class="p">[</span><span class="n">abc</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;unif&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">logscale</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
               <span class="n">abc</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;unif&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">logscale</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
@@ -551,7 +551,7 @@ Now we combine everything together, including the initial conditions which we ar
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i0</span><span class="o">=</span><span class="mi">5</span>
 <span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="n">n_pop</span><span class="o">-</span><span class="n">i0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">PoissonLoss</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom</span><span class="w"> </span><span class="kn">import</span> <span class="n">PoissonLoss</span>
 
 <span class="n">objSEIR</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">create_loss</span><span class="p">(</span><span class="s2">&quot;PoissonLoss&quot;</span><span class="p">,</span>         <span class="c1"># Loss function</span>
                           <span class="n">parameters</span><span class="p">,</span>            <span class="c1"># Unknown parameters and prior distributions</span>
@@ -644,8 +644,8 @@ Let’s perform 2 additional iterations:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/3c7869ca2809cefbeb57d07cd6660449c95659bbe223d13c84ef773c59c60096.png" src="../../_images/3c7869ca2809cefbeb57d07cd6660449c95659bbe223d13c84ef773c59c60096.png" />
-<img alt="../../_images/ee6fcc16fc71e3203f3c879e0d4ac3fa217b9a2909f26eb5e854f23ab2b56262.png" src="../../_images/ee6fcc16fc71e3203f3c879e0d4ac3fa217b9a2909f26eb5e854f23ab2b56262.png" />
+<img alt="../../_images/59c30ddec9e6dbb9955a1cefbe1f6575902c4f5b08842a413eaf43ff014efd1d.png" src="../../_images/59c30ddec9e6dbb9955a1cefbe1f6575902c4f5b08842a413eaf43ff014efd1d.png" />
+<img alt="../../_images/671b2e959c19ef92ac7e2a16e67573f3ad4bb4ff87f0d38442bf753f2b12ab80.png" src="../../_images/671b2e959c19ef92ac7e2a16e67573f3ad4bb4ff87f0d38442bf753f2b12ab80.png" />
 </div>
 </div>
 <p>The posterior draws are contained within <code class="docutils literal notranslate"><span class="pre">abcSIR.res</span></code>.
@@ -731,8 +731,8 @@ We do this and run the ABC algorithm for 8 generations.</p>
  acceptance rate = 7.85%
 </pre></div>
 </div>
-<img alt="../../_images/2af942f91f462e913482574948d7f06c322b9ff68c1ba9929b6e4f388f610d9a.png" src="../../_images/2af942f91f462e913482574948d7f06c322b9ff68c1ba9929b6e4f388f610d9a.png" />
-<img alt="../../_images/8a031468fb3823a451897700e724ee324d9d2733353973b2a0797fbf2e9e87e9.png" src="../../_images/8a031468fb3823a451897700e724ee324d9d2733353973b2a0797fbf2e9e87e9.png" />
+<img alt="../../_images/b3a144ad2e36addb660a1fd2e314e2f72c4972b73f514cc2af06d287889510dd.png" src="../../_images/b3a144ad2e36addb660a1fd2e314e2f72c4972b73f514cc2af06d287889510dd.png" />
+<img alt="../../_images/93bc2f8f76d85e32f166fc4af0dbb2c2c25f0ee950c28e3712416779bbf3c2d8.png" src="../../_images/93bc2f8f76d85e32f166fc4af0dbb2c2c25f0ee950c28e3712416779bbf3c2d8.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -822,8 +822,8 @@ We follow similar steps as before, but now specifying an SIR model:</p>
  acceptance rate = 31.69%
 </pre></div>
 </div>
-<img alt="../../_images/608f88b361f4df23468888faf04a5ddc8615f37a4165cd811fbc46a617b93fa7.png" src="../../_images/608f88b361f4df23468888faf04a5ddc8615f37a4165cd811fbc46a617b93fa7.png" />
-<img alt="../../_images/6cd2ef532b949f4573862da9fcc3ee781d6aed94b73d0066a03026010aa8602c.png" src="../../_images/6cd2ef532b949f4573862da9fcc3ee781d6aed94b73d0066a03026010aa8602c.png" />
+<img alt="../../_images/6abf2547213b9200631995b54e9c39eb1b03cce1eda18396f269bcf316fc2373.png" src="../../_images/6abf2547213b9200631995b54e9c39eb1b03cce1eda18396f269bcf316fc2373.png" />
+<img alt="../../_images/3c0779338104ecb20f4b882cc787f3aceb3301be29ba609d452cfd2885e7b3a7.png" src="../../_images/3c0779338104ecb20f4b882cc787f3aceb3301be29ba609d452cfd2885e7b3a7.png" />
 </div>
 </div>
 <p>Although we see smaller credible intervals, this actually reflects the restriction in model fitting, rather than increased precision.
@@ -927,8 +927,8 @@ Again, we still need to pass variables even if they are unknown - in this case t
  acceptance rate = 0.64%
 </pre></div>
 </div>
-<img alt="../../_images/1d7e839ae8545b19cebb33719ad9b43a12beceba69e6d2f64051e5934e8e7569.png" src="../../_images/1d7e839ae8545b19cebb33719ad9b43a12beceba69e6d2f64051e5934e8e7569.png" />
-<img alt="../../_images/fa1e039161ef6c8e9461b4244afea438e429c1a2410d24b45d01edc771fcdf44.png" src="../../_images/fa1e039161ef6c8e9461b4244afea438e429c1a2410d24b45d01edc771fcdf44.png" />
+<img alt="../../_images/a097e8434b63f51ce306ad08e78d90d3063252084b76de7fc49ab657eba55848.png" src="../../_images/a097e8434b63f51ce306ad08e78d90d3063252084b76de7fc49ab657eba55848.png" />
+<img alt="../../_images/bf8098660ff64d845006bc41666d35a38c6efc64c75e55331558ba72006a92f5.png" src="../../_images/bf8098660ff64d845006bc41666d35a38c6efc64c75e55331558ba72006a92f5.png" />
 </div>
 </div>
 <div class="cell docutils container">

@@ -464,7 +464,7 @@ We demonstrate these features on our model system, the SIR compartmental model.
 We start, as always, by encapsulating our ODE system in a PyGOM object, in this case loading a previously defined model.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">common_models</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pygom</span><span class="w"> </span><span class="kn">import</span> <span class="n">common_models</span>
 <span class="n">ode</span> <span class="o">=</span> <span class="n">common_models</span><span class="o">.</span><span class="n">SIR</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -495,7 +495,7 @@ In this example, we’ll keep the total population, <span class="math notranslat
 Slightly cumbersomely, we have to define it via a tuple, where the first item is the function handle (name) and the second the parameters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom.utilR</span> <span class="kn">import</span> <span class="n">rgamma</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pygom.utilR</span><span class="w"> </span><span class="kn">import</span> <span class="n">rgamma</span>
 <span class="n">random_param_set</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># container for random param set</span>
 <span class="n">random_param_set</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rgamma</span><span class="p">,{</span><span class="s1">&#39;shape&#39;</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;rate&#39;</span><span class="p">:</span><span class="mi">400</span><span class="p">})</span>
 <span class="n">random_param_set</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rgamma</span><span class="p">,{</span><span class="s1">&#39;shape&#39;</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;rate&#39;</span><span class="p">:</span><span class="mf">333.33</span><span class="p">})</span>

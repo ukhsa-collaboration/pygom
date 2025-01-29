@@ -401,14 +401,14 @@ document.write(`
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
 
-<span class="kn">from</span> <span class="nn">.transition</span> <span class="kn">import</span> <span class="n">TransitionType</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">Event</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.transition</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransitionType</span><span class="p">,</span> <span class="n">Transition</span><span class="p">,</span> <span class="n">Event</span>
 <span class="c1">#from .deterministic import DeterministicOde</span>
-<span class="kn">from</span> <span class="nn">.simulate</span> <span class="kn">import</span> <span class="n">SimulateOde</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.simulate</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulateOde</span>
 
 
-<div class="viewcode-block" id="SIS"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SIS">[docs]</a><span class="k">def</span> <span class="nf">SIS</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SIS"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SIS">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">SIS</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Susceptible Infected Susceptible model</span>
 
@@ -448,7 +448,7 @@ document.write(`
         <span class="k">return</span> <span class="n">model</span></div>
 
 
-<div class="viewcode-block" id="SIS_Periodic"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SIS_Periodic">[docs]</a><span class="k">def</span> <span class="nf">SIS_Periodic</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SIS_Periodic"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SIS_Periodic">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">SIS_Periodic</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A SIS model with periodic contact, defined by the ode as per [Hethcote1973]_</span>
 
@@ -495,7 +495,7 @@ document.write(`
         <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
         <span class="k">return</span> <span class="n">model</span></div>
 
-<div class="viewcode-block" id="SIR"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SIR">[docs]</a><span class="k">def</span> <span class="nf">SIR</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SIR"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SIR">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">SIR</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A standard SIR model as per [Brauer2008]_</span>
 
@@ -542,7 +542,7 @@ document.write(`
         <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
         <span class="k">return</span> <span class="n">model</span></div>
 
-<div class="viewcode-block" id="SEIR"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR">[docs]</a><span class="k">def</span> <span class="nf">SEIR</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SEIR"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">SEIR</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A standard SIR model [Brauer2008]_ with population N</span>
 
@@ -572,7 +572,7 @@ document.write(`
         <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
         <span class="k">return</span> <span class="n">model</span></div>
 
-<div class="viewcode-block" id="SIR_Birth_Death"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SIR_Birth_Death">[docs]</a><span class="k">def</span> <span class="nf">SIR_Birth_Death</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SIR_Birth_Death"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SIR_Birth_Death">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">SIR_Birth_Death</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extension of the standard SIR model [Brauer2008]_ to also include birth and death</span>
 
@@ -651,7 +651,7 @@ document.write(`
         <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
         <span class="k">return</span> <span class="n">model</span></div>
 
-<div class="viewcode-block" id="SEIR_Birth_Death"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR_Birth_Death">[docs]</a><span class="k">def</span> <span class="nf">SEIR_Birth_Death</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SEIR_Birth_Death"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR_Birth_Death">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">SEIR_Birth_Death</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A standard SEIR model with birth and death [Aron1984]_, defined by the ode</span>
 
@@ -739,7 +739,7 @@ document.write(`
         <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
         <span class="k">return</span> <span class="n">model</span></div>
 
-<div class="viewcode-block" id="SEIR_Birth_Death_Periodic"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR_Birth_Death_Periodic">[docs]</a><span class="k">def</span> <span class="nf">SEIR_Birth_Death_Periodic</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SEIR_Birth_Death_Periodic"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR_Birth_Death_Periodic">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">SEIR_Birth_Death_Periodic</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A SEIR birth death model with periodic contact [Aron1984]_, defined by the ode</span>
 
@@ -842,7 +842,7 @@ document.write(`
         <span class="k">return</span> <span class="n">model</span></div>
 
 
-<div class="viewcode-block" id="SEIR_Birth_Death_Periodic_Waning_Intro"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR_Birth_Death_Periodic_Waning_Intro">[docs]</a><span class="k">def</span> <span class="nf">SEIR_Birth_Death_Periodic_Waning_Intro</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SEIR_Birth_Death_Periodic_Waning_Intro"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR_Birth_Death_Periodic_Waning_Intro">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">SEIR_Birth_Death_Periodic_Waning_Intro</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    SEIR model with vital dynamics, periodic infectivity, immune waning and</span>
 <span class="sd">    external introductions</span>
@@ -916,7 +916,7 @@ document.write(`
         <span class="n">model</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
         <span class="k">return</span> <span class="n">model</span></div>
 
-<div class="viewcode-block" id="SEIR_Multiple"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR_Multiple">[docs]</a><span class="k">def</span> <span class="nf">SEIR_Multiple</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SEIR_Multiple"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SEIR_Multiple">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">SEIR_Multiple</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An SEIR model that describe spatial heterogeneity [Brauer2008]_, page 180.</span>
 <span class="sd">    The model originated from [Lloyd1996]_ and notations used here</span>
@@ -1023,7 +1023,7 @@ document.write(`
         <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
         <span class="k">return</span> <span class="n">ode_obj</span></div>
 
-<div class="viewcode-block" id="Influenza_SLIARD"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Influenza_SLIARD">[docs]</a><span class="k">def</span> <span class="nf">Influenza_SLIARD</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Influenza_SLIARD"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Influenza_SLIARD">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">Influenza_SLIARD</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A simple influenza model from [Brauer2008]_, page 323.</span>
 
@@ -1088,7 +1088,7 @@ document.write(`
         <span class="k">return</span> <span class="n">model</span></div>
 
 
-<div class="viewcode-block" id="Legrand_Ebola_SEIHFR"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Legrand_Ebola_SEIHFR">[docs]</a><span class="k">def</span> <span class="nf">Legrand_Ebola_SEIHFR</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Legrand_Ebola_SEIHFR"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Legrand_Ebola_SEIHFR">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">Legrand_Ebola_SEIHFR</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The Legrand Ebola model [Legrand2007]_ with 6 compartments that includes the</span>
 <span class="sd">    H = hospitalization and F = funeral state. Note that because this</span>
@@ -1195,7 +1195,7 @@ document.write(`
         <span class="n">ode_obj</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">param</span>
         <span class="k">return</span> <span class="n">ode_obj</span></div>
 
-<div class="viewcode-block" id="Lotka_Volterra"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Lotka_Volterra">[docs]</a><span class="k">def</span> <span class="nf">Lotka_Volterra</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Lotka_Volterra"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Lotka_Volterra">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">Lotka_Volterra</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Standard Lotka-Volterra model with two states and four parameters [Lotka1920]_</span>
 
@@ -1302,7 +1302,7 @@ document.write(`
 <span class="c1">#         return model</span>
 
 
-<div class="viewcode-block" id="Robertson"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Robertson">[docs]</a><span class="k">def</span> <span class="nf">Robertson</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Robertson"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Robertson">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">Robertson</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The so called Robertson problem [Robertson1966]_, which is a standard example used to</span>
 <span class="sd">    test stiff integrator.</span>
@@ -1353,7 +1353,7 @@ document.write(`
 <span class="c1">#############################################</span>
 
 
-<div class="viewcode-block" id="SIR_norm"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SIR_norm">[docs]</a><span class="k">def</span> <span class="nf">SIR_norm</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SIR_norm"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.SIR_norm">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">SIR_norm</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A normalized SIR model:</span>
 
@@ -1409,7 +1409,7 @@ document.write(`
         <span class="k">return</span> <span class="n">ode_obj</span></div>
 
 
-<div class="viewcode-block" id="FitzHugh"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.FitzHugh">[docs]</a><span class="k">def</span> <span class="nf">FitzHugh</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="FitzHugh"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.FitzHugh">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">FitzHugh</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The standard FitzHugh model without external input [FitzHugh1961]_</span>
 
@@ -1455,7 +1455,7 @@ document.write(`
         <span class="k">return</span> <span class="n">ode_obj</span></div>
 
 
-<div class="viewcode-block" id="Lorenz"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Lorenz">[docs]</a><span class="k">def</span> <span class="nf">Lorenz</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Lorenz"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.Lorenz">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">Lorenz</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Lorenz attractor define by three parameters, :math:`\\beta,\\sigma,\\rho`</span>
 <span class="sd">    as per [Lorenz1963]_.</span>
@@ -1499,7 +1499,7 @@ document.write(`
         <span class="k">return</span> <span class="n">ode_obj</span></div>
 
 
-<div class="viewcode-block" id="vanDerPol"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.vanDerPol">[docs]</a><span class="k">def</span> <span class="nf">vanDerPol</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="vanDerPol"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.vanDerPol">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">vanDerPol</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The van der Pol equation [vanderpol1926]_, a second order ode</span>
 

@@ -402,9 +402,9 @@ document.write(`
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">sympy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sympy</span>
 
-<span class="kn">from</span> <span class="nn">.simulate</span> <span class="kn">import</span> <span class="n">SimulateOde</span><span class="p">,</span> <span class="n">TransitionType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.simulate</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulateOde</span><span class="p">,</span> <span class="n">TransitionType</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
            <span class="s1">&#39;DFE&#39;</span><span class="p">,</span>
@@ -413,7 +413,7 @@ document.write(`
            <span class="s1">&#39;disease_progression_matrices&#39;</span>
            <span class="p">]</span>
 
-<div class="viewcode-block" id="DFE"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DFE">[docs]</a><span class="k">def</span> <span class="nf">DFE</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">disease_state</span><span class="p">):</span>
+<div class="viewcode-block" id="DFE"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.DFE">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">DFE</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">disease_state</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns the disease free equilibrium from an ode object</span>
 
@@ -445,7 +445,7 @@ document.write(`
             <span class="n">DFE_solution</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">DFE_solution</span></div>
 
-<div class="viewcode-block" id="R0"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.R0">[docs]</a><span class="k">def</span> <span class="nf">R0</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">disease_state</span><span class="p">):</span>
+<div class="viewcode-block" id="R0"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.R0">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">R0</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">disease_state</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns the basic reproduction number, in symbolic form when</span>
 <span class="sd">    the parameter values are not available</span>
@@ -479,7 +479,7 @@ document.write(`
     <span class="n">e</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">e</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="R0_from_matrix"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.R0_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">R0_from_matrix</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">disease_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="R0_from_matrix"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.R0_from_matrix">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">R0_from_matrix</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">disease_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns the symbolic form of the basic reproduction number. This will</span>
 <span class="sd">    include the states symbols which is different from :func:`getR0` where</span>
@@ -517,7 +517,7 @@ document.write(`
     <span class="n">e</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="disease_progression_matrices"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.disease_progression_matrices">[docs]</a><span class="k">def</span> <span class="nf">disease_progression_matrices</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">disease_state</span><span class="p">,</span> <span class="n">diff</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="disease_progression_matrices"><a class="viewcode-back" href="../../../rst/autodoc-model.html#pygom.model.disease_progression_matrices">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">disease_progression_matrices</span><span class="p">(</span><span class="n">ode</span><span class="p">,</span> <span class="n">disease_state</span><span class="p">,</span> <span class="n">diff</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns (F,V), the secondary infection rates and disease progression</span>
 <span class="sd">    rate respectively.</span>
@@ -569,7 +569,7 @@ document.write(`
         <span class="k">return</span> <span class="n">F</span><span class="p">,</span><span class="n">V</span></div>
 
 
-<span class="k">def</span> <span class="nf">_get_single_state_name</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_single_state_name</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">state</span>

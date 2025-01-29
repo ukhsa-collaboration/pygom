@@ -409,19 +409,19 @@ document.write(`
     <span class="s1">&#39;geometric&#39;</span>
 <span class="p">]</span>
 
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
-<span class="kn">import</span> <span class="nn">sympy</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">odeint</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">leastsq</span><span class="p">,</span> <span class="n">minimize</span><span class="p">,</span> <span class="n">root</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sympy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">odeint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">leastsq</span><span class="p">,</span> <span class="n">minimize</span><span class="p">,</span> <span class="n">root</span>
 
-<span class="kn">from</span> <span class="nn">pygom.model._model_errors</span> <span class="kn">import</span> <span class="n">EstimateError</span><span class="p">,</span> <span class="n">InputError</span>
-<span class="kn">from</span> <span class="nn">pygom.utilR.distn</span> <span class="kn">import</span> <span class="n">qchisq</span><span class="p">,</span> <span class="n">qnorm</span>
-<span class="kn">from</span> <span class="nn">.ode_loss</span> <span class="kn">import</span> <span class="n">NormalLoss</span><span class="p">,</span> <span class="n">SquareLoss</span><span class="p">,</span> <span class="n">PoissonLoss</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom.model._model_errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">EstimateError</span><span class="p">,</span> <span class="n">InputError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom.utilR.distn</span><span class="w"> </span><span class="kn">import</span> <span class="n">qchisq</span><span class="p">,</span> <span class="n">qnorm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.ode_loss</span><span class="w"> </span><span class="kn">import</span> <span class="n">NormalLoss</span><span class="p">,</span> <span class="n">SquareLoss</span><span class="p">,</span> <span class="n">PoissonLoss</span>
 
-<div class="viewcode-block" id="asymptotic"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.asymptotic">[docs]</a><span class="k">def</span> <span class="nf">asymptotic</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="asymptotic"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.asymptotic">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">asymptotic</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Finds the confidence interval at the :math:`\\alpha` level</span>
 <span class="sd">    under the :math:`\\mathcal{X}^{2}` assumption for the</span>
@@ -464,7 +464,7 @@ document.write(`
 
     <span class="k">return</span> <span class="n">xL</span><span class="p">,</span> <span class="n">xU</span></div>
 
-<div class="viewcode-block" id="bootstrap"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.bootstrap">[docs]</a><span class="k">def</span> <span class="nf">bootstrap</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="bootstrap"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.bootstrap">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">bootstrap</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">iteration</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Finds the confidence interval at the :math:`\\alpha` level</span>
@@ -548,7 +548,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">xLB</span><span class="p">,</span> <span class="n">xUB</span></div>
 
-<div class="viewcode-block" id="geometric"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.geometric">[docs]</a><span class="k">def</span> <span class="nf">geometric</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="geometric"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.geometric">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">geometric</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">method</span><span class="o">=</span><span class="s1">&#39;jtj&#39;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span>
               <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
@@ -614,7 +614,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">xL</span><span class="p">,</span> <span class="n">xU</span></div>
 
-<span class="k">def</span> <span class="nf">_geometricOde</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;jtj&#39;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_geometricOde</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;jtj&#39;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">):</span>
 
     <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;jtj&#39;</span><span class="p">:</span>
         <span class="n">cov</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">jtj</span>
@@ -631,7 +631,7 @@ document.write(`
     <span class="n">activeIndex</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">setIndex</span> <span class="o">-</span> <span class="nb">set</span><span class="p">([</span><span class="n">i</span><span class="p">]))</span>
     <span class="n">k</span> <span class="o">=</span> <span class="n">qnorm</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">F1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">F1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
         <span class="n">H</span> <span class="o">=</span> <span class="n">cov</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">tau</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         <span class="n">dwdb</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">][:,</span><span class="n">activeIndex</span><span class="p">],</span>
@@ -652,7 +652,7 @@ document.write(`
 
     <span class="k">return</span> <span class="n">F1</span>
 
-<div class="viewcode-block" id="profile"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.profile">[docs]</a><span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="profile"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.profile">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">profile</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Finds the profile confidence interval at the</span>
 <span class="sd">    :math:`\\alpha` level under the :math:`\\mathcal{X}^{2}`</span>
@@ -742,7 +742,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">xL</span><span class="p">,</span> <span class="n">xU</span></div>
 
-<span class="k">def</span> <span class="nf">_profileGetInitialValues</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileGetInitialValues</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                              <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    We would not use an approximation in general because if the input theta</span>
@@ -782,7 +782,7 @@ document.write(`
 
     <span class="k">return</span> <span class="n">xhatL</span><span class="p">,</span> <span class="n">xhatU</span>
 
-<span class="k">def</span> <span class="nf">_profileOptimizeNuisance</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileOptimizeNuisance</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Find the minimized nuisance parameters given the parameter of interest.</span>
 
@@ -849,7 +849,7 @@ document.write(`
 
     <span class="k">return</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
 
-<span class="k">def</span> <span class="nf">_profileObtainViaNuisance</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileObtainViaNuisance</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span>
                               <span class="n">obtainLB</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Find the profile likelihood confidence interval by iteratively minimizing</span>
@@ -875,12 +875,12 @@ document.write(`
 
     <span class="c1"># define the corresponding objective function that minimizes the nuisance</span>
     <span class="c1"># parameters internally.</span>
-    <span class="k">def</span> <span class="nf">ABC1</span><span class="p">(</span><span class="n">beta</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ABC1</span><span class="p">(</span><span class="n">beta</span><span class="p">):</span>
         <span class="n">xhatT</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">beta</span>
         <span class="n">xhatT</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">]</span> <span class="o">=</span> <span class="n">_profileOptimizeNuisance</span><span class="p">(</span><span class="n">xhatT</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">lbT</span><span class="p">,</span> <span class="n">ubT</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">funcG</span><span class="p">(</span><span class="n">xhatT</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">ABCJac</span><span class="p">(</span><span class="n">beta</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ABCJac</span><span class="p">(</span><span class="n">beta</span><span class="p">):</span>
         <span class="n">xhatT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">beta</span>
         <span class="n">xhatT</span><span class="p">[</span><span class="n">activeIndex</span><span class="p">]</span> <span class="o">=</span> <span class="n">_profileOptimizeNuisance</span><span class="p">(</span><span class="n">xhatT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">)</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">funcG</span><span class="p">(</span><span class="n">xhatT</span><span class="p">)</span>
@@ -913,7 +913,7 @@ document.write(`
         <span class="k">raise</span> <span class="n">EstimateError</span><span class="p">(</span><span class="s2">&quot;Failure in estimation of the profile likelihood: &quot;</span>
                             <span class="o">+</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">])</span>
 
-<span class="k">def</span> <span class="nf">_profileObtainAndVerify</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileObtainAndVerify</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Find the solution of the profile likelihood and check</span>
 <span class="sd">    that the algorithm has converged.</span>
@@ -935,7 +935,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">x</span>
 
-<span class="k">def</span> <span class="nf">_profileObtainAndVerifyBounds</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">ddf</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileObtainAndVerifyBounds</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">ddf</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">jac</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="c1"># hess=ddf,</span>
                    <span class="n">x0</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span>
                    <span class="n">bounds</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">),</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lb</span><span class="p">),</span><span class="mi">2</span><span class="p">),</span> <span class="s1">&#39;F&#39;</span><span class="p">),</span>
@@ -953,7 +953,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
 
-<span class="k">def</span> <span class="nf">_checkInput</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_checkInput</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">):</span>
 
     <span class="k">if</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span>
@@ -983,25 +983,25 @@ document.write(`
 
     <span class="k">return</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span>
 
-<span class="k">def</span> <span class="nf">_profileF</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileF</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">xhat</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">qchisq</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">func</span>
 
-<span class="k">def</span> <span class="nf">_profileG</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileG</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">xhat</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">qchisq</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span>
         <span class="k">return</span> <span class="n">r</span>
 
     <span class="k">return</span> <span class="n">func</span>
 
-<span class="k">def</span> <span class="nf">_profileGSecondOrderCorrection</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileGSecondOrderCorrection</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Finds the correction term when approximating the gradient to</span>
 <span class="sd">    second order [Venzon1988]_, i.e. :math:`\\delta^{\\top} D(\\theta) \\delta`</span>
@@ -1035,7 +1035,7 @@ document.write(`
     <span class="n">c</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">xhat</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">qchisq</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">D0</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">xhat</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="c1"># first, we obtain all the necessary information.</span>
         <span class="c1"># We use the notation in the original paper.</span>
         <span class="c1"># so that G is the derivative of the systems of</span>
@@ -1078,8 +1078,8 @@ document.write(`
 
     <span class="k">return</span> <span class="n">func</span>
 
-<span class="k">def</span> <span class="nf">_profileH</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileH</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">approx</span><span class="p">:</span>
             <span class="n">H</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">jtj</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1090,10 +1090,10 @@ document.write(`
 
     <span class="k">return</span> <span class="n">func</span>
 
-<span class="k">def</span> <span class="nf">_profileFgradient</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileFgradient</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">xhat</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">qchisq</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">approx</span><span class="p">:</span>
             <span class="n">H</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">jtj</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1110,10 +1110,10 @@ document.write(`
 
     <span class="k">return</span> <span class="n">func</span>
 
-<span class="k">def</span> <span class="nf">_profileFhessian</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_profileFhessian</span><span class="p">(</span><span class="n">xhat</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">xhat</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">qchisq</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">approx</span><span class="p">:</span>
             <span class="n">H</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">jtj</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>

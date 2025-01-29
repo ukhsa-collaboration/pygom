@@ -415,16 +415,18 @@ document.write(`
     <span class="s1">&#39;RectSphereBivariateSpline&#39;</span><span class="p">]</span>
 
 
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">threading</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lock</span>
 
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">concatenate</span><span class="p">,</span> <span class="n">ravel</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="n">array</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">concatenate</span><span class="p">,</span> <span class="n">ravel</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="n">array</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_fitpack_impl</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_dfitpack</span> <span class="k">as</span> <span class="n">dfitpack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">_fitpack_impl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">_dfitpack</span> <span class="k">as</span> <span class="n">dfitpack</span>
 
 
 <span class="n">dfitpack_int</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">intvar</span><span class="o">.</span><span class="n">dtype</span>
+<span class="n">FITPACK_LOCK</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
 
 
 <span class="c1"># ############### Univariate spline ####################</span>
@@ -464,9 +466,13 @@ document.write(`
                  <span class="mi">3</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;const&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
 
 
-<div class="viewcode-block" id="UnivariateSpline"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline">[docs]</a><span class="k">class</span> <span class="nc">UnivariateSpline</span><span class="p">:</span>
+<div class="viewcode-block" id="UnivariateSpline"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">UnivariateSpline</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    1-D smoothing spline fit to a given set of data points.</span>
+
+<span class="sd">    .. legacy:: class</span>
+
+<span class="sd">        Specifically, we recommend using `make_splrep` instead.</span>
 
 <span class="sd">    Fits a spline y = spl(x) of degree `k` to the provided `x`, `y` data.  `s`</span>
 <span class="sd">    specifies the number of knots by specifying a smoothing condition.</span>
@@ -622,15 +628,16 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">ext</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">check_finite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">ext</span><span class="p">,</span>
                                                       <span class="n">check_finite</span><span class="p">)</span>
 
         <span class="c1"># _data == x,y,w,xb,xe,k,s,n,t,c,fp,fpint,nrdata,ier</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">fpcurf0</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">xb</span><span class="o">=</span><span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                <span class="n">xe</span><span class="o">=</span><span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">fpcurf0</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">xb</span><span class="o">=</span><span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                    <span class="n">xe</span><span class="o">=</span><span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># nest too small, setting to maximum bound</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset_nest</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -638,7 +645,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset_class</span><span class="p">()</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">validate_input</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">ext</span><span class="p">,</span> <span class="n">check_finite</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_input</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">ext</span><span class="p">,</span> <span class="n">check_finite</span><span class="p">):</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bbox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
@@ -668,12 +675,12 @@ document.write(`
         <span class="k">try</span><span class="p">:</span>
             <span class="n">ext</span> <span class="o">=</span> <span class="n">_extrap_modes</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown extrapolation mode </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">ext</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown extrapolation mode </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">ext</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_from_tck</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tck</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_tck</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tck</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a spline object from given tck&quot;&quot;&quot;</span>
         <span class="bp">self</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
         <span class="n">t</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">tck</span>
@@ -684,7 +691,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">ext</span> <span class="o">=</span> <span class="n">ext</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">_reset_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reset_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
         <span class="n">n</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_eval_args</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:</span><span class="n">n</span><span class="p">],</span> <span class="n">c</span><span class="p">[:</span><span class="n">n</span><span class="p">],</span> <span class="n">k</span>
@@ -705,10 +712,10 @@ document.write(`
             <span class="c1"># error</span>
             <span class="k">if</span> <span class="n">ier</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_set_class</span><span class="p">(</span><span class="n">LSQUnivariateSpline</span><span class="p">)</span>
-            <span class="n">message</span> <span class="o">=</span> <span class="n">_curfit_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ier</span><span class="p">,</span> <span class="s1">&#39;ier=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ier</span><span class="p">))</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="n">_curfit_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ier</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;ier=</span><span class="si">{</span><span class="n">ier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_spline_class</span> <span class="o">=</span> <span class="bp">cls</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="p">(</span><span class="n">UnivariateSpline</span><span class="p">,</span> <span class="n">InterpolatedUnivariateSpline</span><span class="p">,</span>
                               <span class="n">LSQUnivariateSpline</span><span class="p">):</span>
@@ -717,7 +724,7 @@ document.write(`
             <span class="c1"># It&#39;s an unknown subclass -- don&#39;t change class. cf. #731</span>
             <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">_reset_nest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">nest</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reset_nest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">nest</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">nest</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">k</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -729,10 +736,11 @@ document.write(`
                                <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">])</span>
 
         <span class="n">args</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">fpint</span><span class="p">,</span> <span class="n">nrdata</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">13</span><span class="p">])</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">fpcurf1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">fpcurf1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span>
 
-<div class="viewcode-block" id="UnivariateSpline.set_smoothing_factor"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.set_smoothing_factor">[docs]</a>    <span class="k">def</span> <span class="nf">set_smoothing_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="UnivariateSpline.set_smoothing_factor"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.set_smoothing_factor">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">set_smoothing_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Continue spline computation with the given smoothing</span>
 <span class="sd">        factor s and with the knots found at the last call.</span>
 
@@ -746,14 +754,15 @@ document.write(`
                           <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">s</span><span class="p">,)</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="mi">7</span><span class="p">:]</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">fpcurf1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">fpcurf1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># nest too small, setting to maximum bound</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset_nest</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset_class</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate spline (or its nu-th derivative) at positions x.</span>
 
@@ -788,10 +797,11 @@ document.write(`
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">ext</span> <span class="o">=</span> <span class="n">_extrap_modes</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown extrapolation mode </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">ext</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
-        <span class="k">return</span> <span class="n">_fitpack_impl</span><span class="o">.</span><span class="n">splev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_args</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="n">nu</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="n">ext</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown extrapolation mode </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_fitpack_impl</span><span class="o">.</span><span class="n">splev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_args</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="n">nu</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="n">ext</span><span class="p">)</span>
 
-<div class="viewcode-block" id="UnivariateSpline.get_knots"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.get_knots">[docs]</a>    <span class="k">def</span> <span class="nf">get_knots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="UnivariateSpline.get_knots"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.get_knots">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_knots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return positions of interior knots of the spline.</span>
 
 <span class="sd">        Internally, the knot vector contains ``2*k`` additional boundary knots.</span>
@@ -800,13 +810,13 @@ document.write(`
         <span class="n">k</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="mi">8</span><span class="p">][</span><span class="n">k</span><span class="p">:</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="UnivariateSpline.get_coeffs"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.get_coeffs">[docs]</a>    <span class="k">def</span> <span class="nf">get_coeffs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="UnivariateSpline.get_coeffs"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.get_coeffs">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_coeffs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return spline coefficients.&quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
         <span class="n">k</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="mi">9</span><span class="p">][:</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="UnivariateSpline.get_residual"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.get_residual">[docs]</a>    <span class="k">def</span> <span class="nf">get_residual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="UnivariateSpline.get_residual"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.get_residual">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_residual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return weighted sum of squared residuals of the spline approximation.</span>
 
 <span class="sd">           This is equivalent to::</span>
@@ -816,7 +826,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="UnivariateSpline.integral"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.integral">[docs]</a>    <span class="k">def</span> <span class="nf">integral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<div class="viewcode-block" id="UnivariateSpline.integral"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.integral">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">integral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return definite integral of the spline between two given points.</span>
 
 <span class="sd">        Parameters</span>
@@ -853,9 +863,10 @@ document.write(`
 <span class="sd">        0.0</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_fitpack_impl</span><span class="o">.</span><span class="n">splint</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_args</span><span class="p">)</span></div>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_fitpack_impl</span><span class="o">.</span><span class="n">splint</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_args</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="UnivariateSpline.derivatives"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="UnivariateSpline.derivatives"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.derivatives">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return all derivatives of the spline at the point x.</span>
 
 <span class="sd">        Parameters</span>
@@ -879,9 +890,10 @@ document.write(`
 <span class="sd">        array([2.25, 3.0, 2.0, 0])</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_fitpack_impl</span><span class="o">.</span><span class="n">spalde</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_args</span><span class="p">)</span></div>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_fitpack_impl</span><span class="o">.</span><span class="n">spalde</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_args</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="UnivariateSpline.roots"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.roots">[docs]</a>    <span class="k">def</span> <span class="nf">roots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="UnivariateSpline.roots"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.roots">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">roots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the zeros of the spline.</span>
 
 <span class="sd">        Notes</span>
@@ -926,11 +938,12 @@ document.write(`
         <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">mest</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="mi">7</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">_fitpack_impl</span><span class="o">.</span><span class="n">sproot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_args</span><span class="p">,</span> <span class="n">mest</span><span class="o">=</span><span class="n">mest</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_fitpack_impl</span><span class="o">.</span><span class="n">sproot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_args</span><span class="p">,</span> <span class="n">mest</span><span class="o">=</span><span class="n">mest</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;finding roots unsupported for &#39;</span>
                                   <span class="s1">&#39;non-cubic splines&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="UnivariateSpline.derivative"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.derivative">[docs]</a>    <span class="k">def</span> <span class="nf">derivative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="UnivariateSpline.derivative"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.derivative">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">derivative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a new spline representing the derivative of this spline.</span>
 
@@ -975,12 +988,13 @@ document.write(`
 <span class="sd">        :math:`\\cos(x) = \\sin&#39;(x)`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tck</span> <span class="o">=</span> <span class="n">_fitpack_impl</span><span class="o">.</span><span class="n">splder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_args</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="n">tck</span> <span class="o">=</span> <span class="n">_fitpack_impl</span><span class="o">.</span><span class="n">splder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_args</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
         <span class="c1"># if self.ext is &#39;const&#39;, derivative.ext will be &#39;zeros&#39;</span>
         <span class="n">ext</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext</span> <span class="o">==</span> <span class="mi">3</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext</span>
         <span class="k">return</span> <span class="n">UnivariateSpline</span><span class="o">.</span><span class="n">_from_tck</span><span class="p">(</span><span class="n">tck</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="n">ext</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="UnivariateSpline.antiderivative"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.antiderivative">[docs]</a>    <span class="k">def</span> <span class="nf">antiderivative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="UnivariateSpline.antiderivative"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.UnivariateSpline.antiderivative">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">antiderivative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a new spline representing the antiderivative of this spline.</span>
 
@@ -1032,13 +1046,18 @@ document.write(`
 <span class="sd">        2.2572053268208538</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tck</span> <span class="o">=</span> <span class="n">_fitpack_impl</span><span class="o">.</span><span class="n">splantider</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_args</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="n">tck</span> <span class="o">=</span> <span class="n">_fitpack_impl</span><span class="o">.</span><span class="n">splantider</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_args</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">UnivariateSpline</span><span class="o">.</span><span class="n">_from_tck</span><span class="p">(</span><span class="n">tck</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext</span><span class="p">)</span></div></div>
 
 
-<span class="k">class</span> <span class="nc">InterpolatedUnivariateSpline</span><span class="p">(</span><span class="n">UnivariateSpline</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">InterpolatedUnivariateSpline</span><span class="p">(</span><span class="n">UnivariateSpline</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    1-D interpolating spline for a given set of data points.</span>
+
+<span class="sd">    .. legacy:: class</span>
+
+<span class="sd">        Specifically, we recommend using `make_interp_spline` instead.</span>
 
 <span class="sd">    Fits a spline y = spl(x) of degree `k` to the provided `x`, `y` data.</span>
 <span class="sd">    Spline function passes through all provided points. Equivalent to</span>
@@ -1124,7 +1143,7 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
                  <span class="n">ext</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">check_finite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
@@ -1133,8 +1152,9 @@ document.write(`
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;x must be strictly increasing&#39;</span><span class="p">)</span>
 
         <span class="c1"># _data == x,y,w,xb,xe,k,s,n,t,c,fp,fpint,nrdata,ier</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">fpcurf0</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">xb</span><span class="o">=</span><span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                      <span class="n">xe</span><span class="o">=</span><span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">fpcurf0</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">xb</span><span class="o">=</span><span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                          <span class="n">xe</span><span class="o">=</span><span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset_class</span><span class="p">()</span>
 
 
@@ -1153,9 +1173,14 @@ document.write(`
 <span class="s2">&quot;&quot;&quot;</span>
 
 
-<span class="k">class</span> <span class="nc">LSQUnivariateSpline</span><span class="p">(</span><span class="n">UnivariateSpline</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LSQUnivariateSpline</span><span class="p">(</span><span class="n">UnivariateSpline</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    1-D spline with explicit internal knots.</span>
+
+<span class="sd">    .. legacy:: class</span>
+
+<span class="sd">        Specifically, we recommend using `make_lsq_spline` instead.</span>
+
 
 <span class="sd">    Fits a spline y = spl(x) of degree `k` to the provided `x`, `y` data.  `t`</span>
 <span class="sd">    specifies the internal knots of the spline</span>
@@ -1266,7 +1291,7 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
                  <span class="n">ext</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">check_finite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
@@ -1286,16 +1311,17 @@ document.write(`
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="p">]</span><span class="o">-</span><span class="n">t</span><span class="p">[</span><span class="n">k</span><span class="p">:</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Interior knots t must satisfy &#39;</span>
                              <span class="s1">&#39;Schoenberg-Whitney conditions&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">fpchec</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_fpchec_error_string</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">fpcurfm1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">xb</span><span class="o">=</span><span class="n">xb</span><span class="p">,</span> <span class="n">xe</span><span class="o">=</span><span class="n">xe</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">fpchec</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_fpchec_error_string</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">fpcurfm1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">xb</span><span class="o">=</span><span class="n">xb</span><span class="p">,</span> <span class="n">xe</span><span class="o">=</span><span class="n">xe</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset_class</span><span class="p">()</span>
 
 
 <span class="c1"># ############### Bivariate spline ####################</span>
 
-<span class="k">class</span> <span class="nc">_BivariateSplineBase</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_BivariateSplineBase</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Base class for Bivariate spline s(x,y) interpolation on the rectangle</span>
 <span class="sd">    [xb,xe] x [yb, ye] calculated from a given set of data points</span>
 <span class="sd">    (x,y,z).</span>
@@ -1313,7 +1339,7 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_from_tck</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tck</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_tck</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tck</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a spline object from given tck and degree&quot;&quot;&quot;</span>
         <span class="bp">self</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tck</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">5</span><span class="p">:</span>
@@ -1323,13 +1349,13 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">degrees</span> <span class="o">=</span> <span class="n">tck</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">get_residual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_residual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return weighted sum of squared residuals of the spline</span>
 <span class="sd">        approximation: sum ((w[i]*(z[i]-s(x[i],y[i])))**2,axis=0)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span>
 
-    <span class="k">def</span> <span class="nf">get_knots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_knots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a tuple (tx,ty) where tx,ty contain knots positions</span>
 <span class="sd">        of the spline with respect to x-, y-variable, respectively.</span>
 <span class="sd">        The position of interior and additional knots are given as</span>
@@ -1337,11 +1363,11 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tck</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">get_coeffs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_coeffs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return spline coefficients.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tck</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the spline or its derivatives at given positions.</span>
 
@@ -1428,13 +1454,15 @@ document.write(`
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;y must be strictly increasing when `grid` is True&quot;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">dx</span> <span class="ow">or</span> <span class="n">dy</span><span class="p">:</span>
-                <span class="n">z</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">parder</span><span class="p">(</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+                    <span class="n">z</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">parder</span><span class="p">(</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">ier</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Error code returned by parder: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ier</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error code returned by parder: </span><span class="si">{</span><span class="n">ier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">z</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">bispev</span><span class="p">(</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+                    <span class="n">z</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">bispev</span><span class="p">(</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">ier</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Error code returned by bispev: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ier</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error code returned by bispev: </span><span class="si">{</span><span class="n">ier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># standard Numpy broadcasting</span>
             <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
@@ -1448,18 +1476,20 @@ document.write(`
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tck</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">dx</span> <span class="ow">or</span> <span class="n">dy</span><span class="p">:</span>
-                <span class="n">z</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">pardeu</span><span class="p">(</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+                    <span class="n">z</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">pardeu</span><span class="p">(</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">ier</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Error code returned by pardeu: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ier</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error code returned by pardeu: </span><span class="si">{</span><span class="n">ier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">z</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">bispeu</span><span class="p">(</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+                    <span class="n">z</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">bispeu</span><span class="p">(</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">ier</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Error code returned by bispeu: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ier</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error code returned by bispeu: </span><span class="si">{</span><span class="n">ier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">z</span>
 
-    <span class="k">def</span> <span class="nf">partial_derivative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">partial_derivative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a new spline representing a partial derivative of this</span>
 <span class="sd">        spline.</span>
 
@@ -1493,7 +1523,8 @@ document.write(`
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;order of derivative must be less than&quot;</span>
                                  <span class="s2">&quot; degree of spline&quot;</span><span class="p">)</span>
             <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tck</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
-            <span class="n">newc</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">pardtc</span><span class="p">(</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+                <span class="n">newc</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">pardtc</span><span class="p">(</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">ier</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="c1"># This should not happen under normal conditions.</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unexpected error code returned by&quot;</span>
@@ -1551,7 +1582,7 @@ document.write(`
                     <span class="p">}</span>
 
 
-<span class="k">class</span> <span class="nc">BivariateSpline</span><span class="p">(</span><span class="n">_BivariateSplineBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BivariateSpline</span><span class="p">(</span><span class="n">_BivariateSplineBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for bivariate splines.</span>
 
@@ -1586,7 +1617,7 @@ document.write(`
 <span class="sd">        a function to evaluate a bivariate B-spline and its derivatives</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">ev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the spline at points</span>
 
@@ -1648,7 +1679,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="n">dy</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">integral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xa</span><span class="p">,</span> <span class="n">xb</span><span class="p">,</span> <span class="n">ya</span><span class="p">,</span> <span class="n">yb</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">integral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xa</span><span class="p">,</span> <span class="n">xb</span><span class="p">,</span> <span class="n">ya</span><span class="p">,</span> <span class="n">yb</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the integral of the spline over area [xa,xb] x [ya,yb].</span>
 
@@ -1667,10 +1698,11 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tck</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">degrees</span>
-        <span class="k">return</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">dblint</span><span class="p">(</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">xa</span><span class="p">,</span> <span class="n">xb</span><span class="p">,</span> <span class="n">ya</span><span class="p">,</span> <span class="n">yb</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">dblint</span><span class="p">(</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">xa</span><span class="p">,</span> <span class="n">xb</span><span class="p">,</span> <span class="n">ya</span><span class="p">,</span> <span class="n">yb</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_validate_input</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">eps</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_input</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">eps</span><span class="p">):</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="n">z</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;x, y, and z should have a same length&#39;</span><span class="p">)</span>
@@ -1689,7 +1721,7 @@ document.write(`
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span>
 
 
-<span class="k">class</span> <span class="nc">_DerivedBivariateSpline</span><span class="p">(</span><span class="n">_BivariateSplineBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_DerivedBivariateSpline</span><span class="p">(</span><span class="n">_BivariateSplineBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Bivariate spline constructed from the coefficients and knots of another</span>
 <span class="sd">    spline.</span>
 
@@ -1709,14 +1741,14 @@ document.write(`
                     <span class="s2">&quot; object&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">fp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;attribute </span><span class="se">\&quot;</span><span class="s2">fp</span><span class="se">\&quot;</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_invalid_why</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;attribute </span><span class="se">\&quot;</span><span class="s2">fp</span><span class="se">\&quot;</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_invalid_why</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_residual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;method </span><span class="se">\&quot;</span><span class="s2">get_residual</span><span class="se">\&quot;</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_invalid_why</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_residual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;method </span><span class="se">\&quot;</span><span class="s2">get_residual</span><span class="se">\&quot;</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_invalid_why</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">SmoothBivariateSpline</span><span class="p">(</span><span class="n">BivariateSpline</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SmoothBivariateSpline</span><span class="p">(</span><span class="n">BivariateSpline</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Smooth bivariate spline approximation.</span>
 
@@ -1786,7 +1818,7 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">kx</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ky</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">kx</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ky</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">eps</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">):</span>
 
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_input</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">eps</span><span class="p">)</span>
@@ -1797,22 +1829,17 @@ document.write(`
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;s should be s &gt;= 0.0&quot;</span><span class="p">)</span>
 
         <span class="n">xb</span><span class="p">,</span> <span class="n">xe</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">ye</span> <span class="o">=</span> <span class="n">bbox</span>
-        <span class="n">nx</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">wrk1</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">surfit_smth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span>
-                                                                <span class="n">xb</span><span class="p">,</span> <span class="n">xe</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span>
-                                                                <span class="n">ye</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span>
-                                                                <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
-                                                                <span class="n">lwrk2</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ier</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>          <span class="c1"># lwrk2 was to small, re-run</span>
-            <span class="n">nx</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">wrk1</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">surfit_smth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span>
-                                                                    <span class="n">xb</span><span class="p">,</span> <span class="n">xe</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span>
-                                                                    <span class="n">ye</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span>
-                                                                    <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span>
-                                                                    <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
-                                                                    <span class="n">lwrk2</span><span class="o">=</span><span class="n">ier</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="n">nx</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">wrk1</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">surfit_smth</span><span class="p">(</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">xb</span><span class="p">,</span> <span class="n">xe</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">ye</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span> <span class="n">lwrk2</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ier</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>          <span class="c1"># lwrk2 was to small, re-run</span>
+                <span class="n">nx</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">wrk1</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">surfit_smth</span><span class="p">(</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">xb</span><span class="p">,</span> <span class="n">xe</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">ye</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
+                    <span class="n">lwrk2</span><span class="o">=</span><span class="n">ier</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ier</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]:</span>  <span class="c1"># normal return</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">message</span> <span class="o">=</span> <span class="n">_surfit_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ier</span><span class="p">,</span> <span class="s1">&#39;ier=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ier</span><span class="p">))</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="n">_surfit_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ier</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;ier=</span><span class="si">{</span><span class="n">ier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">fp</span>
@@ -1820,7 +1847,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">degrees</span> <span class="o">=</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span>
 
 
-<span class="k">class</span> <span class="nc">LSQBivariateSpline</span><span class="p">(</span><span class="n">BivariateSpline</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LSQBivariateSpline</span><span class="p">(</span><span class="n">BivariateSpline</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Weighted least-squares bivariate spline approximation.</span>
 
@@ -1875,7 +1902,7 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span> <span class="n">kx</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ky</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span> <span class="n">kx</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ky</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
                  <span class="n">eps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_input</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">eps</span><span class="p">)</span>
@@ -1897,14 +1924,15 @@ document.write(`
         <span class="n">ty1</span><span class="p">[</span><span class="n">ky</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">ny</span><span class="o">-</span><span class="n">ky</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">ty</span>
 
         <span class="n">xb</span><span class="p">,</span> <span class="n">xe</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">ye</span> <span class="o">=</span> <span class="n">bbox</span>
-        <span class="n">tx1</span><span class="p">,</span> <span class="n">ty1</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">surfit_lsq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">tx1</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">ty1</span><span class="p">,</span>
-                                                   <span class="n">w</span><span class="p">,</span> <span class="n">xb</span><span class="p">,</span> <span class="n">xe</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">ye</span><span class="p">,</span>
-                                                   <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">lwrk2</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ier</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
-            <span class="n">tx1</span><span class="p">,</span> <span class="n">ty1</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">surfit_lsq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span>
-                                                       <span class="n">nx</span><span class="p">,</span> <span class="n">tx1</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">ty1</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span>
-                                                       <span class="n">xb</span><span class="p">,</span> <span class="n">xe</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">ye</span><span class="p">,</span>
-                                                       <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">lwrk2</span><span class="o">=</span><span class="n">ier</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="n">tx1</span><span class="p">,</span> <span class="n">ty1</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">surfit_lsq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">tx1</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">ty1</span><span class="p">,</span>
+                                                    <span class="n">w</span><span class="p">,</span> <span class="n">xb</span><span class="p">,</span> <span class="n">xe</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">ye</span><span class="p">,</span>
+                                                    <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">lwrk2</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ier</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="n">tx1</span><span class="p">,</span> <span class="n">ty1</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">surfit_lsq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span>
+                                                        <span class="n">nx</span><span class="p">,</span> <span class="n">tx1</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">ty1</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span>
+                                                        <span class="n">xb</span><span class="p">,</span> <span class="n">xe</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">ye</span><span class="p">,</span>
+                                                        <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">lwrk2</span><span class="o">=</span><span class="n">ier</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ier</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]:</span>  <span class="c1"># normal return</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1912,14 +1940,14 @@ document.write(`
                 <span class="n">deficiency</span> <span class="o">=</span> <span class="p">(</span><span class="n">nx</span><span class="o">-</span><span class="n">kx</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">ny</span><span class="o">-</span><span class="n">ky</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="n">ier</span>
                 <span class="n">message</span> <span class="o">=</span> <span class="n">_surfit_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">deficiency</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">message</span> <span class="o">=</span> <span class="n">_surfit_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ier</span><span class="p">,</span> <span class="s1">&#39;ier=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ier</span><span class="p">))</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="n">_surfit_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ier</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;ier=</span><span class="si">{</span><span class="n">ier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">fp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tck</span> <span class="o">=</span> <span class="n">tx1</span><span class="p">[:</span><span class="n">nx</span><span class="p">],</span> <span class="n">ty1</span><span class="p">[:</span><span class="n">ny</span><span class="p">],</span> <span class="n">c</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">degrees</span> <span class="o">=</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span>
 
 
-<span class="k">class</span> <span class="nc">RectBivariateSpline</span><span class="p">(</span><span class="n">BivariateSpline</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RectBivariateSpline</span><span class="p">(</span><span class="n">BivariateSpline</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Bivariate spline approximation over a rectangular mesh.</span>
 
@@ -1975,7 +2003,7 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">kx</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ky</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">kx</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ky</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bbox</span> <span class="o">=</span> <span class="n">ravel</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">ravel</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">ravel</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">):</span>
@@ -1995,11 +2023,12 @@ document.write(`
 
         <span class="n">z</span> <span class="o">=</span> <span class="n">ravel</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
         <span class="n">xb</span><span class="p">,</span> <span class="n">xe</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span> <span class="n">ye</span> <span class="o">=</span> <span class="n">bbox</span>
-        <span class="n">nx</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">regrid_smth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">xb</span><span class="p">,</span> <span class="n">xe</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span>
-                                                          <span class="n">ye</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="n">nx</span><span class="p">,</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">regrid_smth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">xb</span><span class="p">,</span> <span class="n">xe</span><span class="p">,</span> <span class="n">yb</span><span class="p">,</span>
+                                                            <span class="n">ye</span><span class="p">,</span> <span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">ier</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="n">_surfit_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ier</span><span class="p">,</span> <span class="s1">&#39;ier=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ier</span><span class="p">))</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">_surfit_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ier</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;ier=</span><span class="si">{</span><span class="n">ier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">fp</span>
@@ -2031,7 +2060,7 @@ document.write(`
 <span class="s2">         the value of eps.&quot;&quot;&quot;</span>
 
 
-<span class="k">class</span> <span class="nc">SphereBivariateSpline</span><span class="p">(</span><span class="n">_BivariateSplineBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SphereBivariateSpline</span><span class="p">(</span><span class="n">_BivariateSplineBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Bivariate spline s(x,y) of degrees 3 on a sphere, calculated from a</span>
 <span class="sd">    given set of data points (theta,phi,r).</span>
@@ -2052,7 +2081,7 @@ document.write(`
 <span class="sd">        a univariate spline using weighted least-squares fitting</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">dtheta</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dphi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">dtheta</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dphi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the spline or its derivatives at given positions.</span>
 
@@ -2134,7 +2163,7 @@ document.write(`
         <span class="k">return</span> <span class="n">_BivariateSplineBase</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span>
                                              <span class="n">dx</span><span class="o">=</span><span class="n">dtheta</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="n">dphi</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">ev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">dtheta</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dphi</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">dtheta</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dphi</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the spline at points</span>
 
@@ -2198,7 +2227,7 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">dtheta</span><span class="o">=</span><span class="n">dtheta</span><span class="p">,</span> <span class="n">dphi</span><span class="o">=</span><span class="n">dphi</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">SmoothSphereBivariateSpline</span><span class="p">(</span><span class="n">SphereBivariateSpline</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SmoothSphereBivariateSpline</span><span class="p">(</span><span class="n">SphereBivariateSpline</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Smooth bivariate spline approximation in spherical coordinates.</span>
 
@@ -2298,7 +2327,7 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1E-16</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1E-16</span><span class="p">):</span>
 
         <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
@@ -2316,18 +2345,19 @@ document.write(`
         <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">eps</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;eps should be between (0, 1)&#39;</span><span class="p">)</span>
 
-        <span class="n">nt_</span><span class="p">,</span> <span class="n">tt_</span><span class="p">,</span> <span class="n">np_</span><span class="p">,</span> <span class="n">tp_</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">spherfit_smth</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span>
-                                                                <span class="n">r</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span>
-                                                                <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="n">nt_</span><span class="p">,</span> <span class="n">tt_</span><span class="p">,</span> <span class="n">np_</span><span class="p">,</span> <span class="n">tp_</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">spherfit_smth</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span>
+                                                                    <span class="n">r</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span>
+                                                                    <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ier</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
-            <span class="n">message</span> <span class="o">=</span> <span class="n">_spherefit_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ier</span><span class="p">,</span> <span class="s1">&#39;ier=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ier</span><span class="p">))</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="n">_spherefit_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ier</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;ier=</span><span class="si">{</span><span class="n">ier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">fp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tck</span> <span class="o">=</span> <span class="n">tt_</span><span class="p">[:</span><span class="n">nt_</span><span class="p">],</span> <span class="n">tp_</span><span class="p">[:</span><span class="n">np_</span><span class="p">],</span> <span class="n">c</span><span class="p">[:(</span><span class="n">nt_</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np_</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">degrees</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">dtheta</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dphi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">dtheta</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dphi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 
         <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
         <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
@@ -2339,7 +2369,7 @@ document.write(`
                                               <span class="n">dphi</span><span class="o">=</span><span class="n">dphi</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">LSQSphereBivariateSpline</span><span class="p">(</span><span class="n">SphereBivariateSpline</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LSQSphereBivariateSpline</span><span class="p">(</span><span class="n">SphereBivariateSpline</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Weighted least-squares bivariate spline approximation in spherical</span>
 <span class="sd">    coordinates.</span>
@@ -2447,7 +2477,7 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">tt</span><span class="p">,</span> <span class="n">tp</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1E-16</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">tt</span><span class="p">,</span> <span class="n">tp</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1E-16</span><span class="p">):</span>
 
         <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
         <span class="n">tt</span><span class="p">,</span> <span class="n">tp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tt</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tp</span><span class="p">)</span>
@@ -2471,17 +2501,18 @@ document.write(`
         <span class="n">tt_</span><span class="p">,</span> <span class="n">tp_</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">nt_</span><span class="p">,),</span> <span class="nb">float</span><span class="p">),</span> <span class="n">zeros</span><span class="p">((</span><span class="n">np_</span><span class="p">,),</span> <span class="nb">float</span><span class="p">)</span>
         <span class="n">tt_</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">4</span><span class="p">],</span> <span class="n">tp_</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">tt</span><span class="p">,</span> <span class="n">tp</span>
         <span class="n">tt_</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:],</span> <span class="n">tp_</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
-        <span class="n">tt_</span><span class="p">,</span> <span class="n">tp_</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">spherfit_lsq</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">tt_</span><span class="p">,</span> <span class="n">tp_</span><span class="p">,</span>
-                                                     <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="n">tt_</span><span class="p">,</span> <span class="n">tp_</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">spherfit_lsq</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">tt_</span><span class="p">,</span> <span class="n">tp_</span><span class="p">,</span>
+                                                        <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ier</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">message</span> <span class="o">=</span> <span class="n">_spherefit_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ier</span><span class="p">,</span> <span class="s1">&#39;ier=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ier</span><span class="p">))</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="n">_spherefit_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ier</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;ier=</span><span class="si">{</span><span class="n">ier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">fp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tck</span> <span class="o">=</span> <span class="n">tt_</span><span class="p">,</span> <span class="n">tp_</span><span class="p">,</span> <span class="n">c</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">degrees</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">dtheta</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dphi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">dtheta</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dphi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 
         <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
         <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
@@ -2522,7 +2553,7 @@ document.write(`
 <span class="s2">       approximation returned.&quot;&quot;&quot;</span>
 
 
-<span class="k">class</span> <span class="nc">RectSphereBivariateSpline</span><span class="p">(</span><span class="n">SphereBivariateSpline</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RectSphereBivariateSpline</span><span class="p">(</span><span class="n">SphereBivariateSpline</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Bivariate spline approximation over a rectangular mesh on a sphere.</span>
 
@@ -2672,7 +2703,7 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pole_continuity</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pole_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pole_continuity</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pole_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">pole_exact</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pole_flat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">iopt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dfitpack_int</span><span class="p">)</span>
         <span class="n">ider</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dfitpack_int</span><span class="p">)</span>
@@ -2734,14 +2765,15 @@ document.write(`
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;s should be positive&#39;</span><span class="p">)</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-        <span class="n">nu</span><span class="p">,</span> <span class="n">tu</span><span class="p">,</span> <span class="n">nv</span><span class="p">,</span> <span class="n">tv</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">regrid_smth_spher</span><span class="p">(</span><span class="n">iopt</span><span class="p">,</span> <span class="n">ider</span><span class="p">,</span>
-                                                                <span class="n">u</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
-                                                                <span class="n">v</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
-                                                                <span class="n">r</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
-                                                                <span class="n">r0</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FITPACK_LOCK</span><span class="p">:</span>
+            <span class="n">nu</span><span class="p">,</span> <span class="n">tu</span><span class="p">,</span> <span class="n">nv</span><span class="p">,</span> <span class="n">tv</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">dfitpack</span><span class="o">.</span><span class="n">regrid_smth_spher</span><span class="p">(</span><span class="n">iopt</span><span class="p">,</span> <span class="n">ider</span><span class="p">,</span>
+                                                                    <span class="n">u</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                                                    <span class="n">v</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                                                    <span class="n">r</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                                                    <span class="n">r0</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">ier</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="n">_spfit_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ier</span><span class="p">,</span> <span class="s1">&#39;ier=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ier</span><span class="p">))</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">_spfit_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ier</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;ier=</span><span class="si">{</span><span class="n">ier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">fp</span>
@@ -2749,7 +2781,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">degrees</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">v0</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">dtheta</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dphi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">dtheta</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dphi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 
         <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
         <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>

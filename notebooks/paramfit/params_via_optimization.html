@@ -471,7 +471,7 @@ We assume that the total population, <span class="math notranslate nohighlight">
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import data</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;seir_epi_data.txt&#39;</span><span class="p">)</span>
 <span class="n">t</span><span class="o">=</span><span class="n">out</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
@@ -488,7 +488,7 @@ This step will be likely removed for later versions, but for now it’s probably
 For the current example, this means specifying <span class="math notranslate nohighlight">\(\beta\)</span>, <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> from our initial guess <code class="docutils literal notranslate"><span class="pre">theta</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">common_models</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pygom</span><span class="w"> </span><span class="kn">import</span> <span class="n">common_models</span>
 
 <span class="n">n_pop</span><span class="o">=</span><span class="mf">1e4</span>                <span class="c1"># known population size</span>
 <span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]</span>  <span class="c1"># initial guess for [beta, alpha, gamma]</span>
@@ -505,7 +505,7 @@ For the current example, this means specifying <span class="math notranslate noh
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i0</span><span class="o">=</span><span class="mi">5</span>
 <span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="n">n_pop</span><span class="o">-</span><span class="n">i0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># initial conditions</span>
 
-<span class="kn">from</span> <span class="nn">pygom</span> <span class="kn">import</span> <span class="n">PoissonLoss</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pygom</span><span class="w"> </span><span class="kn">import</span> <span class="n">PoissonLoss</span>
 
 <span class="n">objSEIR</span> <span class="o">=</span> <span class="n">PoissonLoss</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">ode_SEIR</span><span class="p">,</span>
                       <span class="n">t0</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x0</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span>
@@ -553,7 +553,7 @@ First, let’s compare the outputs of the two methods when evaluated at the init
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>32.3 ms ± 229 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>34.2 ms ± 973 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 </pre></div>
 </div>
 </div>
@@ -565,7 +565,7 @@ First, let’s compare the outputs of the two methods when evaluated at the init
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>254 ms ± 1.05 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>280 ms ± 1.5 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
 </pre></div>
 </div>
 </div>
@@ -600,7 +600,7 @@ It is particularly important to set the boundaries for the parameters here, sinc
 We can also use methods that accepts the exact Hessian such as <em>trust-ncg</em> but that should not be necessary most of the time.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize</span>
 
 <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fun</span><span class="o">=</span><span class="n">objSEIR</span><span class="o">.</span><span class="n">cost</span><span class="p">,</span>
                <span class="n">jac</span><span class="o">=</span><span class="n">objSEIR</span><span class="o">.</span><span class="n">sensitivity</span><span class="p">,</span>
@@ -640,7 +640,7 @@ We can also use methods that accepts the exact Hessian such as <em>trust-ncg</em
 <span class="n">ode_est</span><span class="o">.</span><span class="n">initial_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">solution</span> <span class="o">=</span> <span class="n">ode_est</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">::])</span>
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;constrained&#39;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">))</span>
 
 <span class="n">axarr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">sol_i_r</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
@@ -658,7 +658,7 @@ We can also use methods that accepts the exact Hessian such as <em>trust-ncg</em
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/9c7841674ea45e75e28626e5c63e7493d9bed0a26d4749a8bd27d19f693defad.png" src="../../_images/9c7841674ea45e75e28626e5c63e7493d9bed0a26d4749a8bd27d19f693defad.png" />
+<img alt="../../_images/d53de0c77fdc7095d5d7612bbe0ccc03c0700747f9b86ac300342decd07ea337.png" src="../../_images/d53de0c77fdc7095d5d7612bbe0ccc03c0700747f9b86ac300342decd07ea337.png" />
 </div>
 </div>
 </section>

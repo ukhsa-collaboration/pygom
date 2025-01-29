@@ -394,27 +394,27 @@ document.write(`
                 <article class="bd-article">
                   
   <h1>Source code for scipy.optimize._minpack_py</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_minpack</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">_minpack</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="p">(</span><span class="n">atleast_1d</span><span class="p">,</span> <span class="n">triu</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">transpose</span><span class="p">,</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">prod</span><span class="p">,</span> <span class="n">greater</span><span class="p">,</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">atleast_1d</span><span class="p">,</span> <span class="n">triu</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">transpose</span><span class="p">,</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">prod</span><span class="p">,</span> <span class="n">greater</span><span class="p">,</span>
                    <span class="n">asarray</span><span class="p">,</span> <span class="n">inf</span><span class="p">,</span>
                    <span class="n">finfo</span><span class="p">,</span> <span class="n">inexact</span><span class="p">,</span> <span class="n">issubdtype</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">linalg</span>
-<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">svd</span><span class="p">,</span> <span class="n">cholesky</span><span class="p">,</span> <span class="n">solve_triangular</span><span class="p">,</span> <span class="n">LinAlgError</span>
-<span class="kn">from</span> <span class="nn">scipy._lib._util</span> <span class="kn">import</span> <span class="n">_asarray_validated</span><span class="p">,</span> <span class="n">_lazywhere</span><span class="p">,</span> <span class="n">_contains_nan</span>
-<span class="kn">from</span> <span class="nn">scipy._lib._util</span> <span class="kn">import</span> <span class="n">getfullargspec_no_self</span> <span class="k">as</span> <span class="n">_getfullargspec</span>
-<span class="kn">from</span> <span class="nn">._optimize</span> <span class="kn">import</span> <span class="n">OptimizeResult</span><span class="p">,</span> <span class="n">_check_unknown_options</span><span class="p">,</span> <span class="n">OptimizeWarning</span>
-<span class="kn">from</span> <span class="nn">._lsq</span> <span class="kn">import</span> <span class="n">least_squares</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">linalg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">svd</span><span class="p">,</span> <span class="n">cholesky</span><span class="p">,</span> <span class="n">solve_triangular</span><span class="p">,</span> <span class="n">LinAlgError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy._lib._util</span><span class="w"> </span><span class="kn">import</span> <span class="n">_asarray_validated</span><span class="p">,</span> <span class="n">_lazywhere</span><span class="p">,</span> <span class="n">_contains_nan</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy._lib._util</span><span class="w"> </span><span class="kn">import</span> <span class="n">getfullargspec_no_self</span> <span class="k">as</span> <span class="n">_getfullargspec</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">OptimizeResult</span><span class="p">,</span> <span class="n">_check_unknown_options</span><span class="p">,</span> <span class="n">OptimizeWarning</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._lsq</span><span class="w"> </span><span class="kn">import</span> <span class="n">least_squares</span>
 <span class="c1"># from ._lsq.common import make_strictly_feasible</span>
-<span class="kn">from</span> <span class="nn">._lsq.least_squares</span> <span class="kn">import</span> <span class="n">prepare_bounds</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize._minimize</span> <span class="kn">import</span> <span class="n">Bounds</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._lsq.least_squares</span><span class="w"> </span><span class="kn">import</span> <span class="n">prepare_bounds</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize._minimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">Bounds</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fsolve&#39;</span><span class="p">,</span> <span class="s1">&#39;leastsq&#39;</span><span class="p">,</span> <span class="s1">&#39;fixed_point&#39;</span><span class="p">,</span> <span class="s1">&#39;curve_fit&#39;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_check_func</span><span class="p">(</span><span class="n">checker</span><span class="p">,</span> <span class="n">argname</span><span class="p">,</span> <span class="n">thefunc</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">numinputs</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_func</span><span class="p">(</span><span class="n">checker</span><span class="p">,</span> <span class="n">argname</span><span class="p">,</span> <span class="n">thefunc</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">numinputs</span><span class="p">,</span>
                 <span class="n">output_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">atleast_1d</span><span class="p">(</span><span class="n">thefunc</span><span class="p">(</span><span class="o">*</span><span class="p">((</span><span class="n">x0</span><span class="p">[:</span><span class="n">numinputs</span><span class="p">],)</span> <span class="o">+</span> <span class="n">args</span><span class="p">)))</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">output_shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">!=</span> <span class="n">output_shape</span><span class="p">):</span>
@@ -426,7 +426,7 @@ document.write(`
                   <span class="sa">f</span><span class="s2">&quot;shape of the &#39;</span><span class="si">{</span><span class="n">argname</span><span class="si">}</span><span class="s2">&#39; argument&quot;</span>
             <span class="n">func_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">thefunc</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">func_name</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot; &#39;</span><span class="si">%s</span><span class="s2">&#39;.&quot;</span> <span class="o">%</span> <span class="n">func_name</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; &#39;</span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;.&quot;</span>
             <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;Shape should be </span><span class="si">{</span><span class="n">output_shape</span><span class="si">}</span><span class="s1"> but it is </span><span class="si">{</span><span class="n">shape</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="si">}</span><span class="s1">.&#39;</span>
@@ -438,7 +438,7 @@ document.write(`
     <span class="k">return</span> <span class="n">shape</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="n">dt</span>
 
 
-<span class="k">def</span> <span class="nf">fsolve</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">fprime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fsolve</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">fprime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
            <span class="n">col_deriv</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">1.49012e-8</span><span class="p">,</span> <span class="n">maxfev</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
            <span class="n">epsfcn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -545,7 +545,7 @@ document.write(`
 <span class="sd">    array([ True,  True])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">_wrapped_func</span><span class="p">(</span><span class="o">*</span><span class="n">fargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_wrapped_func</span><span class="p">(</span><span class="o">*</span><span class="n">fargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wrapped `func` to track the number of times</span>
 <span class="sd">        the function has been called.</span>
@@ -586,7 +586,7 @@ document.write(`
         <span class="k">return</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_root_hybr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">jac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_root_hybr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">jac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                <span class="n">col_deriv</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">1.49012e-08</span><span class="p">,</span> <span class="n">maxfev</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                <span class="n">factor</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">unknown_options</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -608,10 +608,10 @@ document.write(`
 <span class="sd">    band : tuple</span>
 <span class="sd">        If set to a two-sequence containing the number of sub- and</span>
 <span class="sd">        super-diagonals within the band of the Jacobi matrix, the</span>
-<span class="sd">        Jacobi matrix is considered banded (only for ``fprime=None``).</span>
+<span class="sd">        Jacobi matrix is considered banded (only for ``jac=None``).</span>
 <span class="sd">    eps : float</span>
 <span class="sd">        A suitable step length for the forward-difference</span>
-<span class="sd">        approximation of the Jacobian (for ``fprime=None``). If</span>
+<span class="sd">        approximation of the Jacobian (for ``jac=None``). If</span>
 <span class="sd">        `eps` is less than the machine precision, it is assumed</span>
 <span class="sd">        that the relative errors in the functions are of the order of</span>
 <span class="sd">        the machine precision.</span>
@@ -657,14 +657,13 @@ document.write(`
               <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;The solution converged.&quot;</span><span class="p">,</span>
               <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;The number of calls to function has &quot;</span>
                   <span class="s2">&quot;reached maxfev = </span><span class="si">%d</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">maxfev</span><span class="p">,</span>
-              <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;xtol=</span><span class="si">%f</span><span class="s2"> is too small, no further improvement &quot;</span>
-                  <span class="s2">&quot;in the approximate</span><span class="se">\n</span><span class="s2">  solution &quot;</span>
-                  <span class="s2">&quot;is possible.&quot;</span> <span class="o">%</span> <span class="n">xtol</span><span class="p">,</span>
+              <span class="mi">3</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;xtol=</span><span class="si">{</span><span class="n">xtol</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> is too small, no further improvement &quot;</span>
+                  <span class="s2">&quot;in the approximate</span><span class="se">\n</span><span class="s2"> solution is possible.&quot;</span><span class="p">,</span>
               <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;The iteration is not making good progress, as measured &quot;</span>
-                  <span class="s2">&quot;by the </span><span class="se">\n</span><span class="s2">  improvement from the last five &quot;</span>
+                  <span class="s2">&quot;by the </span><span class="se">\n</span><span class="s2"> improvement from the last five &quot;</span>
                   <span class="s2">&quot;Jacobian evaluations.&quot;</span><span class="p">,</span>
               <span class="mi">5</span><span class="p">:</span> <span class="s2">&quot;The iteration is not making good progress, &quot;</span>
-                  <span class="s2">&quot;as measured by the </span><span class="se">\n</span><span class="s2">  improvement from the last &quot;</span>
+                  <span class="s2">&quot;as measured by the </span><span class="se">\n</span><span class="s2"> improvement from the last &quot;</span>
                   <span class="s2">&quot;ten iterations.&quot;</span><span class="p">,</span>
               <span class="s1">&#39;unknown&#39;</span><span class="p">:</span> <span class="s2">&quot;An error occurred.&quot;</span><span class="p">}</span>
 
@@ -685,7 +684,7 @@ document.write(`
 <span class="n">LEASTSQ_FAILURE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="leastsq"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.leastsq">[docs]</a><span class="k">def</span> <span class="nf">leastsq</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">Dfun</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="leastsq"><a class="viewcode-back" href="../../../rst/autodoc-loss.html#pygom.loss.leastsq">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">leastsq</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">Dfun</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">col_deriv</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ftol</span><span class="o">=</span><span class="mf">1.49012e-8</span><span class="p">,</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">1.49012e-8</span><span class="p">,</span>
             <span class="n">gtol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">maxfev</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">epsfcn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -847,27 +846,26 @@ document.write(`
 
     <span class="n">errors</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Improper input parameters.&quot;</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">],</span>
               <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Both actual and predicted relative reductions &quot;</span>
-                  <span class="s2">&quot;in the sum of squares</span><span class="se">\n</span><span class="s2">  are at most </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ftol</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+                  <span class="sa">f</span><span class="s2">&quot;in the sum of squares</span><span class="se">\n</span><span class="s2">  are at most </span><span class="si">{</span><span class="n">ftol</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
               <span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;The relative error between two consecutive &quot;</span>
-                  <span class="s2">&quot;iterates is at most </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">xtol</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+                  <span class="sa">f</span><span class="s2">&quot;iterates is at most </span><span class="si">{</span><span class="n">xtol</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
               <span class="mi">3</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Both actual and predicted relative reductions in &quot;</span>
                   <span class="sa">f</span><span class="s2">&quot;the sum of squares</span><span class="se">\n</span><span class="s2">  are at most </span><span class="si">{</span><span class="n">ftol</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> and the &quot;</span>
                   <span class="s2">&quot;relative error between two consecutive &quot;</span>
                   <span class="sa">f</span><span class="s2">&quot;iterates is at </span><span class="se">\n</span><span class="s2">  most </span><span class="si">{</span><span class="n">xtol</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
               <span class="mi">4</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;The cosine of the angle between func(x) and any &quot;</span>
-                  <span class="s2">&quot;column of the</span><span class="se">\n</span><span class="s2">  Jacobian is at most </span><span class="si">%f</span><span class="s2"> in &quot;</span>
-                  <span class="s2">&quot;absolute value&quot;</span> <span class="o">%</span> <span class="n">gtol</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+                  <span class="sa">f</span><span class="s2">&quot;column of the</span><span class="se">\n</span><span class="s2">  Jacobian is at most </span><span class="si">{</span><span class="n">gtol</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> in &quot;</span>
+                  <span class="s2">&quot;absolute value&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
               <span class="mi">5</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Number of calls to function has reached &quot;</span>
                   <span class="s2">&quot;maxfev = </span><span class="si">%d</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">maxfev</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">],</span>
-              <span class="mi">6</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ftol=</span><span class="si">%f</span><span class="s2"> is too small, no further reduction &quot;</span>
-                  <span class="s2">&quot;in the sum of squares</span><span class="se">\n</span><span class="s2">  is possible.&quot;</span> <span class="o">%</span> <span class="n">ftol</span><span class="p">,</span>
+              <span class="mi">6</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;ftol=</span><span class="si">{</span><span class="n">ftol</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> is too small, no further reduction &quot;</span>
+                  <span class="s2">&quot;in the sum of squares</span><span class="se">\n</span><span class="s2">  is possible.&quot;</span><span class="p">,</span>
                   <span class="ne">ValueError</span><span class="p">],</span>
-              <span class="mi">7</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;xtol=</span><span class="si">%f</span><span class="s2"> is too small, no further improvement in &quot;</span>
-                  <span class="s2">&quot;the approximate</span><span class="se">\n</span><span class="s2">  solution is possible.&quot;</span> <span class="o">%</span> <span class="n">xtol</span><span class="p">,</span>
+              <span class="mi">7</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;xtol=</span><span class="si">{</span><span class="n">xtol</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> is too small, no further improvement in &quot;</span>
+                  <span class="s2">&quot;the approximate</span><span class="se">\n</span><span class="s2">  solution is possible.&quot;</span><span class="p">,</span>
                   <span class="ne">ValueError</span><span class="p">],</span>
-              <span class="mi">8</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;gtol=</span><span class="si">%f</span><span class="s2"> is too small, func(x) is orthogonal to the &quot;</span>
-                  <span class="s2">&quot;columns of</span><span class="se">\n</span><span class="s2">  the Jacobian to machine &quot;</span>
-                  <span class="s2">&quot;precision.&quot;</span> <span class="o">%</span> <span class="n">gtol</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">]}</span>
+              <span class="mi">8</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;gtol=</span><span class="si">{</span><span class="n">gtol</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> is too small, func(x) is orthogonal to the &quot;</span>
+                  <span class="s2">&quot;columns of</span><span class="se">\n</span><span class="s2">  the Jacobian to machine precision.&quot;</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">]}</span>
 
     <span class="c1"># The FORTRAN return value (possible return values are &gt;= 0 and &lt;= 8)</span>
     <span class="n">info</span> <span class="o">=</span> <span class="n">retval</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -882,7 +880,7 @@ document.write(`
             <span class="c1"># cov_x = inv(dot(transpose(R), R))</span>
             <span class="c1"># but the explicit dot product was not necessary and sometimes</span>
             <span class="c1"># the result was not symmetric positive definite. See gh-4555.</span>
-            <span class="n">perm</span> <span class="o">=</span> <span class="n">retval</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;ipvt&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">perm</span> <span class="o">=</span> <span class="n">retval</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;ipvt&#39;</span><span class="p">]</span>
             <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">perm</span><span class="p">)</span>
             <span class="n">r</span> <span class="o">=</span> <span class="n">triu</span><span class="p">(</span><span class="n">transpose</span><span class="p">(</span><span class="n">retval</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;fjac&#39;</span><span class="p">])[:</span><span class="n">n</span><span class="p">,</span> <span class="p">:])</span>
             <span class="n">inv_triu</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">get_lapack_funcs</span><span class="p">(</span><span class="s1">&#39;trtri&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span><span class="p">,))</span>
@@ -904,11 +902,11 @@ document.write(`
         <span class="k">return</span> <span class="n">retval</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">info</span></div>
 
 
-<span class="k">def</span> <span class="nf">_lightweight_memoizer</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_lightweight_memoizer</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
     <span class="c1"># very shallow memoization to address gh-13670: only remember the first set</span>
     <span class="c1"># of parameters and corresponding function value, and only attempt to use</span>
     <span class="c1"># them twice (the number of times the function is evaluated at x0).</span>
-    <span class="k">def</span> <span class="nf">_memoized_func</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_memoized_func</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">_memoized_func</span><span class="o">.</span><span class="n">skip_lookup</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
 
@@ -931,12 +929,12 @@ document.write(`
     <span class="k">return</span> <span class="n">_memoized_func</span>
 
 
-<span class="k">def</span> <span class="nf">_wrap_func</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">transform</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_wrap_func</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">transform</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">transform</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">func_wrapped</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">func_wrapped</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">)</span> <span class="o">-</span> <span class="n">ydata</span>
     <span class="k">elif</span> <span class="n">transform</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">transform</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">func_wrapped</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">func_wrapped</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">transform</span> <span class="o">*</span> <span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">)</span> <span class="o">-</span> <span class="n">ydata</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Chisq = (y - yd)^T C^{-1} (y-yd)</span>
@@ -947,27 +945,27 @@ document.write(`
         <span class="c1"># by solving</span>
         <span class="c1"># L (y-yd)&#39; = (y-yd)</span>
         <span class="c1"># and minimize (y-yd)&#39;^T (y-yd)&#39;</span>
-        <span class="k">def</span> <span class="nf">func_wrapped</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">func_wrapped</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">solve_triangular</span><span class="p">(</span><span class="n">transform</span><span class="p">,</span> <span class="n">func</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">)</span> <span class="o">-</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">func_wrapped</span>
 
 
-<span class="k">def</span> <span class="nf">_wrap_jac</span><span class="p">(</span><span class="n">jac</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">transform</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_wrap_jac</span><span class="p">(</span><span class="n">jac</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">transform</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">transform</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">jac_wrapped</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">jac_wrapped</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">jac</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">transform</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">jac_wrapped</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">jac_wrapped</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">transform</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">jac</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">jac_wrapped</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">jac_wrapped</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">solve_triangular</span><span class="p">(</span><span class="n">transform</span><span class="p">,</span>
                                     <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">jac</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">)),</span>
                                     <span class="n">lower</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">jac_wrapped</span>
 
 
-<span class="k">def</span> <span class="nf">_initialize_feasible</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_initialize_feasible</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">):</span>
     <span class="n">p0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span>
     <span class="n">lb_finite</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span>
     <span class="n">ub_finite</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">ub</span><span class="p">)</span>
@@ -984,7 +982,7 @@ document.write(`
     <span class="k">return</span> <span class="n">p0</span>
 
 
-<span class="k">def</span> <span class="nf">curve_fit</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">p0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">absolute_sigma</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">curve_fit</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">p0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">absolute_sigma</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
               <span class="n">check_finite</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">jac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nan_policy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1016,15 +1014,15 @@ document.write(`
 <span class="sd">        ``r = ydata - f(xdata, *popt)``, then the interpretation of `sigma`</span>
 <span class="sd">        depends on its number of dimensions:</span>
 
-<span class="sd">            - A scalar or 1-D `sigma` should contain values of standard deviations of</span>
-<span class="sd">              errors in `ydata`. In this case, the optimized function is</span>
-<span class="sd">              ``chisq = sum((r / sigma) ** 2)``.</span>
+<span class="sd">        - A scalar or 1-D `sigma` should contain values of standard deviations of</span>
+<span class="sd">          errors in `ydata`. In this case, the optimized function is</span>
+<span class="sd">          ``chisq = sum((r / sigma) ** 2)``.</span>
 
-<span class="sd">            - A 2-D `sigma` should contain the covariance matrix of</span>
-<span class="sd">              errors in `ydata`. In this case, the optimized function is</span>
-<span class="sd">              ``chisq = r.T @ inv(sigma) @ r``.</span>
+<span class="sd">        - A 2-D `sigma` should contain the covariance matrix of</span>
+<span class="sd">          errors in `ydata`. In this case, the optimized function is</span>
+<span class="sd">          ``chisq = r.T @ inv(sigma) @ r``.</span>
 
-<span class="sd">              .. versionadded:: 0.19</span>
+<span class="sd">          .. versionadded:: 0.19</span>
 
 <span class="sd">        None (default) is equivalent of 1-D `sigma` filled with ones.</span>
 <span class="sd">    absolute_sigma : bool, optional</span>
@@ -1049,13 +1047,13 @@ document.write(`
 <span class="sd">        Lower and upper bounds on parameters. Defaults to no bounds.</span>
 <span class="sd">        There are two ways to specify the bounds:</span>
 
-<span class="sd">            - Instance of `Bounds` class.</span>
+<span class="sd">        - Instance of `Bounds` class.</span>
 
-<span class="sd">            - 2-tuple of array_like: Each element of the tuple must be either</span>
-<span class="sd">              an array with the length equal to the number of parameters, or a</span>
-<span class="sd">              scalar (in which case the bound is taken to be the same for all</span>
-<span class="sd">              parameters). Use ``np.inf`` with an appropriate sign to disable</span>
-<span class="sd">              bounds on all or some parameters.</span>
+<span class="sd">        - 2-tuple of array_like: Each element of the tuple must be either</span>
+<span class="sd">          an array with the length equal to the number of parameters, or a</span>
+<span class="sd">          scalar (in which case the bound is taken to be the same for all</span>
+<span class="sd">          parameters). Use ``np.inf`` with an appropriate sign to disable</span>
+<span class="sd">          bounds on all or some parameters.</span>
 
 <span class="sd">    method : {&#39;lm&#39;, &#39;trf&#39;, &#39;dogbox&#39;}, optional</span>
 <span class="sd">        Method to use for optimization. See `least_squares` for more details.</span>
@@ -1075,7 +1073,7 @@ document.write(`
 
 <span class="sd">        .. versionadded:: 0.18</span>
 <span class="sd">    full_output : boolean, optional</span>
-<span class="sd">        If True, this function returns additioal information: `infodict`,</span>
+<span class="sd">        If True, this function returns additional information: `infodict`,</span>
 <span class="sd">        `mesg`, and `ier`.</span>
 
 <span class="sd">        .. versionadded:: 1.9</span>
@@ -1083,11 +1081,11 @@ document.write(`
 <span class="sd">        Defines how to handle when input contains nan.</span>
 <span class="sd">        The following options are available (default is None):</span>
 
-<span class="sd">          * &#39;raise&#39;: throws an error</span>
-<span class="sd">          * &#39;omit&#39;: performs the calculations ignoring nan values</span>
-<span class="sd">          * None: no special handling of NaNs is performed</span>
-<span class="sd">            (except what is done by check_finite); the behavior when NaNs</span>
-<span class="sd">            are present is implementation-dependent and may change.</span>
+<span class="sd">        * &#39;raise&#39;: throws an error</span>
+<span class="sd">        * &#39;omit&#39;: performs the calculations ignoring nan values</span>
+<span class="sd">        * None: no special handling of NaNs is performed</span>
+<span class="sd">          (except what is done by check_finite); the behavior when NaNs</span>
+<span class="sd">          are present is implementation-dependent and may change.</span>
 
 <span class="sd">        Note that if this value is specified explicitly (not None),</span>
 <span class="sd">        `check_finite` will be set as False.</span>
@@ -1108,7 +1106,7 @@ document.write(`
 <span class="sd">        deviation errors on the parameters, use</span>
 <span class="sd">        ``perr = np.sqrt(np.diag(pcov))``. Note that the relationship between</span>
 <span class="sd">        `cov` and parameter error estimates is derived based on a linear</span>
-<span class="sd">        approximation to the model function around the optimum [1].</span>
+<span class="sd">        approximation to the model function around the optimum [1]_.</span>
 <span class="sd">        When this approximation becomes inaccurate, `cov` may not provide an</span>
 <span class="sd">        accurate measure of uncertainty.</span>
 
@@ -1199,9 +1197,9 @@ document.write(`
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    [1] K. Vugrin et al. Confidence region estimation techniques for nonlinear</span>
-<span class="sd">        regression in groundwater flow: Three case studies. Water Resources</span>
-<span class="sd">        Research, Vol. 43, W03423, :doi:`10.1029/2005WR004804`</span>
+<span class="sd">    .. [1] K. Vugrin et al. Confidence region estimation techniques for nonlinear</span>
+<span class="sd">           regression in groundwater flow: Three case studies. Water Resources</span>
+<span class="sd">           Research, Vol. 43, W03423, :doi:`10.1029/2005WR004804`</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1362,12 +1360,21 @@ document.write(`
             <span class="n">xdata</span> <span class="o">=</span> <span class="n">xdata</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">~</span><span class="n">has_nan</span><span class="p">]</span>
             <span class="n">ydata</span> <span class="o">=</span> <span class="n">ydata</span><span class="p">[</span><span class="o">~</span><span class="n">has_nan</span><span class="p">]</span>
 
+            <span class="c1"># Also omit the corresponding entries from sigma</span>
+            <span class="k">if</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">sigma</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">[</span><span class="o">~</span><span class="n">has_nan</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">sigma</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">[</span><span class="o">~</span><span class="n">has_nan</span><span class="p">,</span> <span class="p">:]</span>
+                    <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">[:,</span> <span class="o">~</span><span class="n">has_nan</span><span class="p">]</span>
+
     <span class="c1"># Determine type of sigma</span>
     <span class="k">if</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
 
         <span class="c1"># if 1-D or a scalar, sigma are errors, define transform = 1/sigma</span>
-        <span class="k">if</span> <span class="n">sigma</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">sigma</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">ydata</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="p">):</span>
+        <span class="k">if</span> <span class="n">sigma</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">sigma</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">ydata</span><span class="o">.</span><span class="n">size</span><span class="p">,):</span>
             <span class="n">transform</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">sigma</span>
         <span class="c1"># if 2-D, sigma is the covariance matrix,</span>
         <span class="c1"># define transform = L such that L L^T = C</span>
@@ -1376,7 +1383,7 @@ document.write(`
                 <span class="c1"># scipy.linalg.cholesky requires lower=True to return L L^T = A</span>
                 <span class="n">transform</span> <span class="o">=</span> <span class="n">cholesky</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">LinAlgError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`sigma` must be positive definite.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`sigma` must be positive definite.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`sigma` has incorrect shape.&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -1456,7 +1463,7 @@ document.write(`
         <span class="k">return</span> <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span>
 
 
-<span class="k">def</span> <span class="nf">check_gradient</span><span class="p">(</span><span class="n">fcn</span><span class="p">,</span> <span class="n">Dfcn</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">col_deriv</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_gradient</span><span class="p">(</span><span class="n">fcn</span><span class="p">,</span> <span class="n">Dfcn</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">col_deriv</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform a simple check on the gradient for correctness.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1487,15 +1494,15 @@ document.write(`
     <span class="k">return</span> <span class="p">(</span><span class="n">good</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_del2</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_del2</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">p0</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">p1</span> <span class="o">-</span> <span class="n">p0</span><span class="p">)</span> <span class="o">/</span> <span class="n">d</span>
 
 
-<span class="k">def</span> <span class="nf">_relerr</span><span class="p">(</span><span class="n">actual</span><span class="p">,</span> <span class="n">desired</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_relerr</span><span class="p">(</span><span class="n">actual</span><span class="p">,</span> <span class="n">desired</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">actual</span> <span class="o">-</span> <span class="n">desired</span><span class="p">)</span> <span class="o">/</span> <span class="n">desired</span>
 
 
-<span class="k">def</span> <span class="nf">_fixed_point_helper</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">xtol</span><span class="p">,</span> <span class="n">maxiter</span><span class="p">,</span> <span class="n">use_accel</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_fixed_point_helper</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">xtol</span><span class="p">,</span> <span class="n">maxiter</span><span class="p">,</span> <span class="n">use_accel</span><span class="p">):</span>
     <span class="n">p0</span> <span class="o">=</span> <span class="n">x0</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maxiter</span><span class="p">):</span>
         <span class="n">p1</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
@@ -1513,7 +1520,7 @@ document.write(`
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">fixed_point</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;del2&#39;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fixed_point</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;del2&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find a fixed point of the function.</span>
 
