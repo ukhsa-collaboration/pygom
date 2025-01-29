@@ -23,3 +23,6 @@ __pycache__
 /doc/source/savefig/*
 /docs/pygom-doc/_autosummary/
 */_build/*
+
+# For Cython
+src/pygom/model/*.c
