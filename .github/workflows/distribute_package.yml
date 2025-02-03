@@ -71,8 +71,11 @@ jobs:
         if: ${{ startsWith(github.ref, 'refs/tags') }}
         run: |
           # Set tag from GitHub: using git describe for tags inside the run script
-          # seems not working
-          echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          # seems not working - I think this because you need _annotated_ tags
+          # for git describe i.e. you need to tag the release as so:
+          # 'git tag vX.Y.Z -a -m "YOUR MESSAGE HERE"'
+          # echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          echo "VERSION=${ git describe }" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: |
@@ -134,7 +137,7 @@ jobs:
           # for git describe i.e. you need to tag the release as so:
           # 'git tag vX.Y.Z -a -m "YOUR MESSAGE HERE"'
           # echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          echo "VERSION=${git describe}" >> $GITHUB_ENV
+          echo "VERSION=${ git describe }" >> $GITHUB_ENV
 
       # setuptools_scm workaround for https://github.com/pypa/setuptools_scm/issues/455
       - name: Disable local version identifier on develop CI
