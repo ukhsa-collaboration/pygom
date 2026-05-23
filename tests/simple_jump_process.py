@@ -17,10 +17,10 @@
 
 import logging
 import time
+from importlib.metadata import version
 
 import pygom
-import pkg_resources
-print('PyGOM version %s' %pkg_resources.get_distribution('pygom').version)
+print('PyGOM version %s' % version('pygom'))
 
 from pygom import Transition, TransitionType, Event, SimulateOde
 import numpy as np
