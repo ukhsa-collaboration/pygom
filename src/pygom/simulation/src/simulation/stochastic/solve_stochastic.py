@@ -204,39 +204,120 @@ def solve_stochastic(
         start_time = time.perf_counter()
         start_cpu = time.process_time()
 
-    if isinstance(config, ExactConfig):
-        extra_info_name = "event_idx"
-        build_result = lambda t, y, extra: EventSeriesResult(t=t, y=y, event_id=extra)
-    elif isinstance(config, TauConfig):
-        extra_info_name = "event_counts"
-        build_result = lambda t, y, extra: TimeSeriesResult(t=t, y=y, event_counts=extra)
+    if t_eval is not None:
+        if isinstance(config, TauConfig):
+            # Is the simulation start the same as the output start?
+            if t_eval[0] == t0:
+                y_eval = [y.copy()]
+                t_eval_i0 = 1
+            else:
+                y_eval = []
+                t_eval_i0 = 0
+
+            event_counts_eval = []
+
+            for t_eval_i in range(t_eval_i0, len(t_eval)):
+                next_checkpoint = t_eval[t_eval_i]
+
+                # Initialise event output
+                event_counts = np.zeros(n_events)
+
+                checkpoint_reached = False
+
+                while not checkpoint_reached:
+                    new_state = stepper.take_step(t, y, next_checkpoint)
+
+                    if new_state.end_sim:
+                        break
+
+                    checkpoint_reached = new_state.final_step
+
+                    y = new_state.y_new
+                    t = new_state.t_new
+                    event_counts += new_state.event_counts
+
+                y_eval.append(y.copy())
+
+                if t_eval_i > 0:
+                    event_counts_eval.append(event_counts)
+
+            y_eval = np.array(y_eval)
+
+            sol = TimeSeriesResult(t_eval, y_eval, np.array(event_counts_eval))
+            result = Output(result=sol, config=config, diag=stepper.diag)
+
+        elif isinstance(config, ExactConfig):
+            # Is the simulation start the same as the output start?
+            if t_eval[0] == t0:
+                y_eval = [y.copy()]
+                t_eval_i0 = 1
+            else:
+                y_eval = []
+                t_eval_i0 = 0
+
+            event_counts_eval = []
+
+            for t_eval_i in range(t_eval_i0, len(t_eval)):
+                next_checkpoint = t_eval[t_eval_i]
+
+                # Initialise event output
+                event_counts = np.zeros(n_events)
+
+                while t < next_checkpoint:
+                    new_state = stepper.take_step(t, y)
+
+                    if new_state.end_sim:
+                        break
+
+                    y = new_state.y_new
+                    t = new_state.t_new
+                    event_id = new_state.event_idx
+                    event_counts[event_id] += 1
+
+                y_eval.append(y.copy())
+
+                if t_eval_i > 0:
+                    event_counts_eval.append(event_counts)
+
+            y_eval = np.array(y_eval)
+
+            sol = TimeSeriesResult(t_eval, y_eval, np.array(event_counts_eval))
+            result = Output(result=sol, config=config, diag=stepper.diag)
     else:
-        raise ValueError('Solver config is not recognised')
 
-    # Initialise output lists
-    ys = [y.copy()]
-    ts = [t]
-    extra_info = []
+        if isinstance(config, ExactConfig):
+            extra_info_name = "event_idx"
+            build_result = lambda t, y, extra: EventSeriesResult(t=t, y=y, event_id=extra)
+        elif isinstance(config, TauConfig):
+            extra_info_name = "event_counts"
+            build_result = lambda t, y, extra: TimeSeriesResult(t=t, y=y, event_counts=extra)
+        else:
+            raise ValueError('Solver config is not recognised')
 
-    # Main loop
-    while t < tf:
-        new_state = stepper.take_step(t, y)
+        # Initialise output lists
+        ys = [y.copy()]
+        ts = [t]
+        extra_info = []
 
-        if new_state.end_sim:
-            break
+        # Main loop
+        while t < tf:
+            new_state = stepper.take_step(t, y)
 
-        y = new_state.y_new.copy()
-        t = new_state.t_new
+            if new_state.end_sim:
+                break
 
-        ys.append(y)
-        ts.append(t)
-        extra_info.append(getattr(new_state, extra_info_name))
+            y = new_state.y_new.copy()
+            t = new_state.t_new
 
-    y = np.array(ys)
-    t = np.array(ts)
+            ys.append(y)
+            ts.append(t)
+            extra_info.append(getattr(new_state, extra_info_name))
 
-    sol = build_result(t, y, np.array(extra_info))
-    result = Output(result=sol, config=config, diag=stepper.diag)
+        y = np.array(ys)
+        t = np.array(ts)
+
+        sol = build_result(t, y, np.array(extra_info))
+        result = Output(result=sol, config=config, diag=stepper.diag)
 
     if perf:
         wall_time_seconds = time.perf_counter() - start_time
@@ -248,18 +329,18 @@ def solve_stochastic(
 
         result.performance = PerformanceMetrics(**metrics)
 
-    #################################
-    # Post process simulation results
-    ################################# event_ids, event_times, target_times, n_events
-    if post_process:
-        if isinstance(result.result, TimeSeriesResult):
-            y = interpolate_state_at_times(t=result.result.t, y=result.result.y, target_time=t_eval)
-            event_counts = change_bins(event_counts=result.result.event_counts, old_breaks=result.result.t, new_breaks=t_eval)
-            result.result = TimeSeriesResult(t=t_eval, y=y, event_counts=event_counts)
+    # #################################
+    # # Post process simulation results
+    # ################################# event_ids, event_times, target_times, n_events
+    # if post_process:
+    #     if isinstance(result.result, TimeSeriesResult):
+    #         y = interpolate_state_at_times(t=result.result.t, y=result.result.y, target_time=t_eval)
+    #         event_counts = change_bins(event_counts=result.result.event_counts, old_breaks=result.result.t, new_breaks=t_eval)
+    #         result.result = TimeSeriesResult(t=t_eval, y=y, event_counts=event_counts)
 
-        elif isinstance(result.result, EventSeriesResult):
-            y = extract_state_at_target_times(t=result.result.t, y=result.result.y, target_time=t_eval)
-            event_counts = bin_events(event_ids=result.result.event_id, event_times=result.result.t[1:], target_times=t_eval, n_events=n_events) # t=0 is not an event
-            result.result = TimeSeriesResult(t=t_eval, y=y, event_counts=event_counts)
+    #     elif isinstance(result.result, EventSeriesResult):
+    #         y = extract_state_at_target_times(t=result.result.t, y=result.result.y, target_time=t_eval)
+    #         event_counts = bin_events(event_ids=result.result.event_id, event_times=result.result.t[1:], target_times=t_eval, n_events=n_events) # t=0 is not an event
+    #         result.result = TimeSeriesResult(t=t_eval, y=y, event_counts=event_counts)
 
     return result

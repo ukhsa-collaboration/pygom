@@ -161,7 +161,12 @@ class UKHSA2026(Adaptive):
         timesteps_var = self.epsilon**2 * np.abs(self.timestep_var_func(t, y))
 
         # timestep is the minimum one available
-        tau = min(np.min(timesteps_mn), np.min(timesteps_var))
+        # tau = min(np.min(timesteps_mn), np.min(timesteps_var))
+
+        tau = np.nanmin([
+            np.nanmin(timesteps_mn),
+            np.nanmin(timesteps_var)]
+            )
 
         if not np.isfinite(tau):
             warnings.warn(f"Tau selection failed: Infinite step size calculated at t = {t}")
