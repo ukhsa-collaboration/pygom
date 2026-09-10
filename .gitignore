@@ -29,3 +29,11 @@ src/pygom/model/*.c
 
 # For development
 /debugging
+
+# HPC scripts
+*.sh
+
+# Test output files
+/tests/benchmarking/sir/out/*
+/tests/benchmarking/sis/out/*
+/tests/benchmarking/direct/out/*
