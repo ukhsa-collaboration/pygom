@@ -32,19 +32,19 @@ params = {
 R0_str = f"{R0:.3f}".rstrip('0').rstrip('.').replace('.', 'p')
 
 if method == "fixed_tau":
-    param = float(sys.argv[8])
+    param = float(sys.argv[7])
     params['tau'] = param
     param_str = f"{param:.3f}".rstrip('0').rstrip('.').replace('.', 'p')
     fn = f"{R0_str}_{method}_{param_str}"
 
 elif method == "cao2006":
-    param = float(sys.argv[8])
+    param = float(sys.argv[7])
     params['epsilon'] = param
     param_str = f"{param:.3f}".rstrip('0').rstrip('.').replace('.', 'p')
     fn = f"{R0_str}_{method}_{param_str}"
 
 elif method == "ukhsa2026":
-    param = float(sys.argv[8])
+    param = float(sys.argv[7])
     params['epsilon'] = param
     param_str = f"{param:.3f}".rstrip('0').rstrip('.').replace('.', 'p')
     fn = f"{R0_str}_{method}_{param_str}"
