@@ -1,10 +1,13 @@
 from .mathsmethod import NumericMethod
 
-class Jacobian(NumericMethod):
-    method_name = 'jacobian'
+class ODEJacobianStates(NumericMethod):
+    method_name = 'ode_jacobian_states'
+
+    depends_on = ['ode']
+
     def get_equation(self):
         '''
-        Returns the jacobian in algebraic form
+        Returns the jacobian of ODEs vs states in algebraic form
 
         Returns
         -------
@@ -12,26 +15,56 @@ class Jacobian(NumericMethod):
             A matrix of dimension [number of state x number of state]
 
         '''        
-        states = [s for s in self._parent_ode._iterStateList()]
-        self._Jacobian = self._parent_ode.ode.get_equation().jacobian(states)
+        # states = [s for s in self._parent_ode._iterStateList()]
+
+        states = self._model_spec.state_list
+        self._Jacobian = self._method_register['ode'].get_equation().jacobian(states)
+
+        return self._Jacobian
+
+class ODEJacobianParams(NumericMethod):
+    method_name = 'ode_jacobian_params'
+
+    depends_on = ['ode']
+
+    def get_equation(self):
+        '''
+
+        '''
+
+        params = self._model_spec.param_list
+        self._Jacobian = self._method_register['ode'].get_equation().jacobian(params)
 
         return self._Jacobian
     
-class RatesJacobian(NumericMethod):
-    method_name = 'rates_jacobian'
+
+class EventRatesJacobianStates(NumericMethod):
+    method_name = 'event_rates_jacobian_states'
+
+    depends_on = ['event_rate_vector']
+
     def get_equation(self):
         '''
-        Returns the jacobian of the rates, not states
 
-        Need for augmented ODE
+        '''
 
-        Returns
-        -------
-        :class:`sympy.matrices.matrices`
-            A matrix of dimension [number of state x number of state]
+        states = self._model_spec.state_list
+        self._RatesJacobian = self._method_register['event_rate_vector'].get_equation().jacobian(states)
 
-        '''        
-        states = [s for s in self._parent_ode._iterStateList()]
-        self._RatesJacobian = self._parent_ode.event_rate_vector.get_equation().jacobian(states)
+        return self._RatesJacobian
+
+
+class EventRatesJacobianParams(NumericMethod):
+    method_name = 'event_rates_jacobian_params'
+
+    depends_on = ['event_rate_vector']
+
+    def get_equation(self):
+        '''
+
+        '''
+
+        params = self._model_spec.param_list
+        self._RatesJacobian = self._method_register['event_rate_vector'].get_equation().jacobian(params)
 
         return self._RatesJacobian

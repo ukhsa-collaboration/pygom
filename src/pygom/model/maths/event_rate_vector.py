@@ -31,8 +31,10 @@ class EventRateVector(NumericMethod):
         state transition then the birth death processes
         """
 
-        event_rate_vector = [
-            checkEquation(event.rate, self._spec.namespace) for event in self._spec.event_list
-        ]
+        # Container for output
+        event_rate_vector = sympy.zeros(self._model_spec.num_event, 1)
+
+        for i, event in enumerate(self._model_spec.event_list):
+            event_rate_vector[i] = checkEquation(event.rate, self._model_spec.states_and_parameters_dict) 
 
         return event_rate_vector

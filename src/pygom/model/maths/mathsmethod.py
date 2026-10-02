@@ -7,12 +7,14 @@ from .._model_errors import InputError
 
 from abc import ABC, abstractmethod
 
-class MathsMethod:
+# class MathsMethod:
+class NumericMethod:
     """
     A class designed to be attached to a model object the primary purpose is to 
     produce a numerical evaluation. The symbolic version will be compiled and 
     cached. By default you will need to provide the system state (as time and 
-    state values) to perform the evaluation.
+    state values) to perform the evaluation. Parameter numeric values also need
+    to have been defined, but these are stored in the parameter store.
     """
     # Will store the compiled function in child classes
     _compiled_obj = None 
@@ -28,6 +30,9 @@ class MathsMethod:
     _cache_valid = False
     _pickleable_compile = False
 
+    # any other methods which this one depends on
+    depends_on = list()
+
     # TODO: if we try to make sure that the object is SimulateODE type then we
     #       get a circular import error. I think this indicates design flaw
     #       Goal is to
@@ -36,7 +41,7 @@ class MathsMethod:
     #       the entire model
 
     # def __init__(self, parent_model: SimulateOde)->None:
-    def __init__(self, model_spec, compiler)->None:
+    def __init__(self, model_spec, compiler, method_register)->None:
         '''
         Initialise the maths method.
 
@@ -46,14 +51,18 @@ class MathsMethod:
             Compartmental model info
         '''
         # Save a pointer to the parent
-        self._spec = model_spec
+        self._model_spec = model_spec
         # Use the parent_model's compiler class (don't want each MM having their own).
         self._SC = compiler
+        # some methods depend on others, instead of searching the base model, contain
+        # math methods in a register
+        self._method_register = method_register
 
     def invalidate_cache(self):
         '''
         Marks the cached objects for recreation if called again
         '''
+        # TODO: every object needs a copy of the cache?
         self._cache_valid = False
 
     @abstractmethod
@@ -113,53 +122,49 @@ class MathsMethod:
         '''
         return self.__call__(state, time)
 
-    # def compile_function(self, inputExpr, outType, namespace) -> None:
-    #     '''
-    #     Compile the symbolic form so that rapid numerical evaluation may occur.
-    #     Transforms the output appropriately into numpy
-    #     '''
-    #     # logging.debug(f'Compiling sympy object {self.method_name}.')
+    def compile_function(self) -> None:
+        '''
+        Compile the symbolic form so that rapid numerical evaluation may occur.
+        Transforms the output appropriately into numpy
+        '''
+        logging.debug(f'Compiling sympy object {self.method_name}.')
 
-    #     # inputExpr = self.get_equation()
+        inputExpr = self.get_equation()
 
-    #     raw_fn, compileType = self.compileExpr(
-    #         namespace,
-    #         inputExpr,
-    #         backend=None,       # set at ODE level
-    #         compileType=True    # get additional info
-    #     )      
+        self._raw_fn, compileType = self._SC.compileExpr(self._model_spec.states_and_parameters_dict,
+                                                         inputExpr,
+                                                         backend=None, # set at ODE level
+                                                         compileType=True) # get additional info      
         
-    #     numRow = inputExpr.rows
-    #     numCol = inputExpr.cols
+        numRow = inputExpr.rows
+        numCol = inputExpr.cols
 
-    #     # define the different types of compile
-    #     if outType is None:
-    #         if numRow == 1 or numCol == 1:
-    #             outType = "vec"
-    #         else:
-    #             outType = "mat"
+        outType = self.outType
 
-    #     if outType.lower() == "vec":
-    #         if compileType == 'np':
-    #             _compiled_obj = lambda x: raw_fn(*x).ravel()
-    #         else:
-    #             _compiled_obj = lambda x: np.array(
-    #                 raw_fn(*x).tolist(),
-    #                 float
-    #             ).ravel()
-    #     elif outType.lower() == "mat":
-    #         if compileType == 'np':
-    #             _compiled_obj = lambda x: raw_fn(*x)
-    #         else:
-    #             _compiled_obj = lambda x: np.array(raw_fn(*x).tolist(), float)
-    #     else:
-    #         raise RuntimeError("Specified type of output not recognized")
+        # define the different types of compile
+        if self.outType is None:
+            if numRow == 1 or numCol == 1:
+                outType = "vec"
+            else:
+                outType = "mat"
+
+        if outType.lower() == "vec":
+            if compileType == 'np':
+                self._compiled_obj = lambda x: self._raw_fn(*x).ravel()
+            else:
+                self._compiled_obj = lambda x: np.array(self._raw_fn(*x).tolist(),
+                                                        float).ravel()
+        elif outType.lower() == "mat":
+            if compileType == 'np':
+                self._compiled_obj = lambda x: self._raw_fn(*x)
+            else:
+                self._compiled_obj = lambda x: np.array(self._raw_fn(*x).tolist(), float)
+        else:
+            raise RuntimeError("Specified type of output not recognized")
         
-    #     # # Update the state
-    #     # self._pickleable_compile = True if self._SC._backend == 'lambda' else False
-    #     # self._cache_valid = True
-
-    #     return _compiled_obj
+        # Update the state
+        self._pickleable_compile = True if self._SC._backend == 'lambda' else False
+        self._cache_valid = True
 
     def _getEvalParam(self, state:list[float], time:float) -> list[float]:
         if state is None or time is None:

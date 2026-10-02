@@ -1,3 +1,7 @@
+"""
+TODO: Delete this file, I think it just computes the Hessian
+"""
+
 import copy
 
 import sympy
