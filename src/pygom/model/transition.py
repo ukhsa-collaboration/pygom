@@ -98,8 +98,9 @@ class Transition:
     destination: str | None = None
     transition_type: TransitionType | str | None = None
     magnitude: str = "1"
-    ID: str | None = None
+    ID: int | None = None
     name: str | None = None
+    rate: str | None = None
 
     def __post_init__(self):
 
@@ -159,10 +160,11 @@ class Transition:
 class Event:
     rate: str
     transition_list: list[Transition]
+    ID: int | None = None
 
-    @classmethod
-    def single_transition(cls, rate, **kwargs):
-        return cls(
-            rate=rate,
-            transition_list=[Transition(**kwargs)]
-        )
+    # @classmethod
+    # def single_transition(cls, rate, **kwargs):
+    #     return cls(
+    #         rate=rate,
+    #         transition_list=[Transition(**kwargs)]
+    #     )

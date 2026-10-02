@@ -2,6 +2,8 @@ import numpy as np
 
 from sympy import parse_expr
 
+from ._model_errors import InputError
+
 from sympy.functions.elementary.exponential import (
     exp_polar,
     exp,
@@ -81,7 +83,7 @@ TODO:
 """
 
 
-def checkEquation(input_str, state_param_namespace, derived_param_dict, subs_derived=True) -> list:
+def checkEquation(input_str, namespace) -> list:
     """
     Convert a string into an equation using the symbols from the system and 
     checks its validity. 
@@ -89,25 +91,34 @@ def checkEquation(input_str, state_param_namespace, derived_param_dict, subs_der
     Parameters
     ----------
     input_str: a str or list of str giving the equation
-    ode: the parent ode
+    state_param_namespace: list of state and param names
+    state_param_namespace: list of derived param names
     subs_derived: should the derived parameters be substututed in?
 
     Returns
     -------
-    A single sympy equation or list of sympy equations (depending on if 
-    input_str is a single string or a list) made from the string(s)
+    A single sympy equation
     """
 
     assert isinstance(input_str, str), "Equation should be in string format"
 
-    eqn = parse_expr(input_str, state_param_namespace | derived_param_dict)
+    # namespace = state_param_namespace | derived_param_dict
 
-    if subs_derived:
-        # because these are the derived parameters, we need to substitute
-        # them back in the formula
-        if isinstance(eqn, Expr):
-            for key, value in derived_param_dict:
-                eqn = eqn.subs(key, value)
+    eqn = parse_expr(input_str, local_dict=namespace)
+    unknown = eqn.free_symbols - set(namespace.values())
+
+    if unknown:
+        raise InputError(
+            f"Unknown symbols: "
+            f"{', '.join(map(str, unknown))}"
+        )
+
+
+    # if subs_derived:
+    #     # because these are the derived parameters, we need to substitute
+    #     # them back in the formula
+    #     for symbol, expr in derived_param_dict.items():
+    #         eqn = eqn.subs(symbol, expr)
 
     return eqn
 

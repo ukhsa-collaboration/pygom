@@ -11,10 +11,59 @@ import re
 import keyword
 from ._model_errors import InputError
 from numbers import Number
+from scipy.stats._distn_infrastructure import rv_frozen
+from typing import Callable
+
+class CallableParameter:
+    def __init__(self, value: tuple[Callable|str, dict|tuple]):
+        """
+        Data type for parameters which draws a random number when called
+
+        Parameters
+        ----------
+        value: tuple[callable, dict|tuple]
+            value[0] is the probability distribution and value[1] the function parameters
+        """
+
+        dist, params = value
+        self.source = dist
+
+        # -----------------------------
+        # Parse arguments
+        # -----------------------------
+        if isinstance(params, dict):
+            self.args = ()
+            self.kwargs = params
+        elif isinstance(params, tuple):
+            self.args = params
+            self.kwargs = {}
+        else:
+            raise InputError(
+                'Second element should be either a tuple or a '
+                'dict when using multi-argument distribution '
+                f'definition. Type of input was {type(params)}.'
+            )
+
+    def __call__(self, rng):
+        if isinstance(self.source, str):
+            method = getattr(rng, self.source)
+
+            return method(
+                *self.args,
+                **self.kwargs
+            )
+
+        return self.source(
+            rng,
+            *self.args,
+            **self.kwargs
+        )
 
 class ODEVariable(object):
     """
-    A class that defines the variables in our ODE
+    A class that defines the variable meta-data
+
+    NOTE: Currently trialling not considering value as metadata
 
     Parameters
     ----------
@@ -23,8 +72,6 @@ class ODEVariable(object):
     symbol: sympy.Symbol
         sympy symbolic representation of the variable. Often taken to
         be sympy.Symbol(ID), but not necessarily.
-    value:
-        Numeric value of variable
     units: str, optional
         what unit the variable takes. Defaults to None.
     real: bool, optional
@@ -36,10 +83,10 @@ class ODEVariable(object):
             self,
             ID:None|str=None, 
             symbol:None|Symbol|str=None,
-            value:None|str=None,
             units:None|Quantity=None,
             real:bool=True,
-            limits:None|tuple=(0, np.inf)
+            limits:None|tuple=(0, np.inf),
+            value=None
         ):
 
         if (ID is None) and (symbol is None):
@@ -54,9 +101,9 @@ class ODEVariable(object):
             raise TypeError("ID must be a string")
         self.ID = ID
         self.real = real
-        self.value = value
         self.units = units
         self.limits = limits
+        self.value = value
 
         if symbol is None:
             symbol = ID
@@ -67,10 +114,9 @@ class ODEVariable(object):
 
     def __repr__(self)->str:
         return (
-            f"ODEVariable("
+            f"ODEVariable("         # TODO: change
             f"{self.ID!r}, "
             f"{self.symbol!r}, "
-            f"{self.value!r}, "
             f"{self.units!r}, "
             f"{self.limits!r})"
         )
@@ -135,21 +181,17 @@ class ODEVariable(object):
             # "  - or be in SymPy range notation (e.g. 'y1:4')"
         )
 
-        # _VALID_SYMBOL = re.compile(
-        #     r"^[A-Za-z][A-Za-z0-9_]*(?::[A-Za-z0-9_]+)?$"
-        # )
-
         _VALID_SYMBOL = re.compile(
             r"^[A-Za-z][A-Za-z0-9_]*$"
         )
 
-        # TODO: should we make 't' a protected symbol for time?
-        # NOTE: maybe add t at model initialisation and then any later attempts to add t will be blocked?
+        # NOTE: should we make 't' a protected symbol for time?
+        #       maybe add t at model initialisation and then any
+        #       later attempts to add t will be blocked?
         if keyword.iskeyword(symbol_name):
             raise InputError(
                 f"'{symbol_name}' is a reserved Python keyword"
             )
-
         if not _VALID_SYMBOL.fullmatch(symbol_name):
             raise InputError(
                 f"Invalid symbol name '{symbol_name}'.\n{_SYMBOL_RULES}"
@@ -193,90 +235,196 @@ class ODEVariable(object):
 
         self._limits = (lower, upper)
 
+    @property
+    def value(self):
+        return self._value
+
+    # @value.setter
+    # def value(self, value):
+    #     self._source = value
+    #     if isinstance(value, (rv_frozen, CallableParameter)):
+    #         self._value = None
+    #     else:
+    #         self._validate_value(value)
+    #         self._value = value
+
+    @value.setter
+    def value(self, value):
+
+        if isinstance(value, (rv_frozen, CallableParameter)):
+            self._source = value
+            self._value = None
+
+        else:
+            self._validate_value(value)
+            self._value = value
 
 
+    def _validate_value(self, value):
+        """
+        Validate if a numerical value:
+        - Is real if required
+        - Falls within allowed limits
+        """
+
+        if value is None:
+            return
+        if isinstance(value, CallableParameter):
+            return
+
+        if self.real and not np.isreal(value):
+            raise ValueError(
+                f"'{self.ID}' must be real."
+            )
+
+        lower, upper = self.limits
+
+        if value < lower:
+            raise ValueError(
+                f"'{self.ID}' must be >= {lower}."
+            )
+
+        if value > upper:
+            raise ValueError(
+                f"'{self.ID}' must be <= {upper}."
+            )
+
+class State(ODEVariable):
+    def __init__(
+            self,
+            ID:None|str=None, 
+            symbol:None|Symbol|str=None,
+            units:None|Quantity=None,
+            real:bool=True,
+            limits:None|tuple=(0, np.inf),
+            value:None|Number=None,
+            initial_value:None|Number=None
+        ):
+        """
+        If this object holds any numerical value then it refers to initial values.
+        The solver ....
+        """
+
+        super().__init__(
+            ID=ID,
+            symbol=symbol,
+            units=units,
+            real=real,
+            limits=limits,
+            value=value
+        )
+
+        self._initial_value = initial_value
+
+    @property
+    def initial_value(self):
+        return self._initial_value
+
+    @initial_value.setter
+    def initial_value(self, value):
+        self._validate_value(value)
+        self._initial_value = value
 
 
+class Parameter(ODEVariable):
+    def __init__(
+            self,
+            ID:None|str=None, 
+            symbol:None|Symbol|str=None,
+            units:None|Quantity=None,
+            real:bool=True,
+            limits:None|tuple=(-np.inf, np.inf),
+            value:None|Number|rv_frozen|CallableParameter=None
+        ):
+
+        self._source = value
+
+        super().__init__(
+            ID=ID,
+            symbol=symbol,
+            units=units,
+            real=real,
+            limits=limits,
+            value=value
+        )
+
+    # def realise(self, rng=None):
+    #     """
+    #     Generate a new parameter
+    #     """
+
+    #     if not self.is_stochastic:
+    #         return self.value
+
+    #     self.value = self._source(rng)
+
+    #     return self.value
+
+    def realise(self, rng=None):
+        """
+        Generate a new parameter
+        """
+
+        if not self.is_stochastic:
+            return self.value
+
+        new_value = self._source(rng)
+
+        self._validate_value(new_value)
+        self._value = new_value
+
+        return new_value
+
+    @property
+    def is_stochastic(self):
+        return callable(self._source)
 
 
+class DerivedParameter(ODEVariable):
+    def __init__(
+            self,
+            ID:None|str=None, 
+            symbol:None|Symbol|str=None,
+            units:None|Quantity=None,
+            real:bool=True,
+            limits:None|tuple=(-np.inf, np.inf),
+            string_expression:None|str=None,
+            value=None
+        ):
+        """
 
+        """
 
-# def _generate_symbol(
-#         self,
-#         input_value: str | tuple[str, str]
-#     ) -> list:
-#     """
-#     Generate one or more Sympy symbols from variable name(s)
+        super().__init__(
+            ID=ID,
+            symbol=symbol,
+            units=units,
+            real=real,
+            limits=limits,
+            value=value
+        )
 
-#     Parameters
-#     ----------
-#     input_value
-#         Either:
-#             "x"
-#             ("x", "real")
-#             ("z", "complex")
-#             "x1:5" e.g.
+        self.string_expression = string_expression
 
-#     Returns
-#     -------
-#     Symbol | list[Symbol]
-#     """
+    @property
+    def string_expression(self):
+        return self._string_expression
 
-#     _SYMBOL_RULES = (
-#         "Symbol names must:\n"
-#         "  - start with a letter\n"
-#         "  - then contain only letters, digits or underscores\n"
-#         "  - or be in SymPy range notation (e.g. 'y1:4')"
-#     )
-
-#     _VALID_SYMBOL = re.compile(
-#         r"^[A-Za-z][A-Za-z0-9_]*(?::[A-Za-z0-9_]+)?$"
-#     )
-
-#     if isinstance(input_value, str):
-#         symbol_name = input_value
-#         is_real = True
-#     elif isinstance(input_value, tuple):
-#         if len(input_value) != 2:
-#             raise InputError(
-#                 f"Expected 2 values, received {len(input_value)}"
-#             )
-
-#         symbol_name, assumption = input_value
-#         assumption = str(assumption).lower()
-
-#         if assumption in {"real", "true"}:
-#             is_real = True
-#         elif assumption in {"complex", "false"}:
-#             is_real = False
-#         else:
-#             raise InputError(
-#                 f"Unknown symbol assumption '{assumption}'"
-#             )
-#     else:
-#         raise InputError(
-#             f"Unsupported type {type(input_value)}"
-#         )
-
-#     # TODO: should we make 't' a protected symbol for time?
-#     if keyword.iskeyword(symbol_name):
-#         raise InputError(
-#             f"'{symbol_name}' is a reserved Python keyword"
-#         )
-
-#     if not _VALID_SYMBOL.fullmatch(symbol_name):
-#         raise InputError(
-#             f"Invalid symbol name '{symbol_name}'.\n{_SYMBOL_RULES}"
-#         )
-
-#     result = symbols(symbol_name, real=is_real)
-
-#     if isinstance(result, Symbol):
-#         return [result]
-
-#     if isinstance(result, tuple):
-#         return list(result)
-
-#     raise InputError(
-#         f"Unexpected result returned by sympy.symbols: {type(result)}"
-#     )
+    @string_expression.setter
+    def string_expression(self, eqn):
+        """
+        This needs to be checked and sympy-ed later on
+        We do so when adding to the store
+        Store owns each namespace, ModelSpec owns them all
+        """
+        if eqn is None:
+            self._string_expression = None
+        elif isinstance(eqn, str):
+            self._string_expression = eqn
+        else:
+            raise(
+                InputError(
+                    "Derived parameter expression must be type 'str',"
+                    f"instead received '{type(eqn)}'"
+                )
+            )

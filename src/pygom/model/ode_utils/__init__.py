@@ -18,7 +18,8 @@ from pygom.model._model_errors import (ArrayError,
                                        InputError,
                                        IntegrationError
                                        )
-from .variable_store import VariableStore, ParameterStore, StateStore
+from .variable_store import VariableStore, ParameterStore, StateStore, DerivedParameterStore
+from .transition_store import EventStore
 from .compile_canary import CompileCanary
 from .plot_det import plot_det
 from .plot_stoc import plot_stoc
@@ -39,6 +40,8 @@ __all__ = [
     'VariableStore',
     'ParameterStore',
     'StateStore',
+    'DerivedParameterStore',
+    'EventStore',
     # plots
     'plot_det',
     'plot_stoc',
