@@ -4,7 +4,7 @@ import numpy as np
 from .transition import Event, Transition, TransitionType
 from ._model_errors import InputError, OutputError
 from ._model_verification import checkEquation
-from .ode_variable import ODEVariable
+from .ode_variable import ODEVariable, State, Parameter
 from . import ode_utils
 
 ### Main Classes ###
@@ -23,6 +23,8 @@ class HasNewTransition(ode_utils.CompileCanary):
 # outside of the store or do I add a @property within the store to present it.
 
 
+# TODO: Do we forbid users from adding N as a mere parameter?
+
 """
 BaseOdeModel becomes modelspec?
 
@@ -38,7 +40,7 @@ class ModelSpec(object):
     Parameters
     ----------
     state: list
-        A list of states (string)
+        A list of states (string or State)
     param: list
         A list of the parameters (string)
     derived_param: list
@@ -52,6 +54,12 @@ class ModelSpec(object):
     ode: list
         A list of ode (:class:`.Transition`)
 
+
+    NOTE: caching
+
+    Stores own caches about their own contents.
+    ModelSpec owns caches that combine information from multiple stores.
+
     """
 
     def __init__(
@@ -62,20 +70,21 @@ class ModelSpec(object):
             event=None,
         ):
 
-        self._sp = None
-        self._parameter_store = None
-        self._state_store = None
-        self._derived_parameter_store = None
+        self._invalidate_caches()
+
+        self._parameter_store = ode_utils.ParameterStore()
+        self._state_store = ode_utils.StateStore()
+        self._derived_parameter_store = ode_utils.DerivedParameterStore()
 
         # we always need time to be a symbol and it should be denoted as t
         # TODO: should be added to state / param store?
         self._t = sympy.symbols('t', real=True)
 
         ## Parameters ##
-        self.set_parameters(param)
+        self._create_parameter_store(param)
 
         ## States ##
-        self.set_states(state)
+        self._create_state_store(state)
 
         ## Derived Parameters ##
         # this has to go after adding the parameters
@@ -83,7 +92,7 @@ class ModelSpec(object):
         # base parameters.
         # Making the distinction here because it makes a
         # difference when inferring the parameters of the variables
-        self.set_derived_parameters(derived_param)
+        self._create_derived_parameter_store(derived_param)
 
         ## Transitions ##
         self.set_events(event)
@@ -95,11 +104,9 @@ class ModelSpec(object):
         """
         Tell objects that have cached components to reset their caches as
         the underlying system has changed
-
-        TODO: this needs to be communicated back to the maths objects
         """
         
-        self._sp = None
+        self._all_symbols_dict = None
 
     ###########################################################################
     #
@@ -107,33 +114,41 @@ class ModelSpec(object):
     #
     ###########################################################################
 
-    ## Building and modifying sotres ##
+    # ----------------------------------
+    # Initialising and populating sotres
+    # ----------------------------------
 
-    ###################################################################################
-    ## Store initialisers
-
-    def set_states(self, state_list:list[str|ODEVariable])->None:
+    def _create_state_store(self, state_list:list[str|ODEVariable]) -> None:
         """
-        Declare the states for the ode system
+        Declare and store the parameter names for the compartmental model
 
         Parameters
         ----------
         state_list: list
-            list of strings or ode variables where each is a parameter of the 
+            list of strings or ode variables where each is a state of the 
             system
         """
+        # create a new empty store
+        # self._state_store = ode_utils.StateStore()
+        self.add_states(state_list)
 
+    def add_states(self, state_list:list[str|ODEVariable])->None:
+        """
+        Append additional states to the ode system
+
+        Parameters
+        ----------
+        state_list: list
+            list of strings or ode variables where each is a state to be 
+            added
+        """
         if state_list is None:
             state_list = []
 
-        # create a new store to replace the existing (if creations succeds)
-        new_state_store = ode_utils.StateStore()
-        new_state_store.add(state_list, self.states_and_parameters_dict)
-        
-        self._state_store = new_state_store
+        self._state_store.add(state_list, self.all_symbols_dict)
         self._invalidate_caches()
 
-    def set_parameters(self, parameter_list:list[str|ODEVariable]) -> None:
+    def _create_parameter_store(self, parameter_list:list[str|ODEVariable]) -> None:
         """
         Declare and store the parameter names for the compartmental model
 
@@ -143,37 +158,11 @@ class ModelSpec(object):
             list of strings or ode variables where each is a parameter of the 
             system
         """
+        # create a new empty store
+        # self._parameter_store = ode_utils.ParameterStore()
+        self.add_parameters(parameter_list)
 
-        if parameter_list is None:
-            parameter_list = []
-
-        # create a new store to replace the existing (if creations success)
-        new_parameter_store = ode_utils.ParameterStore()
-        new_parameter_store.add(parameter_list, self.states_and_parameters_dict)
-        
-        self._parameter_store = new_parameter_store
-        self._invalidate_caches()
-
-    def set_derived_parameters(self, derived_parameter_list:list[tuple[str|ODEVariable]])->None:
-        """
-        Declare the derived parameters
-
-        """
-
-        if derived_parameter_list is None:
-            derived_parameter_list = []
-
-        # create a new store to replace the existing (if creations succeds)
-        new_derived_parameter_store = ode_utils.DerivedParameterStore()
-
-        new_derived_parameter_store.add(derived_parameter_list, self.states_and_parameters_dict)
-        self._derived_parameter_store = new_derived_parameter_store
-        self._invalidate_caches()
-
-    ###################################################################################
-    ## Modify stores
-
-    def append_parameters(self, parameter_list:list[str|ODEVariable])->None:
+    def add_parameters(self, parameter_list:list[str|ODEVariable])->None:
         """
         Append additional parameters to the ode system
 
@@ -183,80 +172,154 @@ class ModelSpec(object):
             list of strings or ode variables where each is a parameter to be 
             added
         """
-        # create a new store (if we don't already have one)
-        if self._parameter_store is None:
-            new_parameter_store = ode_utils.ParameterStore()
-        else:
-            new_parameter_store = self._parameter_store
-        new_parameter_store._add_to_store(parameter_list)
-        
-        self._parameter_store = new_parameter_store
+        if parameter_list is None:
+            parameter_list = []
+
+        self._parameter_store.add(parameter_list, self.all_symbols_dict)
         self._invalidate_caches()
 
-    ## Accessing and setting properties ##
-
-    ###################################################################################
-    ## Values
-    # TODO: check which of these are O(1) and O(N) and maybe add to doctring
-
-    @property
-    def state(self):
+    def _create_derived_parameter_store(self, derived_parameter_list:list[str|ODEVariable]) -> None:
         """
-        Returns
-        -------
-        list
-            state in symbol with current value,
-            (:mod:`sympy.core.symbol`,numeric)
-
-        """
-        return [(symb, val) for symb, val in zip(self._state_store.symbol_list,
-                                                 self._state_store.values)]
-    
-    @state.setter
-    def state(self,
-              states:dict[str: float]|list[tuple[str,float]]|list[float])->None:
-        """
-
-        """
-        self._state_store.values = states
-
-    @property
-    def parameters(self):
-        """
-        Returns
-        -------
-        list
-            A list which contains tuple of two elements, parameter symbol and its value
-            (:mod:`sympy.core.symbol`, numeric)
-
-        """
-        if self._parameter_store.all_values_set:
-            return [(symb, val) for symb, val in zip(self._parameter_store.symbol_list,
-                                                     self._parameter_store.values)]
-
-    @parameters.setter
-    def parameters(self, 
-                   parameters:dict[str: float]|list[tuple[str,float]]|list[float])->None:
-        """
-        Set the values for the parameters already defined.  Note that unless
-        the parameters are entered via a dictionary or a two element list,tuple
-        we assume that it is in the order of :meth:`.getParamList`
+        Declare and store the derivedparameter names for the compartmental model
 
         Parameters
         ----------
-        parameters: dict of {parameter_ID: parameter_value} (prefered) _or_
-            a list which contains elements made of 2 element tuples 
-            (string, numeric value) _or_ a single array like object with
-            length equal to the number of parameters, in the same order as they
-            were created.
+        derived_parameter_list: list
+            list of strings or ode variables where each is a derived parameter of the 
+            system
         """
-        self._parameter_store.values = parameters
+        # create a new empty store
+        # self._derived_parameter_store = ode_utils.DerivedParameterStore()
+        self.add_derived_parameters(derived_parameter_list)
 
-    ###################################################################################
-    ## Symbols
+    def add_derived_parameters(self, derived_parameter_list:list[str|ODEVariable])->None:
+        """
+        Append additional derived parameters to the ode system
+
+        Parameters
+        ----------
+        derived_parameter_list: list
+            list of strings or ode variables where each is a derived parameter to be 
+            added
+        """
+        if derived_parameter_list is None:
+            derived_parameter_list = []
+
+        self._derived_parameter_store.add(derived_parameter_list, self.all_symbols_dict)
+        self._invalidate_caches()
+
+    # ----------------------------------
+    # Setting numerical values:
+    #   - Parameters can have values/distributions
+    #   - States can have initial conditions
+    # ----------------------------------
+
+    # TODO: check which of these are O(1) and O(N) and maybe add to docstring
+    # TODO: state needs intiial condition setting
+
+
+    def set_parameter_values(self, parameters:dict[str: float])->None:
+        """
+        Set the values for the parameters already defined.
+
+        Parameters
+        ----------
+        parameters: dict of {parameter_ID: parameter_value} (prefered)
+        """
+        self._parameter_store.set_values(parameters)
+
+
+    # ----------------------------------
+    # Accessing store properties
+    # ----------------------------------
+
+    ## Numeric values ##
 
     @property
-    def state_list(self):
+    def parameter_value_list(self):
+        """
+        Returns
+        -------
+        list
+            Values in list form
+        """
+        if self._parameter_store.all_values_set:
+            return self._parameter_store.id_value_dict
+
+    @property
+    def parameter_id_value_dict(self):
+        """
+        Returns
+        -------
+        dict
+            Values in dict form {str: Number}
+        """
+        if self._parameter_store.all_values_set:
+            return self._parameter_store.id_value_dict
+
+    @property
+    def parameter_symbol_value_dict(self):
+        """
+        Returns
+        -------
+        dict
+            Values in dict form {symbol: Number}
+        """
+        if self._parameter_store.all_values_set:
+            return self._parameter_store.symbol_value_dict
+
+    ## Derived param expressions ##
+
+    @property
+    def derived_parameter_id_expression_dict(self):
+        """
+        Returns
+        -------
+        dict
+            Derived parameter expressions {str:expression}
+        """
+        return self._derived_parameter_store.id_expression_dict
+
+    @property
+    def derived_parameter_symbol_expression_dict(self):
+        """
+        Returns
+        -------
+        dict
+            Derived parameter expressions {symbol:expression}
+        """
+        return self._derived_parameter_store.symbol_expression_dict
+
+    ## State limits ##
+
+    @property
+    def state_lower_limits(self):
+        """
+        State lower numerical limits (ready to be passed to e.g. a solver)
+
+        Returns
+        -------
+        list[float]
+            List of state lower limits
+        """
+        return self._state_store.lower_limit_list
+
+    @property
+    def state_upper_limits(self):
+        """
+        State upper numerical limits (ready to be passed to e.g. a solver)
+
+        Returns
+        -------
+        list[float]
+            List of state upper limits
+        """
+        return self._state_store.upper_limit_list
+
+    ## Symbols ##
+
+    @property
+    def state_symbol_list(self):
         """
         Returns a list of the states in symbol form
 
@@ -269,7 +332,7 @@ class ModelSpec(object):
         return self._state_store.symbol_list
 
     @property
-    def param_list(self):
+    def param_symbol_list(self):
         """
         Returns a list of the parameters in symbol form
 
@@ -282,7 +345,7 @@ class ModelSpec(object):
         return self._parameter_store.symbol_list
 
     @property
-    def derived_param_list(self):
+    def derived_param_symbol_list(self):
         """
         Returns a list of the derived parameters in symbol form
 
@@ -294,8 +357,7 @@ class ModelSpec(object):
         """
         return self._derived_parameter_store.symbol_list
 
-    ###################################################################################
-    ## Store counts
+    ## Store counts ##
 
     @property
     def num_state(self):
@@ -336,115 +398,49 @@ class ModelSpec(object):
         """
         return len(self._derived_parameter_store)
 
-    ###################################################################################
-    ## Namespace
-
-    def _generate_state_dict(self)->None:
-        '''
-        Create state dict
-        '''
-        states = {}
-        if self._state_store:
-            states = self._state_store.symbol_dict
-        self._state_dict = states
+    ## Namespaces ##
 
     @property
     def state_dict(self)->dict[str: sympy.Symbol]:
         '''
-        State dict
+        State dict {str:symbol}
         '''
-        if self._sp is None:
-            self._generate_state_dict()
-        return self._state_dict
-
-    def _generate_parameter_dict(self)->None:
-        '''
-        Create parameter dict
-        '''
-        parameters = {}
-        if self._parameter_store:
-            parameters = self._parameter_store.symbol_dict
-        self._parameter_dict = parameters
+        return self._state_store.symbol_dict
 
     @property
     def parameter_dict(self)->dict[str: sympy.Symbol]:
         '''
-        Parameter dict
+        Parameter dict {str:symbol}
         '''
-        if self._sp is None:
-            self._generate_parameter_dict()
-        return self._parameter_dict
-
-    def _generate_derived_parameter_dict(self)->None:
-        '''
-        Create derived parameter dict
-        '''
-        derived_parameters = {}
-        if self._derived_parameter_store:
-            derived_parameters = self._derived_parameter_store.symbol_dict
-        self._derived_parameter_dict = derived_parameters
+        return self._parameter_store.symbol_dict
 
     @property
     def derived_parameter_dict(self)->dict[str: sympy.Symbol]:
         '''
-        Derived parameter dict
+        Derived parameter dict {str:symbol}
         '''
-        if self._sp is None:
-            self._generate_derived_parameter_dict()
-        return self._derived_parameter_dict
+        return self._derived_parameter_store.symbol_dict
 
-    def _generate_derived_parameter_expression_dict(self)->None:
-        '''
-        Create derived parameter dict, from id to expression
-        '''
-        derived_parameter_expressions = {}
-        if self._derived_parameter_store:
-            derived_parameter_expressions = self._derived_parameter_store.expression_dict
-        self._derived_parameter_expression_dict = derived_parameter_expressions
+    # Combinations need to pay attention to cache
 
     @property
-    def derived_parameter_expression_dict(self)->dict[str: sympy.Symbol]:
-        '''
-        Derived parameter dict
-        '''
-        if self._sp is None:
-            self._generate_derived_parameter_expression_dict()
-        return self._derived_parameter_expression_dict
-
-    def _generate_states_and_parameters(self)->None:
-        '''
-        Creates the entire collection of symbols
-        '''
-
-        self._sp = (
-            self.state_dict |
-            self.parameter_dict |
-            self.derived_parameter_dict |
-            {'t': self._t}
-        )
-
-    @property
-    def states_and_parameters_dict(self)->dict[str: sympy.Symbol]:
+    def all_symbols_dict(self)->dict[str: sympy.Symbol]:
         '''
         An attribute collecting together all the states and variables in sympy
         form. This is used for the check equation function.
         '''
-        if self._sp is None:
-            self._generate_states_and_parameters()
+        if self._all_symbols_dict is None:
+            self._all_symbols_dict = (
+                self.state_dict |
+                self.parameter_dict |
+                self.derived_parameter_dict |
+                {'t': self._t}
+            )
 
-        return self._sp
+        return self._all_symbols_dict
 
-    @property
-    def states_and_parameters_list(self)->list[sympy.Symbol]:
-        '''
-        An attribute collecting together all the states and variables in sympy
-        form. This is used for the autowrap method
-        TODO: this is not only states and parameters but derived parameters too, maybe rename to total namespace
-        '''
-        return list(self.states_and_parameters_dict.values())
 
-    ###################################################################################
-    ## Index look up
+    ## Index look up ##
 
     def get_state_index(self, input_str:str)->int:
         """
@@ -489,22 +485,8 @@ class ModelSpec(object):
         elif isinstance(input_str, (tuple, list)):
             return [self._derived_parameter_store.get_index(x) for x in input_str]
 
-    ###################################################################################
-    ## State limits
 
-    @property
-    def state_lower_limits(self):
-        """
-        
-        """
-        return self._state_store.lower_limit_list
 
-    @property
-    def state_upper_limits(self):
-        """
-        
-        """
-        return self._state_store.upper_limit_list
 
     ##########################################################
     #
@@ -535,10 +517,12 @@ class ModelSpec(object):
 
         # create a new store to replace the existing (if creations succeds)
         new_event_store = ode_utils.EventStore()
-        new_event_store.add(event_list, self.states_and_parameters_dict, self.state_dict)
+        new_event_store.add(event_list, self.all_symbols_dict, self.state_dict)
         
         self._event_store = new_event_store
-        self._invalidate_caches()
+        # self._invalidate_caches()
+        # TODO: does not have any bearing on states or params, maybe cache in store itself
+        # needs to do something
 
     @property
     def event_list(self):

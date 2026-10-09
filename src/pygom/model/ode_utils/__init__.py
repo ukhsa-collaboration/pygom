@@ -479,188 +479,188 @@ def matToVecFF(FF, numState, numParam):
     '''
     return FF.ravel()
 
-class compileCode(object):
-    '''
-    A class that compiles an algebraic expression in sympy to a faster
-    numerical file using the appropriate backend.
-    '''
+# class compileCode(object):
+#     '''
+#     A class that compiles an algebraic expression in sympy to a faster
+#     numerical file using the appropriate backend.
+#     '''
 
-    def __init__(self, backend=None):
-        '''
-        Initializing the class.  Automatically checks which backend is
-        available.  Currently only those linked to np are used where
-        those linked with Theano are not.
-        '''
-        if backend is None:
-            logging.debug('Finding available backend.')
-            self._backend = None
-            x = sympy.Symbol('x')
-            expr = sympy.sin(x)/x
+#     def __init__(self, backend=None):
+#         '''
+#         Initializing the class.  Automatically checks which backend is
+#         available.  Currently only those linked to np are used where
+#         those linked with Theano are not.
+#         '''
+#         if backend is None:
+#             logging.debug('Finding available backend.')
+#             self._backend = None
+#             x = sympy.Symbol('x')
+#             expr = sympy.sin(x)/x
 
-            # lets assume that we can't do theano.... (for now)
-            # now lets explore the other options
-            try:
-                # first, f2py.  This is the best because Cython below may
-                # throw out errors with older versions of sympy due to a
-                # bug (calling np.h, a c header file which has problem
-                # dealing with vector output).
-                a = autowrap(expr, args=[x])
-                a(1)
-                # congrats!
-                self._backend = 'f2py'
-            except:
-                try:
-                    import cython
-                    a = autowrap(expr, args=[x], backend='Cython')
-                    a(1)
-                    # also need to test the matrix version because
-                    # previous version of sympy does not work when compiling
-                    # a matrix
-                    exprMatrix = sympy.zeros(2,1)
-                    exprMatrix[0] = expr
-                    exprMatrix[1] = expr
+#             # lets assume that we can't do theano.... (for now)
+#             # now lets explore the other options
+#             try:
+#                 # first, f2py.  This is the best because Cython below may
+#                 # throw out errors with older versions of sympy due to a
+#                 # bug (calling np.h, a c header file which has problem
+#                 # dealing with vector output).
+#                 a = autowrap(expr, args=[x])
+#                 a(1)
+#                 # congrats!
+#                 self._backend = 'f2py'
+#             except:
+#                 try:
+#                     import cython
+#                     a = autowrap(expr, args=[x], backend='Cython')
+#                     a(1)
+#                     # also need to test the matrix version because
+#                     # previous version of sympy does not work when compiling
+#                     # a matrix
+#                     exprMatrix = sympy.zeros(2,1)
+#                     exprMatrix[0] = expr
+#                     exprMatrix[1] = expr
 
-                    a = autowrap(exprMatrix, args=[x], backend='Cython')
-                    a(1)
+#                     a = autowrap(exprMatrix, args=[x], backend='Cython')
+#                     a(1)
 
-                    self._backend = 'Cython'
-                except:
-                    # we have truely failed in life.  A standard lambda function!
-                    # unfortunately, this may be the case when we are running
-                    # stuff in a parallel setting where we create objects in
-                    # pure computation nodes with no compile mechanism
-                    self._backend = 'lambda'
-            logging.debug("done: ", self._backend)
-        else:
-            self._backend = backend
+#                     self._backend = 'Cython'
+#                 except:
+#                     # we have truely failed in life.  A standard lambda function!
+#                     # unfortunately, this may be the case when we are running
+#                     # stuff in a parallel setting where we create objects in
+#                     # pure computation nodes with no compile mechanism
+#                     self._backend = 'lambda'
+#             logging.debug("done: ", self._backend)
+#         else:
+#             self._backend = backend
 
-    def compileExpr(self, inputSymb, inputExpr, backend=None, compileType=False):
-        '''
-        Compiles the expression given the symbols.  Determines the backend
-        if required.
+#     def compileExpr(self, inputSymb, inputExpr, backend=None, compileType=False):
+#         '''
+#         Compiles the expression given the symbols.  Determines the backend
+#         if required.
 
-        Parameters
-        ----------
-        inputSymb: list
-            the set of symbols for the input expression
-        inputExpr: expr
-            expression in sympy
-        backend: optional
-            the backend we want to use to compile
-        compileType: optional
-            defaults to False.  If True, return an extra output that informs
-            the end user of the method used to compile the equation, can be
-            one of (np, mpmath, sympy)
+#         Parameters
+#         ----------
+#         inputSymb: list
+#             the set of symbols for the input expression
+#         inputExpr: expr
+#             expression in sympy
+#         backend: optional
+#             the backend we want to use to compile
+#         compileType: optional
+#             defaults to False.  If True, return an extra output that informs
+#             the end user of the method used to compile the equation, can be
+#             one of (np, mpmath, sympy)
 
-        Returns
-        -------
-        Compiled function taking arguments of the input symbols
-        '''
-        if backend is None:
-            backend = self._backend
+#         Returns
+#         -------
+#         Compiled function taking arguments of the input symbols
+#         '''
+#         if backend is None:
+#             backend = self._backend
 
-        # unless specified, we are always going to use np and forget
-        # about the floating point importance
-        compiledFunc = None
-        compileTypeChosen = None
-        try:
-            if backend == 'f2py':
-                compiledFunc = autowrap(expr=inputExpr,
-                                        args=inputSymb,
-                                        backend='f2py')
-                compileTypeChosen = 'np'
-            elif backend == 'lambda':
-                compiledFunc = lambdify(expr=inputExpr,
-                                        args=inputSymb,
-                                        modules='numpy')
-                compileTypeChosen = 'np'
-            elif backend.lower() in ('cython', 'np'):
-                # note that we have another test layer because of the
-                # bug previously mentioned in __init__ of this class
-                try:
-                    compiledFunc = autowrap(expr=inputExpr,
-                                            args=inputSymb,
-                                            backend='Cython')
-                    compileTypeChosen = 'np'
-                except:
-                    # although we don't think it is possible given the checks
-                    # previously performed, we should still try it
-                    try:
-                        compiledFunc = autowrap(expr=inputExpr,
-                                                args=inputSymb,
-                                                backend='f2py')
-                        compileTypeChosen = 'np'
-                    except:
-                        compiledFunc = lambdify(expr=inputExpr,
-                                                args=inputSymb,
-                                                modules='numpy')
-                        compileTypeChosen = 'np'
-            else:
-                raise ExpressionErrror("The problem is too tough")
-        except:
-            try:
-                compiledFunc = lambdify(expr=inputExpr,
-                                        args=inputSymb,
-                                        modules='mpmath')
-                compileTypeChosen = 'mpmath'
-            except:
-                compiledFunc = lambdify(expr=inputExpr,
-                                        args=inputSymb,
-                                        modules='sympy')
-                compileTypeChosen = 'sympy'
+#         # unless specified, we are always going to use np and forget
+#         # about the floating point importance
+#         compiledFunc = None
+#         compileTypeChosen = None
+#         try:
+#             if backend == 'f2py':
+#                 compiledFunc = autowrap(expr=inputExpr,
+#                                         args=inputSymb,
+#                                         backend='f2py')
+#                 compileTypeChosen = 'np'
+#             elif backend == 'lambda':
+#                 compiledFunc = lambdify(expr=inputExpr,
+#                                         args=inputSymb,
+#                                         modules='numpy')
+#                 compileTypeChosen = 'np'
+#             elif backend.lower() in ('cython', 'np'):
+#                 # note that we have another test layer because of the
+#                 # bug previously mentioned in __init__ of this class
+#                 try:
+#                     compiledFunc = autowrap(expr=inputExpr,
+#                                             args=inputSymb,
+#                                             backend='Cython')
+#                     compileTypeChosen = 'np'
+#                 except:
+#                     # although we don't think it is possible given the checks
+#                     # previously performed, we should still try it
+#                     try:
+#                         compiledFunc = autowrap(expr=inputExpr,
+#                                                 args=inputSymb,
+#                                                 backend='f2py')
+#                         compileTypeChosen = 'np'
+#                     except:
+#                         compiledFunc = lambdify(expr=inputExpr,
+#                                                 args=inputSymb,
+#                                                 modules='numpy')
+#                         compileTypeChosen = 'np'
+#             else:
+#                 raise ExpressionErrror("The problem is too tough")
+#         except:
+#             try:
+#                 compiledFunc = lambdify(expr=inputExpr,
+#                                         args=inputSymb,
+#                                         modules='mpmath')
+#                 compileTypeChosen = 'mpmath'
+#             except:
+#                 compiledFunc = lambdify(expr=inputExpr,
+#                                         args=inputSymb,
+#                                         modules='sympy')
+#                 compileTypeChosen = 'sympy'
 
-        logging.debug('Compiled expression as {}'.format(compileTypeChosen))
-        if compileType:
-            return compiledFunc, compileTypeChosen
-        else:
-            return compiledFunc
+#         logging.debug('Compiled expression as {}'.format(compileTypeChosen))
+#         if compileType:
+#             return compiledFunc, compileTypeChosen
+#         else:
+#             return compiledFunc
 
-    def compile_function(self, inputExpr, outType, namespace) -> None:
-        '''
-        Compile the symbolic form so that rapid numerical evaluation may occur.
-        Transforms the output appropriately into numpy
+#     def compile_function(self, inputExpr, outType, namespace) -> None:
+#         '''
+#         Compile the symbolic form so that rapid numerical evaluation may occur.
+#         Transforms the output appropriately into numpy
 
-        Compile function and reformat the output
-        '''
-        # logging.debug(f'Compiling sympy object {self.method_name}.')
+#         Compile function and reformat the output
+#         '''
+#         # logging.debug(f'Compiling sympy object {self.method_name}.')
 
-        # inputExpr = self.get_equation()
+#         # inputExpr = self.get_equation()
 
-        raw_fn, compileType = self.compileExpr(
-            namespace,
-            inputExpr,
-            backend=None,       # set at ODE level
-            compileType=True    # get additional info
-        )      
+#         raw_fn, compileType = self.compileExpr(
+#             namespace,
+#             inputExpr,
+#             backend=None,       # set at ODE level
+#             compileType=True    # get additional info
+#         )      
         
-        numRow = inputExpr.rows
-        numCol = inputExpr.cols
+#         numRow = inputExpr.rows
+#         numCol = inputExpr.cols
 
-        # define the different types of compile
-        if outType is None:
-            if numRow == 1 or numCol == 1:
-                outType = "vec"
-            else:
-                outType = "mat"
+#         # define the different types of compile
+#         if outType is None:
+#             if numRow == 1 or numCol == 1:
+#                 outType = "vec"
+#             else:
+#                 outType = "mat"
 
-        if outType.lower() == "vec":
-            if compileType == 'np':
-                _compiled_obj = lambda x: raw_fn(*x).ravel()
-            else:
-                _compiled_obj = lambda x: np.array(
-                    raw_fn(*x).tolist(),
-                    float
-                ).ravel()
-        elif outType.lower() == "mat":
-            if compileType == 'np':
-                _compiled_obj = lambda x: raw_fn(*x)
-            else:
-                _compiled_obj = lambda x: np.array(raw_fn(*x).tolist(), float)
-        else:
-            raise RuntimeError("Specified type of output not recognized")
+#         if outType.lower() == "vec":
+#             if compileType == 'np':
+#                 _compiled_obj = lambda x: raw_fn(*x).ravel()
+#             else:
+#                 _compiled_obj = lambda x: np.array(
+#                     raw_fn(*x).tolist(),
+#                     float
+#                 ).ravel()
+#         elif outType.lower() == "mat":
+#             if compileType == 'np':
+#                 _compiled_obj = lambda x: raw_fn(*x)
+#             else:
+#                 _compiled_obj = lambda x: np.array(raw_fn(*x).tolist(), float)
+#         else:
+#             raise RuntimeError("Specified type of output not recognized")
         
-        # # Update the state
-        # self._pickleable_compile = True if self._SC._backend == 'lambda' else False
-        # self._cache_valid = True
+#         # # Update the state
+#         # self._pickleable_compile = True if self._SC._backend == 'lambda' else False
+#         # self._cache_valid = True
 
-        return _compiled_obj
+#         return _compiled_obj
