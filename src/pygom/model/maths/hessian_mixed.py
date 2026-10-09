@@ -1,5 +1,5 @@
 from sympy.core.function import diff
-from sympy import Matrix
+from sympy import Array
 
 from .mathsmethod import NumericMethod
 from .._model_verification import simplifyEquation
@@ -72,18 +72,21 @@ class ODEMixedHessianStatesParams(NumericMethod):
         states = self._model_spec.state_list
         params = self._model_spec.param_list
 
-        H = []
+        ode = self._method_register["ode"].get_equation()
+        ode = self.expand_derived_params(ode)
 
-        for eqn in self._method_register["ode"].get_equation():
-            H_i = Matrix([
+        H = Array([
+            [
                 [
                     eqn.diff(state).diff(param)
                     for param in params
                 ]
                 for state in states
-            ])
+            ]
+            for eqn in ode
+        ])
 
-            H.append(H_i)
+        H = self.compress_derived_params(H)
 
         return H
 
@@ -119,17 +122,20 @@ class EventRatesMixedHessianStatesParams(NumericMethod):
         states = self._model_spec.state_list
         params = self._model_spec.param_list
 
-        H = []
+        erv = self._method_register["event_rate_vector"].get_equation()
+        erv = self.expand_derived_params(erv)
 
-        for eqn in self._method_register["event_rate_vector"].get_equation():
-            H_i = Matrix([
+        H = Array([
+            [
                 [
                     eqn.diff(state).diff(param)
                     for param in params
                 ]
                 for state in states
-            ])
+            ]
+            for eqn in erv
+        ])
 
-            H.append(H_i)
+        H = self.compress_derived_params(H)
 
         return H

@@ -7,6 +7,14 @@ from .._model_errors import InputError
 
 from abc import ABC, abstractmethod
 
+# TODO: we have to be very careful about derived parameters.
+#       e.g. if N = S + I + R, it is not a constant param but has state dependence.
+#       e.g. if L = beta*S*I/N it involves states and params.
+#       probably need to ensure that derived params appear in answer too?
+
+
+# TODO: substituting things in and out is expensive, should cache expanded/compressed expressions 
+
 # class MathsMethod:
 class NumericMethod:
     """
@@ -58,6 +66,8 @@ class NumericMethod:
         # math methods in a register
         self._method_register = method_register
 
+        self._derived_params_compiled = None
+
     def invalidate_cache(self):
         '''
         Marks the cached objects for recreation if called again
@@ -96,6 +106,31 @@ class NumericMethod:
         '''
         pass
 
+    def expand_derived_params(self, expr):
+        """
+        Replace derived parameter symbols with their definitions.
+
+        This is necessary to form correct derivatives.
+        Otherwise have to implement the chain rule.
+        e.g. sympy might take dN/dI = 0, even thoigh N = S + I + R, dN/dI = 1
+        """
+
+        derived_dict = self._model_spec._derived_parameter_store.symbol_to_expression_dict
+
+        print(derived_dict)
+
+        return expr.subs(derived_dict)
+
+    def compress_derived_params(self, expr):
+        """
+        Replace large subexpressions with derived parameter symbols.
+        """
+
+        derived_dict = self._model_spec.derived_parameter_expression_dict
+
+        return expr.subs(derived_dict, simultaneous=True)
+
+
     def __call__(self, state, time):
         '''
         Dunder function so that when added to the model object it acts 
@@ -111,7 +146,7 @@ class NumericMethod:
             self.compile_function()
 
         # perform the numerical calculation
-        return self._compiled_obj(self._getEvalParam(state, time))
+        return self._compiled_obj(*self._get_eval_param(state, time))
     
     def T(self, time, state):
         '''
@@ -131,55 +166,90 @@ class NumericMethod:
 
         inputExpr = self.get_equation()
 
-        self._raw_fn, compileType = self._SC.compileExpr(self._model_spec.states_and_parameters_dict,
-                                                         inputExpr,
-                                                         backend=None, # set at ODE level
-                                                         compileType=True) # get additional info      
-        
-        numRow = inputExpr.rows
-        numCol = inputExpr.cols
+        # TODO: states and parameters not including time
+        # TODO: find a way to deal with derived params
 
-        outType = self.outType
-
-        # define the different types of compile
-        if self.outType is None:
-            if numRow == 1 or numCol == 1:
-                outType = "vec"
-            else:
-                outType = "mat"
-
-        if outType.lower() == "vec":
-            if compileType == 'np':
-                self._compiled_obj = lambda x: self._raw_fn(*x).ravel()
-            else:
-                self._compiled_obj = lambda x: np.array(self._raw_fn(*x).tolist(),
-                                                        float).ravel()
-        elif outType.lower() == "mat":
-            if compileType == 'np':
-                self._compiled_obj = lambda x: self._raw_fn(*x)
-            else:
-                self._compiled_obj = lambda x: np.array(self._raw_fn(*x).tolist(), float)
-        else:
-            raise RuntimeError("Specified type of output not recognized")
+        self._raw_fn = self._SC.compileExpr(
+            inputSymb=self._model_spec.states_and_parameters_list,
+            inputExpr=inputExpr,
+            backend=None       # set at ODE level
+        )
         
         # Update the state
         self._pickleable_compile = True if self._SC._backend == 'lambda' else False
         self._cache_valid = True
 
-    def _getEvalParam(self, state:list[float], time:float) -> list[float]:
+    # TODO: should have to go into _parameter_store, everything needed should be accessed from mdoel_spec
+    # TODO: every time evaluation is done a list of [states, params, time] is concocted. Maybe need to reintroduce cache to stores?
+
+    def _compile_derived_params(self):
+        """
+        Compile the expressions for the derived parameters
+        """
+
+        derived_params = self._model_spec.derived_parameter_expression_dict
+        derived_params_compiled = dict()
+
+        for dp_name, dp_symbolic in derived_params.items():
+            derived_params_compiled[dp_name] = self._SC.compileExpr(
+                inputSymb=self._model_spec.states_and_parameters_list,
+                inputExpr=dp_symbolic,
+                backend=None
+            )
+
+        self._derived_params_compiled = derived_params_compiled
+
+    def _eval_derived_params(self, state, time):
+        """
+        Get derived param values.
+
+        A dp may be a function of (state, params, other dps, t) so
+        we need to evaluate them in order they were defined (hoping
+        that the user defined them in order)
+        """
+
+        state_time_param_value_dict = self._get_state_time_param_dict(state, time)
+
+        if self._derived_params_compiled is None:
+            self._compile_derived_params()
+
+        # container for evaluated params
+        derived_params_value_dict = dict.fromkeys(self._derived_params_compiled, None)
+
+        for dp_name, dp_func in self._derived_params_compiled.items():
+            combined_values = {state_time_param_value_dict | derived_params_value_dict}
+            derived_params_value_dict[dp_name] = dp_func(*combined_values)
+
+        return derived_params_value_dict
+
+    def _get_state_time_param_dict(self, state:list[float], time:float) -> list[float]:
+        """
+
+        Get dict of state, time and param values (lacking derived params)
+        
+        """
         if state is None or time is None:
             raise InputError("Have to input both state and time")
-
-        elif not self._parent_model._parameter_store.all_values_set:
+        elif not self._model_spec._parameter_store.all_values_set:
                 raise InputError("Have not set the parameters yet")
 
-        if hasattr(state, '__iter__'):
-            # just in case this isn't a list already
-            eval_param = list(state) + [time]
-        else:
-            eval_param = [state] + [time]
+        # State dict:
+        state_value_dict = dict.fromkeys(self._model_spec.state_dict.keys(), state)
 
-        return eval_param + self._parent_model._parameter_store.values
+        # Time dict:
+        time_dict = {'t': time}
+
+        # Param dict:
+        param_value_dict = self._model_spec.parameter_value_dict
+
+        return {state_value_dict | time_dict | param_value_dict}
+
+    def _get_eval_param(self, state, time):
+
+        dp = self._eval_derived_params
+        state_param_time = self._get_state_time_param_dict(state, time)
+
+        return {dp | state_param_time}
     
     ## Funcitons  to allow pickling and unpickling
     def __getstate__(self):

@@ -3,6 +3,7 @@ from sympy import hessian
 from .mathsmethod import NumericMethod
 from .._model_verification import simplifyEquation
 
+from sympy import Array
 
 class ODEHessianParams(NumericMethod):
     method_name = 'ode_hessian_params'
@@ -29,10 +30,16 @@ class ODEHessianParams(NumericMethod):
 
         params = self._model_spec.param_list
 
-        H = [
-            hessian(eqn, params)
-            for eqn in self._method_register["ode"].get_equation()
-        ]
+        ode = self._method_register["ode"].get_equation()
+
+        ode = self.expand_derived_params(ode)
+
+        H = Array([
+            hessian(eqn, params).tolist()
+            for eqn in ode
+        ])
+
+        H = self.compress_derived_params(H)
 
         return H
 
@@ -48,10 +55,16 @@ class ODEHessianStates(NumericMethod):
 
         states = self._model_spec.state_list
 
-        H = [
-            hessian(eqn, states)
-            for eqn in self._method_register["ode"].get_equation()
-        ]
+        ode = self._method_register["ode"].get_equation()
+
+        ode = self.expand_derived_params(ode)
+
+        H = Array([
+            hessian(eqn, states).tolist()
+            for eqn in ode
+        ])
+
+        H = self.compress_derived_params(H)
 
         return H
 
@@ -68,10 +81,16 @@ class EventRatesHessianParams(NumericMethod):
 
         params = self._model_spec.param_list
 
-        H = [
-            hessian(eqn, params)
-            for eqn in self._method_register["event_rate_vector"].get_equation()
-        ]
+        erv = self._method_register["event_rate_vector"].get_equation()
+
+        erv = self.expand_derived_params(erv)
+
+        H = Array([
+            hessian(eqn, params).tolist()
+            for eqn in erv
+        ])
+
+        H = self.compress_derived_params(H)
 
         return H
 
@@ -87,10 +106,16 @@ class EventRatesHessianStates(NumericMethod):
 
         states = self._model_spec.state_list
 
-        H = [
-            hessian(eqn, states)
-            for eqn in self._method_register["event_rate_vector"].get_equation()
-        ]
+        erv = self._method_register["event_rate_vector"].get_equation()
+
+        erv = self.expand_derived_params(erv)
+
+        H = Array([
+            hessian(eqn, states).tolist()
+            for eqn in erv
+        ])
+
+        H = self.compress_derived_params(H)
 
         return H
 

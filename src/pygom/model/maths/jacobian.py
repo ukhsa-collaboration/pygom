@@ -14,13 +14,19 @@ class ODEJacobianStates(NumericMethod):
         :class:`sympy.matrices.matrices`
             A matrix of dimension [number of state x number of state]
 
-        '''        
-        # states = [s for s in self._parent_ode._iterStateList()]
+        '''
 
         states = self._model_spec.state_list
-        self._Jacobian = self._method_register['ode'].get_equation().jacobian(states)
 
-        return self._Jacobian
+        ode = self._method_register["ode"].get_equation()
+
+        ode = self.expand_derived_params(ode)
+
+        J = ode.jacobian(states)
+
+        J = self.compress_derived_params(J)
+
+        return J
 
 class ODEJacobianParams(NumericMethod):
     method_name = 'ode_jacobian_params'
@@ -33,9 +39,16 @@ class ODEJacobianParams(NumericMethod):
         '''
 
         params = self._model_spec.param_list
-        self._Jacobian = self._method_register['ode'].get_equation().jacobian(params)
 
-        return self._Jacobian
+        ode = self._method_register["ode"].get_equation()
+
+        ode = self.expand_derived_params(ode)
+
+        J = ode.jacobian(params)
+
+        J = self.compress_derived_params(J)
+
+        return J
     
 
 class EventRatesJacobianStates(NumericMethod):
@@ -49,9 +62,16 @@ class EventRatesJacobianStates(NumericMethod):
         '''
 
         states = self._model_spec.state_list
-        self._RatesJacobian = self._method_register['event_rate_vector'].get_equation().jacobian(states)
 
-        return self._RatesJacobian
+        erv = self._method_register["event_rate_vector"].get_equation()
+
+        erv = self.expand_derived_params(erv)
+
+        J = erv.jacobian(states)
+
+        J = self.compress_derived_params(J)
+
+        return J
 
 
 class EventRatesJacobianParams(NumericMethod):
@@ -65,6 +85,13 @@ class EventRatesJacobianParams(NumericMethod):
         '''
 
         params = self._model_spec.param_list
-        self._RatesJacobian = self._method_register['event_rate_vector'].get_equation().jacobian(params)
 
-        return self._RatesJacobian
+        erv = self._method_register["event_rate_vector"].get_equation()
+
+        erv = self.expand_derived_params(erv)
+
+        J = erv.jacobian(params)
+
+        J = self.compress_derived_params(J)
+
+        return J
