@@ -135,10 +135,10 @@ def bootstrap(obj, alpha=0.05, theta=None, lb=None, ub=None,
         try:
             xhatT = obj2.fit(theta, lb, ub)
         except Exception as e:
-            print(e)
-            print(theta)
-            print(i)
-            print(obj2.gradient(theta))
+            logging.debug(e)
+            logging.debug(theta)
+            logging.debug(i)
+            logging.debug(obj2.gradient(theta))
             obj2.plot()
             raise Exception("WTF")
 

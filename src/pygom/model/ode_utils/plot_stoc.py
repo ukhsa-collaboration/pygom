@@ -76,7 +76,7 @@ def plot_stoc(solution, t, stochastic_model):
     f, axarr = matplotlib.pyplot.subplots(rows, cols)
 
     #loop over states and build the plots
-    for i, state in enumerate(stochastic_model._stateList):
+    for i, state in enumerate(stochastic_model.state_list):
         plot_state(sim_x=solution,
                    sim_t=t,
                    sub_plot=axarr[get_subplot_num(i, rows=rows, cols=cols)],

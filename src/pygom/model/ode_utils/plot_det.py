@@ -223,7 +223,7 @@ def plot_det(solution, t, stateList=None, y=None, yStateList=None):
                     break
     else:
         row = int(np.ceil(numState/3.0))
-        # print(row)
+        # logging.debug(row)
         f, axarr = matplotlib.pyplot.subplots(row, 3)
         k = 0
         for i in range(row):

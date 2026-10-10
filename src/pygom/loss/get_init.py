@@ -39,7 +39,7 @@ def get_init(y, t, ode, theta=None, full_output=False):
 
     f = partial(_fitGivenSmoothness, y, t, ode, theta)
     output = minimize_scalar(f, bounds=(0,10), method='bounded')
-    thetaNew = np.array(ode._paramValue)
+    thetaNew = np.array(ode._parameter_store.values)
 
     if full_output:
         return thetaNew, output

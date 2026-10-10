@@ -2,13 +2,28 @@
 
 ## What does this package do?
 
-PyGOM (Python Generic ODE Model) is a Python package which provides a simple interface for users to construct Ordinary Differential Equation (ODE) models, with a focus on compartmental models and epidemiology.
+PyGOM (Python Generic ODE Model) is a Python package which provides a simple interface for users to construct compartmental models, with a focus on epidemiology.
 This is backed by a comprehensive and easy to use tool–box implementing functions to easily perform common operations such as parameter estimation and solving for deterministic or stochastic time evolution.
 The package source is freely available (hosted on [GitHub](https://github.com/ukhsa-collaboration/pygom)) and organized in a way that permits easy extension. With both the algebraic and numeric calculations performed automatically (but still accessible), the end user is freed to focus on model development.
 
 ## Release notes:
 
-### [0.1.9] - 2024-11-30 (Latest release)
+### [0.1.10] - 2026-07-30 (Latest release)
+
+- Added
+- Changed
+    - Stochastic and Deterministic simulation now forms a separate module and has been substantially rewritten and tested
+    - Mathematical functions form a separate module
+- Deprecated
+    - Simulation output no longer of type tuple, but {class}`Output`
+- Removed
+    - ODE decomposition into transitions feature temporarily removed
+    - Python 3.9 support removed
+    - C++ build tools dependency removed
+- Fixed
+    - State and parameter storage for faster lookup in large models
+
+### [0.1.9] - 2024-11-30
 
 - Added
     - Method {func}`solve_stochast` of {class}`SimulateOde` has 1 additional output (for a total of 3): the number of times each event occurs in between each time step. This is useful if you are interested in infection incidence rather than prevalence, for example.

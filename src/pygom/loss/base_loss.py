@@ -19,6 +19,8 @@ import scipy.sparse
 from scipy.interpolate import LSQUnivariateSpline
 from scipy.optimize import minimize
 
+from scipy.integrate import solve_ivp
+
 from pygom.loss.loss_type import Square
 from pygom.model import ode_utils
 from pygom.model._model_errors import InputError
@@ -107,6 +109,7 @@ class BaseLoss(object):
             try:
                 self._ode.initial_values = (x0, t0)
                 solution = self._ode.integrate2(t)
+                # solution = self._ode.solve_deterministic(t).result.y
             except Exception as e:
                 # print(e)
                 if t0 == t[1]:
@@ -282,22 +285,35 @@ class BaseLoss(object):
         if self._interpolateTime is None:
             self._setupInterpolationTime()
 
-        # integrate forward using the extra time points
-        f = ode_utils.integrateFuncJac
-        s_and_i = f(self._ode.ode_T,
-                               self._ode.jacobian_T,
-                               self._x0,
-                               self._interpolateTime[0],
-                               self._interpolateTime[1::],
-                               includeOrigin=True,
-                               full_output=full_output,
-                               method=self._ode._intName)
+        # # integrate forward using the extra time points
+        # f = ode_utils.integrateFuncJac
+        # s_and_i = f(self._ode.ode.T,
+        #                        self._ode.jacobian.T,
+        #                        self._x0,
+        #                        self._interpolateTime[0],
+        #                        self._interpolateTime[1::],
+        #                        includeOrigin=True,
+        #                        full_output=full_output,
+        #                        method=self._ode._intName)
+        
+        # if full_output:
+        #     sol = s_and_i[0]
+        #     out = s_and_i[1]
+        # else:
+        #     sol = s_and_i
 
-        if full_output:
-            sol = s_and_i[0]
-            out = s_and_i[1]
-        else:
-            sol = s_and_i
+        # TODO: For now a temporary fix, but make sure sensitivity analysis
+        # is not so fragile. Especially with state/parameter flattening, matrix
+        # dimension consistency, t0 included or not in time series etc.
+        s_and_i = solve_ivp(
+            fun = self._ode.ode.T,
+            t_span = (self._interpolateTime[0], self._interpolateTime[-1]),
+            y0 = self._x0,
+            jac = self._ode.jacobian.T,
+            t_eval = self._interpolateTime,
+            method = "LSODA"
+        )
+        sol = s_and_i .y.T
 
         # holder, assuming that the index/order is kept (and correct) in
         # the list we perform our interpolation per state and only need
@@ -314,6 +330,7 @@ class BaseLoss(object):
         solution = sol[self._interpolateTimeIndex, :]
 
         if full_output:
+            raise(ValueError("Checkeing if full_output is ever necessary"))
             g, info_dict = self._adjointGivenInterpolation(solution,
                                                           interpolate_list,
                                                           self._ode._intName,
@@ -322,9 +339,11 @@ class BaseLoss(object):
             info_dict['solInterpolate'] = sol
             return g, info_dict
         else:
-            return self._adjointGivenInterpolation(solution, interpolate_list,
-                                                   self._ode._intName,
-                                                   full_output)
+            return self._adjointGivenInterpolation(
+                solution,
+                interpolate_list,
+                self._ode._intName,
+                full_output)
 
     def _setupInterpolationTime(self):
         """
@@ -504,11 +523,13 @@ class BaseLoss(object):
         num_sens =  self._num_state*self._num_param
         init_state_sens = np.append(self._x0, np.zeros(num_sens))
 
-        f = ode_utils.integrateFuncJac
+        # f = ode_utils.integrateFuncJac
 
         index_out = self._getTargetParamSensIndex()
 
         if full_output:
+            raise(ValueError("No full output for now"))
+
             s_sens = f(self._ode.ode_and_sensitivity_T,
                        self._ode.ode_and_sensitivity_jacobian_T,
                        init_state_sens,
@@ -528,16 +549,26 @@ class BaseLoss(object):
 
             return sol_sens[:,index_out], output
         else:
-            sol_sens = f(self._ode.ode_and_sensitivity_T,
-                         self._ode.ode_and_sensitivity_jacobian_T,
-                         init_state_sens,
-                         self._t[0], self._t[1::],
-                         method=method)
+            # sol_sens = f(self._ode.ode_and_sensitivity_T,
+            #              self._ode.ode_and_sensitivity_jacobian_T,
+            #              init_state_sens,
+            #              self._t[0], self._t[1::],
+            #              method=method)
+            
+            sol = solve_ivp(
+                fun = self._ode.ode_and_sensitivity_T,
+                t_span = (self._t[0], self._t[-1]),
+                y0 = init_state_sens,
+                jac = self._ode.ode_and_sensitivity_jacobian_T,
+                t_eval = self._t,
+                method = "LSODA"
+            )
+            sol_sens = sol.y.T
 
             if sens_output:
-                return sol_sens[:, index_out], sol_sens
+                return sol_sens[1::, index_out], sol_sens[1::, :]
             else:
-                return sol_sens[:,index_out]
+                return sol_sens[1::, index_out]
 
     ############################################################
     #
@@ -580,6 +611,7 @@ class BaseLoss(object):
         It calculates the gradient by calling :meth:`jacIV`
         """
 
+    def sensitivityIV(self, theta, full_output=False, method=None):
         if full_output:
             _jac_iv, output_iv = self.jacIV(theta=theta,
                                             full_output=True,
@@ -595,12 +627,21 @@ class BaseLoss(object):
 
             return grad, output_iv
         else:
-            _sol_iv, sens = self.jacIV(theta=theta,
-                                       sens_output=True,
-                                       full_output=False,
-                                       method=method)
+            # _sol_iv, sens = self.jacIV(theta=theta,
+            #                            sens_output=True,
+            #                            full_output=False,
+            #                            method=method)
 
+            # i = self._stateIndex
+            # diff_loss = self._lossObj.diff_loss(sens[:, i])
+
+            _sol_iv, sens = self.jacIV(theta=theta,
+                                    sens_output=True,
+                                    full_output=False,
+                                    method=method)
+            
             i = self._stateIndex
+
             diff_loss = self._lossObj.diff_loss(sens[:, i])
 
             # grad for parameters and the initial values. Then join the two
@@ -663,7 +704,7 @@ class BaseLoss(object):
         initial_state_sens = np.append(np.append(self._x0, np.zeros(num_sens)),
                                         np.eye(self._num_state).flatten())
 
-        f = ode_utils.integrateFuncJac
+        # f = ode_utils.integrateFuncJac
 
         # build the indexes to locate the correct parameters
         index1 = self._getTargetParamSensIndex()
@@ -690,11 +731,21 @@ class BaseLoss(object):
 
             return sol_iv[:, index_out], output
         else:
-            sol_iv = f(self._ode.ode_and_sensitivityIV_T,
-                       self._ode.ode_and_sensitivityIV_jacobian_T,
-                       initial_state_sens,
-                       self._t[0], self._t[1::],
-                       method=method)
+            # sol_iv = f(self._ode.ode_and_sensitivityIV_T,
+            #            self._ode.ode_and_sensitivityIV_jacobian_T,
+            #            initial_state_sens,
+            #            self._t[0], self._t[1::],
+            #            method=method)
+
+            sol = solve_ivp(
+                fun = self._ode.ode_and_sensitivityIV_T,
+                t_span = (self._t[0], self._t[-1]),
+                y0 = initial_state_sens,
+                jac = self._ode.ode_and_sensitivityIV_jacobian_T,
+                t_eval = self._t[1:],
+                method = "LSODA"
+            )
+            sol_iv = sol.y.T
 
             if sens_output:
                 return sol_iv[:, index_out], sol_iv
@@ -1336,16 +1387,28 @@ class BaseLoss(object):
         # Note that the solution does not include the origin.  This is
         # because they do not contribute when the initial conditions are
         # given and we assume that they are accurate
-        solution = ode_utils.integrateFuncJac(self._ode.ode_T,
-                                              self._ode.jacobian_T,
-                                              self._x0, self._t0,
-                                              self._observeT,
-                                              full_output=False,
-                                              method=self._ode._intName)
-        if all_solution:
-            return solution
-        else:
-            return solution[:, self._stateIndex]
+        # solution = ode_utils.integrateFuncJac(self._ode.ode.T,
+        #                                       self._ode.jacobian.T,
+        #                                       self._x0, self._t0,
+        #                                       self._observeT,
+        #                                       full_output=False,
+        #                                       method=self._ode._intName)
+        # if all_solution:
+        #     return solution
+        # else:
+        #     return solution[:, self._stateIndex]
+
+        self._ode.initial_state = self._x0
+        solution = self._ode.solve_deterministic(self._observeT)
+
+        # solution = ode_utils.integrateFuncJac(self._ode.ode.T,
+        #                                       self._ode.jacobian.T,
+        #                                       self._x0, self._t0,
+        #                                       self._observeT,
+        #                                       full_output=False,
+        #                                       method=self._ode._intName)
+
+        return solution[0].result.y[:, self._stateIndex]
 
     def _sensToGradWithoutIndex(self, sens, diffLoss):
         """

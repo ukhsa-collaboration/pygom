@@ -1,12 +1,16 @@
 import pickle
+import dill
 import io
 import numpy
 
 import unittest
 from pygom.model import Transition, TransitionType, SimulateOde
 
+# need dill to pickle the lambdafied sympy expressions
+dill.settings['recurse'] = True
+
 class TestPickling(unittest.TestCase):
-    @unittest.skip("Skipping pickling tests. Need a new set of tests for the new way compilation is done.")
+    #@unittest.skip("Skipping pickling tests. Need a new set of tests for the new way compilation is done.")
     def setUp(self):
         stateList = ['a', 'x', 'y', 'b']
         paramList = ['k0', 'k1', 'k2']
@@ -26,7 +30,7 @@ class TestPickling(unittest.TestCase):
                     ]
         self.ode = SimulateOde(stateList, paramList, transition=transitionList)
 
-    @unittest.skip("Skipping pickling tests. Need a new set of tests for the new way compilation is done.")
+    #@unittest.skip("Skipping pickling tests. Need a new set of tests for the new way compilation is done.")
     def test_pickle(self):
         '''
         Can we pickle and unpickle an ode object?
@@ -39,9 +43,9 @@ class TestPickling(unittest.TestCase):
         
         self.ode.ode(x0,0)
         with io.BytesIO() as mem_stream:
-            pickle.dump(self.ode, mem_stream)
+            dill.dump(self.ode, mem_stream)
             mem_stream.seek(0)
-            ode2 = pickle.load(mem_stream)
+            ode2 = dill.load(mem_stream)
             
         self.assertEqual(self.ode,
                          ode2,

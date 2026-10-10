@@ -16,110 +16,115 @@ on:
       - dev
 
 jobs:
-  build_wheels:
-    name: Build wheels on ${{ matrix.platform_id }} for Python v${{ matrix.python[1] }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      # Ensure that a wheel builder finishes even if another fails
-      fail-fast: false
-      matrix:
-        include:
-          # Window 64 bit
-          - os: windows-latest
-            python: [cp39, "3.9"]
-            platform_id: win_amd64
-          - os: windows-latest
-            python: [cp310, "3.10"]
-            platform_id: win_amd64
-          - os: windows-latest
-            python: [cp311, "3.11"]
-            platform_id: win_amd64
-          - os: windows-latest
-            python: [cp312, "3.12"]
-            platform_id: win_amd64
+  # No need for platform specific wheels
 
-          # Python 3.9 in the manylinux build environment requires our dependencies to be
-          # built from source so we won't supply a wheel for 3.9 (source build will prevent lib
-          # version conflicts).
+  # build_wheels:
+  #   name: Build wheels on ${{ matrix.platform_id }} for Python v${{ matrix.python[1] }}
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     # Ensure that a wheel builder finishes even if another fails
+  #     fail-fast: false
+  #     matrix:
+  #       include:
+  #         # Window 64 bit
+  #         - os: windows-latest
+  #           python: [cp39, "3.9"]
+  #           platform_id: win_amd64
+  #         - os: windows-latest
+  #           python: [cp310, "3.10"]
+  #           platform_id: win_amd64
+  #         - os: windows-latest
+  #           python: [cp311, "3.11"]
+  #           platform_id: win_amd64
+  #         - os: windows-latest
+  #           python: [cp312, "3.12"]
+  #           platform_id: win_amd64
 
-          # NumPy on Python 3.10 only supports 64bit and is only available with manylinux2014
-          - os: ubuntu-latest
-            python: [cp310, "3.10"]
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
-            python: [cp311, "3.11"]
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
-            python: [cp312, "3.12"]
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
+  #         # Python 3.9 in the manylinux build environment requires our dependencies to be
+  #         # built from source so we won't supply a wheel for 3.9 (source build will prevent lib
+  #         # version conflicts).
 
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          # We need quite a deep fetch so that we get the versioning right 
-          fetch-depth: 500
-      # Fetch tag manually because fetch-tags option for checkout@v4 does not work
-      - name: Fetch tag annotations
-        run: |
-          # Fetch tag manually because fetch-tags option for checkout@v4 does not work
-          git fetch --force --tags --depth 1
-      - id: read_tag
-        name: Set VERSION env variable
-        if: ${{ startsWith(github.ref, 'refs/tags') }}
-        run: |
-          # Set tag from GitHub: using git describe for tags inside the run script
-          # seems not working
-          echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+  #         # NumPy on Python 3.10 only supports 64bit and is only available with manylinux2014
+  #         - os: ubuntu-latest
+  #           python: [cp310, "3.10"]
+  #           platform_id: manylinux_x86_64
+  #           manylinux_image: manylinux2014
+  #         - os: ubuntu-latest
+  #           python: [cp311, "3.11"]
+  #           platform_id: manylinux_x86_64
+  #           manylinux_image: manylinux2014
+  #         - os: ubuntu-latest
+  #           python: [cp312, "3.12"]
+  #           platform_id: manylinux_x86_64
+  #           manylinux_image: manylinux2014
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         # We need quite a deep fetch so that we get the versioning right 
+  #         fetch-depth: 500
+  #     # Fetch tag manually because fetch-tags option for checkout@v4 does not work
+  #     - name: Fetch tag annotations
+  #       run: |
+  #         # Fetch tag manually because fetch-tags option for checkout@v4 does not work
+  #         git fetch --force --tags --depth 1
+  #     - id: read_tag
+  #       name: Set VERSION env variable
+  #       if: ${{ startsWith(github.ref, 'refs/tags') }}
+  #       run: |
+  #         # Set tag from GitHub: using git describe for tags inside the run script
+  #         # seems not working
+  #         echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
-      # Used to host cibuildwheel
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python[1] }}
+  #     - name: Install dependencies
+  #       run: |
+  #         python -m pip install --upgrade pip
+  #         # pip install -r requirements.txt
+  #         python -m pip install ".[docs]"
 
-      - name: Install cibuildwheel
-        run: python -m pip install cibuildwheel>=2.19.2
+  #     # Used to host cibuildwheel
+  #     - uses: actions/setup-python@v5
+  #       with:
+  #         python-version: ${{ matrix.python[1] }}
 
-      # Need to duplicate these two lines as it seems Windows and Linux echo treats qutotes differently
-      - name: Build and test the wheels
-        if: matrix.os == 'ubuntu-latest'
-        run: python -m cibuildwheel --output-dir wheelhouse
-        env:
-          CIBW_BUILD: ${{ matrix.python[0] }}-${{ matrix.platform_id }}*
-          CIBW_TEST_COMMAND: python -W default -m unittest discover --start-directory {project}/tests
-          # setuptools_scm workaround for https://github.com/pypa/setuptools_scm/issues/455
-          CIBW_BEFORE_BUILD: ${{ github.ref == 'refs/heads/dev' &&  'echo ''local_scheme = "no-local-version"'' >> pyproject.toml && git diff --color=always && git update-index --assume-unchanged pyproject.toml' || '' }}
+  #     - name: Install cibuildwheel
+  #       run: python -m pip install cibuildwheel>=2.19.2
 
-      - name: Build and test the wheels
-        if: matrix.os == 'windows-latest'
-        run: python -m cibuildwheel --output-dir wheelhouse
-        env:
-          CIBW_BUILD: ${{ matrix.python[0] }}-${{ matrix.platform_id }}*
-          CIBW_TEST_COMMAND: python -W default -m unittest discover --start-directory {project}/tests
-          # setuptools_scm workaround for https://github.com/pypa/setuptools_scm/issues/455
-          CIBW_BEFORE_BUILD: ${{ github.ref == 'refs/heads/dev' &&  'echo local_scheme = "no-local-version" >> pyproject.toml && git diff --color=always && git update-index --assume-unchanged pyproject.toml' || '' }}
+  #     # Need to duplicate these two lines as it seems Windows and Linux echo treats qutotes differently
+  #     - name: Build and test the wheels
+  #       if: matrix.os == 'ubuntu-latest'
+  #       run: python -m cibuildwheel --output-dir wheelhouse
+  #       env:
+  #         CIBW_BUILD: ${{ matrix.python[0] }}-${{ matrix.platform_id }}*
+  #         CIBW_TEST_COMMAND: python -W default -m unittest discover --start-directory {project}/tests
+  #         # setuptools_scm workaround for https://github.com/pypa/setuptools_scm/issues/455
+  #         CIBW_BEFORE_BUILD: ${{ github.ref == 'refs/heads/dev' &&  'echo ''local_scheme = "no-local-version"'' >> pyproject.toml && git diff --color=always && git update-index --assume-unchanged pyproject.toml' || '' }}
+
+  #     - name: Build and test the wheels
+  #       if: matrix.os == 'windows-latest'
+  #       run: python -m cibuildwheel --output-dir wheelhouse
+  #       env:
+  #         CIBW_BUILD: ${{ matrix.python[0] }}-${{ matrix.platform_id }}*
+  #         CIBW_TEST_COMMAND: python -W default -m unittest discover --start-directory {project}/tests
+  #         # setuptools_scm workaround for https://github.com/pypa/setuptools_scm/issues/455
+  #         CIBW_BEFORE_BUILD: ${{ github.ref == 'refs/heads/dev' &&  'echo local_scheme = "no-local-version" >> pyproject.toml && git diff --color=always && git update-index --assume-unchanged pyproject.toml' || '' }}
           
-      # Upload the results
-      - uses: actions/upload-artifact@v4
-        with:
-          name: cibw-wheels-${{ matrix.platform_id }}-${{ matrix.python[0] }}
-          path: ./wheelhouse/*.whl
+  #     # Upload the results
+  #     - uses: actions/upload-artifact@v4
+  #       with:
+  #         name: cibw-wheels-${{ matrix.platform_id }}-${{ matrix.python[0] }}
+  #         path: ./wheelhouse/*.whl
 
-  build_sdist:
+  build_dist:
     name: Build source distribution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           # We need quite a deep fetch so that we get the versioning right 
           fetch-depth: 500
+
       # Fetch tag manually because fetch-tags option for checkout@v4 does not work
       - name: Fetch tag annotations
         run: |
@@ -129,12 +134,11 @@ jobs:
         name: Set VERSION env variable
         if: ${{ startsWith(github.ref, 'refs/tags') }}
         run: |
-          # Set tag from GitHub: using git describe for tags inside the run script
-          # seems not working - I think this because you need _annotated_ tags
-          # for git describe i.e. you need to tag the release as so:
+          # Set tag from GitHub: 
+          # You need to tag the release like so:
           # 'git tag vX.Y.Z -a -m "YOUR MESSAGE HERE"'
-          echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          # echo "VERSION=${git describe}" >> $GITHUB_ENV
+          # echo "VERSION=$(git describe --tags)" >> "$GITHUB_ENV"
+          echo "VERSION=${{ github.ref_name }}" >> "$GITHUB_ENV"
 
       # setuptools_scm workaround for https://github.com/pypa/setuptools_scm/issues/455
       - name: Disable local version identifier on develop CI
@@ -144,32 +148,50 @@ jobs:
           git diff --color=always
           git update-index --assume-unchanged pyproject.toml
 
-      - name: Build sdist
-        run: pipx run build --sdist
+      # - name: Build sdist
+      #   run: pipx run build --sdist
 
-      - uses: actions/upload-artifact@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          name: cibw-sdist
-          path: dist/*.tar.gz
+          python-version: "3.11"
+
+      - name: Build distributions
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build
+          python -m build
+
+      - name: Upload build artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          # name: cibw-sdist
+          # path: dist/*.tar.gz
+          name: distributions
+          path: dist/*
 
   upload_pypi:
     name: Upload release to PyPI
-    needs: [build_wheels, build_sdist]
+    # needs: [build_wheels, build_sdist]
+    needs: build_dist
     runs-on: ubuntu-latest
     environment: 
       name: pypi
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download distributions
+        uses: actions/download-artifact@v4
         with:
           # unpacks all CIBW artifacts into dist/
-          pattern: cibw-*
+          # pattern: cibw-*
+          name: distributions
           path: dist
-          merge-multiple: true
+          # merge-multiple: true
       
       # This is the live push to PyPI on tagging the master branch
-      - uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
         # Upload to PyPI on every tag starting with 'v' 
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         with:

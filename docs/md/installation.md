@@ -1,76 +1,82 @@
+
 # Installation
 
-Installation instructions may be found on the [GitHub project README](https://github.com/ukhsa-collaboration/pygom/), but we include them here also.
+## Install from Source
 
-## From source
+The PyGOM source code is available from GitHub:
 
-Source code for PyGOM can be downloaded from the GitHub repository: https://github.com/ukhsa-collaboration/pygom
+<https://github.com/ukhsa-collaboration/pygom>
+
+### Clone the repository
 
 ```bash
 git clone https://github.com/ukhsa-collaboration/pygom.git
 ```
 
-Please be aware that there may be redundant files within the package as it is under active development.
+### Create and activate an environment
+
+If you require support for compartmental model diagrams, create (and activate) a Conda environment with Graphviz installed:
+
+```bash
+conda create -n pygom-env python=3.11 graphviz
+conda activate pygom-env
+```
+
+If visualisation is not required, you may use a standard Conda environment or a Python virtual environment (venv).
+
+### Install PyGOM
+
+Navigate to the project root
+
+```bash
+cd pygom
+```
+
+If you wish to install from a specific branch, switch to it prior to installation:
+
+```bash
+git checkout <branch-name>
+```
+
+Install PyGOM
+
+```bash
+python -m pip install .
+```
+
+For development work, an editable install can instead be used
+
+```bash
+python -m pip install -e .
+```
+
+To build the documentation locally, install the additional documentation dependencies:
+
+```bash
+python -m pip install -e ".[docs]"
+```
 
 ```{note}
+Please be aware that there may be redundant files within the package as it is under active development.
 The latest fully reviewed version of PyGOM will be on the master branch and we recommend that users install the version from there.
 ```
 
-Activate the relevant branch for installation via Git Bash:
+## Install from PyPI
 
-```bash
-git activate relevant-branch-name
-```
+Alternatively, install the latest released version directly from PyPI:
 
-Package dependencies can be found in the file `requirements.txt`.
-An easy way to install these is to create a new [conda](https://conda.io/docs) environment via:
-
-```bash
-conda env create -f conda-env.yml
-```
-
-which you should ensure is active for the installation process using:
-
-```bash
-conda activate pygom
-```
-
-Alternatively, you may add dependencies to your own environment.
-
-```bash
-pip install -r requirements.txt
-```
-
-The final prerequisite, if you are working on a Windows machine, is that you will also need to install:
-- [Graphviz](https://graphviz.org/)
-- Microsoft Visual C++ 14.0 or greater, which you can get with [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
-
-You you should be able to install the PyGOM package via command line:
-
-```bash
-python setup.py install
-```
-
-If you anticipate making your own frequent changes to the PyGOM source files, it might be more convenient to install in develop mode instead:
-
-```bash
-python setup.py develop
-```
-
-## From PyPI
-
-Alternatively, the latest release can be installed from [PyPI](https://pypi.org/project/pygom/):
+<https://pypi.org/project/pygom/>
 
 ```bash
 pip install pygom
 ```
 
-# Testing the package
+## Verifying the Installation
 
-Test files should then be run from the command line to check that installation has completed successfully
+Run the test suite to confirm that the installation completed successfully:
 
 ```bash
-python setup.py test
+python -m unittest discover --verbose --start-directory tests
 ```
 
-This can take some minutes to complete.
+This may take some minutes to complete.

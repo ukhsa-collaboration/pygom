@@ -35,7 +35,7 @@ def DFE(ode, disease_state):
 
     '''
 
-    eqn = ode.get_ode_eqn()
+    eqn = ode.ode.get_equation()
     index = ode.get_state_index(disease_state)
     states = [s for s in ode._iterStateList()]
     states_subs = {states[i]: 0 for i in index}
@@ -121,7 +121,7 @@ def R0_from_matrix(F, V, disease_state=None):
     e = filter(lambda x: x != 0, e)
     return list(e)
 
-def disease_progression_matrices(ode, disease_state, diff=True):
+def disease_progression_matrices(ode, disease_states, diff=True):
     '''
     Returns (F,V), the secondary infection rates and disease progression
     rate respectively.
@@ -130,7 +130,7 @@ def disease_progression_matrices(ode, disease_state, diff=True):
     ----------
     ode: :class:`.BaseOdeModel`
         an ode class in pygom
-    diseaseStates: array like
+    disease_states: array like
         the name of the disease states
     diff: bool, optional
         if the first derivative of the matrices are return, defaults to true
@@ -142,7 +142,10 @@ def disease_progression_matrices(ode, disease_state, diff=True):
         :math:`F_{i}` and :math:`V_{i}` matrices as per [Brauer2008]_.
     '''
 
-    diseaseIndex = ode.get_state_index(disease_state)
+    #get the indicies of the disease states
+    diseaseIndex = [ode.get_state_index(disease_state)
+                    for disease_state in disease_states]
+    
     state_list = list()
     for i, s in enumerate(ode._iterStateList()):
         if i in diseaseIndex:
@@ -156,14 +159,14 @@ def disease_progression_matrices(ode, disease_state, diff=True):
                 orig = _get_single_state_name(trans.origin)
                 dest = _get_single_state_name(trans.destination)
                 if isinstance(orig, str) and isinstance(dest, str):
-                    if orig not in disease_state and dest in disease_state:
+                    if orig not in disease_states and dest in disease_states:
                         trans._equation=event.rate
                         FList.append(trans)
 
     ode2 = SimulateOde(ode.state_list, ode.param_list, transition=FList)
 
-    F = ode2.get_ode_eqn().row(diseaseIndex)
-    V = F - ode.get_ode_eqn().row(diseaseIndex)
+    F = ode2.ode.get_equation().row(diseaseIndex)
+    V = F - ode.ode.get_equation().row(diseaseIndex)
 
     if diff:
         dF = F.jacobian(state_list)

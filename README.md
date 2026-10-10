@@ -11,86 +11,88 @@ With both the algebraic and numeric calculations performed automatically (but st
 the end user is free to focus on model development.
 Full documentation for this package is avalible on the [documentation](http://ukhsa-collaboration.github.io/pygom/md/intro.html) page.
 
-## Installation
-The easiest way to install a copy of PyGOM is via PyPI and pip
-    
-    pip install pygom
+# Installation
 
-Alternatively, you can download a local copy of the PyGOM source files from this GitHub repository:
+## Install from Source
 
-    git clone https://github.com/ukhsa-collaboration/pygom.git
+The PyGOM source code is available from GitHub:
 
+<https://github.com/ukhsa-collaboration/pygom>
+
+### Clone the repository
+
+```bash
+git clone https://github.com/ukhsa-collaboration/pygom.git
+```
+
+### Create and activate an environment
+
+If you require support for compartmental model diagrams, create (and activate) a Conda environment with Graphviz installed:
+
+```bash
+conda create -n pygom-env python=3.11 graphviz
+conda activate pygom-env
+```
+
+If visualisation is not required, you may use a standard Conda environment or a Python virtual environment (venv).
+
+### Install PyGOM
+
+Navigate to the project root
+
+```bash
+cd pygom
+```
+
+If you wish to install from a specific branch, switch to it prior to installation:
+
+```bash
+git checkout <branch-name>
+```
+
+Install PyGOM
+
+```bash
+python -m pip install .
+```
+
+For development work, an editable install can instead be used
+
+```bash
+python -m pip install -e .
+```
+
+To build the documentation locally, install the additional documentation dependencies:
+
+```bash
+python -m pip install -e ".[docs]"
+```
+
+```{note}
 Please be aware that there may be redundant files within the package as it is under active development.
+The latest fully reviewed version of PyGOM will be on the master branch and we recommend that users install the version from there.
+```
 
-> [!NOTE]
-> The latest fully reviewed version of PyGOM will be on the `master` branch and we generally recommend 
-> that users install this version. However, the latest version being prepared for release is hosted on 
-> the `dev` branch.
+## Install from PyPI
 
-When running the following command line commands, ensure that your current working directory is the one 
-where the PyGOM source files were downloaded to. This should be found from your home directory:
+Alternatively, install the latest released version directly from PyPI:
 
-    cd pygom
+<https://pypi.org/project/pygom/>
 
-Activate the relevant branch for installation via Git Bash. for example if you want
-new release then this is the `dev` branch:
+```bash
+pip install pygom
+```
 
-    git checkout dev
+## Verifying the Installation
 
-Package dependencies can be found in the file, `requirements.txt`.
-An easy way to install these to create a new [conda](https://conda.io/docs) environment in Anaconda Prompt via:
+Run the test suite to confirm that the installation completed successfully:
 
-    conda env create -f conda-env.yml
+```bash
+python -m unittest discover --verbose --start-directory tests
+```
 
-which you should ensure is active for the installation process using
+This may take some minutes to complete.
 
-    conda activate pygom
-
-Alternatively, you may add dependencies to your own environment through conda:
-
-    conda install --file requirements.txt
-
-**or** via pip:
-
-    pip install -r requirements.txt
-
-The final prerequisites, if you are working on a Windows machine, is that you will also need to install:
-- [Graphviz](https://graphviz.org/)
-- Microsoft Visual C++ 14.0 or greater, which you can get with [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
-
-You should now be able to install the PyGOM package via command line:
-
-    pip install .
-
-and test that installation has completed successfully
-
-    python -m unittest discover --verbose --start-directory tests
-
-This will run a few test cases and can take some minutes to complete.
-
-## Documentation
-
-Documentation must be built locally and all necessary files can be found in the `docs` folder.
-Documentation is built from the command line by first installing the additional documentation requirements:
-
-    pip install -r docs/requirements.txt
-
-and then building the documentation:
-
-    jupyter-book build docs
-
-The html files will be saved in the local copy of your repository under:
-
-    docs/_build/html
-
-You can view the documentation by opening the index file in your browser of choice:
-
-    docs/_build/html/index.html
-
-> [!NOTE]
-> Building the documentation involves running many examples in python which can take up to 30 minutes. Subsequent builds with these examples unchanged are much quicker due to caching of the code outputs.
-
-Please be aware that if the module tests fails, then the documentation for the package will not compile.
 
 ## Contributors
 

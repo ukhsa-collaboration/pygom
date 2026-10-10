@@ -50,15 +50,25 @@ def _get_target_parameters(parameters,target):
     else:
         return target_list
     
+# def _get_target_states(parameters,target):
+#     # used to separate and re-order target_state from a single list of parameters
+#     parameter_names = [parameter.name for parameter in parameters]
+#     target_list = [tar.name for tar in target if tar in parameter_names]
+#     if len(target_list) == 0:
+#         return None
+#     else:
+#         return target_list
+    
 def _get_target_states(parameters,target):
     # used to separate and re-order target_state from a single list of parameters
     parameter_names = [parameter.name for parameter in parameters]
-    target_list = [tar.name for tar in target if tar in parameter_names]
+    target_list = [tar for tar in target if tar in parameter_names]
     if len(target_list) == 0:
         return None
     else:
         return target_list
-    
+
+
 def get_function(str): 
     # gets a function from a string for a distribution - is there a better way to write this?
     """
@@ -159,10 +169,13 @@ def create_loss(loss_type, parameters, ode, x0, t0, t, y, state_name,
         sigma for `NormalLoss` function
     """
     assert t0 != t[0], "Make sure that the times, t, do not include t0"
-    assert all(param.name in (ode.param_list+ode.state_list) for param in parameters), "Parameters have been provided that are not in the model"
+    # assert all(param.name in (ode.param_list+ode.state_list) for param in parameters), "Parameters have been provided that are not in the model"
+    assert all(param.name in (ode.param_list+ode._state_store.variables) for param in parameters)
     
     target_param = _get_target_parameters(parameters, ode.param_list)
-    target_state = _get_target_states(parameters, ode.state_list)
+    # target_state = _get_target_states(parameters, ode.state_list)
+    target_state = _get_target_states(parameters, ode._state_store.variables)
+
     theta = [param.random_sample() for param in parameters if param.name in target_param]
     
     if loss_type == "SquareLoss":
@@ -212,7 +225,8 @@ class ABC():
         self.log = np.array([param.logscale for param in self.parameters])
         self.prior_range = np.array([(param.prior_high-param.prior_low) for param in self.parameters])
         
-        ordered_parameters = (_get_target_parameters(parameters,self.obj._ode.param_list) or []) + (_get_target_states(parameters,self.obj._ode.state_list) or [])
+        # ordered_parameters = (_get_target_parameters(parameters,self.obj._ode.param_list) or []) + (_get_target_states(parameters,self.obj._ode.state_list) or [])
+        ordered_parameters = (_get_target_parameters(parameters,self.obj._ode.param_list) or []) + (_get_target_states(parameters,self.obj._ode._state_store.variables) or [])
         parameter_names = [par.name for par in parameters]
         self.par_order = [parameter_names.index(par) for par in ordered_parameters]
             
@@ -323,7 +337,7 @@ class ABC():
                         i += 1
             accept_rate = 100*self.N/total_counter
             self.acceptance_rate[g-rerun] = accept_rate
-            if progress: print("Generation %s \n tolerance = %.5f \n acceptance rate = %.2f%%\n" % (g+1-rerun,tolerance,accept_rate))
+            if progress: logging.debug("Generation %s \n tolerance = %.5f \n acceptance rate = %.2f%%\n" % (g+1-rerun,tolerance,accept_rate))
         self.final_tol = tolerance
         if q is not None:
             self.next_tol = np.quantile(self.dist,self.q)        
@@ -416,7 +430,7 @@ class ABC():
                 
             accept_rate = 100 * self.N / total_counter
             self.acceptance_rate[g-rerun] = accept_rate
-            if progress: print("Generation %s \n tolerance = %.5f \n acceptance rate = %.2f%%\n" % (g+1-rerun,tolerance,accept_rate))
+            if progress: logging.debug("Generation %s \n tolerance = %.5f \n acceptance rate = %.2f%%\n" % (g+1-rerun,tolerance,accept_rate))
         
         self.final_tol = tolerance
         if q is not None:
@@ -578,7 +592,7 @@ class ABC():
         # getting the indices of the states we want to plot the solution for
         if plot_states is not None:
             assert all(s in self.obj._ode.state_list for s in plot_states), "It is only possible to plot the solution for states already in the model"
-            state_indices = [self.obj._ode.state_list.index(s) for s in plot_states]
+            state_indices = [self.obj._ode._state_store.get_index(s) for s in plot_states]
         else:
             state_indices = [i for i in range(self.obj._num_state)]       
         

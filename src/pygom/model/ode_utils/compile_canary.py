@@ -16,10 +16,14 @@ class CompileCanary(object):
     states = []
     _states = {}
 
-    def __init__(self):
+    def __init__(self, states=None):
         '''
         Inits the class. Sets up the canaries
         '''
+        # Allow for dynamic definition of the states using an iterable
+        if hasattr(states, '__iter__'):
+            self.states = list(states)
+            
         #set up the states
         self.trip()
 

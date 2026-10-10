@@ -18,7 +18,7 @@ from pygom.model._model_errors import (ArrayError,
                                        InputError,
                                        IntegrationError
                                        )
-
+from .variable_store import VariableStore, ParameterStore, StateStore
 from .compile_canary import CompileCanary
 from .plot_det import plot_det
 from .plot_stoc import plot_stoc
@@ -31,14 +31,18 @@ from .checks_and_conversions import (check_array_type,
 
 __all__ = [
     'shapeAdjust',
-    'integrate',
-    'integrateFuncJac',
+    # 'integrate',
+    # 'integrateFuncJac',
     'compileCode',
     'CompileCanary',
-    #plots
+    # data structures
+    'VariableStore',
+    'ParameterStore',
+    'StateStore',
+    # plots
     'plot_det',
     'plot_stoc',
-    #checks and conversions
+    # checks and conversions
     'check_array_type',
     'check_dimension',
     'is_list_like',
@@ -155,6 +159,7 @@ def integrate(ode, x0, t, full_output=False):
     '''
 
     # INTEGRATE!!! (shout it out loud, in Dalek voice)
+
     # determine the number of output we want
     solution, output = scipy.integrate.odeint(ode.ode,
                                               x0, t,
@@ -169,6 +174,8 @@ def integrate(ode, x0, t, full_output=False):
         return solution, output
     else:
         return solution
+
+# # TODO: mop up all "integrate" variants: integrate, integrate2, _integrate2, integrateFuncJac.
 
 def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
                      full_output=False, method=None, nsteps=10000):
@@ -224,12 +231,14 @@ def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
     # determine the type of integrator we want
     # print "we are in"
     if method is None:
-        if full_output==True:
-            # obtain the eigenvalue
-            e = np.linalg.eig(jac(t0, x0, *args))[0]
-            method = _determineIntegratorGivenEigenValue(e)
-        else:
-            method = 'lsoda'
+    # if full_output==True:
+        # obtain the eigenvalue
+        e = np.linalg.eig(jac(t0, x0, *args))[0]
+        method = _determineIntegratorGivenEigenValue(e)
+    # else:
+        # method = 'lsoda'
+
+    # TODO: what was going on above?
 
     r = _setupIntegrator(func, jac, x0, t0, args, method, nsteps)
     # print method
@@ -252,6 +261,8 @@ def integrateFuncJac(func, jac, x0, t0, t, args=(), includeOrigin=False,
         pass
     else:  #
         raise InputError("Type of input time is not of a recognized type")
+
+    # TODO: tidy up below
 
     for deltaT in t:
         if full_output:
@@ -480,7 +491,7 @@ class compileCode(object):
         those linked with Theano are not.
         '''
         if backend is None:
-            print("...Finding available backend...", end="")
+            logging.debug('Finding available backend.')
             self._backend = None
             x = sympy.Symbol('x')
             expr = sympy.sin(x)/x
@@ -518,7 +529,7 @@ class compileCode(object):
                     # stuff in a parallel setting where we create objects in
                     # pure computation nodes with no compile mechanism
                     self._backend = 'lambda'
-            print("done: ", self._backend)
+            logging.debug("done: ", self._backend)
         else:
             self._backend = backend
 
@@ -603,51 +614,5 @@ class compileCode(object):
         else:
             return compiledFunc
 
-    def compileExprAndFormat(self, inputSymb, inputExpr,
-                             backend=None, modules=None, outType=None):
-        '''
-        Compiles the expression given the symbols and determine which
-        type of output is it.  Transforms the output appropriately into
-        numpy
 
-        Parameters
-        ----------
-        inputSymb: list
-            the set of symbols for the input expression
-        inputExpr: expr
-            expression in sympy
-        backend: optional
-            the backend we want to use to compile
-        modules: optional
-            in the event that f2py and Cython fails, which modules
-            do we want to try and compile against
-
-        Returns
-        -------
-        Function determined from the input using closures.
-        '''
-
-        a, compileType = self.compileExpr(inputSymb, inputExpr, backend, True)
-        numRow = inputExpr.rows
-        numCol = inputExpr.cols
-
-        # define the different types of output
-        if outType is None:
-            if numRow == 1 or numCol == 1:
-                outType = "vec"
-            else:
-                outType = "mat"
-
-        if outType.lower() == "vec":
-            if compileType == 'np':
-                return lambda x: a(*x).ravel()
-            else:
-                return lambda x: np.array(a(*x).tolist(), float).ravel()
-        elif outType.lower() == "mat":
-            if compileType == 'np':
-                return lambda x: a(*x)
-            else:
-                return lambda x: np.array(a(*x).tolist(), float)
-        else:
-            raise RuntimeError("Specified type of output not recognized")
 

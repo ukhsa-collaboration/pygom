@@ -1,13 +1,14 @@
 from unittest import main, TestCase
 
 from pygom.model.transition import Transition
+from pygom.model._model_errors import InputError
 from pygom import SimulateOde
 
 class TestInputSymbols(TestCase):
 
     def test_Signs(self):
         """
-        Making sure that the illegal symbols are catched
+        Making sure that the illegal symbols are caught
         """
         state_list = [['S+'], ['S-'], ['S*'], ['S\\'], ['_S']]
         param_list = ['beta']
@@ -15,7 +16,7 @@ class TestInputSymbols(TestCase):
 
         total_fail = 0
         for state in state_list:
-            self.assertRaises(AssertionError, SimulateOde,
+            self.assertRaises(InputError, SimulateOde,
                               state, param_list)
         # Happy! :)
 
@@ -33,7 +34,7 @@ class TestInputSymbols(TestCase):
 
         ode = SimulateOde(state=state_list, param=param_list, ode=odeList)
         # this should not throw an error if the model is initialized correctly
-        A = ode.get_ode_eqn()
+        A = ode.ode.get_equation()
 
 
 if __name__ == '__main__':

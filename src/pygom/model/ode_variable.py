@@ -4,8 +4,11 @@
     Module/class that contains a variable object for the ode
 
 """
-
+from sympy.physics.units.quantities import Quantity
 import sympy
+import numpy as np
+
+from ._model_errors import InputError
 
 
 class ODEVariable(object):
@@ -24,33 +27,46 @@ class ODEVariable(object):
     real: bool, optional
         if the variable can only be a real number, defaults to True
     """
-    def __init__(self, ID, name=None, units=None, real=True):
+    def __init__(self, 
+                 ID:str, 
+                 symbol:None|sympy.Symbol=None,
+                 value:None|str=None,
+                 units:None|Quantity=None,
+                 real:bool=False,
+                 limits:None|tuple=None      # default: assume compartments represent counts
+                 ):
         self.ID = ID
-        if name is None:
-            self.name = ID
-        else:
-            self.name = name
+        if symbol is None:
+            # Create a symbol if we need to
+            symbol = sympy.symbols(ID, real=real)
+        self.symbol = symbol
+        self.value = value
         self.units = units
-        self.real = real
 
-    def __str__(self):
-        return self.name
+        if limits is None:
+            self.limits = (0, np.inf)
+        else:
+            self.limits = limits
 
-    def __repr__(self):
-        return 'ODEVariable(%s, %s, %s, %s)' % (
-                                                repr(self.ID),
-                                                repr(self.name),
-                                                repr(self.units),
-                                                repr(self.real)
-                                                )
+    def __str__(self)->str:
+        return self.ID
+
+    def __repr__(self)->str:
+        return (f'ODEVariable({repr(self.ID)}, '
+                            f'{repr(self.symbol)}, '
+                            f'{repr(self.value)}, '
+                            f'{repr(self.units)}, '
+                            f'{repr(self.limits)}')
+                                                
 
     def __eq__(self, other):
         if isinstance(other, str):
             return self.ID == other
         elif isinstance(other, ODEVariable):
             return self.ID == other.ID and \
-                self.name == other.name and \
-                self.units == other.units
+                self.symbol == other.symbol and \
+                self.units == other.units and \
+                self.limits == other.limits
         elif isinstance(other, sympy.Symbol):
             return self.ID == str(other)
         else:
@@ -70,3 +86,15 @@ class ODEVariable(object):
 
     def __ge__(self, other):
         raise NotImplementedError("Only equality comparison allowed")
+    
+    @property
+    def symbol(self):
+        return self._symbol
+    
+    @symbol.setter
+    def symbol(self, value:sympy.Symbol):
+        if not isinstance(value, sympy.Symbol):
+            raise InputError('The symbol attribute must be a sympy Symbol ' 
+                             'object.')
+        self._symbol = value
+

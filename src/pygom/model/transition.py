@@ -118,7 +118,7 @@ class Transition:
     def __init__(self,
                  origin=None,
                  equation=None,                 # If equation is given
-                 transition_type='ODE',
+                 transition_type=None,
                  destination=None,
                  magnitude='1',
                  ID=None,
@@ -129,23 +129,38 @@ class Transition:
         '''
         self.ID = ID
         self.name = name
-        self._setTransitionType(transition_type)
+
+        if transition_type is not None:
+            self._setTransitionType(transition_type)
+
+            if self.transition_type == TransitionType.ODE:
+                if destination is not None:
+                    raise InputStateError("Please define ODEs with the dependant variable as the origin")
+                if origin is None:
+                    raise InputStateError("Please define ODEs with the dependant variable as the origin")          
+                self._setOrigState(origin)
+
         self._setMagnitude(magnitude)   
 
         # Check origins and destinations are consistent with transition type
 
-        if self.transition_type == TransitionType.ODE:
-            if destination is not None:
-                raise InputStateError("Please define ODEs with the dependant variable as the origin")
+        if transition_type == None:
             if origin is None:
-                raise InputStateError("Please define ODEs with the dependant variable as the origin")          
-            self._setOrigState(origin)
+                if destination is None:
+                    raise InputStateError("No origin or destination state")
+                else:
+                    self._setTransitionType('D')
+            else:
+                if destination is None:
+                    self._setTransitionType('B')
+                else:
+                    self._setTransitionType('T')
 
         if self.transition_type == TransitionType.B:
             if origin is not None:
                 # TODO: This warning can be really annoying, I want it to just appear once.
-                # print("Update: In the latest version, you should define births as having a destination state instead of an origin.")
-                destination=origin
+                # logging.debug("Update: In the latest version, you should define births as having a destination state instead of an origin.")
+                destination = origin
             elif destination is None:
                 raise InputStateError("Birth process has no origin or destination")
             # if destination is None:

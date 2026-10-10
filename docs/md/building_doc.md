@@ -1,22 +1,34 @@
-# Building the documentation locally
+# Building the Documentation Locally
 
-The documentation, which you are currently reading, may be built locally.
-First, install additional packages required specifically for the documentation:
+The documentation, which you are currently reading, can be built locally.
+First, install the documentation dependencies:
 
 ```bash
-pip install -r docs/requirements.txt
+python -m pip install -e ".[docs]"
 ```
 
-Then, build the documentation from command line:
+From the project root, build the documentation
 
 ```bash
 jupyter-book build docs
 ```
 
-The generated HTML files will be saved in the local copy of your repository under:
+````{note}
+If the `jupyter-book` command is not available on your system, try running:
 
-    pygom/docs/_build/html
+```bash
+python -c "from jupyter_book.cli.main import main; import sys; sys.argv=['jupyter-book','build','docs']; main()"
+```
+````
 
-You can view the documentation by opening the index file in your browser of choice:
+The generated HTML files will be written to:
 
-    pygom/docs/_build/html/index.html
+```bash
+pygom/docs/_build/html
+```
+
+To view the documentation, open the generated index.html file in your web browser of choice:
+
+```bash
+pygom/docs/_build/html/index.html
+```

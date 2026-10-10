@@ -1,3 +1,5 @@
+import logging
+
 import numpy as np
 cimport numpy as np
 
@@ -31,8 +33,8 @@ def _cy_test_tau_leap_safety(np.ndarray[np.float64_t] x,
     safe = False  # when True, indicates that tau_scale is sufficiently small
     cdef int count = 0  # number of attempts to find acceptable tau_scale
     while safe is False:
-        # print(count)
-        # print(tau_scale)
+        # logging.debug(count)
+        # logging.debug(tau_scale)
         cdf_val = 1.0
         for i in range(n_rates):  # loop over transitions, i
             for j in range(n_reactants):  # loop over states, j
@@ -47,7 +49,7 @@ def _cy_test_tau_leap_safety(np.ndarray[np.float64_t] x,
 
         # the expected probability that our jump will exceed the value
         max_cdf = 1.0 - cdf_val
-        # print(max_cdf)
+        # logging.debug(max_cdf)
         # cannot allow it to exceed out epsilon
         if max_cdf > epsilon:
             tau_scale /= (max_cdf / epsilon)
@@ -55,11 +57,11 @@ def _cy_test_tau_leap_safety(np.ndarray[np.float64_t] x,
             safe = True
 
         if count > 256:
-            print("count error")
+            logging.debug("count error")
             return False
         
         # if tau_scale*total_rate <= 1.0:  # leave out Gillespie regime catch for now
-        #     print("scale error")
+        #     logging.debug("scale error")
         #     return False
         count += 1
 

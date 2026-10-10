@@ -17,10 +17,10 @@
 
 import logging
 import time
-from importlib.metadata import version
 
 import pygom
-print('PyGOM version %s' % version('pygom'))
+# import pkg_resources
+# logging.debug('PyGOM version %s' %pkg_resources.get_distribution('pygom').version)
 
 from pygom import Transition, TransitionType, Event, SimulateOde
 import numpy as np
@@ -31,7 +31,7 @@ logging.basicConfig(format="%(asctime)s %(levelname)s: %(message)s",
 
 
 # construct model
-state_list = [('S', (0,None)), ('I', (0, None)), ('R', (0, None))]
+state_list = ['S', 'I', 'R']
 param_list = ['beta', 'gamma', 'N']
 
 trans_inf=Transition(origin='S', destination='I',transition_type=TransitionType.T)
@@ -63,7 +63,9 @@ model.initial_values = (init_state, t[0])
 # run 10 simulations
 N_ITERATION=10
 start = time.time()
-solution, simJump, simT = model.solve_stochast(t, iteration=N_ITERATION, full_output=True)
+result = model.solve_stochastic(t, iteration=N_ITERATION, method="fixed_tau", tau=0.1)
 end = time.time()
 
-logging.info('Simulation took {} seconds'.format(end - start))
+logging.info("%s simulations took %.3g seconds", N_ITERATION, end - start)
+
+# %%

@@ -5,6 +5,7 @@
 
 """
 import functools
+import logging
 
 import numpy as np
 import scipy.stats as st
@@ -15,7 +16,9 @@ from ._model_errors import InputError, SimulationError
 from .ode_utils import check_array_type
 
 # Code from the cython module
-from ._tau_leap import _cy_test_tau_leap_safety
+# from ._tau_leap import _cy_test_tau_leap_safety
+
+
 
 
 def exact(x0, t0, t1, state_change_mat, transition_func,
@@ -788,7 +791,7 @@ def _checkJump(x, x_new, x_lims, t, jump_time, jumps):
                     failed_jump=True
 
     if failed_jump:
-        print("Illegal jump, x: %s, new x: %s" % (x, x_new))
+        logging.debug("Illegal jump, x: %s, new x: %s" % (x, x_new))
         success=False
         x_new=x
         t_new=t

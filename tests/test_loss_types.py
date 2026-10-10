@@ -30,12 +30,16 @@ class Test_loss_classes(TestCase):
 
         # Standard.  Find the solution which we will be used as
         # "observations later"
-        self.solution = self.ode.integrate(self.t[1:])
+        # self.solution = self.ode.integrate(self.t[1:])
+
+        self.solution = self.ode.solve_deterministic(self.t)[0].result.y
+
         # initial guess
-        self.theta = [3.6, 0.2,N]
-        self.yhat_ode=copy.deepcopy(self.ode)
+        self.theta = [3.6, 0.2, N]
+        self.yhat_ode = copy.deepcopy(self.ode)
         self.yhat_ode.parameters = [('beta', self.theta[0]), ('gamma', self.theta[1]), ('N', N)]
-        self.yhat= self.yhat_ode.integrate(self.t[1:])
+        # self.yhat= self.yhat_ode.integrate(self.t[1:])
+        self.yhat = self.yhat_ode.solve_deterministic(self.t)[0].result.y
         
     def test_all_Loss_functions_produce_different_costs(self):
         Square_obj = SquareLoss(self.theta, self.ode, self.init_state, self.t[0],

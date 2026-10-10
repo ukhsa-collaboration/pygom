@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from pygom import Transition, TransitionType, SimulateOde, ODEVariable
+from sympy import Symbol
 
 class TestParameterActions(TestCase):
 
@@ -8,10 +9,10 @@ class TestParameterActions(TestCase):
         '''
         Test adding parameters to a model
         '''
-        expected_result =[ODEVariable('beta', 'beta', None, True),
-                          ODEVariable('gamma', 'gamma', None, True),
-                          ODEVariable('mu', 'mu', None, True),
-                          ODEVariable('B', 'B', None, True)
+        expected_result =['beta',
+                          'gamma',                                     
+                          'mu',
+                          'B',
                           ]
         # Model parts
         stateList = ['S', 'I', 'R']
@@ -34,9 +35,9 @@ class TestParameterActions(TestCase):
                                  )
         
         # add to the parameters
-        modelTrans.param_list = paramList + ['mu', 'B']
+        modelTrans.append_parameters(['mu', 'B'])
         
-        self.assertListEqual(modelTrans.param_list, 
+        self.assertListEqual([x.ID for x in modelTrans.param_list], 
                              expected_result, 
                              'Adding parameters does not give expected '
                              'parameter list')

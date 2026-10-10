@@ -9,6 +9,11 @@
 
 """
 
+# TODO: 
+# 1) Make all distributions follow rgamma new style
+# 2) Is wrapping all these functions necessary
+
+
 import scipy.stats as st
 import numpy as np
 from scipy.special import gammaln
@@ -131,26 +136,38 @@ def qgamma(q, shape, rate=1.0):
     '''
     return st.gamma.ppf(q, a=shape, scale=1.0/rate)
 
-def rgamma(n, shape, rate=1.0, seed=None):
-    '''
-    See
-    https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html
+# def rgamma(n, shape, rate=1.0, seed=None):
+#     '''
+#     See
+#     https://stat.ethz.ch/R-manual/R-patched/library/stats/html/GammaDist.html
 
-    @param seed represent which type of seed to use.  None or False uses the
-    default seed.  When seed is an integer number, it will reset the seed
-    via numpy.random.seed.  When seed=True, then a
-    :class:`numpy.random.RandomState` object will be used. If seed is an
-    object of :class:`numpy.random.RandomState` then it will be used directly
-    '''
-    if seed is None:
-        rvs = np.random.gamma
-    else:
-        rvs = test_seed(seed).gamma
+#     @param seed represent which type of seed to use.  None or False uses the
+#     default seed.  When seed is an integer number, it will reset the seed
+#     via numpy.random.seed.  When seed=True, then a
+#     :class:`numpy.random.RandomState` object will be used. If seed is an
+#     object of :class:`numpy.random.RandomState` then it will be used directly
+#     '''
+#     if seed is None:
+#         rvs = np.random.gamma
+#     else:
+#         rvs = test_seed(seed).gamma
 
-    if n > 1:
-        return rvs(shape, scale=1.0/rate, size=n)
-    else:
-        return rvs(shape, scale=1.0/rate, size=n)[0]
+#     # if n > 1:
+#     #     return rvs(shape, scale=1.0/rate, size=n)
+#     # else:
+#     #     return rvs(shape, scale=1.0/rate, size=n)[0]
+
+#     samples = rvs(shape, scale=1.0 / rate, size=n)
+
+#     return samples if n > 1 else samples[0]
+
+
+def rgamma(n, shape, rate=1.0, rng=None):
+    if rng is None:
+        rng = np.random.default_rng()
+    samples = rng.gamma(shape, scale=1.0 / rate, size=n)
+    return samples if n > 1 else samples[0]
+
 
 ##### normal distribution
 
@@ -577,5 +594,7 @@ def test_seed(seed):
         rvs = np.random.RandomState()
         rvs.set_state(state)
         return rvs
+    elif isinstance(seed, np.random._generator.Generator):
+        return seed
     else:
         raise RuntimeError("seed must be (bool, int or np.random.RandomState")

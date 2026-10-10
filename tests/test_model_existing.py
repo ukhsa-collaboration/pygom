@@ -55,12 +55,14 @@ class TestModelExisting(TestCase):
         beta0=0.3
         delta=0.2
         period=365
+        mu=0
 
         ode = common_models.SEIR_Birth_Death_Periodic({'alpha':alpha,
                                                        'gamma':gamma,
                                                        'beta0':beta0,
                                                        'delta':delta,
-                                                       'period':period})
+                                                       'period':period,
+                                                       'mu':mu})
 
         N=1e4
         E0=10

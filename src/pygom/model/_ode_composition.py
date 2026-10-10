@@ -171,7 +171,7 @@ def _getExpression(expr, input_dict):
 
     # find out the length of the components within this node
     t_lengths = np.array(list(map(_expressionLength, t)))
-    # print(tLengths)
+    # logging.debug(tLengths)
     if np.all(t_lengths == 0):
         # if all components are leafs, then the node is an expression
         input_dict.setdefault(expr, 0)
@@ -381,11 +381,11 @@ def _singleOriginTransition(fx, term_list, states, A=None):
                 possible_origin.append(i)
         if len(possible_origin) == 1:
             for j, fxj in enumerate(fx):
-                # print(t1, fxj, possibleOrigin[0] != j, _hasExpression(fxj, t2))
+                # logging.debug(t1, fxj, possibleOrigin[0] != j, _hasExpression(fxj, t2))
                 if possible_origin[0] != j and _hasExpression(fxj, t1):
                     A[possible_origin[0], j] += t1
                     remain = False
-                    # print(t1, possibleOrigin, j, fxj, "\n")
+                    # logging.debug(t1, possibleOrigin, j, fxj, "\n")
         if remain:
             remain_term_list.append(transition_tuple)
 

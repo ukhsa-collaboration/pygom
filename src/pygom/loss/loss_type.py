@@ -202,6 +202,8 @@ class Normal(Baseloss_Type):
             raise TypeError(err_str + "type")
 
         self._sigma2 = self._sigma**2
+
+        # TODO: why does init call loss?
         self.loss(self._y)
 
     def loss(self, yhat, apply_weighting=True):

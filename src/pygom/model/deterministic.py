@@ -7,10 +7,9 @@
 """
 
 __all__ = ['DeterministicOde']
+import logging
+from functools import partial
 
-# TODO: check through these dependencies
-
-import copy
 import io
 from numbers import Number
 
@@ -21,16 +20,16 @@ import scipy.linalg
 
 from sympy.core.function import diff
 
-from .transition import TransitionType
-
 from .base_ode_model import BaseOdeModel
 from ._model_errors import ArrayError, InputError, \
     IntegrationError, InitializeError
-from ._model_verification import simplifyEquation, checkEquation
+from ._model_verification import simplifyEquation
 
 from . import ode_utils
-
 from . import _transition_graph
+
+from .maths import ODESystem, Jacobian, DiffJacobian, RatesJacobian, \
+    Grad, GradJacobian, Hessian
 
 
 class DeterministicOde(BaseOdeModel):
@@ -54,47 +53,62 @@ class DeterministicOde(BaseOdeModel):
         A list of ode (:class:`Transition`)
 
     '''
+    # This is a list of the methods that will get compiled from
+    # the dynamic ode equation. We omit ode itself from this as we 
+    # treat it as a special case. Child classes may add their own lists
+    # of the same name and join them with this to ensure that all are 
+    # compiled. 
+    # By having this list we result in a single source of truth for all
+    # the functions are dynamically compiled.
+    _maths_methods = BaseOdeModel._maths_methods + [
+        ODESystem,
+        Jacobian,
+        DiffJacobian,
+        RatesJacobian,
+        Grad,
+        GradJacobian,
+        Hessian
+    ]
 
     def __init__(self,
+                 # Modelling arguments
                  state=None,
                  param=None,
                  derived_param=None,
                  transition=None,
                  event=None,
                  birth_death=None,
-                 ode=None):
+                 ode=None,
+                 backend='lambda'
+                 ):
         '''
         Constructor that is built on top of a BaseOdeModel
         '''
+
         super(DeterministicOde, self).__init__(state,
                                                param,
                                                derived_param,
                                                transition,
                                                event,
                                                birth_death,
-                                               ode)
+                                               ode,
+                                               backend)
 
         # # First, set up system of odes upon instance being initialised
-        # self.get_ode_eqn()
+        # self.ode.get_equation()
 
-        # Tell pygom what it needs if it wants to compile
-        self.add_func("ode", self.get_ode_eqn, oT="vec", is_master_canary=True)
-        self.add_func("jacobian", self.get_jacobian_eqn)
-        self.add_func("diff_jacobian", self.get_diff_jacobian_eqn)
-        self.add_func("grad", self.get_grad_eqn, oT="mat")
-        self.add_func("grad_jacobian", self.get_grad_jacobian_eqn)
         # TODO: update _Hessian and _HessianWithParam to this framework.
-        self._Hessian=None
-        self._HessianWithParam=None
+        #self._Hessian=None
+        #self._HessianWithParam=None
 
         # all the symbols that we need in order to compile
         # s = state + t
         # sp = state + t + param
         # the latter is required to compile the symbolic code
         # to the numeric setting
-        self.set_sp()
+        # self.set_sp()
 
-        self.verbose=False
+#        self.verbose=False
 
         # information regarding the integration.  We want an internal
         # storage so we can invoke the plot method within the same class
@@ -105,7 +119,7 @@ class DeterministicOde(BaseOdeModel):
         self._odeSolution = None
         self._odeTime = None
         self._intName = None
-        self._paramValue = [0]*len(self._paramList)
+        #self._paramValue = [0]*len(self._paramList)
 
         # the class for shape re-adjustment. We would always like to
         # operate in the matrix form if possible as it takes up less
@@ -113,167 +127,27 @@ class DeterministicOde(BaseOdeModel):
         # the vector form
         self._SAUtil = ode_utils.shapeAdjust(self.num_state, self.num_param)
 
+    # TODO: base
     def __eq__(self, other):
         if isinstance(other, DeterministicOde):
-            if self.get_ode_eqn() == other.get_ode_eqn():
+            if self.ode.get_equation() == other.ode.get_equation():
                 return True
             else:
                 return False
         else:
             return False
 
+    # TODO: base
     def __repr__(self):
         return "DeterministicOde" + self._get_model_str()
     
-    ## Funcitons  to allow pickling and unpickling      TODO: are these being utilised?
-    def __getstate__(self):
-        '''
-        Grab the class's dict and remove the compiled objects
-        '''
-        state = self.__dict__.copy()
-        
-        for state_name, value in state.items():
-            if 'compileExprAndFormat' in str(value):
-                state[state_name] = None
-        
-        return state
-    
-    def __setstate__(self, state):
-        '''
-        Restore the classes state with reset of compile status
-        '''
-        self.__dict__.update(state)
-        
-        self._hasNewTransition.trip()
-
     ########################################################################
     #
     # Methods to add compiled functions
     #
     ########################################################################
 
-    def add_func(self, method_name, sympy_obj_generator_func, oT=None, is_master_canary=False):
-        '''
-        Template to add a method, called with method_name, which gives the numerical output of
-        compiled_fn_name, which is the compiled version of the sympy object
-        generated by sympy_obj_generator_func.
-        This carries out the essential check to see if recompilation is necessary
-        and acts accordingly.
-        '''
-        compiled_obj_name=method_name+"Compiled"
-
-        def func(self, state, t):
-            # Check if compiled function is being created for the first time or
-            # corresponding canary is dead (True) indicating underlying ODE's have changed and
-            # we need to update both the sympy and compiled objects.
-            if not hasattr(self, compiled_obj_name) or getattr(self._hasNewTransition, method_name):
-                # Make new sympy object and compiled it
-                self.add_compiled_sympy_object(method_name, compiled_obj_name, sympy_obj_generator_func, oT, is_master_canary)
-            return getattr(self, compiled_obj_name)(time=t, state=state)
-        setattr(self, method_name, func.__get__(self))
-
-    def add_compiled_sympy_object(self, method_name, compiled_obj_name, sympy_obj_generator_func, oT, is_master_canary):
-        '''
-        Take sympy_obj_generator_func
-        '''
-        # Make the sympy object
-        sympy_obj=sympy_obj_generator_func()
-
-        # Compile the sympy object
-        if self.verbose:
-            print("... Compiling sympy object with name:", method_name, "...", end="")
-        f = self._SC.compileExprAndFormat
-        if self._isDifficult:
-            compiled_obj=f(self._sp,
-                        sympy_obj,
-                        modules='mpmath',
-                        outType=oT)
-        else:
-            compiled_obj=f(self._sp,
-                        sympy_obj,
-                        outType=oT)
-        if self.verbose:
-            print("done")
-
-        # Wrap the compiled object
-        def comp_obj(state, time):
-            return compiled_obj(self._getEvalParam(state, time, None))
-
-        # Add this as an attribute in the right place
-        setattr(self, compiled_obj_name, comp_obj)
-
-        # If all other objects depend on this one, kill all their canaries 
-        # (set to True) to indicate something needs to be done.
-        if is_master_canary:
-            self._hasNewTransition.trip()
-
-        # Replace the corresponding dead canary with a live one (True to False)
-        self._hasNewTransition.reset(method_name)
-
-    ########################################################################
-    #
-    # ODE functions (define/visualise etc...)
-    #
-    ########################################################################
-
-    def get_ode_eqn(self):
-        '''
-        Build the algebraic system of ODE's given the transitions and events.
-        '''
-        # Containers for different contributions to ODE
-        between_state_ode = sympy.zeros(self.num_state, 1)
-        birth_death_ode = sympy.zeros(self.num_state, 1)
-        pure_ode = sympy.zeros(self.num_state, 1)
-
-        # Extract all info from events
-        for event in self.event_list:
-            rate=checkEquation(event.rate, *self._getListOfVariablesDict())
-            for transition in event.transition_list:
-                magnitude=checkEquation(transition._magnitude, *self._getListOfVariablesDict())
-                rate_of_change=magnitude*rate
-                if transition.transition_type==TransitionType.B:
-                    destination_index=self.state_list.index(transition.destination)
-                    birth_death_ode[destination_index] += rate_of_change
-                elif transition.transition_type==TransitionType.D:
-                    origin_index=self.state_list.index(transition.origin)
-                    birth_death_ode[origin_index] -= rate_of_change
-                elif transition.transition_type==TransitionType.T:
-                    origin_index=self.state_list.index(transition.origin)
-                    destination_index=self.state_list.index(transition.destination)
-                    between_state_ode[origin_index] -= rate_of_change
-                    between_state_ode[destination_index] += rate_of_change
-
-        # Now extract any ODE contributions from ODE type transitions
-        for ode in self.ode_list:
-            origin_index=self.state_list.index(ode.origin)
-            pure_ode[origin_index] += checkEquation(ode.equation, *self._getListOfVariablesDict())
-
-        # Collect together contributions and make attributes
-        self._ode = between_state_ode + birth_death_ode + pure_ode
-        self._birthDeathVector = birth_death_ode
-
-        # # Set list of states and params
-        # # TODO: should this be handled externally? i.e. how does it know here if params change?
-        # # TODO: why iter lists here?
-        # self._s = [s for s in self._iterStateList()] + [self._t]
-        # self._sp = self._s + [p for p in self._iterParamList()]
-
-        # tests to see whether we have an autonomous system.  Need to
-        # convert a non-autonmous system into an autonomous.  Note that
-        # we will not do the conversion internally and require the
-        # user to do this.  May consider this a feature in the future.
-        # TODO: I think autonomous systems are allowed? Maybe not deterministically?
-        for i, eqn in enumerate(self._ode):
-            if self._t in eqn.atoms():      # TODO: maybe this check doesn't work anyway, for namespace reasons?
-                raise Exception("Input is a non-autonomous system. " +
-                                "We can only deal with an autonomous " +
-                                "system at this moment in time")
-            self._ode[i], isDifficult = simplifyEquation(eqn)
-            self._isDifficult = self._isDifficult or isDifficult
-            
-        return self._ode
-
-    # TODO: check and see whether it is linear correctly!
+    # TODO: algebra
     def linear_ode(self):
         '''
         To check whether the input ode is linear
@@ -288,12 +162,12 @@ class DeterministicOde(BaseOdeModel):
         # scheme is a waste of time
         is_linear = True
         # if we do not current possess the jacobian, we find it! ROAR!
-        J=self.get_jacobian_eqn()
+        J=self.jacobian.get_equation()
 
         # a really stupid way to determining whether it is linear.
         # have not figured out a better way yet...
         a = J.atoms()
-        for s in self._stateDict.values():
+        for s in self._state_store.symbol_list:
             if s in a:
                 is_linear = False
 #         for i in range(0, self._numState):
@@ -312,12 +186,15 @@ class DeterministicOde(BaseOdeModel):
     # jacobian is actually singular, i.e. if it can be a DAE
     # def canDAE(self,x0,t0):
 
-    def ode_T(self, t, state):
-        '''
-        Same as :meth:`ode` but with t as the first parameter
-        '''
-        return self.ode(state, t)
 
+    # TODO: delete
+    # def ode_T(self, t, state):
+    #     '''
+    #     Same as :meth:`ode` but with t as the first parameter
+    #     '''
+    #     return self.ode(state, t)
+
+    # TODO: base/algebra/vis
     def print_ode(self, latex_output=False):
         '''
         Prints the ode in symbolic form onto the screen/console in actual
@@ -330,18 +207,22 @@ class DeterministicOde(BaseOdeModel):
             if set to yes then the formula in terms of latex equations will
             be printed onto the screen.
         '''
-        A = self.get_ode_eqn()
+        A = self.ode.get_equation()
         B = sympy.zeros(A.rows,2)
         for i in range(A.shape[0]):
-            B[i,0] = sympy.symbols('d' + str(self._stateList[i]) + '/dt=')
+            B[i,0] = sympy.symbols('d' + str(self.state_list[i]) + '/dt=')
             B[i,1] = A[i]
 
         if latex_output:
-            print(sympy.latex(B, mat_str="array", mat_delim=None,
-                              inv_trig_style='full'))
+            logging.debug(sympy.latex(B, 
+                                      mat_str="array", 
+                                      mat_delim=None,
+                                      inv_trig_style='full'))
         else:
-            sympy.pretty_print(B)
+            logging.debug(sympy.pretty(B, 
+                                       use_unicode=True))
 
+    # TODO: base/algebra/vis
     def get_transition_graph(self, file_name=None, show=True):
         '''
         Returns the transition graph using graphviz
@@ -376,6 +257,7 @@ class DeterministicOde(BaseOdeModel):
     #
     ########################################################################
 
+    # TODO: algebra
     def is_stiff(self, state=None, t=None):
         '''
         Test on the eigenvalues of the jacobian.  We classify the
@@ -398,6 +280,7 @@ class DeterministicOde(BaseOdeModel):
         e = self.jacobian_eigenvalue(state, t)
         return np.any(e > 0)
 
+    # TODO: algebra
     def jacobian_eigenvalue(self, state=None, t=None):
         '''
         Find out the eigenvalues of the jacobian given state and time. If
@@ -426,33 +309,9 @@ class DeterministicOde(BaseOdeModel):
 
         return scipy.linalg.eig(J)[0]
 
-    def get_jacobian_eqn(self):
-        '''
-        Returns the jacobian in algebraic form
-
-        Returns
-        -------
-        :class:`sympy.matrices.matrices`
-            A matrix of dimension [number of state x number of state]
-
-        '''
-        
-        self.get_ode_eqn()
-        states = [s for s in self._iterStateList()]
-        self._Jacobian = self._ode.jacobian(states)
-
-        # Process output: (1) check if "difficult" and (2) simplify
-        for i in range(self.num_state):
-            for j in range(self.num_state):
-                eqn = self._Jacobian[i,j]
-                if  eqn != 0:
-                    self._Jacobian[i,j], isDifficult = simplifyEquation(eqn)
-                    self._isDifficult = self._isDifficult or isDifficult
-
-        return self._Jacobian
-
     ######  the sum of jacobian, i.e a_{i} = \sum_{j=1}^{d} J_{i,j}
 
+    # TODO: algebra
     def sens_jacobian_state(self, state_param, t):
         '''
         Evaluate the jacobian of the sensitivity w.r.t. the
@@ -480,111 +339,199 @@ class DeterministicOde(BaseOdeModel):
 
         return self.eval_sens_jacobian_state(time=t, state=state, sens=sens)
 
+    # def eval_sens_jacobian_state(self, time=None, state=None, sens=None):
+
+    #     nS = self.num_state
+    #     nP = self.num_param
+
+    #     J = self.diff_jacobian(state, time)
+    #     S = self._SAUtil.vecToMatSens(sens)
+
+    #     A = J.dot(S).T
+    #     out = np.reshape(A, (nS * nP, nS), order='F')
+
+    #     return out
+
     def eval_sens_jacobian_state(self, time=None, state=None, sens=None):
-        '''
-        Evaluate the jacobian of the sensitivities w.r.t the states given
-        parameters, state and time. An extension of :meth:`.sens_jacobian_state`
-        but now also include the parameters.
 
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.parameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-
-        Returns
-        -------
-        :class:`numpy.matrix` or :class:`mpmath.matrix`
-            Matrix of dimension [number of state x number of state]
-
-        Notes
-        -----
-        Name and order of state and time are also different.
-
-        See Also
-        --------
-        :meth:`.sens_jacobian_state`
-
-        '''
+        # TODO: copilot generated code to fix ordering errors
 
         nS = self.num_state
         nP = self.num_param
 
-        # dot first, then transpose, then reshape
-        # basically, some magic
-        # don't ask me what is actually going on here, I did it
-        # while having my wizard hat on
-        return(np.reshape(self.diff_jacobian(state, time).dot(
-            self._SAUtil.vecToMatSens(sens)).transpose(), (nS*nP, nS)))
+        # diff_jacobian() returns the Hessians of the ODE system stacked
+        # vertically:
+        #
+        #     J =
+        #     [ H_0 ]
+        #     [ H_1 ]
+        #     [ ... ]
+        #     [ H_(nS-1) ]
+        #
+        # where H_i is the Hessian of the i-th ODE equation with respect
+        # to the state variables.
+        J = self.diff_jacobian(state, time)
+
+        # Sensitivity matrix:
+        #
+        #     S[:, p] = ∂x/∂θ_p
+        #
+        # with shape (n_state, n_param).
+        S = self._SAUtil.vecToMatSens(sens)
+
+        # The lower-left block of the augmented Jacobian is:
+        #
+        #     ∂(J_x S)/∂x
+        #
+        # For each parameter p and equation i we need:
+        #
+        #     H_i @ S[:, p]
+        #
+        # where H_i is the Hessian of equation i.
+        #
+        # The previous implementation used:
+        #
+        #     A = J.dot(S).T
+        #     reshape(..., order='F')
+        #
+        # which relied on implicit reshaping/permutation of the stacked
+        # Hessian tensor. This produced an incorrect mapping of Hessian
+        # contributions to sensitivity equations and resulted in an
+        # analytical Jacobian that disagreed with a finite-difference
+        # Jacobian check.
+        #
+        # The explicit implementation below performs the tensor
+        # contraction directly and preserves the expected ordering:
+        #
+        #     [dS/dθ1, dI/dθ1, ...,
+        #      dS/dθ2, dI/dθ2, ...]
+        #
+        out = np.zeros((nS * nP, nS))
+
+        for p in range(nP):
+            for eq in range(nS):
+                H = J[eq*nS:(eq+1)*nS, :]
+                out[p*nS + eq, :] = H.dot(S[:, p])
+
+        return out
+
+
+    # # TODO: algebra
+    # def eval_sens_jacobian_state(self, time=None, state=None, sens=None):
+    #     '''
+    #     Evaluate the jacobian of the sensitivities w.r.t the states given
+    #     parameters, state and time. An extension of :meth:`.sens_jacobian_state`
+    #     but now also include the parameters.
+
+    #     Parameters
+    #     ----------
+    #     parameters: list
+    #         see :meth:`.parameters`
+    #     time: double
+    #         The current time
+    #     state: array list
+    #         The current numerical value for the states which can be
+    #         :class:`numpy.ndarray` or :class:`list`
+
+    #     Returns
+    #     -------
+    #     :class:`numpy.matrix` or :class:`mpmath.matrix`
+    #         Matrix of dimension [number of state x number of state]
+
+    #     Notes
+    #     -----
+    #     Name and order of state and time are also different.
+
+    #     See Also
+    #     --------
+    #     :meth:`.sens_jacobian_state`
+
+    #     '''
+
+    #     nS = self.num_state
+    #     nP = self.num_param
+
+    #     # dot first, then transpose, then reshape
+    #     # basically, some magic
+    #     # don't ask me what is actually going on here, I did it
+    #     # while having my wizard hat on
+    #     # return(
+    #     #     np.reshape(
+    #     #         self.diff_jacobian(state, time).dot(self._SAUtil.vecToMatSens(sens)).transpose(), (nS*nP, nS)))
+    
+
+    #     J = self.diff_jacobian(state, time)
+    #     S = self._SAUtil.vecToMatSens(sens)
+    #     A = J.dot(S).T  # transpose after multiply
+
+    #     return np.reshape(A, (nS * nP, nS), order='F')
+
 
     ############################## derivative of jacobian
 
-    def get_diff_jacobian_eqn(self):
-        '''
-        Returns the jacobian differentiate w.r.t. states in algebraic form
+    # def get_diff_jacobian_eqn(self):
+    #     '''
+    #     Returns the jacobian differentiate w.r.t. states in algebraic form
 
-        Returns
-        -------
-        list
-            list of size (num of state,) each with
-            :mod:`sympy.matrices.matrices` of dimension
-            [number of state x number of state]
+    #     Returns
+    #     -------
+    #     list
+    #         list of size (num of state,) each with
+    #         :mod:`sympy.matrices.matrices` of dimension
+    #         [number of state x number of state]
 
-        '''
+    #     '''
 
-        self.get_ode_eqn()
-        diffJac = list()
+    #     # self.ode.get_equation()
+    #     diffJac = list()
 
-        for eqn in self._ode:
-            J = sympy.zeros(self.num_state, self.num_state)
-            for i, si in enumerate(self._iterStateList()):
-                diffEqn, D1 = simplifyEquation(diff(eqn, si, 1))
-                for j, sj in enumerate(self._iterStateList()):
-                    J[i,j], D2 = simplifyEquation(diff(diffEqn, sj, 1))
-                    self._isDifficult = self._isDifficult or D1 or D2
-            #binding.
-            diffJac.append(J)
+    #     for eqn in self._ode:
+    #         J = sympy.zeros(self.num_state, self.num_state)
+    #         for i, si in enumerate(self._iterStateList()):
+    #             diffEqn, D1 = simplifyEquation(diff(eqn, si, 1))
+    #             for j, sj in enumerate(self._iterStateList()):
+    #                 J[i,j], D2 = simplifyEquation(diff(diffEqn, sj, 1))
+    #                 self._isDifficult = self._isDifficult or D1 or D2
+    #         #binding.
+    #         diffJac.append(J)
 
-        # extract first matrix as base.  we have to get the first element
-        # as base if we want to use the class method of the object
-        diffJacMatrix = diffJac[0]
-        for i in range(1, len(diffJac)):
-            # sympy internal matrix joining
-            diffJacMatrix = diffJacMatrix.col_join(diffJac[i])
+    #     # extract first matrix as base.  we have to get the first element
+    #     # as base if we want to use the class method of the object
+    #     diffJacMatrix = diffJac[0]
+    #     for i in range(1, len(diffJac)):
+    #         # sympy internal matrix joining
+    #         diffJacMatrix = diffJacMatrix.col_join(diffJac[i])
 
-        self._diffJacobian = copy.deepcopy(diffJacMatrix)
+    #     self._diffJacobian = copy.deepcopy(diffJacMatrix)
 
-        return self._diffJacobian
+    #     return self._diffJacobian
     
     # Some additional maybe not necessary functions....
 
-    def jacobian_T(self, t, state):
-        '''
-        Same as :meth:`jacobian` but with t as first parameter
-        '''
-        return self.jacobian(state, t)
+    # def jacobian_T(self, t, state):
+    #     '''
+    #     Same as :meth:`jacobian` but with t as first parameter
+    #     '''
+    #     return self.jacobian(state, t)
 
-    def _Jacobian_NoCheck(self, state, t):
-        return self._evalJacobian_NoCheck(time=t, state=state)
+    # def _Jacobian_NoCheck(self, state, t):
+    #     return self._evalJacobian_NoCheck(time=t, state=state)
 
-    def _JacobianT_NoCheck(self, t, state):
-        return self._Jacobian_NoCheck(state, t)
+    # def _JacobianT_NoCheck(self, t, state):
+    #     return self._Jacobian_NoCheck(state, t)
 
-    def sens_jacobian_state_T(self, t, state):
-        '''
-        Same as :meth:`sens_jacobian_state_T` but with t as first parameter
-        '''
-        return self.sens_jacobian_state(state, t)
+    # TODO: delete
+    # def sens_jacobian_state_T(self, t, state):
+    #     '''
+    #     Same as :meth:`sens_jacobian_state_T` but with t as first parameter
+    #     '''
+    #     return self.sens_jacobian_state(state, t)
 
-    def diff_jacobian_T(self, t, state):
-        '''
-        Same as :meth:`diff_jacobian` but with t as first parameter
-        '''
-        return self.diff_jacobian(state, t)
+    # def diff_jacobian_T(self, t, state):
+    #     '''
+    #     Same as :meth:`diff_jacobian` but with t as first parameter
+    #     '''
+    #     return self.diff_jacobian(state, t)
 
 
     ########################################################################
@@ -593,74 +540,75 @@ class DeterministicOde(BaseOdeModel):
     #
     ########################################################################
 
-    def get_grad_eqn(self):
-        '''
-        Return the gradient of the ode in algebraic form
+    # def get_grad_eqn(self):
+    #     '''
+    #     Return the gradient of the ode in algebraic form
 
-        Returns
-        -------
-        :class:`sympy.matrices.matrices`
-            A matrix of dimension [number of state x number of parameters]
+    #     Returns
+    #     -------
+    #     :class:`sympy.matrices.matrices`
+    #         A matrix of dimension [number of state x number of parameters]
 
-        '''
+    #     '''
 
-        ode = self.get_ode_eqn()
-        self._Grad = sympy.zeros(self.num_state, self.num_param)
+    #     ode = self.ode.get_equation()
+    #     self._Grad = sympy.zeros(self.num_state, self.num_param)
 
-        for i in range(self.num_state):
-            # need to adjust such that the first index is not
-            # included because it correspond to time
-            for j, p in enumerate(self._iterParamList()):
-                eqn, isDifficult = simplifyEquation(diff(ode[i], p, 1))
-                self._Grad[i,j] = eqn
-                self._isDifficult = self._isDifficult or isDifficult
+    #     for i in range(self.num_state):
+    #         # need to adjust such that the first index is not
+    #         # included because it correspond to time
+    #         for j, p in enumerate(self._iterParamList()):
+    #             eqn, isDifficult = simplifyEquation(diff(ode[i], p, 1))
+    #             self._Grad[i,j] = eqn
+    #             self._isDifficult = self._isDifficult or isDifficult
 
-        return self._Grad
+    #     return self._Grad
 
-    def grad_T(self, t, state):
-        '''
-        Same as :meth:`grad_T` but with t as first parameter
-        '''
-        return self.grad(state, t)
+    # def grad_T(self, t, state):
+    #     '''
+    #     Same as :meth:`grad_T` but with t as first parameter
+    #     '''
+    #     return self.grad(state, t)
 
     #
     # jacobian of the Gradiant
     #
 
-    def get_grad_jacobian_eqn(self):
-        '''
-        Return the jacobian of the gradient in algebraic form
+    # def get_grad_jacobian_eqn(self):
+    #     '''
+    #     Return the jacobian of the gradient in algebraic form
 
-        Returns
-        -------
-        :class:`sympy.matrices.matrices`
-            A matrix of dimension [number of state *
-            number of parameters x number of state]
+    #     Returns
+    #     -------
+    #     :class:`sympy.matrices.matrices`
+    #         A matrix of dimension [number of state *
+    #         number of parameters x number of state]
 
-        See also
-        --------
-        :meth:`.get_grad_eqn`
+    #     See also
+    #     --------
+    #     :meth:`.get_grad_eqn`
 
-        '''
-        self._GradJacobian = sympy.zeros(self.num_state*self.num_param,
-                                            self.num_state)
-        G = self.get_grad_eqn()
-        for k in range(0, self.num_param):
-            for i in range(0, self.num_state):
-                for j, s in enumerate(self._iterStateList()):
-                    z = k*self.num_state + i
-                    eqn, isDifficult = simplifyEquation(diff(G[i,k], s, 1))
-                    self._GradJacobian[z,j] = eqn
-                    self._isDifficult = self._isDifficult or isDifficult
-        # end of the triple loop.  All elements are now filled
+    #     '''
+    #     self._GradJacobian = sympy.zeros(self.num_state*self.num_param,
+    #                                         self.num_state)
+    #     G = self.get_grad_eqn()
+    #     for k in range(0, self.num_param):
+    #         for i in range(0, self.num_state):
+    #             for j, s in enumerate(self._iterStateList()):
+    #                 z = k*self.num_state + i
+    #                 eqn, isDifficult = simplifyEquation(diff(G[i,k], s, 1))
+    #                 self._GradJacobian[z,j] = eqn
+    #                 self._isDifficult = self._isDifficult or isDifficult
+    #     # end of the triple loop.  All elements are now filled
 
-        return self._GradJacobian
+    #     return self._GradJacobian
 
-    def grad_jacobianT(self, t, state):
-        '''
-        Same as :meth:`grad_jacobian` but with t as first parameter
-        '''
-        return self.grad_jacobian(state, t)
+    # TODO: delete
+    # def grad_jacobianT(self, t, state):
+    #     '''
+    #     Same as :meth:`grad_jacobian` but with t as first parameter
+    #     '''
+    #     return self.grad_jacobian(state, t)
 
     ########################################################################
     #
@@ -668,126 +616,126 @@ class DeterministicOde(BaseOdeModel):
     #
     ########################################################################
 
-    def get_hessian_eqn(self):
-        '''
-        Return the Hessian of the ode in algebraic form
+    # def get_hessian_eqn(self):
+    #     '''
+    #     Return the Hessian of the ode in algebraic form
 
-        Returns
-        -------
-        list
-            list of dimension number of state, each with matrix
-            [number of parameters x number of parameters] in
-            :mod:`sympy.matricies.matricies`
+    #     Returns
+    #     -------
+    #     list
+    #         list of dimension number of state, each with matrix
+    #         [number of parameters x number of parameters] in
+    #         :mod:`sympy.matricies.matricies`
 
-        Notes
-        -----
-        We deliberately return a list instead of a 3d array of a
-        tensor to avoid confusion
+    #     Notes
+    #     -----
+    #     We deliberately return a list instead of a 3d array of a
+    #     tensor to avoid confusion
 
-        '''
+    #     '''
 
-        if self._Hessian is None:
-            ode = self.get_ode_eqn()
-            self._Hessian = list()
-            # roll out the equation one by one.  Each H below is a the
-            # second derivative of f_{j}(x), the j^{th} ode.  Each ode
-            # correspond to a state
-            for eqn in ode:
-                H = sympy.zeros(self.num_param, self.num_param)
-                # although this can be simplified by first finding the gradient
-                # it is not required so we will be slow here
-                for i, pi in enumerate(self._iterParamList()):
-                    a = diff(eqn, pi, 1)
-                    for j, pj in enumerate(self._iterParamList()):
-                        H[i,j], isDifficult = simplifyEquation(diff(a, pj, 1))
-                        self._isDifficult = self._isDifficult or isDifficult
-                # end of double loop.  Finished one state
-                self._Hessian.append(H)
+    #     if self._Hessian is None:
+    #         ode = self.ode.get_equation()
+    #         self._Hessian = list()
+    #         # roll out the equation one by one.  Each H below is a the
+    #         # second derivative of f_{j}(x), the j^{th} ode.  Each ode
+    #         # correspond to a state
+    #         for eqn in ode:
+    #             H = sympy.zeros(self.num_param, self.num_param)
+    #             # although this can be simplified by first finding the gradient
+    #             # it is not required so we will be slow here
+    #             for i, pi in enumerate(self._iterParamList()):
+    #                 a = diff(eqn, pi, 1)
+    #                 for j, pj in enumerate(self._iterParamList()):
+    #                     H[i,j], isDifficult = simplifyEquation(diff(a, pj, 1))
+    #                     self._isDifficult = self._isDifficult or isDifficult
+    #             # end of double loop.  Finished one state
+    #             self._Hessian.append(H)
 
-        return self._Hessian
+    #     return self._Hessian
 
-    def hessian(self, state, time):
-        """
-        Evaluate the hessian given state and time
+    # def hessian(self, state, time):
+    #     """
+    #     Evaluate the hessian given state and time
 
-        Parameters
-        ----------
-        state: array like
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
-        t: double
-            The current time
+    #     Parameters
+    #     ----------
+    #     state: array like
+    #         The current numerical value for the states which can be
+    #         :class:`numpy.ndarray` or :class:`list`
+    #     t: double
+    #         The current time
 
-        Returns
-        -------
-        list
-            list of dimension number of state, each with matrix
-            [number of parameters x number of parameters] in
-            :mod:`sympy.matricies.matricies`
+    #     Returns
+    #     -------
+    #     list
+    #         list of dimension number of state, each with matrix
+    #         [number of parameters x number of parameters] in
+    #         :mod:`sympy.matricies.matricies`
 
-        """
-        A = self.eval_hessian(state=state, time=time)
-        return [np.array(H, float) for H in A]
+    #     """
+    #     A = self.eval_hessian(state=state, time=time)
+    #     return [np.array(H, float) for H in A]
 
-    def eval_hessian(self, parameters=None, time=None, state=None):
-        '''
-        Evaluate the hessian given parameters, state and time. An extension
-        of :meth:`hessian` but now also include the parameters.
+    # def eval_hessian(self, parameters=None, time=None, state=None):
+    #     '''
+    #     Evaluate the hessian given parameters, state and time. An extension
+    #     of :meth:`hessian` but now also include the parameters.
 
-        Parameters
-        ----------
-        parameters: list
-            see :meth:`.parameters`
-        time: double
-            The current time
-        state: array list
-            The current numerical value for the states which can be
-            :class:`numpy.ndarray` or :class:`list`
+    #     Parameters
+    #     ----------
+    #     parameters: list
+    #         see :meth:`.parameters`
+    #     time: double
+    #         The current time
+    #     state: array list
+    #         The current numerical value for the states which can be
+    #         :class:`numpy.ndarray` or :class:`list`
 
-        Returns
-        -------
-        list
-            list of dimension number of state, each with matrix
-            [number of parameters x number of parameters] in
-            :mod:`sympy.matricies.matricies`
+    #     Returns
+    #     -------
+    #     list
+    #         list of dimension number of state, each with matrix
+    #         [number of parameters x number of parameters] in
+    #         :mod:`sympy.matricies.matricies`
 
-        See Also
-        --------
-        :meth:`.grad`, :meth:`.eval_grad`
+    #     See Also
+    #     --------
+    #     :meth:`.grad`, :meth:`.eval_grad`
 
-        '''
-        if self._hasNewTransition:
-            self.get_ode_eqn()
+    #     '''
+    #     if self._hasNewTransition:
+    #         self.ode.get_equation()
 
-        eval_param = list()
-        eval_param = self._addTimeEvalParam(eval_param, time)
-        eval_param = self._addStateEvalParam(eval_param, state)
+    #     eval_param = list()
+    #     eval_param = self._addTimeEvalParam(eval_param, time)
+    #     eval_param = self._addStateEvalParam(eval_param, state)
 
-        if parameters is None:
-            if self._HessianWithParam is None:
-                self._computeHessianParam()
-        else:
-            self.parameters = parameters
+    #     if parameters is None:
+    #         if self._HessianWithParam is None:
+    #             self._computeHessianParam()
+    #     else:
+    #         self.parameters = parameters
 
-        if self._Hessian is None:
-            self._computeHessianParam()
+    #     if self._Hessian is None:
+    #         self._computeHessianParam()
 
-        if len(eval_param) == 0:
-            return self._Hessian
-        else:
-            H = list()
-            for i in range(0, self.num_state):
-                H = self._HessianWithParam[i].subs(eval_param)
-            return H
+    #     if len(eval_param) == 0:
+    #         return self._Hessian
+    #     else:
+    #         H = list()
+    #         for i in range(0, self.num_state):
+    #             H = self._HessianWithParam[i].subs(eval_param)
+    #         return H
 
-    def _computeHessianParam(self):
-        self._Hessian = self.get_hessian_eqn()
+    # def _computeHessianParam(self):
+    #     self._Hessian = self.get_hessian_eqn()
 
-        self._HessianWithParam = copy.deepcopy(self._Hessian)
-        for H in self._HessianWithParam:
-            H = H.subs(self._parameters)
+    #     self._HessianWithParam = copy.deepcopy(self._Hessian)
+    #     for H in self._HessianWithParam:
+    #         H = H.subs(self._parameters)
 
-        return None
+    #     return None
 
     ########################################################################
     #
@@ -795,6 +743,7 @@ class DeterministicOde(BaseOdeModel):
     #
     ########################################################################
 
+    # TODO: solver/base
     @property
     def initial_state(self):
         '''
@@ -802,6 +751,7 @@ class DeterministicOde(BaseOdeModel):
         '''
         return self._x0
 
+    # TODO: solver/base
     @initial_state.setter
     def initial_state(self, x0):
         '''
@@ -832,6 +782,7 @@ class DeterministicOde(BaseOdeModel):
                             str(self.num_state)+ " but " +
                             str(len(self._x0))+ " detected")
 
+    # TODO: solver/base
     @property
     def initial_time(self):
         '''
@@ -839,6 +790,7 @@ class DeterministicOde(BaseOdeModel):
         '''
         return self._t0
 
+    # TODO: solver/base
     @initial_time.setter
     def initial_time(self, t0):
         '''
@@ -870,6 +822,7 @@ class DeterministicOde(BaseOdeModel):
         else:
             raise InitializeError(err_str + "numeric value")
 
+    # TODO: solver/base
     @property
     def initial_values(self):
         '''
@@ -877,6 +830,7 @@ class DeterministicOde(BaseOdeModel):
         '''
         return (self.initial_state, self.initial_time)
 
+    # TODO: solver/base
     @initial_values.setter
     def initial_values(self, x0t0):
         '''
@@ -892,6 +846,7 @@ class DeterministicOde(BaseOdeModel):
         self.initial_state = x0t0[0]
         self.initial_time = x0t0[1]
 
+    # TODO: solver
     def integrate(self, t, full_output=False):
         '''
         Integrate over a range of t when t is an array and a output at time t
@@ -905,16 +860,22 @@ class DeterministicOde(BaseOdeModel):
         '''
         # type checking
         self._setIntegrateTime(t)
-        # if our parameters are stochastic, then we are going to generate
-        # another set of parameters to run
-        if self._stochasticParam is not None:
-            # this should always be true.  If not, then we have screwed up
-            # somewhere within this class.
-            if isinstance(self._stochasticParam, dict):
-                self.parameters = self._stochasticParam
+
+        # get a new draw of any stochastic parameters
+        self._parameter_store.new_realisation()
+
+        # # if our parameters are stochastic, then we are going to generate
+        # # another set of parameters to run
+        # if self._parameter_store.has_stochastic_parameters:
+        #     # this should always be true.  If not, then we have screwed up
+        #     # somewhere within this class.
+        #     raise Exception("stop! how do we deal with generated vs. fixed values?")
+        #     if isinstance(self._stochasticParam, dict):
+        #         self.parameters = self._stochasticParam
 
         return self._integrate(self._odeTime, full_output)
 
+    # TODO: solver/delete
     def integrate2(self, t, full_output=False, method=None):
         '''
         Integrate over a range of t when t is an array and a output
@@ -939,13 +900,16 @@ class DeterministicOde(BaseOdeModel):
         self._setIntegrateTime(t)
         # if our parameters are stochastic, then we are going to generate
         # another set of parameters to run
-        if self._stochasticParam is not None:
-            # this should always be true
-            if isinstance(self._stochasticParam, dict):
-                self.parameters = self._stochasticParam
+        self._parameter_store.new_realisation()
+        
+        # if self._stochasticParam is not None:
+        #     # this should always be true
+        #     if isinstance(self._stochasticParam, dict):
+        #         self.parameters = self._stochasticParam
 
         return self._integrate2(self._odeTime, full_output, method)
 
+    # TODO: solver/delete
     def _setIntegrateTime(self, t):
         '''
         Set the full set of integration time including the origin
@@ -966,6 +930,7 @@ class DeterministicOde(BaseOdeModel):
 
         self._odeTime = t
 
+    # TODO: solver/delete
     def _integrate(self, t, full_output=True):
         '''
         Integrate using :class:`scipy.integrate.odeint` underneath
@@ -982,6 +947,7 @@ class DeterministicOde(BaseOdeModel):
         else:
             return self._odeSolution
 
+    # TODO: solver/delete
     def _integrate2(self, t, full_output=True, method=None):
         '''
         Integrate using :class:`scipy.integrate.ode` underneath
@@ -989,8 +955,8 @@ class DeterministicOde(BaseOdeModel):
         assert self._x0 is not None, "Initial state not set"
 
         f = ode_utils.integrateFuncJac
-        self._odeSolution, self._odeOutput = f(self.ode_T,
-                                               self.jacobian_T,
+        self._odeSolution, self._odeOutput = f(self.ode.T,
+                                               self.jacobian.T,
                                                self._x0,
                                                t[0], t[1::],
                                                includeOrigin=True,
@@ -1002,6 +968,7 @@ class DeterministicOde(BaseOdeModel):
         else:
             return self._odeSolution
 
+    # TODO: plot
     def plot(self):
         '''
         Plot the results of the integration
@@ -1018,50 +985,44 @@ class DeterministicOde(BaseOdeModel):
         if self._odeSolution is None:
             try:
                 self._integrate(self._odeTime)
-                ode_utils.plot_det(self._odeSolution, self._odeTime, self._stateList)
+                ode_utils.plot_det(self._odeSolution, self._odeTime, self.state_list)
             except:
                 raise IntegrationError("Have not performed the integration yet")
         else:
-            ode_utils.plot_det(self._odeSolution, self._odeTime, self._stateList)
+            ode_utils.plot_det(self._odeSolution, self._odeTime, self.state_list)
 
     ########################################################################
     # Unrolling of the information from vector to sympy
     # t
     # state
     ########################################################################
+    # def _addStateEvalParam(self, eval_param, state):
+    #     super(DeterministicOde, self).state = state
+    #     if self._state is not None:
+    #         eval_param += self._state
 
-    def _addTimeEvalParam(self, eval_param, t):
-        eval_param.append((self._t, t))
-        return eval_param
+    #     return eval_param
 
-    def _addStateEvalParam(self, eval_param, state):
-        super(DeterministicOde, self).state = state
-        if self._state is not None:
-            eval_param += self._state
+    # def _getEvalParam(self, state, time, parameters):
+    #     if state is None or time is None:
+    #         raise InputError("Have to input both state and time")
 
-        return eval_param
+    #     if parameters is not None:
+    #         self.parameters = parameters
+    #     elif not hasattr(self, "_parameters") or self._parameters is None:
+    #     #elif self._parameters is None:
+    #         if self.num_param == 0:
+    #             pass
+    #         else:
+    #             raise InputError("Have not set the parameters yet")
 
-    def _getEvalParam(self, state, time, parameters):
-        if state is None or time is None:
-            raise InputError("Have to input both state and time")
+    #     if hasattr(state, '__iter__'):
+    #         # just in case this isn't a list already
+    #         eval_param = list(state) + [time]
+    #     else:
+    #         eval_param = [state] + [time]
 
-        if parameters is not None:
-            self.parameters = parameters
-        elif not hasattr(self, "_parameters") or self._parameters is None:
-        #elif self._parameters is None:
-            if self.num_param == 0:
-                pass
-            else:
-                raise InputError("Have not set the parameters yet")
-
-        if isinstance(state, list):
-            eval_param = state + [time]
-        elif hasattr(state, '__iter__'):
-            eval_param = list(state) + [time]
-        else:
-            eval_param = [state] + [time]
-
-        return eval_param + self._paramValue
+    #     return eval_param + self._paramValue
 
 
 
@@ -1075,6 +1036,7 @@ class DeterministicOde(BaseOdeModel):
     #
     ########################################################################
 
+    # TODO: algebra/delete
     def sensitivity(self, sens, t, state, by_state=False):
         """
         Evaluate the sensitivity given state and time.  The default is to
@@ -1114,12 +1076,14 @@ class DeterministicOde(BaseOdeModel):
 
         return self.eval_sensitivity(S=S, t=t, state=state, by_state=by_state)
 
+    # TODO: algebra/delete
     def sensitivity_T(self, t, sens, state, by_state=False):
         '''
         Same as :meth:`sensitivity` but with t as first parameter
         '''
         return self.sensitivity(sens, t, state, by_state)
 
+    # TODO: algebra/delete
     def eval_sensitivity(self, S, t, state, by_state=False):
         """
         Evaluate the sensitivity given state and time
@@ -1166,6 +1130,7 @@ class DeterministicOde(BaseOdeModel):
         else:
             return self._SAUtil.matToVecSens(A)
 
+    # TODO: algebra/delete
     def ode_and_sensitivity(self, state_param, t, by_state=False):
         '''
         Evaluate the sensitivity given state and time
@@ -1212,12 +1177,14 @@ class DeterministicOde(BaseOdeModel):
         out2 = self.sensitivity(sens, t, state, by_state)
         return np.append(out1, out2)
 
+    # TODO: algebra/delete
     def ode_and_sensitivity_T(self, t, state_param, by_state=False):
         '''
         Same as :meth:`ode_and_sensitivity` but with t as first parameter
         '''
         return self.ode_and_sensitivity(state_param, t, by_state)
 
+    # TODO: algebra/delete
     def ode_and_sensitivity_jacobian(self, state_param, t, by_state=False):
         '''
         Evaluate the sensitivity given state and time.  Output a block
@@ -1284,11 +1251,17 @@ class DeterministicOde(BaseOdeModel):
         # The Jacobian of the ode, then the sensitivities w.r.t state and
         # the sensitivities. In block form.  Theoretically, only the diagonal
         # blocks are important but we output the full matrix for completeness
+
+
+        GJ = self.grad_jacobian(state, t)
+        SJ = self.sens_jacobian_state(state_param, t)
+        
         return np.asarray(np.bmat([
             [J, np.zeros((self.num_state, self.num_state*self.num_param))],
             [sensJacobianOfState, outJ]
         ]))
 
+    # TODO: algebra/delete
     def ode_and_sensitivity_jacobian_T(self, t, state_param, by_state=False):
         '''
         Same as :meth:`ode_and_sensitivity_jacobian` but with t as
@@ -1303,6 +1276,7 @@ class DeterministicOde(BaseOdeModel):
     #
     ########################################################################
 
+    # TODO: algebra/delete
     def sensitivityIV(self, sensIV, t, state):
         """
         Evaluate the sensitivity which include the initial values as
@@ -1489,8 +1463,23 @@ class DeterministicOde(BaseOdeModel):
 
         # now the jacobian of the state vs initial value
         DJ = self.diff_jacobian(state, t)
-        A = DJ.dot(np.reshape(state_param[(nS*(nP+1))::], (nS, nS), 'F'))
-        A = np.reshape(A.transpose(), (nS*nS, nS))
+
+        # A = DJ.dot(np.reshape(state_param[(nS*(nP+1))::], (nS, nS), 'F'))
+        # A = np.reshape(A.transpose(), (nS*nS, nS))
+
+        IV = np.reshape(
+            state_param[(nS*(nP+1))::],
+            (nS, nS),
+            'F'
+        )
+
+        A = np.zeros((nS*nS, nS))
+
+        for iv_col in range(nS):
+            for eq in range(nS):
+                H = DJ[eq*nS:(eq+1)*nS, :]
+                A[iv_col*nS + eq, :] = H.dot(IV[:, iv_col])
+
 
         if nP == 0:
             return np.asarray(np.bmat([
