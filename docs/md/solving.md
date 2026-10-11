@@ -8,3 +8,15 @@ In this chapter, we will use an SIR model as our example system to introduce
 
 - How to prescribe parameters in {doc}`Parameterisation <../notebooks/model_params>`
 - How to obtain solutions and process the model output in {doc}`Finding ODE solutions <../notebooks/model_solver>`
+
+Fixed parameter values may be Python integers and floats or NumPy integer and
+floating-point scalars. For example, values computed from NumPy arrays can be
+assigned directly without converting them to Python types:
+
+```python
+import numpy as np
+from pygom.model import common_models
+
+model = common_models.SIR_norm()
+model.parameters = {'beta': np.float32(0.3), 'gamma': np.float64(0.1)}
+```

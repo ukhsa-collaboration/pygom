@@ -30,6 +30,16 @@ re_math = re.compile(r'[-+*\\]')
 re_underscore = re.compile('^_')
 re_symbol_name = re.compile('[A-Za-z_]+')
 
+def _is_value_type(value, value_type):
+    '''Match accepted Python numeric types and their NumPy counterparts.'''
+    if value_type is int:
+        # NumPy durations inherit from np.integer but are not real numbers.
+        return (isinstance(value, (int, np.integer))
+                and not isinstance(value, np.timedelta64))
+    elif value_type is float:
+        value_type = (float, np.floating)
+    return isinstance(value, value_type)
+
 def _generate_symbol(input_str:str|tuple)->Symbol:
     '''
     Check the symbol name and turn it into a symbol 
@@ -269,30 +279,32 @@ class VariableStore(object):
         Parameters
         ----------
         variable: The name of the variable as a string
-        value: The value that the variable should take.
+        value: The value that the variable should take. When int or float is
+          an acceptable type, the corresponding NumPy integer or floating-point
+          scalar types are also accepted without conversion.
 
         '''
         # Book-keeping for the by-type dicts
         current_type = ''
         for at, atn in self.acceptable_value_types.items():
-            if isinstance(self[variable].value, at):
+            if _is_value_type(self[variable].value, at):
                 current_type = atn
 
         new_type = ''
         for at, atn in self.acceptable_value_types.items():
-            if isinstance(value, at):
+            if _is_value_type(value, at):
                 new_type = atn
         
 
+        if new_type == '':
+            raise InputError(f'You may not add an object of type {type(value).__name__}'
+                             f' as a value for a {self.storage_type}.'
+                             f' Only {list(self.acceptable_value_types.keys())} are '
+                             'permitted (or sub-classes).')
+
         if new_type != current_type:
             self._values_by_type[current_type].pop(variable, None)
-           
-            if new_type == '':
-                raise InputError(f'You may not add an object of type {type(value).__name__}'
-                                 f' as a value for a {self.storage_type}.'
-                                 f' Only {list(self.acceptable_value_types.keys())} are '
-                                 'permitted (or sub-classes).')
-            
+
             # Set a pointer to the new location
             self._values_by_type[new_type] [variable]=self._variables[variable]
 
