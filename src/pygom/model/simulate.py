@@ -41,7 +41,8 @@ from ..simulation.src.simulation.stochastic.solve_stochastic import solve_stocha
 from ..simulation.src.simulation.deterministic.solve_deterministic import solve_deterministic
 
 
-from .ode_utils.variable_store import CallableParameter
+# from .ode_utils.variable_store import CallableParameter
+from .ode_variable import CallableParameter
 
 class SimulateOde(DeterministicOde):
     '''

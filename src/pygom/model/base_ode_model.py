@@ -19,26 +19,14 @@ from .transition import Event, Transition, TransitionType
 from ._model_errors import InputError, OutputError
 from ._model_verification import checkEquation
 from .ode_variable import ODEVariable
-from .maths import EventRateVector, PureOdeVector
+# from .maths import EventRateVector, PureOdeVector
 from . import ode_utils
 
 ### Main Classes ###
 class HasNewTransition(ode_utils.CompileCanary):
     states = []
 
-from dataclasses import dataclass
-
-@dataclass
-class ModelSpec:
-    """
-    Source of truth which gets passed to methods
-    """
-    states: ode_utils.StateStore
-    parameters: ode_utils.ParameterStore
-    derived_parameters: list                # TODO: derived params in list?
-    events: list
-
-class BaseOdeModel(object):
+class BaseODEModel(object):
     """
     This base object stores the defining objects of a compartmental model
     and has functions to verify the build
@@ -71,10 +59,10 @@ class BaseOdeModel(object):
             state=None,
             param=None,
             derived_param=None,
-            #  transition=None,
+            transition=None,
             event=None,
-            # birth_death=None,
-            # ode=None,
+            birth_death=None,
+            ode=None,
             # Technical arguments
             backend='lambda'
         ):
@@ -99,9 +87,10 @@ class BaseOdeModel(object):
         self.set_states(state)
 
         # we always need time to be a symbol and it should be denoted as t
+        # TODO: should be added to state / param store?
         self._t = sympy.symbols('t', real=True)
 
-        self._isDifficult = False
+        # self._isDifficult = False
 
         self._odeList = list()
         self._derivedParamList = list()
@@ -131,17 +120,18 @@ class BaseOdeModel(object):
             events = self.event_list
         )
 
-        # if not ode_utils.none_or_empty_list(transition):
-        #     self.transition_list = transition
+        if not ode_utils.none_or_empty_list(transition):
+            self.transition_list = transition
 
-        # if not ode_utils.none_or_empty_list(birth_death):
-        #     self.birth_death_list = birth_death
+        if not ode_utils.none_or_empty_list(birth_death):
+            self.birth_death_list = birth_death
 
-        # if not ode_utils.none_or_empty_list(ode):
-        #     self.ode_list = ode
+        if not ode_utils.none_or_empty_list(ode):
+            self.ode_list = ode
 
-        #self._computeEventRateVector()
+        self._computeEventRateVector()
         # Add the maths methods to the class
+
         self._init_maths_methods()
         self._invalidate_caches()
 
@@ -222,49 +212,19 @@ class BaseOdeModel(object):
         """
         self._parameter_store.values = parameters
 
-    # TODO: tidy up all this state stuff
-    @property
-    def state(self):
-        """
-        Returns
-        -------
-        list
-            state in symbol with current value,
-            (:mod:`sympy.core.symbol`,numeric)
+    # # TODO: tidy up all this state stuff
+    # @property
+    # def state(self):
+    #     """
+    #     Returns
+    #     -------
+    #     list
+    #         state in symbol with current value,
+    #         (:mod:`sympy.core.symbol`,numeric)
 
-        """
-        return [(symb, val) for symb, val in zip(self._state_store.symbol_list,
-                                                self._state_store.values)]
-
-    # TODO: is this used?
-    @property
-    def time(self):
-        """
-        The current time in the ode system
-
-        Returns
-        -------
-        numeric
-
-        """
-        return self._time
-
-    # beware of the fact that
-    # time = numeric
-    # t = sympy symbol
-    @time.setter
-    def time(self, time):
-        """
-        Set the time for the ode system
-
-        Parameters
-        ----------
-        time: numeric
-            Current time of the ode
-
-        """
-        if time is not None:
-            self._time = time
+    #     """
+    #     return [(symb, val) for symb, val in zip(self._state_store.symbol_list,
+    #                                             self._state_store.values)]
 
     @property
     def state_list(self):
@@ -337,7 +297,7 @@ class BaseOdeModel(object):
 
     def set_parameters(self, parameter_list:list[str|ODEVariable]) -> None:
         """
-        Set the parameters for the compartmental model
+        Declare and store the parameter names for the compartmental model
 
         Parameters
         ----------
@@ -346,6 +306,7 @@ class BaseOdeModel(object):
             system
         """
         # TODO: should parameters have limits, like states?
+
         # create a new store to replace the existing (if creations success)
         new_parameter_store = ode_utils.ParameterStore()
         new_parameter_store.add(parameter_list)
@@ -758,13 +719,10 @@ class BaseOdeModel(object):
 
         if isinstance(transition, Transition):
             if transition.transition_type is TransitionType.T:
-
-                trans=Transition(origin=transition.origin,
-                                 destination=transition.destination,
-                                 transition_type="T")
-
-                event=Event(rate=transition.equation,
-                            transition_list=[trans])
+                event = Event(
+                    rate=transition.rate,
+                    transition_list=[transition]
+                )
 
                 self._eventList.append(event)
                 self._transitionList.append(transition)

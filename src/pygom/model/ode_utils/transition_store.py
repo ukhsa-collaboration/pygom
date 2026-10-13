@@ -23,7 +23,7 @@ class EventStore(object):
 
     This object is designed to:
     * Store all the events
-    * That's it? State change matrix takes care of everything else?
+    * Maybe that's it. State change matrix takes care of everything else?
     * Manage transitions (for now, no management necessary unless we want
         to forbid e.g. duplicates -however, might be the case that 2 independent
         transitions can exist with same origin, destination and rate) 
@@ -61,31 +61,32 @@ class EventStore(object):
             f"Variable must be list or {self._accepted_variable_types}."
         )
 
-    @property
-    def num_events(self)->int:
-        '''
-        The current number of variables in the store
-        '''
-        return len(self._event_list)
-
     def add(
             self, 
-            events:Event|list[Event],
+            events:Event|Transition|list[Event|Transition],
             variable_namespace,
             state_namespace
         ):
         '''
-        Add variable(s) to the store
+        Add event(s) to the store
 
         Parameters
         ----------
-        variable: The name of variable to add. This will be appended at the end
-            of the list of variables
+        events:
+            Transition or Event objects (or list thereof)
+        variable_namespace:
+            Dict of str:symbol for all variables (state, param, derived param, time)         
+        state_namespace:
+            Set of string type state names. Can pass the state_dict here
+            as the keys will be checked
         '''
 
         events = self._force_list(events)
 
         for event in events:
+
+            # We may receive a Transition object, in which case convert it to a 
+            # one transition Event.
             if isinstance(event, Transition):
                 event = Event(
                     rate=event.rate,
@@ -111,6 +112,17 @@ class EventStore(object):
     #####################################
     # Externally shared properties
     #####################################
+
+    ## store count ##
+
+    @property
+    def num_events(self)->int:
+        '''
+        The current number of variables in the store
+        '''
+        return len(self._event_list)
+
+    ## event list ##
 
     @property
     def event_list(self)->list[str]:

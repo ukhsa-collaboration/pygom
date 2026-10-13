@@ -1,103 +1,52 @@
 from .model_spec import ModelSpec
 
-from .maths.state_change_matrix import StateChangeMatrix
-from .maths.ode_system import ODESystem
-from .maths.event_rate_vector import EventRateVector
+from .ode_utils.compiler import CompileCode
 
-# from .maths.grad import ODEGradParams, ODEGradStates, EventRatesGradParams, EventRatesGradStates
-from .maths.jacobian import ODEJacobianParams, ODEJacobianStates, EventRatesJacobianParams, EventRatesJacobianStates
+from .ode_utils.maths_methods_store import MathsMethodsRegistry
 
-from .maths.hessian import ODEHessianParams, ODEHessianStates, EventRatesHessianParams, EventRatesHessianStates
+class DependencyManager:
+    """
+    Individual stores take care of their own caches for the most part,
+    but sometimes dependency across different stores can lead to
+    cache invalidation.
 
-from .maths.hessian_mixed import ODEMixedHessianStatesParams, EventRatesMixedHessianStatesParams
+    Currently this deals with the simple case: adding new events invalidates
+    the maths methods store. For now, the dependency manager is overly
+    complicated, but ready if required for more complex model inter-
+    dependency in the future.
+    """
+    def __init__(self):
 
-# from .maths.transition_jacobian import TransitionJacobian
-# from .maths.hessian import Hessian
+        self._dependency_map = {
+            "events": ["maths_methods"]
+        }
 
-from .ode_utils import compileCode
+        self._dirty = {
+            "maths_methods": True
+        }
 
+    def mark_dirty(self, dependency):
+        self._dirty[dependency] = True
 
+    def mark_clean(self, dependency):
+        self._dirty[dependency] = False
 
-class MathsRegistry:
+    def is_dirty(self, component):
+        return self._dirty[component]
 
-    def __init__(self, model_spec, compiler):
-        self._model_spec = model_spec
-        self._SC = compiler
-
-        self._method_classes = dict()
-        self._methods = dict()
-
-    def register(self, method_cls):
-        self._method_classes[method_cls.method_name] = method_cls
-
-    def __getitem__(self, name):
-        if name not in self._methods:
-            self._build(name)
-
-        return self._methods[name]
-
-    def _build(self, name):
-        cls = self._method_classes[name]
-
-        for dependency in cls.depends_on:
-            self._build(dependency)
-
-        # Create an instance of the maths class with this class as the 
-        # associated ode system
-        maths_class_instance = cls(
-            self._model_spec,
-            self._SC,
-            self
-        )
-
-        self._methods[name] = maths_class_instance
-
-    def _invalidate_caches(self)->None:
+    def notify_change(self, change_location):
         """
-        Tell objects that have cached components to reset their caches as
-        the underlying system has changed
+        Notify all relevant dependencies that a change has just occurred.
         """
-        # The maths methods
-        for mathsmethod in self._maths_methods:
-            try:
-                method_instance = getattr(self, mathsmethod.method_name)
-                method_instance.invalidate_cache()
-            except AttributeError:
-                pass # We may not yet have all the objects
-        
-        # The states_and_parameters list (none === not set)
-        # NOTE: Are we saying "math methods have changed, thus invalidating states/params"
-        #       not sure if it applies in that direction.
-        self._sp = None
+        if change_location not in self._dependency_map.keys():
+            return ValueError(f"Feature, '{change_location}', is not recognised as a model component")
+
+        dependency_locations = self._dependency_map[change_location]
+
+        for dependency_location in dependency_locations:
+            self.mark_dirty(dependency_location)
 
 class Model():
-
-    _maths_methods = [
-        # Fundamental objects
-        StateChangeMatrix,
-        ODESystem,
-        EventRateVector,
-
-        # Jacobians of the above
-        ODEJacobianParams,
-        ODEJacobianStates,
-        EventRatesJacobianParams,
-        EventRatesJacobianStates,
-
-        # Hessians of the above
-        ## d/dx^2 or d/dp^2
-        ODEHessianParams,
-        ODEHessianStates,
-        EventRatesHessianParams,
-        EventRatesHessianStates,
-        ## d/dxdp
-        ODEMixedHessianStatesParams,
-        EventRatesMixedHessianStatesParams
-
-
-    ]
-
-    # TODO: maths methods need to include derivatives of derived params.
 
     def __init__(
             self,
@@ -108,32 +57,33 @@ class Model():
             backend='lambda'
         ):
 
+        ## Dependency manager ##
+        self._DependencyManager = DependencyManager()
+
         ## Foundational model specifications ##
+
         # (states, params, events)
         self._ModelSpec = ModelSpec(
             state=state,
             param=param,
             derived_param=derived_param,
-            event=event
+            event=event,
+            dependency_manager=self._DependencyManager
         )
 
         # Compiler
-        self._SC = compileCode(backend=backend)
+        self._SC = CompileCode(backend=backend)
 
         ## Maths methods registry ##
-        self._MethodRegister = MathsRegistry(
+        self._MethodRegister = MathsMethodsRegistry(
             model_spec=self._ModelSpec,
-            compiler=self._SC
+            compiler=self._SC,
+            dependency_manager=self._DependencyManager
         )
 
-        for method in self._maths_methods:
+        for method in self._MethodRegister._maths_methods:
             name = method.method_name
-            self._MethodRegister.register(method)
-            setattr(
-                self,
-                name,
-                self._MethodRegister[name]
-            )
+            setattr(self, name, self._MethodRegister[name])
 
         ##.....Simulation interface.....##
 
@@ -141,22 +91,22 @@ class Model():
 
         ##.....ABC interface.....##
 
+    ## User interface ##
 
     @property
     def parameters(self):
         """
+        Get a dict of {str_id: numeric value}
 
+        NOTE: can be anything we want from model_spec (e.g. list)
         """
-        return self._ModelSpec.parameters
+        return self._ModelSpec.parameter_id_value_dict
 
     @parameters.setter
     def parameters(self, parameters):
-        self._ModelSpec.parameters = parameters
+        self._ModelSpec.set_parameter_values(parameters)
 
 
     # TODO:
-
-    # 1) User accessible attributes
-    # 2) Cache and setting params
-    # 3) Transfer remaining mathmethods from DeterminsiticODE
-    # 4) random number seeds
+    # 1) Transfer remaining mathmethods from DeterminsiticODE
+    # 2) random number seeds

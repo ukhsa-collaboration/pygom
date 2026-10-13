@@ -8,13 +8,10 @@ from ..transition import TransitionType
 class ODESystem(NumericMethod):
     method_name = 'ode'
 
-    def get_equation(self):
+    def _build_expression(self):
         '''
         Build the algebraic system of ODE's given the transitions and events.
         '''
-        # Check if we need to recreate the system
-        if self._cache_valid:
-            return self._ode
         
         logging.debug('Building system of ODEs')
 
@@ -39,7 +36,7 @@ class ODESystem(NumericMethod):
                     between_state_ode[destination_index] += rate_of_change
 
         # Collect together contributions and make attributes
-        self._ode = between_state_ode + birth_death_ode
+        ode = between_state_ode + birth_death_ode
 
 #         # tests to see whether we have an autonomous system.  Need to
 #         # convert a non-autonmous system into an autonomous.  Note that
@@ -55,4 +52,4 @@ class ODESystem(NumericMethod):
 #             # TODO: Do we really need to set this on the parent_model?
 #             self._parent_model._isDifficult = self._parent_model._isDifficult or isDifficult
             
-        return self._ode
+        self._sympy_expression =  ode

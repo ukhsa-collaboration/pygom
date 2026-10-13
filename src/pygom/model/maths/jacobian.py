@@ -5,7 +5,7 @@ class ODEJacobianStates(NumericMethod):
 
     depends_on = ['ode']
 
-    def get_equation(self):
+    def _build_expression(self):
         '''
         Returns the jacobian of ODEs vs states in algebraic form
 
@@ -16,62 +16,60 @@ class ODEJacobianStates(NumericMethod):
 
         '''
 
-        states = self._model_spec.state_list
+        states = self._model_spec.state_symbol_list
 
-        ode = self._method_register["ode"].get_equation()
-
-        ode = self.expand_derived_params(ode)
+        # If we leave derived params in as they are, sympy thinks they are
+        # parameters and won't apply the chain rule
+        ode = self._method_register["ode"].get_equation(expand_derived_params=True)
 
         J = ode.jacobian(states)
 
-        J = self.compress_derived_params(J)
+        # Now we have to sub the derived params back in, because the build_expression expects it
 
-        return J
+        J = self._collapse_derived_parameters(J)
+
+        self._sympy_expression =  J
 
 class ODEJacobianParams(NumericMethod):
     method_name = 'ode_jacobian_params'
 
     depends_on = ['ode']
 
-    def get_equation(self):
+    def _build_expression(self):
         '''
 
         '''
 
-        params = self._model_spec.param_list
+        params = self._model_spec.parameter_symbol_list
 
-        ode = self._method_register["ode"].get_equation()
-
-        ode = self.expand_derived_params(ode)
+        ode = self._method_register["ode"].get_equation(expand_derived_params=True)
 
         J = ode.jacobian(params)
 
-        J = self.compress_derived_params(J)
+        J = self._collapse_derived_parameters(J)
 
-        return J
-    
+        self._sympy_expression =  J
+
 
 class EventRatesJacobianStates(NumericMethod):
     method_name = 'event_rates_jacobian_states'
 
     depends_on = ['event_rate_vector']
 
-    def get_equation(self):
+    def _build_expression(self):
         '''
 
         '''
 
-        states = self._model_spec.state_list
+        states = self._model_spec.state_symbol_list
 
-        erv = self._method_register["event_rate_vector"].get_equation()
-
-        erv = self.expand_derived_params(erv)
+        erv = self._method_register["event_rate_vector"].get_equation(expand_derived_params=True)
 
         J = erv.jacobian(states)
 
-        J = self.compress_derived_params(J)
+        J = self._collapse_derived_parameters(J)
 
-        return J
+        self._sympy_expression =  J
 
 
 class EventRatesJacobianParams(NumericMethod):
@@ -79,19 +77,17 @@ class EventRatesJacobianParams(NumericMethod):
 
     depends_on = ['event_rate_vector']
 
-    def get_equation(self):
+    def _build_expression(self):
         '''
 
         '''
 
-        params = self._model_spec.param_list
+        params = self._model_spec.parameter_symbol_list
 
-        erv = self._method_register["event_rate_vector"].get_equation()
-
-        erv = self.expand_derived_params(erv)
+        erv = self._method_register["event_rate_vector"].get_equation(expand_derived_params=True)
 
         J = erv.jacobian(params)
 
-        J = self.compress_derived_params(J)
+        J = self._collapse_derived_parameters(J)
 
-        return J
+        self._sympy_expression =  J

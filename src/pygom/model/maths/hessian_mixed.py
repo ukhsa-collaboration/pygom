@@ -9,7 +9,7 @@ from .._model_verification import simplifyEquation
 
 #     depends_on = ['grad']
 
-#     def get_equation(self):
+#     def _build_expression(self):
 #         '''
 #         Return the jacobian of the gradient in algebraic form
 
@@ -29,7 +29,7 @@ from .._model_verification import simplifyEquation
 #             self._model_spec.num_state
 #         )
         
-#         G = self._method_register['grad'].get_equation()
+#         G = self._method_register['grad']._build_expression()
 
 #         for param_k in range(self._model_spec.num_param):
 #             for state_i in range(self._model_spec.num_state):
@@ -40,13 +40,11 @@ from .._model_verification import simplifyEquation
 
 #         return self._GradJacobian
 
-
 class ODEMixedHessianStatesParams(NumericMethod):
     method_name = "ode_mixed_hessian_states_params"
-
     depends_on = ["ode"]
 
-    def get_equation(self):
+    def _build_expression(self):
         '''
         Return the mixed Hessian of the ODE system with respect
         to states and parameters.
@@ -69,11 +67,10 @@ class ODEMixedHessianStatesParams(NumericMethod):
         to avoid ambiguity regarding axis ordering.
         '''
 
-        states = self._model_spec.state_list
-        params = self._model_spec.param_list
+        states = self._model_spec.state_symbol_list
+        params = self._model_spec.parameter_symbol_list
 
-        ode = self._method_register["ode"].get_equation()
-        ode = self.expand_derived_params(ode)
+        ode = self._method_register["ode"].get_equation(expand_derived_params=True)
 
         H = Array([
             [
@@ -86,17 +83,16 @@ class ODEMixedHessianStatesParams(NumericMethod):
             for eqn in ode
         ])
 
-        H = self.compress_derived_params(H)
+        H = self._collapse_derived_parameters(H)
 
-        return H
+        self._sympy_expression =  H
 
 
 class EventRatesMixedHessianStatesParams(NumericMethod):
     method_name = "event_rates_mixed_hessian_states_params"
-
     depends_on = ["event_rate_vector"]
 
-    def get_equation(self):
+    def _build_expression(self):
         '''
         Return the mixed Hessian of the Event Rate system with respect
         to states and parameters.
@@ -119,11 +115,10 @@ class EventRatesMixedHessianStatesParams(NumericMethod):
         to avoid ambiguity regarding axis ordering.
         '''
 
-        states = self._model_spec.state_list
-        params = self._model_spec.param_list
+        states = self._model_spec.state_symbol_list
+        params = self._model_spec.parameter_symbol_list
 
-        erv = self._method_register["event_rate_vector"].get_equation()
-        erv = self.expand_derived_params(erv)
+        erv = self._method_register["event_rate_vector"].get_equation(expand_derived_params=True)
 
         H = Array([
             [
@@ -136,6 +131,6 @@ class EventRatesMixedHessianStatesParams(NumericMethod):
             for eqn in erv
         ])
 
-        H = self.compress_derived_params(H)
+        H = self._collapse_derived_parameters(H)
 
-        return H
+        self._sympy_expression =  H

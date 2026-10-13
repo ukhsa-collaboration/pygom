@@ -5,12 +5,11 @@ from sympy.core.function import diff
 from ..transition import TransitionType
 
 from .mathsmethod import NumericMethod
-from .._model_verification import simplifyEquation, checkEquation
 
 class StateChangeMatrix(NumericMethod):
     method_name = 'state_change_matrix'
 
-    def get_equation(self):
+    def _build_expression(self):
         """
         The state change matrix, where
         .. math::
@@ -37,4 +36,4 @@ class StateChangeMatrix(NumericMethod):
                     vMat[origin_index, event_index] -= magnitude
                     vMat[destination_index, event_index] += magnitude
             
-        return vMat
+        self._sympy_expression = vMat

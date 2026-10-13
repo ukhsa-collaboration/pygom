@@ -87,12 +87,10 @@ class ODEVariable(object):
     def __init__(
             self,
             ID:None|str, 
-            # symbol:None|Symbol|str=None,
             description:None|str=None,
             units:None|Quantity=None,
             real:bool=True,
             limits:None|tuple=(0, np.inf),
-            # value=None,
             tags=None|list[str],
             class_name='ODEVariable'
         ):
@@ -101,17 +99,6 @@ class ODEVariable(object):
             raise InputError(
                 f"Must specify ID"
             )
-
-        # if (ID is None) and (symbol is None):
-        #     raise InputError(
-        #         f"Must specify at least one of ID or symbol"
-        #     )
-
-        # if ID is None:
-        #     ID = str(symbol)
-
-        # if symbol is None:
-        #     symbol = ID
 
         self.ID = ID
         self.real = real
@@ -139,7 +126,9 @@ class ODEVariable(object):
             f"{self.units!r}, "
             f"{self.limits!r})"
         )
-                                                
+    
+    # TODO: We cannot have shared ID so this should be sufficient to check equality
+
     def __eq__(self, other):
         if isinstance(other, str):
             return self.ID == other

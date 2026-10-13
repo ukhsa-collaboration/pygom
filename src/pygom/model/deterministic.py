@@ -130,6 +130,8 @@ class DeterministicOde(BaseOdeModel):
     # TODO: base
     def __eq__(self, other):
         if isinstance(other, DeterministicOde):
+            #TODO: different compartmenal model can technically still have same ODE rep.
+            # e.g. 2 patches with equal and opposite migration.
             if self.ode.get_equation() == other.ode.get_equation():
                 return True
             else:

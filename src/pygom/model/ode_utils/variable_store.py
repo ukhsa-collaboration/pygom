@@ -32,7 +32,7 @@ might be making design awkward
 # TODO: it is quite annoying to sometimes call things by id (string) and
 # sometimes by symbol, or to want things as id/symbol. Might have to just pick one way?
 
-# TODO: cache for speed, not necessarily to just keep everything up to date
+# NOTE: cache for speed, not necessarily to just keep everything up to date
 
 
 class IndexShim(object):
@@ -227,9 +227,11 @@ class VariableStore(object):
 
         # key is new, so we need to record it:
         # Store the new variable, NOTE: doesn't seem to be a mechanism to update a variable
-        self._variables[key] = var_obj
+
         # Store the position of this key
         self._variable_pos[key] = len(self._variables) 
+
+        self._variables[key] = var_obj
 
     def add(self, variable, all_symbols=dict()):
         '''
@@ -255,7 +257,6 @@ class VariableStore(object):
 
     #####################################
     # Properties
-    # TODO: check if we need to add / remove any of these
     #####################################
 
     def get_index(self, key:str) -> int:
@@ -433,7 +434,7 @@ class StateStore(VariableStore):
             if "cumulative" not in state.tags
         ]
 
-    # TODO: 
+    # TODO: finish below defs
 
     # def initial_conditions(self):
     #     '''
@@ -688,6 +689,7 @@ class DerivedParameterStore(VariableStore):
         self._expression_dict = None
         self._id_expression_dict = None
         self._symbol_expression_dict = None
+        self._expression_symbol_dict = None
 
     def _prepare_variables(self, variable, all_symbols):
         '''
@@ -765,3 +767,17 @@ class DerivedParameterStore(VariableStore):
             self._symbol_expression_dict = result
 
         return self._symbol_expression_dict
+
+    @property
+    def expression_symbol_dict(self)->dict[str: Symbol]:
+        '''
+        Get an OrderedDict of derived parameter sympy expressions, this time the expressions are the keys
+        '''
+        if self._expression_symbol_dict is None:
+
+            self._expression_symbol_dict = {
+                value: key
+                for key, value in self.symbol_expression_dict.items()
+            }
+
+        return self._expression_symbol_dict

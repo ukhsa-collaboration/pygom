@@ -1,11 +1,10 @@
 import sympy
 
 from .mathsmethod import NumericMethod
-from .._model_verification import checkEquation
 
 # class EventRateVector(NumericMethod):
 #     method_name = 'event_rate_vector'
-#     def get_equation(self):
+#     def _build_expression(self):
 #         """
 #         Get all the transitions into a vector, arranged by state to
 #         state transition then the birth death processes
@@ -25,7 +24,7 @@ from .._model_verification import checkEquation
 class EventRateVector(NumericMethod):
     method_name = 'event_rate_vector'
 
-    def get_equation(self):
+    def _build_expression(self):
         """
         Get all the transitions into a vector, arranged by state to
         state transition then the birth death processes
@@ -35,6 +34,6 @@ class EventRateVector(NumericMethod):
         event_rate_vector = sympy.zeros(self._model_spec.num_event, 1)
 
         for i, event in enumerate(self._model_spec.event_list):
-            event_rate_vector[i] = checkEquation(event.rate, self._model_spec.states_and_parameters_dict) 
+            event_rate_vector[i] = event.rate_expression
 
-        return event_rate_vector
+        self._sympy_expression = event_rate_vector
