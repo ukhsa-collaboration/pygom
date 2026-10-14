@@ -1,153 +1,77 @@
-"""
-    .. moduleauthor:: Edwin Tye <Edwin.Tye@phe.gov.uk>
-
-    Module containing functions that performs epidemiology based analysis
-    via algebraic manipulation, such as the basic reproduction number
-
-"""
-
 import sympy
-
-# from .simulate import SimulateOde, TransitionType
-
-# __all__ = [
-#            'DFE',
-#            'R0',
-#            'R0_from_matrix',
-#            'disease_progression_matrices'
-#            ]
-
-# These could be math methods:
-
-from .maths.mathsmethod import NumericMethod
-
 from sympy import Matrix
+from .maths.mathsmethod import NumericMethod
+from .transition import TransitionType
 
 class Equilibrium(NumericMethod):
-
     method_name = "equilibrium"
-
     depends_on = ["ode"]
 
-    def get_equation(self):
-        
-        dynamic_states = self._model_spec._state_store.get_dynamic_states()
+    def _build_expression(self):
 
-        indices = [
-            self._model_spec.get_state_index(str(state))        # TODO: this is not safe to assume str(state) comes from symbol
-            for state in dynamic_states
+        # Subset to just the dynamic states. If we have a cumulative compartment
+        # then it will appear that the system never has an equilibirum (S, I R may
+        # find equilirbium, but D forever grows)
+        
+        dynamic_state_ids = self._model_spec.reject_states_by_tag("cumulative")
+
+        dynamic_state_indices = [
+            self._model_spec.get_state_index(state)
+            for state in dynamic_state_ids
+        ]
+
+        dynamic_state_symbols = [
+            self._model_spec.state_symbol_list[i] for i in dynamic_state_indices
         ]
 
         ode = self._method_register["ode"].get_equation()
-        ode = ode[indices, :]
+        dynamic_ode = ode[dynamic_state_indices, :]
+
+        # Include deirved_parameters as constraint?
 
         constraints = Matrix([
             symb - expr
-            for symb, expr in self._model_spec._derived_parameter_store.symbol_to_expression_dict.items()
+            for symb, expr in self._model_spec.derived_parameter_symbol_expression_dict.items()
         ])
 
         eqns = Matrix.vstack(
-            ode,
+            dynamic_ode,
             constraints
         )
 
-        return sympy.solve(
+        self._sympy_expression = sympy.solve(
             eqns,
-            dynamic_states,
+            dynamic_state_symbols,
             dict=True
         )
 
 class DiseaseFreeEquilibrium(NumericMethod):
-
     method_name = "disease_free_equilibrium"
-
     depends_on = ["equilibrium"]
 
-    def get_equation(self):
+    def _build_expression(self):
 
-        infected_states = self._model_spec._state_store.get_states_by_tag("infected")
+        infected_state_ids = self._model_spec.get_states_by_tag("infected")
+
+        infected_state_symbols = [
+            self._model_spec.state_dict[id] for id in infected_state_ids
+        ]
 
         equilibria = self._method_register["equilibrium"].get_equation()
 
-        return [
+        self._sympy_expression = [
             eq
             for eq in equilibria
             if all(
                 sympy.simplify(
                     eq.get(state, 0)
                 ) == 0
-                for state in infected_states
+                for state in infected_state_symbols
             )
         ]
-
-
-class DiseaseFreeEquilibrium(NumericMethod):
-
-    method_name = "disease_free_equilibrium"
-
-    depends_on = ["equilibrium"]
-
-    def get_equation(self):
-
-        infected_states = self._model_spec._state_store.get_states_by_tag("infected")
-
-        equilibria = self._method_register["equilibrium"].get_equation()
-
-        return [
-            eq
-            for eq in equilibria
-            if all(
-                sympy.simplify(
-                    eq.get(state, 0)
-                ) == 0
-                for state in infected_states
-            )
-        ]
-
-
-# def DFE(ode, disease_state):
-#     '''
-#     Returns the disease free equilibrium from an ode object
-
-#     Parameters
-#     ----------
-#     ode: :class:`.BaseOdeModel`
-#         a class object from pygom
-#     diseaseState: array like
-#         name of the disease states
-
-#     Returns
-#     -------
-#     e: array like
-#         disease free equilibrium
-
-#     '''
-
-#     eqn = ode.ode.get_equation()
-#     index = ode.get_state_index(disease_state)
-#     states = [s for s in ode._iterStateList()]
-#     states_subs = {states[i]: 0 for i in index}
-#     eqn = eqn.subs(states_subs)
-
-#     DFE_solution = sympy.solve(eqn, states)
-#     if len(DFE_solution) == 0: DFE_solution = {}
-
-#     for s in states:
-#         if s not in states_subs.keys() and s not in DFE_solution.keys():
-#             DFE_solution.setdefault(s, 0)
-#     return DFE_solution
-
-
-
-
-# from .model_spec import ModelSpec
-
-from .transition import TransitionType
 
 class InfectionVector(NumericMethod):
-
     method_name = "infection_vector"
-
     depends_on = [
         "event_rate_vector",
         "state_change_matrix"
@@ -157,192 +81,110 @@ class InfectionVector(NumericMethod):
     Rates at which new infections occur
     """
 
-    def get_equation(self):
+    def _build_expression(self):
 
-        infected_states = self._model_spec._state_store.get_states_by_tag("infected")
+        infected_state_ids = self._model_spec.get_states_by_tag("infected")
 
         event_rate_vector = self._method_register["event_rate_vector"].get_equation()
 
         # container for output:
-        F = sympy.zeros(len(infected_states), 1)
+        F = sympy.zeros(len(infected_state_ids), 1)
 
         for event_i, event in enumerate(self._model_spec.event_list):
             for trans in event.transition_list:
-                if trans.transition_type==TransitionType.T:
+                if trans.transition_type==TransitionType.T:         # NOTE: are we ignoring people who are born infected?
                     orig = trans.origin
                     dest = trans.destination
 
-                    print(dest)
-                    print(type(dest))
-                    print(sympy.Symbol(dest))
-                    print(type(sympy.Symbol(dest)))
-                    print(infected_states)
-                    print(type(infected_states[0]))
-
-
-                    print((sympy.Symbol(dest) in infected_states))
-                    print(dest in infected_states)
-
-                    if (sympy.Symbol(orig) not in infected_states) and (sympy.Symbol(dest) in infected_states):
-                        print("yes")
-                        idx = infected_states.index(dest)
+                    if (orig not in infected_state_ids) and (dest in infected_state_ids):
+                        idx = infected_state_ids.index(dest)
                         F[idx] += event_rate_vector[event_i]
 
-        return F
+        self._sympy_expression = F
 
+class DiseaseProgressionVector(NumericMethod):
+    method_name = "disease_progression_vector"
+    depends_on = [
+        "ode",
+        "infection_vector"
+    ]
 
+    def _build_expression(self):
 
+        infected_state_ids = self._model_spec.get_states_by_tag("infected")
 
+        infected_indices = [self._model_spec.get_state_index(s) for s in infected_state_ids]
 
+        ode = self._method_register["ode"].get_equation()
 
+        disease_ode = ode[infected_indices, :]
 
+        F = self._method_register["infection_vector"].get_equation()
 
+        self._sympy_expression = F - disease_ode
 
+class InfectionMatrix(NumericMethod):
+    method_name = "infection_matrix"
+    depends_on = ["infection_vector"]
 
+    def _build_expression(self):
 
+        infected_state_ids = self._model_spec.get_states_by_tag("infected")
 
+        infected_symbols = [
+            self._model_spec.state_dict[s] for s in infected_state_ids
+        ]
 
+        F = self._method_register["infection_vector"].get_equation()
 
+        self._sympy_expression = F.jacobian(infected_symbols)
 
+class DiseaseProgressionMatrix(NumericMethod):
+    method_name = "disease_progression_matrix"
+    depends_on = ["disease_progression_vector"]
 
+    def _build_expression(self):
 
+        infected_state_ids = (self._model_spec.get_states_by_tag("infected"))
 
-# def R0(ode, disease_state):
-#     '''
-#     Returns the basic reproduction number, in symbolic form when
-#     the parameter values are not available
+        infected_symbols = [
+            self._model_spec.state_dict[s] for s in infected_state_ids
+        ]
 
-#     Parameters
-#     ----------
-#     ode: :class:`.BaseOdeModel`
-#         a class object from pygom
-#     diseaseStateIndex: array like
-#         name of the disease states
+        V = self._method_register["disease_progression_vector"].get_equation()
 
-#     Returns
-#     -------
-#     e: array like
-#         R0
+        self._sympy_expression = V.jacobian(infected_symbols)
 
-#     See Also
-#     --------
-#     :func:`getDiseaseProgressionMatrices`, :func:`getR0GivenMatrix`
+class R0(NumericMethod):
+    method_name = "R0"
+    depends_on = [
+        "infection_matrix",
+        "disease_progression_matrix",
+        "disease_free_equilibrium"
+    ]
 
-#     '''
+    def _build_expression(self):
 
-#     F, V = disease_progression_matrices(ode, disease_state)
-#     ## index = ode.get_state_index(disease_state)
-#     e = R0_from_matrix(F, V)
-#     DFE_eqn = DFE(ode, disease_state)
-#     e = [eig.subs(DFE_eqn) for eig in e]
-#     if ode.parameters is not None:
-#         e = [eig.subs(ode.parameters) for eig in e]
+        F = self._method_register["infection_matrix"].get_equation()
 
-#     e = list(filter(lambda x: sympy.Integer(-1) not in x.args, e))
-#     return (e if len(e) > 1 else e[0])
+        V = self._method_register["disease_progression_matrix"].get_equation()
 
-# def R0_from_matrix(F, V, disease_state=None):
-#     '''
-#     Returns the symbolic form of the basic reproduction number. This will
-#     include the states symbols which is different from :func:`getR0` where
-#     the states is replaced by the values of the disease-free equilibrium.
+        dfe = self._method_register["disease_free_equilibrium"].get_equation()
 
-#     Parameters
-#     ----------
-#     F: :class:`sympy.matrices.MatrixBase`
-#         secondary infection rates
-#     V: :class:`sympy.matrices.MatrixBase`
-#         disease progression rates
-#     disease_state: list like, optional
-#         list of the disease state as :class:`sympy.Symbol`.  Defaults
-#         to None which assumes that :math:`F,V` had been differentiated
+        if len(dfe)==0:
+            self._sympy_expression = []
 
-#     Returns
-#     -------
-#     e: :class:`sympy.matrices.MatrixBase`
-#         the eigenvalues of :math:`FV^{-1}` for the disease states
+        else:
+            dfe = dfe[0]
+            F = F.subs(dfe)
+            V = V.subs(dfe)
 
-#     See Also
-#     --------
-#     :func:`getDiseaseProgressionMatrices`, :func:`getR0`
-#     '''
+            K = F * V.inv()
 
-#     if disease_state is None:
-#         dF = F
-#         dV = V
-#     else:
-#         dF = F.jacobian(disease_state)
-#         dV = F.jacobian(disease_state)
+            eigenvalues = [
+                sympy.simplify(ev)
+                for ev in K.eigenvals()
+                if ev != 0
+            ]
 
-#     K = dF*dV.inv()
-#     e = K.eigenvals().keys()
-#     e = filter(lambda x: x != 0, e)
-#     return list(e)
-
-# def disease_progression_matrices(ode, disease_states, diff=True):
-#     '''
-#     Returns (F,V), the secondary infection rates and disease progression
-#     rate respectively.
-
-#     Parameters
-#     ----------
-#     ode: :class:`.BaseOdeModel`
-#         an ode class in pygom
-#     disease_states: array like
-#         the name of the disease states
-#     diff: bool, optional
-#         if the first derivative of the matrices are return, defaults to true
-
-#     Returns
-#     -------
-#     (F, V): tuple
-#         The progression matrices.  If diff=False, then we return the
-#         :math:`F_{i}` and :math:`V_{i}` matrices as per [Brauer2008]_.
-#     '''
-
-#     #get the indicies of the disease states
-#     diseaseIndex = [ode.get_state_index(disease_state)
-#                     for disease_state in disease_states]
-    
-#     state_list = list()
-#     for i, s in enumerate(ode._iterStateList()):
-#         if i in diseaseIndex:
-#             state_list.append(s)
-
-#     FList = list()
-
-#     for event in ode.event_list:
-#         for trans in event.transition_list:
-#             if trans.transition_type==TransitionType.T:
-#                 orig = _get_single_state_name(trans.origin)
-#                 dest = _get_single_state_name(trans.destination)
-#                 if isinstance(orig, str) and isinstance(dest, str):
-#                     if orig not in disease_states and dest in disease_states:
-#                         trans._equation=event.rate
-#                         FList.append(trans)
-
-#     infected_submodel = SimulateOde(ode.state_list, ode.param_list, transition=FList)
-
-#     F = ode2.ode.get_equation().row(diseaseIndex)
-#     V = F - ode.ode.get_equation().row(diseaseIndex)
-
-#     if diff:
-#         dF = F.jacobian(state_list)
-#         dV = V.jacobian(state_list)
-#         return dF, dV
-#     else:
-#         return F,V
-
-
-# def _get_single_state_name(state):
-#     if hasattr(state, '__iter__'):
-#         if isinstance(state, str):
-#             return state
-#         else:
-#             state = state[0] if len(state) == 1 else None
-#     if isinstance(state, str):
-#         return state
-#     elif isinstance(state, sympy.Symbol):
-#         return str(state)
-#     else:
-#         return None
+            self._sympy_expression = eigenvalues[0]         # NOTE: Assuming only 1 value of R0

@@ -9,7 +9,16 @@ from ..maths.jacobian import ODEJacobianParams, ODEJacobianStates, EventRatesJac
 from ..maths.hessian import ODEHessianParams, ODEHessianStates, EventRatesHessianParams, EventRatesHessianStates
 from ..maths.hessian_mixed import ODEMixedHessianStatesParams, EventRatesMixedHessianStatesParams
 
-from ..epi_analysis import Equilibrium, DiseaseFreeEquilibrium, InfectionVector
+from ..epi_analysis import (
+    Equilibrium,
+    DiseaseFreeEquilibrium,
+    InfectionVector,
+    InfectionVector,
+    DiseaseProgressionVector,
+    InfectionMatrix,
+    DiseaseProgressionMatrix,
+    R0
+)
 
 
 class MathsMethodsRegistry:
@@ -40,7 +49,11 @@ class MathsMethodsRegistry:
         # Epi modules
         Equilibrium,
         DiseaseFreeEquilibrium,
-        InfectionVector
+        InfectionVector,
+        DiseaseProgressionVector,
+        InfectionMatrix,
+        DiseaseProgressionMatrix,
+        R0
 
     ]
 

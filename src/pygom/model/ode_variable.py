@@ -303,12 +303,13 @@ class ODEVariable(object):
         if tags is None:
             tags = []
 
-        for tag in tags:
-            if tag not in self._allowed_tags:
-                raise(InputError(
-                    f"Invalid state tag: '{tag}'. "
-                    f"Choose from: {self._initial_value}"
-                    ))
+        # NOTE: Info on what tags are allowed cannot feature here
+        # for tag in tags:
+        #     if tag not in self._allowed_tags:
+        #         raise(InputError(
+        #             f"Invalid state tag: '{tag}'. "
+        #             f"Choose from: {self._allowed_tags}"
+        #             ))
 
         self._tags = set(tags)
 
@@ -375,6 +376,16 @@ class State(ODEVariable):
             current_value:None|Number=None,
             tags:None|list[str]=None
         ):
+
+        # NOTE: Science specific, does not belong here!!
+        # self._allowed_tags = [
+        #     "alive",
+        #     "dead",
+        #     "infected",
+        #     "infectious",
+        #     "cumulative"
+        # ]
+
         super().__init__(
             ID=ID,
             # symbol=symbol,
@@ -385,17 +396,6 @@ class State(ODEVariable):
             # value=value,
             class_name='State',
         )
-
-        # TODO: tags should probably be imported from the epi/econ/ecol/whetever module.
-        #       these are clearly econ tags for now.
-
-        self._allowed_tags = [
-            "alive",
-            "dead",
-            "infected",
-            "infectious",
-            "cumulative"
-        ]
 
         self.current_value = current_value
         self.initial_value = initial_value
@@ -560,16 +560,6 @@ class DerivedParameter(ODEVariable):
             tags=tags,
             class_name='DerivedParameter'
         )
-
-        # TODO: work in progress, but may be useful to tag derived parameters in this way:
-
-        self._allowed_tags = [
-            'cumulative',
-            'dynamic',
-            'convenience',
-            'subexpression',
-            'of_interest'
-        ]
 
         self.string_expression = string_expression
 

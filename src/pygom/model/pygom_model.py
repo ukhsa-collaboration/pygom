@@ -14,6 +14,10 @@ class DependencyManager:
     the maths methods store. For now, the dependency manager is overly
     complicated, but ready if required for more complex model inter-
     dependency in the future.
+
+    TODO: is it this simple? adding states and params can also change the
+          math obects, simply because an n_param x n_state matrix will need
+          more rows and columns, even if the extra params do nothing
     """
     def __init__(self):
 

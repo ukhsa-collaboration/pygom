@@ -126,6 +126,17 @@ class VariableStore(object):
             )
         return key in self._variables
 
+    def _invalidate_cache(self):
+        """ Clear variable cache """
+        self._id_list = None
+        self._symbol_list = None
+        self._lower_limit_list = None
+        self._upper_limit_list = None
+        self._full_list = None
+        self._symbol_dict = None
+        self._id_namespace = None
+        self._symbol_namespace = None
+
     #####################################
     # Add variables
     #####################################
@@ -357,16 +368,30 @@ class VariableStore(object):
         
         return self._symbol_namespace
 
-    def _invalidate_cache(self):
-        """ Clear variable cache """
-        self._id_list = None
-        self._symbol_list = None
-        self._lower_limit_list = None
-        self._upper_limit_list = None
-        self._full_list = None
-        self._symbol_dict = None
-        self._id_namespace = None
-        self._symbol_namespace = None
+
+    ## Tag manager ##
+
+    def get_id_by_tag(self, tag_name):
+        """
+        Dirty trial to get symbols which have a certain tag
+        """
+
+        return [
+            var.ID
+            for var in self._variables.values()
+            if tag_name in var.tags
+        ]
+
+    def reject_id_by_tag(self, tag_name):
+        """
+        Dirty trial to get symbols which have a certain tag
+        """
+
+        return [
+            var.ID
+            for var in self._variables.values()
+            if tag_name not in var.tags
+        ]
 
 class StateStore(VariableStore):
     '''
@@ -386,19 +411,7 @@ class StateStore(VariableStore):
                 str,
                 State
             )
-            # acceptable_tags = [
-            #     "alive",
-            #     "dead",
-            #     "infected",
-            #     "infectious",
-            #     "cumulative"
-            # ]
         )
-        # self._realisation_vals = None
-
-        # self._states_by_tag = {
-        #     key: dict() for key in self._acceptable_tags
-        # }
 
     def _check_variable(self, variable):
         if isinstance(variable, State):
@@ -410,30 +423,7 @@ class StateStore(VariableStore):
                 f'You may not add an object of type '
                 f'{type(variable)} as a {self.storage_type}.'
             )
-
-    # def _invalidate_cache(self):
-    #     '''
-    #     Overload parent class to include derived parameter specific properties to invalidate
-    #     '''
-    #     super()._invalidate_cache()
-    #     self._initial_conditions_dict = None
-
-    # def get_states_by_tag(self, tag):
-
-    #     return [
-    #         state.symbol
-    #         for state in self._variables.values()
-    #         if tag in state.tags
-    #     ]
-
-    def get_dynamic_states(self):
-
-        return [
-            state.symbol
-            for state in self._variables.values()
-            if "cumulative" not in state.tags
-        ]
-
+        
     # TODO: finish below defs
 
     # def initial_conditions(self):

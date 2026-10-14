@@ -538,6 +538,44 @@ class ModelSpec(object):
             return [self._derived_parameter_store.get_index(x) for x in input_str]
 
 
+    ## Tags ##
+
+    def get_states_by_tag(self, tag_name)->list[str]:
+        '''      
+        '''
+
+        return self._state_store.get_id_by_tag(tag_name)
+
+    def reject_states_by_tag(self, tag_name)->list[str]:
+        '''      
+        '''
+
+        return self._state_store.reject_id_by_tag(tag_name)
+
+    def get_parameters_by_tag(self, tag_name)->list[str]:
+        '''      
+        '''
+
+        return self._parameter_store.get_id_by_tag(tag_name)
+
+    def reject_parameters_by_tag(self, tag_name)->list[str]:
+        '''      
+        '''
+
+        return self._parameter_store.reject_id_by_tag(tag_name)
+
+    def get_derived_parameters_by_tag(self, tag_name)->list[str]:
+        '''      
+        '''
+
+        return self._derived_parameter_store.get_id_by_tag(tag_name)
+
+    def reject_derived_parameters_by_tag(self, tag_name)->list[str]:
+        '''      
+        '''
+
+        return self._derived_parameter_store.reject_id_by_tag(tag_name)
+
     ##########################################################
     #
     # Transitions and Events
