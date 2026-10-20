@@ -126,22 +126,6 @@ class DeterministicOde(BaseOdeModel):
         # memory when operating, but the output is required to be of
         # the vector form
         self._SAUtil = ode_utils.shapeAdjust(self.num_state, self.num_param)
-
-    # TODO: base
-    def __eq__(self, other):
-        if isinstance(other, DeterministicOde):
-            #TODO: different compartmenal model can technically still have same ODE rep.
-            # e.g. 2 patches with equal and opposite migration.
-            if self.ode.get_equation() == other.ode.get_equation():
-                return True
-            else:
-                return False
-        else:
-            return False
-
-    # TODO: base
-    def __repr__(self):
-        return "DeterministicOde" + self._get_model_str()
     
     ########################################################################
     #
@@ -149,36 +133,36 @@ class DeterministicOde(BaseOdeModel):
     #
     ########################################################################
 
-    # TODO: algebra
-    def linear_ode(self):
-        '''
-        To check whether the input ode is linear
+#     # TODO: linear check
+#     def linear_ode(self):
+#         '''
+#         To check whether the input ode is linear
 
-        Returns
-        -------
-        bool
-            True if it is linear, False otherwise
-        '''
-        # we always assume that it is true to begin with
-        # if the ode is linear, then a numerical integration
-        # scheme is a waste of time
-        is_linear = True
-        # if we do not current possess the jacobian, we find it! ROAR!
-        J=self.jacobian.get_equation()
+#         Returns
+#         -------
+#         bool
+#             True if it is linear, False otherwise
+#         '''
+#         # we always assume that it is true to begin with
+#         # if the ode is linear, then a numerical integration
+#         # scheme is a waste of time
+#         is_linear = True
+#         # if we do not current possess the jacobian, we find it! ROAR!
+#         J=self.jacobian.get_equation()
 
-        # a really stupid way to determining whether it is linear.
-        # have not figured out a better way yet...
-        a = J.atoms()
-        for s in self._state_store.symbol_list:
-            if s in a:
-                is_linear = False
-#         for i in range(0, self._numState):
-#             for j in range(0, self._numState):
-#                 for k in range(0, self._numState):
-#                     if self._Jacobian[i,j].has(self._stateList[k]):
-#                         isLinear = False
+#         # a really stupid way to determining whether it is linear.
+#         # have not figured out a better way yet...
+#         a = J.atoms()
+#         for s in self._state_store.symbol_list:
+#             if s in a:
+#                 is_linear = False
+# #         for i in range(0, self._numState):
+# #             for j in range(0, self._numState):
+# #                 for k in range(0, self._numState):
+# #                     if self._Jacobian[i,j].has(self._stateList[k]):
+# #                         isLinear = False
 
-        return is_linear
+#         return is_linear
 
     # TODO: To check whether we have a DAE or just an ODE
     # def isDAE(self):
@@ -188,69 +172,61 @@ class DeterministicOde(BaseOdeModel):
     # jacobian is actually singular, i.e. if it can be a DAE
     # def canDAE(self,x0,t0):
 
-
-    # TODO: delete
-    # def ode_T(self, t, state):
+    # # TODO: improve ODE rep
+    # def print_ode(self, latex_output=False):
     #     '''
-    #     Same as :meth:`ode` but with t as the first parameter
+    #     Prints the ode in symbolic form onto the screen/console in actual
+    #     symbols rather than the word of the symbol.
+
+    #     Parameters
+    #     ----------
+    #     latex_output: bool, optional
+    #         Defaults to false which prints the equation in terms of symbols,
+    #         if set to yes then the formula in terms of latex equations will
+    #         be printed onto the screen.
     #     '''
-    #     return self.ode(state, t)
+    #     A = self.ode.get_equation()
+    #     B = sympy.zeros(A.rows,2)
+    #     for i in range(A.shape[0]):
+    #         B[i,0] = sympy.symbols('d' + str(self.state_list[i]) + '/dt=')
+    #         B[i,1] = A[i]
 
-    # TODO: base/algebra/vis
-    def print_ode(self, latex_output=False):
-        '''
-        Prints the ode in symbolic form onto the screen/console in actual
-        symbols rather than the word of the symbol.
+    #     if latex_output:
+    #         logging.debug(sympy.latex(B, 
+    #                                   mat_str="array", 
+    #                                   mat_delim=None,
+    #                                   inv_trig_style='full'))
+    #     else:
+    #         logging.debug(sympy.pretty(B, 
+    #                                    use_unicode=True))
 
-        Parameters
-        ----------
-        latex_output: bool, optional
-            Defaults to false which prints the equation in terms of symbols,
-            if set to yes then the formula in terms of latex equations will
-            be printed onto the screen.
-        '''
-        A = self.ode.get_equation()
-        B = sympy.zeros(A.rows,2)
-        for i in range(A.shape[0]):
-            B[i,0] = sympy.symbols('d' + str(self.state_list[i]) + '/dt=')
-            B[i,1] = A[i]
+    # # TODO: give up in graph rep?
+    # def get_transition_graph(self, file_name=None, show=True):
+    #     '''
+    #     Returns the transition graph using graphviz
 
-        if latex_output:
-            logging.debug(sympy.latex(B, 
-                                      mat_str="array", 
-                                      mat_delim=None,
-                                      inv_trig_style='full'))
-        else:
-            logging.debug(sympy.pretty(B, 
-                                       use_unicode=True))
+    #     Parameters
+    #     ----------
+    #     file_name: str, optional
+    #         name of the output file, defaults to None
+    #     show: bool, optional
+    #         If the graph should be plotted, defaults to True
 
-    # TODO: base/algebra/vis
-    def get_transition_graph(self, file_name=None, show=True):
-        '''
-        Returns the transition graph using graphviz
-
-        Parameters
-        ----------
-        file_name: str, optional
-            name of the output file, defaults to None
-        show: bool, optional
-            If the graph should be plotted, defaults to True
-
-        Returns
-        -------
-        :class:`graphviz.Digraph`
-        '''
-        # dot = _ode_composition.generateTransitionGraph(self, file_name)
-        dot = _transition_graph.generateTransitionGraph(self, file_name)
-        if show:
-            import matplotlib.image as mpimg
-            import matplotlib.pyplot as plt
-            img = mpimg.imread(io.BytesIO(dot.pipe("png")))
-            plt.imshow(img)
-            plt.show(block=False)
-            return dot
-        else:
-            return dot
+    #     Returns
+    #     -------
+    #     :class:`graphviz.Digraph`
+    #     '''
+    #     # dot = _ode_composition.generateTransitionGraph(self, file_name)
+    #     dot = _transition_graph.generateTransitionGraph(self, file_name)
+    #     if show:
+    #         import matplotlib.image as mpimg
+    #         import matplotlib.pyplot as plt
+    #         img = mpimg.imread(io.BytesIO(dot.pipe("png")))
+    #         plt.imshow(img)
+    #         plt.show(block=False)
+    #         return dot
+    #     else:
+    #         return dot
 
 
     ########################################################################

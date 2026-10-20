@@ -1,4 +1,5 @@
 from .mathsmethod import NumericMethod
+import sympy
 
 class ODEJacobianStates(NumericMethod):
     method_name = 'ode_jacobian_states'
@@ -28,7 +29,7 @@ class ODEJacobianStates(NumericMethod):
 
         J = self._collapse_derived_parameters(J)
 
-        self._sympy_expression =  J
+        self._sympy_expression =  sympy.simplify(J)
 
 class ODEJacobianParams(NumericMethod):
     method_name = 'ode_jacobian_params'
@@ -48,7 +49,7 @@ class ODEJacobianParams(NumericMethod):
 
         J = self._collapse_derived_parameters(J)
 
-        self._sympy_expression =  J
+        self._sympy_expression =  sympy.simplify(J)
 
 
 class EventRatesJacobianStates(NumericMethod):

@@ -36,4 +36,4 @@ class StateChangeMatrix(NumericMethod):
                     vMat[origin_index, event_index] -= magnitude
                     vMat[destination_index, event_index] += magnitude
             
-        self._sympy_expression = vMat
+        self._sympy_expression = sympy.simplify(vMat)

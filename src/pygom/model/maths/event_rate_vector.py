@@ -36,4 +36,4 @@ class EventRateVector(NumericMethod):
         for i, event in enumerate(self._model_spec.event_list):
             event_rate_vector[i] = event.rate_expression
 
-        self._sympy_expression = event_rate_vector
+        self._sympy_expression = sympy.simplify(event_rate_vector)

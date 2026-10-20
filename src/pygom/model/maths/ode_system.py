@@ -52,4 +52,4 @@ class ODESystem(NumericMethod):
 #             # TODO: Do we really need to set this on the parent_model?
 #             self._parent_model._isDifficult = self._parent_model._isDifficult or isDifficult
             
-        self._sympy_expression =  ode
+        self._sympy_expression = sympy.simplify(ode)

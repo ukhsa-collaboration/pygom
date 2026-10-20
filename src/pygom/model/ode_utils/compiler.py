@@ -119,6 +119,15 @@ class CompileCode:
 
         logging.debug('Compiled expression as {}'.format(compile_type))
 
+
+        # TODO: check this, fix to ensure that e.g. (4,1) shape out is (4,)
+
+        return lambda x: (
+            lambda y: y[:, 0] if y.ndim == 2 and y.shape[1] == 1 else y
+        )(
+            np.asarray(raw_fn(*x), dtype=float)
+        )
+
         return lambda x: np.asarray(
             raw_fn(*x),
             dtype=float

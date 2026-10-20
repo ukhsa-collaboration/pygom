@@ -236,7 +236,7 @@ class NumericMethod:
         if not self._model_spec.all_parameter_values_set:
             raise InputError("Have not set all of the parameters yet")
 
-        return state + [time] + self._model_spec.parameter_value_list
+        return list(state) + [time] + self._model_spec.parameter_value_list
 
     # ## Derived parameters ## TODO: how do we deal with them?
 

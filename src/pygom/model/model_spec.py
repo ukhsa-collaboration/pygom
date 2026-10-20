@@ -7,6 +7,8 @@ from ._model_verification import checkEquation
 from .ode_variable import ODEVariable, State, Parameter
 from . import ode_utils
 
+from numbers import Number
+
 ### Main Classes ###
 class HasNewTransition(ode_utils.CompileCanary):
     states = []
@@ -76,7 +78,9 @@ class ModelSpec(object):
 
         # we always need time to be a symbol and it should be denoted as t
         # TODO: should be added to state / param store?
+        #       right now time lives in the model spec
         self._t = sympy.symbols('t', real=True)
+        self._initial_time = 0.0
 
         ## Parameters ##
         self._create_parameter_store(param)
@@ -226,6 +230,50 @@ class ModelSpec(object):
         """
         self._parameter_store.set_values(parameters)
 
+    def set_initial_states(self, ics:dict[str: float])->None:
+        """
+        Set the values for the states already defined.
+
+        Parameters
+        ----------
+        parameters: dict of {state_ID: initial_value} (prefered)
+        """
+        self._state_store.set_initial_states(ics)
+
+    def set_initial_time(self, t0:float)->None:
+        """
+        Set the values for the parameters already defined.
+
+        Parameters
+        ----------
+        parameters: dict of {parameter_ID: parameter_value} (prefered)
+        """
+        self._initial_time = t0
+
+
+    @property
+    def initial_time(self):
+        '''
+        Return the initial time
+        '''
+        return self._initial_time
+
+    @initial_time.setter
+    def initial_time(self, t0):
+        '''
+        Set the initial time
+
+        Parameters
+        ----------
+        t0: numeric
+            initial time where x0 is observed
+
+        '''
+
+        if isinstance(t0, Number):
+            self._initial_time = t0
+        else:
+            raise(InputError(f"Initial time should be numeric, received: '{type(t0)}'"))
 
     # ----------------------------------
     # Accessing store properties
@@ -277,6 +325,46 @@ class ModelSpec(object):
         """
         
         return self._parameter_store.symbol_value_dict
+
+    def new_parameter_realisation(self):
+
+        self._parameter_store.new_realisation()
+
+    @property
+    def stochastic_parameters(self)->bool:
+        '''
+        Simple check to see if there are any stochastic parameters in the store
+        '''
+        return self._parameter_store.stochastic_parameters    
+
+    @property
+    def has_stochastic_parameters(self)->bool:
+        '''
+        Simple check to see if there are any stochastic parameters in the store
+        '''
+        return self._parameter_store.has_stochastic_parameters
+
+    @property
+    def all_initial_states_set(self):
+        """
+        Returns
+        -------
+        bool
+            True if all params have numerical values assigned
+        """
+
+        return self._state_store.all_initial_states_set
+            
+    @property
+    def initial_state_list(self):
+        """
+        Returns
+        -------
+        list
+            Values in list form
+        """
+        
+        return self._state_store.initial_state_list
 
     ## Derived param expressions ##
 

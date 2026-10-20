@@ -413,6 +413,11 @@ class StateStore(VariableStore):
             )
         )
 
+        self._invalidate_ic_cache()
+
+    def _invalidate_ic_cache(self):
+        self._ic_list = None
+
     def _check_variable(self, variable):
         if isinstance(variable, State):
             return variable
@@ -423,19 +428,39 @@ class StateStore(VariableStore):
                 f'You may not add an object of type '
                 f'{type(variable)} as a {self.storage_type}.'
             )
-        
-    # TODO: finish below defs
 
-    # def initial_conditions(self):
-    #     '''
-        
-    #     '''
+    def set_initial_states(self, ics):
+        '''
+        Set state initial condition numeric values
+        '''
 
-    # @property
-    # def all_initial_conditions_set(self)->bool:
-    #     '''
-    #     Have all the values been set?
-    #     '''
+        for state_id, value in ics.items():
+            self[state_id].initial_value = value
+            self._invalidate_ic_cache()
+
+    @property
+    def all_initial_states_set(self)->bool:
+        '''
+        Have all the initial state values been set?
+        '''
+        # TODO: this will be slow
+
+        for variable in self._variables.values():
+            if variable.initial_value is None:
+                return False
+
+        return True
+
+    @property
+    def initial_state_list(self)->list[float]:
+        '''
+        Get a list of the state initial state conditions in order
+        '''
+        if self._ic_list is None:
+            self._ic_list = [variable.initial_value for variable in self._variables.values()]
+
+        return self._ic_list
+
         
 class ParameterStore(VariableStore):
     '''

@@ -12,12 +12,16 @@ from ..maths.hessian_mixed import ODEMixedHessianStatesParams, EventRatesMixedHe
 from ..epi_analysis import (
     Equilibrium,
     DiseaseFreeEquilibrium,
+    EndemicEquilibrium,
     InfectionVector,
     InfectionVector,
     DiseaseProgressionVector,
     InfectionMatrix,
     DiseaseProgressionMatrix,
-    R0
+    R0,
+    GenerationTime,
+    DiseaseFreeTimescales,
+    EndemicEquilibriumTimescales
 )
 
 
@@ -49,11 +53,15 @@ class MathsMethodsRegistry:
         # Epi modules
         Equilibrium,
         DiseaseFreeEquilibrium,
+        EndemicEquilibrium,
         InfectionVector,
         DiseaseProgressionVector,
         InfectionMatrix,
         DiseaseProgressionMatrix,
-        R0
+        R0,
+        GenerationTime,
+        DiseaseFreeTimescales,
+        EndemicEquilibriumTimescales
 
     ]
 
