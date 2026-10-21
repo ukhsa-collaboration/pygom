@@ -24,11 +24,21 @@ class Fixed(TauMethod):
         return(self.tau, True)
 
 class Adaptive(TauMethod):
-    def __init__(self, event_rates, stoichiometry_matrix, transition_mean_func, transition_var_func):
+    def __init__(
+            self,
+            event_rates,
+            stoichiometry_matrix,
+            transition_mean_func=None,
+            transition_var_func=None,
+            timestep_mean_func=None,
+            timestep_var_func=None
+        ):
         super().__init__(event_rates, stoichiometry_matrix)
 
         self.transition_mean_func = transition_mean_func
         self.transition_var_func = transition_var_func
+        self.timestep_mean_func = timestep_mean_func
+        self.timestep_var_func = timestep_var_func
 
     def _get_min_changes(self, t, y, thresholds):
         """
@@ -77,7 +87,12 @@ class Cao2006(Adaptive):
     DOI: https://doi.org/10.1063/1.2745299
     """
     def __init__(self, event_rates, stoichiometry_matrix, transition_mean_func, transition_var_func, epsilon):
-        super().__init__(event_rates, stoichiometry_matrix, transition_mean_func, transition_var_func)
+        super().__init__(
+            event_rates=event_rates,
+            stoichiometry_matrix=stoichiometry_matrix,
+            transition_mean_func=transition_mean_func,
+            transition_var_func=transition_var_func
+        )
         self.epsilon = epsilon
 
     def compute_tau(self, t, y, rates, thresholds):
@@ -112,6 +127,46 @@ class Cao2006(Adaptive):
 
         # timestep is the minimum one available
         tau = min(np.min(term1), np.min(term2))
+
+        if not np.isfinite(tau):
+            warnings.warn(f"Tau selection failed: Infinite step size calculated at t = {t}")
+            return tau, False
+        if tau == 0:
+            warnings.warn(f"Tau selection failed: Zero step size calculated at t = {t}")
+            return tau, False
+        if tau < 0:
+            warnings.warn(f"Tau selection failed: Negative step size calculated at t = {t}")
+            return tau, False
+
+        return tau, True
+
+class UKHSA2026(Adaptive):
+    """
+    Functions to compute step size according to Cao 2006 paper
+    Open pdf version: https://people.cs.vt.edu/~ycao/publication/adaptivetau.pdf
+    DOI: https://doi.org/10.1063/1.2745299
+    """
+    def __init__(self, event_rates, stoichiometry_matrix, timestep_mean_func, timestep_var_func, epsilon):
+        super().__init__(
+            event_rates=event_rates,
+            stoichiometry_matrix=stoichiometry_matrix,
+            timestep_mean_func=timestep_mean_func,
+            timestep_var_func=timestep_var_func
+        )
+        self.epsilon = epsilon
+
+    def compute_tau(self, t, y, rates, thresholds):
+        # 8a and 8b
+        timesteps_mn = self.epsilon * np.abs(self.timestep_mean_func(t, y))
+        timesteps_var = self.epsilon**2 * np.abs(self.timestep_var_func(t, y))
+
+        # timestep is the minimum one available
+        # tau = min(np.min(timesteps_mn), np.min(timesteps_var))
+
+        tau = np.nanmin([
+            np.nanmin(timesteps_mn),
+            np.nanmin(timesteps_var)]
+            )
 
         if not np.isfinite(tau):
             warnings.warn(f"Tau selection failed: Infinite step size calculated at t = {t}")

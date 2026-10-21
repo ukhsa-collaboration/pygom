@@ -91,12 +91,18 @@ class TauLeap(StochasticLeap):
             self.diag.zero_rate_termination=True
             return TimeStep(y_new=None, t_new=None, event_counts=None, end_sim=True)
 
-    def take_step(self, t, y):
+    def take_step(self, t, y, t_max=None):
         """
         Called by user. Returns (y_new, t_new).
         """
         rates, changes = self._compute_rates_and_changes(t, y)
 
+        # TODO: tidy up this condition. either _zero_rate_behaviour is redundant
+        #       or we should try to do everything via this function.
+        if (np.all(rates == 0)) & (self.proceed_if_rates_zero==False):
+            # print(f"stop at time {t}")
+            self.diag.zero_rate_termination=True
+            return TimeStep(y_new=None, t_new=None, event_counts=None, end_sim=True)
 
         # Thresholds can be expensive to calculate, so only do if required
         thresholds = None
@@ -116,6 +122,13 @@ class TauLeap(StochasticLeap):
 
         if np.all(rates == 0):
             return self._zero_rate_behavior(t, y, tau)
+        
+        final_step = False
+
+        if t_max is not None:
+            if t + tau > t_max:
+                tau = t_max - t
+                final_step = True
 
         for _ in range(self.retry_max + 1):
             # Propose jump
@@ -124,7 +137,7 @@ class TauLeap(StochasticLeap):
             # Calculate new state
             y_proposal = self._get_new_x(y, changes, event_counts)
 
-            step_proposal = TimeStep(y_new=y_proposal, t_new=t+dt, event_counts=event_counts, end_sim=False)
+            step_proposal = TimeStep(y_new=y_proposal, t_new=t+dt, event_counts=event_counts, end_sim=False, final_step=final_step)
 
             # Check if jump is legal
             if self.proposal_checker.is_legal(step_proposal, self.y_min, self.y_max, thresholds):
@@ -132,4 +145,11 @@ class TauLeap(StochasticLeap):
             else:
                 self.diag.n_failed_step += 1
                 tau = self._modify_tau(tau)
-        raise RuntimeError(f"Forbidden values still encountered after {self.retry_max} attempts")
+                final_step = False
+
+        raise RuntimeError(
+            f"Forbidden values still encountered after {self.retry_max} attempts.\n"
+            f"Timepoint: {t}\n"
+            f"Timestep: {tau}\n"
+            f"Proposed state: {step_proposal.y_new}"
+        )

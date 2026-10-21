@@ -11,7 +11,7 @@ from .config import (
     ExactConfig, TauConfig,
     ExactMethodConfig, TauMethodConfig,
     DirectMethodConfig, FirstReactionMethodConfig,
-    FixedTauConfig, Cao2006TauConfig,
+    FixedTauConfig, Cao2006TauConfig, UKHSA2026TauConfig,
     CheckerConfig, CriticalReactionConfig, ForbiddenStateConfig, NoCheckConfig,
     TauRefinerConfig, ProbabilisticRefinerConfig, NoRefinerConfig,
 )
@@ -107,11 +107,29 @@ def _method_from_string(name: str, **options: Any) -> Union[ExactMethodConfig, T
         return Cao2006TauConfig(
             epsilon=float(options["epsilon"]),
             transition_mean_func=options["transition_mean_func"],
-            transition_var_func=options["transition_var_func"])
+            transition_var_func=options["transition_var_func"]
+        )
+
+    if key == "ukhsa2026":
+        required = ["epsilon", "timestep_mean_func", "timestep_var_func"]
+        optional = ["checker", "checker_opts", "refiner", "refiner_opts"]
+        missing = [name for name in required if name not in options]
+        if missing:
+            raise ValueError(f"method='ukhsa2026' missing required options: {', '.join(missing)}")
+        
+        unused = [name for name in options if name not in (required+optional)]
+        if unused:
+            warnings.warn(f"method='ukhsa2026' does not use variables: {', '.join(unused)}", RuntimeWarning)
+
+        return UKHSA2026TauConfig(
+            epsilon=float(options["epsilon"]),
+            timestep_mean_func=options["timestep_mean_func"],
+            timestep_var_func=options["timestep_var_func"]
+        )
 
     raise ValueError(
         f"Unknown method {name!r}. "
-        "Known: 'direct', 'first_reaction', 'fixed_tau', 'cao2006'"
+        "Known: 'direct', 'first_reaction', 'fixed_tau', 'cao2006', 'ukhsa2026'"
     )
 
 
@@ -124,7 +142,7 @@ def build_config(method: MethodLike, /, **options: Any) -> SolverConfig:
     method : str | ExactMethodConfig | TauMethodConfig
         - String aliases:
             Exact: 'direct', 'first_reaction'
-            Tau:   'fixed_tau', 'cao2006', 'alternative2026'
+            Tau:   'fixed_tau', 'cao2006', 'ukhsa2026'
         - Or pass a method config object directly, e.g. FixedTauConfig(tau=0.1)
 
     **options : dict
@@ -139,7 +157,7 @@ def build_config(method: MethodLike, /, **options: Any) -> SolverConfig:
         For method-specific strings:
             - fixed_tau: tau: float (required)
             - cao2006: epsilon: float (required)
-            - alternative2026: epsilon: float (required)
+            - ukhsa2026: epsilon: float (required)
 
         If you pass a method config object, options specific to that method are ignored.
 

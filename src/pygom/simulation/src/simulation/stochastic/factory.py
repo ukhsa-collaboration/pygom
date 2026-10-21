@@ -3,11 +3,11 @@ Factory to assemble solver components from config classes
 """
 
 from .config import SolverConfig
-from .config import TauConfig, FixedTauConfig, Cao2006TauConfig
+from .config import TauConfig, FixedTauConfig, Cao2006TauConfig, UKHSA2026TauConfig
 from .config import ExactConfig, DirectMethodConfig, FirstReactionMethodConfig
 from .core.exact import DirectReaction, FirstReaction
 from .core.tau import TauLeap
-from .core.tau.method import Fixed, Cao2006
+from .core.tau.method import Fixed, Cao2006, UKHSA2026
 
 from .config import CriticalReactionConfig, NoCheckConfig, ForbiddenStateConfig
 from .core.step_checker import CriticalReactionCheck, NoCheck, ForbiddenStateCheck
@@ -80,6 +80,16 @@ def make_stepper(
                 stoichiometry_matrix=stoichiometry_matrix,
                 transition_mean_func=method_cfg.transition_mean_func,
                 transition_var_func=method_cfg.transition_var_func,
+                epsilon=method_cfg.epsilon,
+            )
+
+        elif isinstance(method_cfg, UKHSA2026TauConfig):
+
+            tau_method = UKHSA2026(
+                event_rates=event_rates,
+                stoichiometry_matrix=stoichiometry_matrix,
+                timestep_mean_func=method_cfg.timestep_mean_func,
+                timestep_var_func=method_cfg.timestep_var_func,
                 epsilon=method_cfg.epsilon,
             )
 

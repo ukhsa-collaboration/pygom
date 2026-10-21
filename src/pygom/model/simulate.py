@@ -29,10 +29,14 @@ from ._model_errors import InputError, SimulationError
 from ._model_verification import checkEquation, simplifyEquation
 from . import _ode_composition
 
-from .maths import (StateChangeMatrix, 
-                    TransitionMean, 
-                    TransitionVariance,
-                    TransitionJacobian)
+from .maths import (
+    StateChangeMatrix,
+    TransitionMean,
+    TransitionVariance,
+    TransitionJacobian,
+    TransitionMeanMatrix,
+    TransitionVarianceMatrix
+)
 
 # from ..simulation.src.simulation.api import solve_stochastic, solve_deterministic
 # from ..simulation.src.simulation.stochastic.config_api import build_config
@@ -71,7 +75,9 @@ class SimulateOde(DeterministicOde):
     _maths_methods = DeterministicOde._maths_methods + [
         StateChangeMatrix,
         TransitionMean,
+        TransitionMeanMatrix,
         TransitionVariance,
+        TransitionVarianceMatrix,
         TransitionJacobian
     ]
 
@@ -224,6 +230,9 @@ class SimulateOde(DeterministicOde):
         if method == "cao2006":
             options["transition_mean_func"] = self.transition_mean.T
             options["transition_var_func"] = self.transition_variance.T
+        elif method == "ukhsa2026":
+            options["timestep_mean_func"] = self.transition_mean_matrix.T
+            options["timestep_var_func"] = self.transition_variance_matrix.T
 
         # Normalise time input
         t0 = self.initial_time

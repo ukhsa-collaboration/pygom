@@ -44,6 +44,12 @@ class Cao2006TauConfig(TauMethodConfig):
     transition_var_func: Callable
 
 @dataclass
+class UKHSA2026TauConfig(TauMethodConfig):
+    epsilon: float
+    timestep_mean_func: Callable
+    timestep_var_func: Callable
+
+@dataclass
 class Alternative2026TauConfig(TauMethodConfig):
     epsilon: float
 

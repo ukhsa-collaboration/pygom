@@ -10,8 +10,8 @@ class TimeStep:
     y_new: np.ndarray | None       # new state after timestep
     t_new: float | None            # new time after timestep
     event_counts: np.ndarray | None       # number of times each jump occured between old and new timestep
-    end_sim: bool                  # True if simulation is to be prematurely ended (e.g if rates
-                                   # are all = 0 and user has decided these are grounds to abort)
+    end_sim: bool                  # True if simulation is to be prematurely ended (e.g if rates are all = 0 and user has decided these are grounds to abort)
+    final_step: bool = False       # If t_eval has been crossed 
 
 @dataclass
 class EventStep:

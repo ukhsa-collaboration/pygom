@@ -32,3 +32,34 @@ class TransitionMean(NumericMethod):
         #     mu[i] += sympy.diff(eqn_i, time_variable, 1) # mean changes but sd does not, TODO: check this
 
         return  mu
+
+
+class TransitionMeanMatrix(NumericMethod):
+    method_name = 'transition_mean_matrix'
+    def get_equation(self):
+        '''
+        This is the mean of the changes in the transition rates
+        (aka propensity funtion) after a potential timestep:
+        equations (8a) from 
+        https://people.cs.vt.edu/~ycao/publication/newstepsize.pdf
+        For n transitions there is a vectors of length n.
+        '''
+        F = self._parent_ode.transition_jacobian.get_equation()
+        rates = self._parent_ode.event_rate_vector.get_equation()
+
+        timestep = sympy.zeros(self._parent_ode.num_events, self._parent_ode.num_events)
+        for event_index_i in range(self._parent_ode.num_events):
+            for event_index_j in range(self._parent_ode.num_events):
+                timestep[event_index_i, event_index_j] = (rates[event_index_i] / rates[event_index_j]) * (1 / F[event_index_i, event_index_j])
+
+        # TODO: Propensity functions also change if there is time dependence
+        #       This will be addressed better in the next version where tau
+        #       leaping will be updated.
+        # # If time dependence, add in another term to reflect this:
+        # timelike_symbols=[symb for symb in eqn_i.free_symbols if str(symb)=='t']
+        # is_time_dependent=len(timelike_symbols)>0
+        # if is_time_dependent and self.tstep:
+        #     time_variable = [timelike_symbols][0]
+        #     mu[i] += sympy.diff(eqn_i, time_variable, 1) # mean changes but sd does not, TODO: check this
+
+        return  timestep
