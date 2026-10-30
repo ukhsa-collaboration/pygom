@@ -212,12 +212,12 @@ class Model():
             parallel_backend="dask",
             **options):
         
-        y_min = np.zeros(self.num_state, dtype=int)
-        y_max = np.full(self.num_state, np.inf)
+        y_min = np.zeros(self._ModelSpec.num_state, dtype=int)
+        y_max = np.full(self._ModelSpec.num_state, np.inf)
 
         if method == "cao2006":
-            options["transition_mean_func"] = self.transition_mean.T
-            options["transition_var_func"] = self.transition_variance.T
+            options["transition_mean_func"] = self._MethodRegister.transition_mean.T
+            options["transition_var_func"] = self._MethodRegister.transition_variance.T
 
         # Normalise time input
         t0 = self.initial_time
@@ -231,25 +231,25 @@ class Model():
             raise InputError("Unknown dtype for time. Expected Number or numpy.array")
         
         # Evaluate stoichiometry_matrix at initial conditions and assume constant
-        stoichiometry_matrix = self.state_change_matrix(self.initial_state, self.initial_time)
+        stoichiometry_matrix = self._MethodRegister.state_change_matrix(self.initial_states, self.initial_time).astype(int)
 
         def _run_single_iteration(iter_ss):
             solver_ss, params_ss = iter_ss.spawn(2)
             solver_rng = np.random.default_rng(solver_ss)
-            stochastic_params = self._parameter_store.stochastic_parameters
-            param_seqs = params_ss.spawn(len(stochastic_params))
+            # stochastic_params = self._parameter_store.stochastic_parameters
+            # param_seqs = params_ss.spawn(len(stochastic_params))
 
-            for seq, param in zip(param_seqs, stochastic_params.values()):
-                if isinstance(param.value, CallableParameter):
-                    param.value.rng = np.random.default_rng(seq)
+            # for seq, param in zip(param_seqs, stochastic_params.values()):
+            #     if isinstance(param.value, CallableParameter):
+            #         param.value.rng = np.random.default_rng(seq)
 
-            self._parameter_store.new_realisation()
+            # self._parameter_store.new_realisation()
 
             return solve_stochastic(
-                    event_rates=self.event_rate_vector.T,
+                    event_rates=self._MethodRegister.event_rate_vector.T,
                     stoichiometry_matrix=stoichiometry_matrix,
                     t_span=t_span,
-                    y0=self.initial_state,
+                    y0=np.array(self.initial_states),
                     y_min=y_min,
                     y_max=y_max,
                     method=method,
@@ -314,6 +314,19 @@ class Model():
     def parameters(self, parameters):
         self._ModelSpec.set_parameter_values(parameters)
 
+    @property
+    def parameter_ids(self):
+        """
+        Get the parameter namespace
+        """
+        return self._ModelSpec.parameter_dict
+
+    @property
+    def state_ids(self):
+        """
+        Get the parameter namespace
+        """
+        return self._ModelSpec.state_dict
 
     @property
     def initial_states(self):
