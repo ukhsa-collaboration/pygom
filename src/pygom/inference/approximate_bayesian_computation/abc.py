@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.stats import multivariate_normal
 import time
+# import logging
 from dataclasses import dataclass
 from joblib import Parallel, delayed
 import os
@@ -13,7 +14,8 @@ from .data_classes import Population
 #    Probably worth building general parallel backend to be used across pygom
 # 3) Sample parameters in transformed space (e.g. log transform)
 # 4) Sampling kernel: now only "gaussian". Could add other distributions e.g. "student_t"?
-# 6) Tolerance method: now only "quantile". Could add pre-set "fixed" tolerances, "ESS based" tolerances?
+# 5) Tolerance method: now only "quantile". Could add pre-set "fixed" tolerances, "ESS based" tolerances?
+# 6) Plot simulation vs data (simple for some objective functions)
 
 ## Dataclasses to store particle genration information ##
 
@@ -320,12 +322,12 @@ class ABC:
 
         return (
             f"Generation: {generation.generation_number}\n"
-            f"Tolerance: {generation.tolerance}\n"
+            f"Tolerance: {generation.tolerance:.2f}\n"
             f"Accepted: {(attempts - total_rejections)} / {attempts} ({100*acceptance_rate_total:.1f}%)\n"
             f"Rejected (outside allowed limits): {out_of_bounds_rejections} / {attempts} ({100*rejection_rate_limits:.1f}%)\n"
             f"Rejected (above distance tolerance): {above_tolerance_rejections} / {tolerance_attempts} ({100*rejection_rate_tolerance:.1f}%)\n"
-            f"ESS: {generation.ess}\n"
-            f"Time taken: {time} seconds\n\n"
+            f"ESS: {generation.ess:.1f} / {self.n_particles}\n"
+            f"Time taken: {time:.2f} seconds\n\n"
         )
 
     def refine_posterior(self, objective, unknowns, n_generations, previous_generations=None):
@@ -336,6 +338,7 @@ class ABC:
 
         # Resume from previous run ....
         if previous_generations is not None:
+            # logging.info(f"Continuing ABC from generation {previous_generations[-1].generation_number}")
             print(f"Continuing ABC from generation {previous_generations[-1].generation_number}")
             n_generations += 1
             generation = previous_generations[-1]
@@ -348,6 +351,7 @@ class ABC:
             out = [generation]
         
             if self.progress:
+                # logging.info(self._progress_statement(generation, t2-t1))
                 print(self._progress_statement(generation, t2-t1))
 
         for gen in range(n_generations - 1):
@@ -357,6 +361,7 @@ class ABC:
             out.append(generation)
 
             if self.progress:
+                # logging.info(self._progress_statement(generation, t2-t1))
                 print(self._progress_statement(generation, t2-t1))
 
         return out

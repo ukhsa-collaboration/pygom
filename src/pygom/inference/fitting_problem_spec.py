@@ -1,15 +1,13 @@
 # TODO:
-# 1) observation-to-simulation time alignment
-# 2) Allow for calculating some params / ICs pre simulation "derived knowns"
+# 1) observation-to-simulation time alignment (time is special in ODEs, so should be simple)
+# 2) Allow for calculating some parameters / ICs pre simulation "derived knowns"
 
 """
 Data classes to specify the inference problem to be solved
 """
 
-
 from dataclasses import dataclass, field
 import numpy as np
-from numbers import Number
 from ..model.pygom_model import Model
 from ..simulation.src.simulation.data_classes import SimulationResult
 from .priors import Prior
@@ -44,81 +42,133 @@ class Target:
     value: float|np.ndarray
     weight: float = 1.0
 
-@dataclass
-class TargetSpec:
-    """
-    List of targets
-    """
-    targets: list[Target]
+# ---------------------------------------------------------------------
+# Variable classes
+# ---------------------------------------------------------------------
 
-# ---------------------------------------------------------------------
-# Unknowns
-# ---------------------------------------------------------------------
+## Unknown ##
 
 @dataclass
 class Unknown:
-    # TODO: For now, we have scalar unknowns
     id: str
-    lower: float = -np.inf
+    lower: float = -np.inf              # TODO: For now, we have scalar unknowns
     upper: float = np.inf
 
-    # Method specific attributes, TODO: inherit from Unknown to have ABCUnknown, MLEUnknown?
+    # Method specific attributes
+    # TODO: Maybe inherit from Unknown to have ABCUnknown, MLEUnknown?
     initial_guess: float | None = None
     prior: Prior | None = None
 
     def __post_init__(self):
+
+        # Lower limit must be strictly less than upper limit
         if self.lower >= self.upper:
             raise ValueError(
                 f"Unknown '{self.id}': lower bound ({self.lower}) "
                 f"must be less than upper bound ({self.upper})"
             )
+
+        # Initial guess must fall between limits
         if self.initial_guess is not None:
             if not (self.lower <= self.initial_guess <= self.upper):
                 raise ValueError(
                     f"Unknown '{self.id}': initial guess ({self.initial_guess}) "
                     f"must be within upper and lower bounds."
                 )
-        # TODO: add check for prior: what if prior is zero across the entire allowed range?
+        
+        # TODO: prior must be defined between limits
+
+# ---------------------------------------------------------------------
+# Stores
+# ---------------------------------------------------------------------
 
 @dataclass
 class UnknownSpec:
-    """
-    Describe inferable parameters and initial states, including domains.
-    Default to empty list
-    """
     parameters: list[Unknown] = field(default_factory=list)
-    initial_states: list[Unknown] = field(default_factory=list)
+    initial_conditions: list[Unknown] = field(default_factory=list)
 
-    # TODO: check that params / initial_states haven't been added multiple times
+    def __post_init__(self):
 
-# ---------------------------------------------------------------------
-# Knowns
-# ---------------------------------------------------------------------
+        # Check conflicts within each list
+        self._check_duplicates(self.param_ids, "parameter")
+        self._check_duplicates(self.initial_condition_ids, "initial condition")
 
-# NOTE: previously, known information was smuggled into the model object,
-#       probably better to declare explicitly instead like here:
+        # Check conflicts between lists
+        overlap = set(self.param_ids) & set(self.initial_condition_ids)
+        if overlap:
+            raise ValueError(
+                f"Unknown specified as both parameter and initial condition: {sorted(overlap)}"
+            )
+
+    @staticmethod
+    def _check_duplicates(ids, name):
+
+        duplicates = [
+            x
+            for x in set(ids)
+            if ids.count(x) > 1
+        ]
+
+        if duplicates:
+            raise ValueError(
+                f"Duplicate {name} ids: {sorted(duplicates)}"
+            )
+
+    @property
+    def param_ids(self):
+        return [x.id for x in self.parameters]
+
+    @property
+    def initial_condition_ids(self):
+        return [x.id for x in self.initial_conditions]
+
+## Generic container for variables ##
 
 @dataclass
-class KnownSpec:
-    """
-    Describe inferable parameters and initial states, including domains.
-    """
-    parameters: dict[str: Number]
-    initial_states: dict[str: Number]
+class ModelVariables:
+    parameters: dict[str, float] = field(default_factory=dict)
+    initial_conditions: dict[str, float] = field(default_factory=dict)
 
-    # TODO: Sometimes e.g. initial conditions are known, but a function of parameters.
-    #       e.g. an SIS system is in endemic equilibrium (a known feature), but
-    #       R0 is not known. Thus, S0 = N/R0, is something we declare to be known
-    #       but do not provide a value for. This is not the same as a derived parameter.
-    #       We need a way to calculate knowns after proposal of the unknowns.
-    #       Maybe we call these "derived knowns"
+    @property
+    def param_ids(self):
+        return self.parameters.keys()
+
+    @property
+    def initial_condition_ids(self):
+        return self.initial_conditions.keys()
+    
+
+@dataclass
+class FixedSpec(ModelVariables):
+    def __post_init__(self):
+        overlap = self.param_ids & self.initial_condition_ids
+
+        if overlap:
+            raise ValueError(
+                f"Fixed specified as both parameter and initial condition: {sorted(overlap)}"
+            )
+
+## Derived (but not estimated) ##
+
+@dataclass(frozen=True)
+class ResolverVariables:
+    parameters: set[str] = field(default_factory=set)
+    initial_conditions: set[str] = field(default_factory=set)
+
+class Resolver:
+    inputs = ResolverVariables()
+    outputs = ResolverVariables()
+
+    def resolve(self, values: ModelVariables) -> ModelVariables:
+        raise NotImplementedError    
+
 
 # ---------------------------------------------------------------------
 # Simulation
 # ---------------------------------------------------------------------
 
 # TODO: 
-# 1) Currently these do not return SimulationResult but take the[0].result
+# 1) Currently these do not return SimulationResult but take [0].result
 # 2) Bit annoying for user to set solver kwargs
 
 class Simulator:
@@ -164,7 +214,7 @@ class StochasticSimulator(Simulator):
         return out[0].result
 
 # ---------------------------------------------------------------------
-# Fitting Problem 
+# Specify the fitting problem (not the method)
 # ---------------------------------------------------------------------
 
 @dataclass
@@ -177,48 +227,49 @@ class FittingProblem:
     model: Model
     simulator: Simulator
     unknowns: UnknownSpec
-    knowns: KnownSpec
-    targets: TargetSpec
+    fixed: FixedSpec # = FixedSpec()
+    targets: list[Target]
+    resolvers: list[Resolver] = field(default_factory=list)
 
     def __post_init__(self):
-        """
-        Check that knowns and unknowns are properly specified
-        """
 
-        ## Params ## 
+        # Check parameter consistency
 
-        unknown_params = {p.id for p in self.unknowns.parameters}
-        known_params = set(self.knowns.parameters.keys())
-        model_params = set(self.model.parameter_ids.keys())
+        self._check_consistency(
+            unknown_vars=set(self.unknowns.param_ids),
+            fixed_vars=set(self.fixed.parameters),
+            resolver_vars=set().union( *(r.outputs.parameters for r in self.resolvers) ),
+            model_vars=set(self.model.parameter_ids),
+            var_type="Parameter"
+        )
 
-        self.check_consistency(unknown_params, known_params, model_params, "Parameter")
+        # Check initial condition consistency
 
-        ## ICs ## 
+        self._check_consistency(
+            unknown_vars=set(self.unknowns.initial_condition_ids),
+            fixed_vars=set(self.fixed.initial_conditions),
+            resolver_vars=set().union( *(r.outputs.initial_conditions for r in self.resolvers) ),
+            model_vars=set(self.model.state_ids),
+            var_type="State"
+        )
 
-        unknown_states = {p.id for p in self.unknowns.initial_states}
-        known_states = set(self.knowns.initial_states.keys())
-        model_states = set(self.model.state_ids.keys())
 
-        self.check_consistency(unknown_states, known_states, model_states, "State")
-
-    def check_consistency(self, unknown_vars, known_vars, model_vars, var_type):
-        # Variables cannot be both known and unknown
-        overlap = unknown_vars & known_vars
-        if overlap:
-            raise ValueError(
-                f"{var_type}s specified as both known and unknown: {sorted(overlap)}"
-            )
+    def _check_consistency(
+        self,
+        unknown_vars: set[str],
+        fixed_vars: set[str],
+        resolver_vars: set[str],
+        model_vars: set[str],
+        var_type: str
+    ):
+        provided = unknown_vars | fixed_vars | resolver_vars
 
         # Every specified variable must exist in the model
-        extra_vars = (unknown_vars | known_vars) - model_vars
-        if extra_vars:
-            raise ValueError(
-                f"{var_type}s not found in model: {sorted(extra_vars)}"
-            )
+        extra = provided - model_vars
+        if extra:
+            raise ValueError(f"{var_type}s not found in model: {sorted(extra)}")
 
         # Every model variable must be accounted for
-        missing_vars = model_vars - (unknown_vars | known_vars)
-        if missing_vars:
-            raise ValueError(
-                f"Model {var_type}s not specified as known or unknown: {sorted(missing_vars)}"
-            )
+        missing = model_vars - provided
+        if missing:
+            raise ValueError(f"Model {var_type}s not accounted for: {sorted(missing)}")

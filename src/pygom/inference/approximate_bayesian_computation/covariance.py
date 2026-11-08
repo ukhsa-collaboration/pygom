@@ -77,8 +77,7 @@ class LocalCovariance(CovarianceMethod):
 
 class KNNCovariance(CovarianceMethod):
     """
-    Get local covariance.
-    What constitutes "local" may vary
+    Get k nearest neighbours covariance
     """
 
     def __init__(

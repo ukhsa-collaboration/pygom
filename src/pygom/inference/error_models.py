@@ -22,6 +22,17 @@ class RelativeSquaredError(ErrorModel):
 
         rel_err = (predicted - observed) / np.maximum(np.abs(observed), 1e-8)
 
-        return np.sum(rel_err**2)
+        return np.sqrt(np.mean(rel_err**2))
+
+class AbsoluteSquaredError(ErrorModel):
+
+    def evaluate(self, observed, predicted):
+
+        observed = np.asarray(observed)
+        predicted = np.asarray(predicted)
+
+        err = predicted - observed
+
+        return np.sqrt(np.mean(err**2))
 
 # TODO: plus all others: Square, Normal, NegBinom etc
